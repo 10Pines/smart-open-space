@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   val kotlinVersion = "1.9.22"
-  id("org.springframework.boot") version "2.7.18"
+  id("org.springframework.boot") version "3.2.7"
   id("io.spring.dependency-management") version "1.1.5"
-  id("org.flywaydb.flyway") version "9.22.3"
+  id("org.flywaydb.flyway") version "10.15.2"
   kotlin("jvm") version kotlinVersion
   kotlin("plugin.spring") version kotlinVersion
   kotlin("plugin.jpa") version kotlinVersion
@@ -23,7 +23,7 @@ repositories {
 
 dependencyManagement {
   dependencies {
-    dependency("com.h2database:h2:2.1.210")
+    dependency("com.h2database:h2:2.1.214")
   }
 }
 
@@ -53,9 +53,9 @@ dependencies {
 }
 
 allOpen {
-  annotation("javax.persistence.Entity")
-  annotation("javax.persistence.Embeddable")
-  annotation("javax.persistence.MappedSuperclass")
+  annotation("jakarta.persistence.Entity")
+  annotation("jakarta.persistence.Embeddable")
+  annotation("jakarta.persistence.MappedSuperclass")
 }
 
 tasks.withType<Test> {

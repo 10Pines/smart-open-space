@@ -83,7 +83,7 @@ class OpenSpaceControllerTest {
         val anOpenSpace = createOpenSpaceFor(user)
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/openSpace/${anOpenSpace.id}/user/${user.id}/")
+                MockMvcRequestBuilders.delete("/openSpace/${anOpenSpace.id}/user/${user.id}")
         )
                 .andExpect(MockMvcResultMatchers.status().isOk)
 
@@ -92,12 +92,12 @@ class OpenSpaceControllerTest {
 
     @Test
     fun `deleting an OpenSpace with an invalid user returns a bad request response`() {
-        val user = repoUser.save(aUser())
-        val otherUser = repoUser.save(aUser())
+        val user = repoUser.save(aUser(userEmail = "user@gmail.com"))
+        val otherUser = repoUser.save(aUser(userEmail = "other_user@gmail.com"))
         val anOpenSpace = createOpenSpaceFor(user)
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/openSpace/${anOpenSpace.id}/user/${otherUser.id}/")
+                MockMvcRequestBuilders.delete("/openSpace/${anOpenSpace.id}/user/${otherUser.id}")
         )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
@@ -175,7 +175,7 @@ class OpenSpaceControllerTest {
         createTalkFor(user, anOpenSpace, aTalk)
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/openSpace/${anOpenSpace.id}/talk/${aTalk.id}/user/${user.id}/")
+                MockMvcRequestBuilders.delete("/openSpace/${anOpenSpace.id}/talk/${aTalk.id}/user/${user.id}")
         )
                 .andExpect(MockMvcResultMatchers.status().isOk)
 
@@ -187,14 +187,14 @@ class OpenSpaceControllerTest {
 
     @Test
     fun `deleting a valid talk with an invalid user return a bad request response `() {
-        val user = repoUser.save(aUser())
-        val otherUser = repoUser.save(aUser())
+        val user = repoUser.save(aUser(userEmail = "user@gmail.com"))
+        val otherUser = repoUser.save(aUser(userEmail = "otherUser@gmail.com"))
         val anOpenSpace = createOpenSpaceFor(user)
         val aTalk = Talk("a talk", speaker = user)
         createTalkFor(user, anOpenSpace, aTalk)
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/openSpace/${anOpenSpace.id}/talk/${aTalk.id}/user/${otherUser.id}/")
+                MockMvcRequestBuilders.delete("/openSpace/${anOpenSpace.id}/talk/${aTalk.id}/user/${otherUser.id}")
         )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
@@ -232,8 +232,8 @@ class OpenSpaceControllerTest {
 
     @Test
     fun `starting a call for papers with a non organizer user return a bad request status`() {
-        val organizer = repoUser.save(aUser())
-        val aUser = repoUser.save(aUser())
+        val organizer = repoUser.save(aUser(userEmail = "organizer@gmail.com"))
+        val aUser = repoUser.save(aUser(userEmail = "user@gmail.com"))
         val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(organizer))
 
         mockMvc.perform(

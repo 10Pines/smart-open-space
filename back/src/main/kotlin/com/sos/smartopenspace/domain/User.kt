@@ -1,15 +1,15 @@
 package com.sos.smartopenspace.domain
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.common.hash.Hashing
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.Id
+import jakarta.persistence.GenerationType
 import java.nio.charset.StandardCharsets
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotEmpty
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotEmpty
 
 @Entity(name = "Users")
 class User(
@@ -24,16 +24,13 @@ class User(
 
   @field:NotEmpty(message = "Ingrese una contraseña")
   @field:NotBlank(message = "Contraseña no puede ser vacía")
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   var password: String = "",
 
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   var resetToken: String? = null,
 
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   var resetTokenLifetime: Long? = null,
 
-  @Id @GeneratedValue
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   var id: Long = 0
 ) {
 

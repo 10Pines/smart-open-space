@@ -44,7 +44,7 @@ class TalkControllerTest {
 
   @Test
   fun `schedule a talk returns an ok status response`() {
-    val organizer = anySavedUser()
+    val organizer = anySavedUser("user@gmail.com")
     val talk = anySavedTalk(organizer)
     val room = anySavedRoom()
     val aSlot = aSavedSlot()
@@ -59,7 +59,7 @@ class TalkControllerTest {
 
   @Test
   fun `when a talk cannot be scheduled it should return a bad request response`() {
-    val organizer = anySavedUser()
+    val organizer = anySavedUser("user@gmail.com")
     val talk = anySavedTalk(organizer)
     val speaker = aSavedUserWithTalk(talk)
     val openSpace = openSpaceRepository.save(anOpenSpaceWith(talk, organizer))
@@ -73,7 +73,7 @@ class TalkControllerTest {
 
   @Test
   fun `exchange a talk returns an ok status response`() {
-    val organizer = anySavedUser()
+    val organizer = anySavedUser("user@gmail.com")
     val talk = anySavedTalk(organizer)
     val room = anySavedRoom()
     val aSlot = aSavedSlot()
@@ -91,7 +91,7 @@ class TalkControllerTest {
 
   @Test
   fun `Asking for an specific talk returns an ok status`() {
-    val organizer = anySavedUser()
+    val organizer = anySavedUser("user@gmail.com")
     val talk = anySavedTalk(organizer)
     val openSpace = anySavedOpenSpace()
     organizer.addOpenSpace(openSpace)
@@ -159,8 +159,8 @@ class TalkControllerTest {
 
   @Test
   fun `a talk voted by user returns an ok status response and increase talk votes`() {
-    val aUser = anySavedUser()
-    val talk = anySavedTalk(anySavedUser())
+    val aUser = anySavedUser("user1@gmail.com")
+    val talk = anySavedTalk(anySavedUser("user2@gmail.com"))
 
     mockMvc.perform(
       MockMvcRequestBuilders.put("/talk/${talk.id}/user/${aUser.id}/vote")
@@ -170,7 +170,7 @@ class TalkControllerTest {
 
   @Test
   fun `a talk unvoted by a user returns an ok status response and decrease talk votes`() {
-    val aUser = anySavedUser()
+    val aUser = anySavedUser("user@gmail.com")
     val talk = anySavedTalk(aUser)
     talk.addVoteBy(aUser)
     talkRepository.save(talk)
@@ -183,7 +183,7 @@ class TalkControllerTest {
 
   @Test
   fun `a talk cannot be unvoted by a user that didnt vote it returns a bad request`() {
-    val aUser = anySavedUser()
+    val aUser = anySavedUser("user@gmail.com")
     val talk = anySavedTalk(aUser)
     talkRepository.save(talk)
 
@@ -194,7 +194,7 @@ class TalkControllerTest {
 
   @Test
   fun `review talk adds review to talk reviews`() {
-    val aUser = anySavedUser()
+    val aUser = anySavedUser("user@gmail.com")
     val talk = anySavedTalk(aUser)
     val content = aReviewCreationBody(5, "a review")
 
@@ -249,7 +249,7 @@ class TalkControllerTest {
 
   private fun anySavedTalk(organizer: User) = talkRepository.save(Talk("Charla", speaker = organizer))
 
-  private fun anySavedUser() = userRepository.save(aUser())
+  private fun anySavedUser(userEmail: String) = userRepository.save(aUser(userEmail = userEmail))
 
   private fun anySavedOpenSpace() = openSpaceRepository.save(anOpenSpace())
 

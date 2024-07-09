@@ -4,11 +4,11 @@ import com.sos.smartopenspace.domain.Room
 import com.sos.smartopenspace.domain.Slot
 import com.sos.smartopenspace.domain.Track
 import java.time.LocalDate
-import javax.persistence.Column
-import javax.validation.Valid
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.Size
+import jakarta.persistence.Column
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.Size
 
 class OpenSpaceRequestDTO(
     @field:NotEmpty(message = "Ingrese un nombre")

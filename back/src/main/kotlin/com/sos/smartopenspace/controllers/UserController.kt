@@ -8,7 +8,7 @@ import com.sos.smartopenspace.services.EmailService
 import com.sos.smartopenspace.services.UserService
 import com.sos.smartopenspace.translators.response.UserResTranslator
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
+import jakarta.validation.Valid
 
 
 @RestController

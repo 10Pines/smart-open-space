@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.GenerationType
+import jakarta.persistence.Inheritance
+import jakarta.persistence.InheritanceType
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -17,6 +19,7 @@ import java.time.LocalTime
   Type(value = OtherSlot::class)
 )
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 abstract class Slot(
   val startTime: LocalTime,
 

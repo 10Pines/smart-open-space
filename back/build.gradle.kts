@@ -79,6 +79,14 @@ flyway {
   locations = arrayOf("filesystem:src/main/resources/db/migration")
 }
 
+// Require for flyway plugin v10 compatibility with postgresql
+buildscript {
+  dependencies {
+    classpath("org.postgresql:postgresql:42.7.1")
+    classpath("org.flywaydb:flyway-database-postgresql:10.4.1")
+  }
+}
+
 tasks.jacocoTestReport {
   reports {
     xml.required.value(true)

@@ -37,7 +37,11 @@ const Talk = ({
   children,
   showSpeakerName,
 }) => {
-  const pushToTalk = usePushToTalk(useParams().id, id);
+  const pushToTalk = usePushToTalk(
+    useParams().id,
+    id,
+    showSpeakerName ? speaker.name : null
+  );
 
   const color = track ? track.color : 'accent-3';
   const talkLink = meetingLink || room?.link;

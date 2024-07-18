@@ -14,7 +14,10 @@ const useToOS = (id) => `/os/${useID(id)}`;
 const useToEditOS = (id) => `/os/${useID(id)}/edit`;
 const useToMyTalks = (id) => `/os/${useID(id)}/myTalks`;
 const useToNewTalk = (id) => `/newTalk/${useID(id)}`;
-const useToTalk = (id, talkId) => `/os/${useID(id)}/talk/${useID(talkId)}`;
+const speakerNameQueryParam = (speakerName = null) =>
+  speakerName ? `?speakerName=${speakerName}` : '';
+const useToTalk = (id, talkId, speakerName = null) =>
+  `/os/${useID(id)}/talk/${useID(talkId)}${speakerNameQueryParam(speakerName)}`;
 const useToProjector = (id) => `/os/${useID(id)}/projector`;
 const useToSchedule = (id) => `/os/${useID(id)}/schedule`;
 const useToEditTalk = (talkId, openSpaceId) =>
@@ -41,7 +44,8 @@ export const usePushToRegisterFromOpenSpace = (openSpaceId) =>
 export const usePushToMyTalks = (id) => pushTo(useHistory(), useToMyTalks(id));
 export const usePushToNewOS = () => pushTo(useHistory(), toNewOS);
 export const usePushToOpenSpace = (id) => pushTo(useHistory(), useToOS(id));
-export const usePushToTalk = (id, talkId) => pushTo(useHistory(), useToTalk(id, talkId));
+export const usePushToTalk = (id, talkId, speakerName = null) =>
+  pushTo(useHistory(), useToTalk(id, talkId, speakerName));
 export const usePushToNewTalk = (id) => pushTo(useHistory(), useToNewTalk(id));
 export const usePushToProjector = (id) => pushTo(useHistory(), useToProjector(id));
 export const usePushToSchedule = (id) => pushTo(useHistory(), useToSchedule(id));

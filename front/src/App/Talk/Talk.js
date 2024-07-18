@@ -4,8 +4,8 @@ import { RedirectToRoot, usePushToEditTalk, usePushToOpenSpace } from '#helpers/
 import { useGetTalk, deleteTalk, createReview } from '#api/os-client';
 import MainHeader from '#shared/MainHeader';
 import Spinner from '#shared/Spinner';
-import { useParams } from 'react-router-dom';
-import { EditIcon, DeleteIcon, StarIcon } from '#shared/icons';
+import { useParams, useLocation } from 'react-router-dom';
+import { ScheduleIcon, EditIcon, DeleteIcon, StarIcon } from '#shared/icons';
 import { Button, Anchor, Text, Box, Layer } from 'grommet';
 import Card from '#shared/Card';
 import { ReviewForm } from './ReviewForm';
@@ -22,6 +22,7 @@ const Talk = () => {
   } = useGetTalk();
   const openSpaceId = useParams().id;
   const pushToOpenSpace = usePushToOpenSpace(openSpaceId);
+  const speakerName = new URLSearchParams(useLocation().search).get('speakerName');
   const amTheSpeaker = user && speaker && speaker.id === user.id;
   const pushToEditTalk = usePushToEditTalk(id);
   const [showDeleteModal, setShowDeleteModal] = React.useState();
@@ -38,7 +39,7 @@ const Talk = () => {
     <>
       <MainHeader>
         <MainHeader.Title label={name} />
-        <MainHeader.SubTitle label={speaker.name} />
+        {speakerName && <MainHeader.SubTitle label={speakerName} />}
         <MainHeader.Description description={description} />
         <MainHeader.Buttons>
           {amTheSpeaker && (

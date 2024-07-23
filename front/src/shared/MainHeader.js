@@ -50,33 +50,26 @@ MySubTitle.propTypes = {
 };
 
 const Description = ({ children, description, ...props }) => (
-  <Markdown components={{ p: (props) => <Paragraph {...props} fill /> }}>
-    {description}
-  </Markdown>
+  <Box margin={{ bottom: '20px' }}>
+    <Markdown components={{ p: (props) => <Paragraph {...props} fill /> }}>
+      {description}
+    </Markdown>
+  </Box>
 );
 
-const Tracks = ({ children, tracks, ...props }) => (
-  <List
-    primaryKey={(item) => (
-      <Box background={item.color} pad="10px" margin="10px">
-        <Text>{item.name}</Text>
+const Tracks = ({ children, tracks, ...props }) => {
+  return tracks.map((track) => (
+    <Box margin={{ bottom: '10px' }}>
+      <Box background={track.color} pad="10px" margin="10px 0">
+        <Text size="large">{track.name}</Text>
       </Box>
-    )}
-    secondaryKey={(item) => (
-      <Box width={{ max: '30vw' }}>
-        <Text color="#808080" size="small" textAlign="end">
-          {item.description}
-        </Text>
-      </Box>
-    )}
-    data={tracks.map((track) => {
-      return { name: track.name, description: track.description, color: track.color };
-    })}
-    pad="medium"
-  >
-    {children}
-  </List>
-);
+      <Text color="#808080" size="medium">
+        {track.description}
+      </Text>
+    </Box>
+  ));
+};
+
 Description.propTypes = {
   children: MyProps.children,
   description: PropTypes.string,

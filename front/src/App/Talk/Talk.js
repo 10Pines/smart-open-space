@@ -1,16 +1,17 @@
 import React from 'react';
 import { useUser } from '#helpers/useAuth';
-import { RedirectToRoot, usePushToSchedule, usePushToEditTalk } from '#helpers/routes';
+import { RedirectToRoot, usePushToEditTalk, usePushToOpenSpace } from '#helpers/routes';
 import { useGetTalk, deleteTalk, createReview } from '#api/os-client';
 import MainHeader from '#shared/MainHeader';
 import Spinner from '#shared/Spinner';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { ScheduleIcon, EditIcon, DeleteIcon, StarIcon } from '#shared/icons';
 import { Button, Anchor, Text, Box, Layer } from 'grommet';
 import Card from '#shared/Card';
 import { ReviewForm } from './ReviewForm';
 import Row from '#shared/Row';
 import Title from '#shared/Title';
+import { Return } from 'grommet-icons/icons';
 
 const Talk = () => {
   const user = useUser();
@@ -20,7 +21,8 @@ const Talk = () => {
     isRejected,
   } = useGetTalk();
   const openSpaceId = useParams().id;
-  const pushToSchedule = usePushToSchedule(openSpaceId);
+  const pushToOpenSpace = usePushToOpenSpace(openSpaceId);
+  const speakerName = new URLSearchParams(useLocation().search).get('speakerName');
   const amTheSpeaker = user && speaker && speaker.id === user.id;
   const pushToEditTalk = usePushToEditTalk(id);
   const [showDeleteModal, setShowDeleteModal] = React.useState();
@@ -37,6 +39,7 @@ const Talk = () => {
     <>
       <MainHeader>
         <MainHeader.Title label={name} />
+        {speakerName && <MainHeader.SubTitle label={speakerName} />}
         <MainHeader.Description description={description} />
         <MainHeader.Buttons>
           {amTheSpeaker && (
@@ -47,16 +50,18 @@ const Talk = () => {
               onClick={pushToEditTalk}
             />
           )}
-          <Button
-            icon={<DeleteIcon />}
-            label="Eliminar"
-            onClick={() => setShowDeleteModal(true)}
-          />
+          {amTheSpeaker && (
+            <Button
+              icon={<DeleteIcon />}
+              label="Eliminar"
+              onClick={() => setShowDeleteModal(true)}
+            />
+          )}
           <Button
             color="accent-1"
-            icon={<ScheduleIcon />}
-            label="Agenda"
-            onClick={pushToSchedule}
+            icon={<Return />}
+            label="Principal"
+            onClick={pushToOpenSpace}
           />
         </MainHeader.Buttons>
       </MainHeader>
@@ -110,7 +115,7 @@ const Talk = () => {
               <Button
                 label="Si"
                 onClick={() => {
-                  deleteTalk(openSpaceId, id).then(pushToSchedule);
+                  deleteTalk(openSpaceId, id).then(pushToOpenSpace);
                   setShowDeleteModal(false);
                 }}
               />

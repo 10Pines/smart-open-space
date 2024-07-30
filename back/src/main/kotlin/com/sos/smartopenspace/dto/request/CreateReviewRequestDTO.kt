@@ -1,5 +1,5 @@
 package com.sos.smartopenspace.dto.request
-import javax.validation.constraints.*
+import jakarta.validation.constraints.*
 
 class CreateReviewRequestDTO(
   @field:NotNull

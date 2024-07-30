@@ -2,13 +2,16 @@ package com.sos.smartopenspace.domain
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import jakarta.persistence.Id
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Inheritance
+import jakarta.persistence.InheritanceType
 import java.time.LocalDate
 import java.time.LocalTime
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.ManyToOne
-import javax.persistence.OneToOne
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
@@ -16,6 +19,7 @@ import javax.persistence.OneToOne
   Type(value = OtherSlot::class)
 )
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 abstract class Slot(
   val startTime: LocalTime,
 
@@ -23,7 +27,7 @@ abstract class Slot(
 
   val date: LocalDate,
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   override val id: Long = 0
 ) : UpdatableItemCollection {
   abstract fun isAssignable(): Boolean
@@ -55,7 +59,7 @@ class AssignedSlot(
   @OneToOne
   val talk: Talk,
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long = 0
 ) {
   fun startAt(time: LocalTime) = slot.startTime == time

@@ -4,8 +4,8 @@ import com.sos.smartopenspace.domain.User
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
-import javax.mail.Message
-import javax.mail.internet.InternetAddress
+import jakarta.mail.Message
+import jakarta.mail.internet.InternetAddress
 
 @Service
 class EmailService(

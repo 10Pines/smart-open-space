@@ -1,11 +1,11 @@
 package com.sos.smartopenspace.domain
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import jakarta.persistence.*
 import java.net.URL
-import javax.persistence.*
-import javax.validation.Valid
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotEmpty
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotEmpty
 
 @Entity
 class Talk(
@@ -17,7 +17,7 @@ class Talk(
   var description: String = "",
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long = 0,
 
   var meetingLink: URL? = null,

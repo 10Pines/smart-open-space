@@ -1,11 +1,12 @@
 package com.sos.smartopenspace.domain
 
 import com.sos.smartopenspace.validators.HexColor
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.Size
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.Size
 
 @Entity
 data class Track(
@@ -19,6 +20,6 @@ data class Track(
     val color: String,
     
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     override var id: Long = 0
 ) : UpdatableItemCollection

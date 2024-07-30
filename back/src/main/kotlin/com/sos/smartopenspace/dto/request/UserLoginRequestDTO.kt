@@ -1,8 +1,8 @@
 package com.sos.smartopenspace.dto.request
 
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotEmpty
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotEmpty
 
 class UserLoginRequestDTO(
   @field:NotEmpty(message = "Ingrese un email")

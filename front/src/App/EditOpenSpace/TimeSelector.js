@@ -31,13 +31,20 @@ const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
       },
     });
 
+  const handleShowOrElse = (result, def) => {
+    if (dates.length < 1 || dates == undefined) {
+      return def;
+    }
+    return result;
+  };
+
   useEffect(() => {
     onChange({
       target: { value: value.filter((slot) => !byDate(deletedDate)(slot)) },
     });
   }, [deletedDate]);
 
-  return (
+  return handleShowOrElse(
     <Box>
       <Tabs>
         {dates.map((date) => (
@@ -52,7 +59,9 @@ const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
           </Tab>
         ))}
       </Tabs>
-    </Box>
+    </Box>,
+    // else
+    <Box />
   );
 };
 TimeSelector.propTypes = {

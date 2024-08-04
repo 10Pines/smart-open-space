@@ -127,6 +127,7 @@ export const OpenSpaceForm = ({
   const [showInputSlot, setShowInputSlot] = useState(null);
   const [availableDates, setAvailableDates] = useState(initialValues.dates || []);
   const [deletedDate, setDeletedDate] = useState();
+  const [description, setDescription] = useState(initialValues.description || '');
 
   function isRepeated(tracks, track) {
     return tracks.filter((eachTrack) => eachTrack.name === track.name).length > 1;
@@ -156,7 +157,8 @@ export const OpenSpaceForm = ({
         <MyForm.TextAreaWithCharacterCounter
           placeholder="Añade una descripción."
           maxLength={1000}
-          value={initialValues.description}
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
         />
         <MyForm.Field
           component={Tracks}

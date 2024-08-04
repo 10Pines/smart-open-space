@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Form, FormField, Select, TextArea } from 'grommet';
+import { Button, Form, FormField, Select, TextArea, TextInput } from 'grommet';
 import PropTypes from 'prop-types';
 
 import MyProps from '#helpers/MyProps';
@@ -28,7 +28,9 @@ const MyField = ({ icon, label, ...props }) => (
 MyField.propTypes = { icon: PropTypes.node, label: PropTypes.string };
 
 const MyFieldText = (props) => (
-  <MyField icon={<TextIcon />} label="Nombre" name="name" {...props} />
+  <MyField icon={<TextIcon />} label="Nombre" htmlFor="text-input-id-name" {...props}>
+    <TextInput id="text-input-id-name" name="name" />
+  </MyField>
 );
 
 const LinkField = (props) => (
@@ -54,16 +56,33 @@ const MyFieldTextArea = (props) => (
 );
 
 TextAreaWithCharacterCounter.propTypes = { props: PropTypes.any };
-const MyFieldTextAreaWithCounter = (props) => (
-  <MyField
-    icon={<TextAreaIcon />}
-    label="Descripción"
-    name="description"
-    component={(props) => <TextAreaWithCharacterCounter {...props} />}
-    required={false}
-    {...props}
-  />
-);
+const MyFieldTextAreaWithCounter = (props) => {
+  return (
+    <FormField
+      label={
+        <Row>
+          <TextAreaIcon />
+          Descripción
+        </Row>
+      }
+      name="description"
+      required
+    >
+      <TextAreaWithCharacterCounter {...props} />
+    </FormField>
+  );
+  /*
+  return (
+    <MyField
+      icon={<TextAreaIcon />}
+      label="Descripción"
+      name="description"
+      component={(props) => }
+      required={false}
+      {...props}
+    />);
+    */
+};
 
 const MyFieldEmail = (props) => (
   <MyField icon={<EmailIcon />} label="Email" name="email" type="email" {...props} />
@@ -127,6 +146,7 @@ const MyForm = ({
     <Form
       value={value}
       messages={{ invalid: 'Inválido', required: 'Obligatorio' }}
+      //onChange={nextValue => console.log(nextValue)}
       onSubmit={(event) => {
         event = { ...event, useResetValue };
         withLoading(onSubmit)(event);

@@ -62,7 +62,7 @@ class UserService(
 
     fun generatePasswordResetToken(user: User): String {
         val random = ByteArray(64)
-        val token = convertToBase64(random.toString())
+        val token = convertToBase64(random.contentToString())
             .replace("=", "")
             .replace("/", "")
             .replace("+", "")
@@ -79,6 +79,4 @@ class UserService(
     private fun securePassword(password: String): String {
         return passwordEncoderService.encodePassword(password)
     }
-
-
 }

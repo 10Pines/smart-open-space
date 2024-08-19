@@ -34,20 +34,22 @@ const MainLayout = ({ children, header }) => {
   const { areas, columns, pad } = useMainLayout();
 
   return (
-    <Box fill background="light-3" overflow="auto">
-      <Grid areas={areas} columns={columns} fill rows={['xxsmall', 'flex']}>
-        <BoxBrand gridArea="headerL" />
-        <BoxBrand gridArea="headerR" />
-        <BoxBrand gridArea="header" pad={pad}>
-          {header}
-        </BoxBrand>
-        <Box as="main" gridArea="main" pad={pad}>
-          <div>{children}</div>
-        </Box>
-        <Box gridArea="footer" fill pad={pad}>
-          <Footer />
-        </Box>
-      </Grid>
+    <Box>
+      <Box fill background="light-3" overflow="auto">
+        <Grid areas={areas} columns={columns} fill rows={['xxsmall', 'flex']}>
+          <BoxBrand gridArea="headerL" className={'header'} />
+          <BoxBrand gridArea="headerR" className={'header'} />
+          <BoxBrand gridArea="header" pad={pad} className={'header'}>
+            {header}
+          </BoxBrand>
+          <Box as="main" gridArea="main" pad={pad}>
+            <div>{children}</div>
+          </Box>
+        </Grid>
+      </Box>
+      <Box gridArea="footer" fill background="light-3" pad={pad}>
+        <Footer />
+      </Box>
     </Box>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { console_log_debug } from '#helpers/logging';
 import { Button, Form, FormField, Select, TextArea, TextInput } from 'grommet';
 import PropTypes from 'prop-types';
 
@@ -27,11 +27,23 @@ const MyField = ({ icon, label, ...props }) => (
 );
 MyField.propTypes = { icon: PropTypes.node, label: PropTypes.string };
 
-const MyFieldText = (props) => (
-  <MyField icon={<TextIcon />} label="Nombre" htmlFor="text-input-id-name" {...props}>
-    <TextInput id="text-input-id-name" name="name" />
+const MyFieldText = ({ id, label, formValueName, ...props }) => (
+  <MyField
+    name={formValueName}
+    icon={<TextIcon />}
+    label={label}
+    htmlFor={`text-input-${id}`}
+    {...props}
+  >
+    <TextInput id={`text-input-${id}`} name={formValueName} {...props} />
   </MyField>
 );
+
+MyFieldText.propTypes = {
+  id: PropTypes.string,
+  label: PropTypes.string,
+  formValueName: PropTypes.string,
+};
 
 const LinkField = (props) => (
   <MyField
@@ -56,33 +68,16 @@ const MyFieldTextArea = (props) => (
 );
 
 TextAreaWithCharacterCounter.propTypes = { props: PropTypes.any };
-const MyFieldTextAreaWithCounter = (props) => {
-  return (
-    <FormField
-      label={
-        <Row>
-          <TextAreaIcon />
-          Descripción
-        </Row>
-      }
-      name="description"
-      required
-    >
-      <TextAreaWithCharacterCounter {...props} />
-    </FormField>
-  );
-  /*
-  return (
-    <MyField
-      icon={<TextAreaIcon />}
-      label="Descripción"
-      name="description"
-      component={(props) => }
-      required={false}
-      {...props}
-    />);
-    */
-};
+const MyFieldTextAreaWithCounter = (props) => (
+  <MyField
+    icon={<TextAreaIcon />}
+    label="Descripción"
+    name="description"
+    component={(props) => <TextAreaWithCharacterCounter {...props} />}
+    required={false}
+    {...props}
+  />
+);
 
 const MyFieldEmail = (props) => (
   <MyField icon={<EmailIcon />} label="Email" name="email" type="email" {...props} />
@@ -135,21 +130,26 @@ const MyForm = ({
   onSubmit,
   primaryLabel = 'Aceptar',
   secondaryLabel = 'Cancelar',
+  initialValue = {},
+  externalOnChange = () => {},
   ...props
 }) => {
   const [loading, withLoading] = useLoading();
-  const [value, setValue] = React.useState({});
+  const [value, setValue] = React.useState(initialValue);
 
-  const useResetValue = () => setValue({});
+  const useResetValue = () => setValue(initialValue);
 
   return (
     <Form
       value={value}
       messages={{ invalid: 'Inválido', required: 'Obligatorio' }}
-      //onChange={nextValue => console.log(nextValue)}
+      onChange={(nextValue) => {
+        externalOnChange(nextValue);
+        setValue(nextValue);
+      }}
       onSubmit={(event) => {
         event = { ...event, useResetValue };
-        withLoading(onSubmit)(event);
+        withLoading(onSubmit)(event.value);
       }}
       {...props}
     >
@@ -175,6 +175,8 @@ MyForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   primaryLabel: PropTypes.string,
   secondaryLabel: PropTypes.string,
+  initialValue: PropTypes.object,
+  externalOnChange: PropTypes.func,
 };
 
 MyForm.Text = MyFieldText;

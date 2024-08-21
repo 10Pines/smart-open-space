@@ -6,23 +6,22 @@ import { DateTab } from './DateTab';
 import { byDate } from '#helpers/time';
 
 const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
-  const addSlot = (type, date, lastEnd) =>
-    onNewSlot(type, lastEnd, ({ value: { startTime, endTime, description } }) => {
+  const addSlot = (type, date, lastEnd) => {
+    return onNewSlot(type, lastEnd, ({ startTime, endTime, description }) => {
       onChange({
-        target: {
-          value: [
-            ...value,
-            {
-              type,
-              startTime: lastEnd || startTime,
-              endTime,
-              description,
-              date: [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()],
-            },
-          ],
-        },
+        value: [
+          ...value,
+          {
+            type,
+            startTime: lastEnd || startTime,
+            endTime,
+            description,
+            date: [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()],
+          },
+        ],
       });
     });
+  };
 
   const removeSlot = (date, lastEnd) =>
     onChange({
@@ -31,11 +30,11 @@ const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
       },
     });
 
-  const handleShowOrElse = (result, def) => {
-    if (dates.length < 1 || dates == undefined) {
-      return def;
+  const canShowOrElse = (showRes, elseRes) => {
+    if (dates == undefined || dates.length < 1) {
+      return elseRes;
     }
-    return result;
+    return showRes;
   };
 
   useEffect(() => {
@@ -44,13 +43,13 @@ const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
     });
   }, [deletedDate]);
 
-  return handleShowOrElse(
+  return canShowOrElse(
     <Box>
       <Tabs>
-        {dates.map((date) => (
-          <Tab title={format(date, 'yyyy-MM-dd')}>
+        {dates.map((date, i) => (
+          <Tab key={i} title={format(date, 'yyyy-MM-dd')}>
             <DateTab
-              key={date}
+              key={i}
               value={value.filter(byDate(date))}
               addSlot={addSlot}
               date={date}

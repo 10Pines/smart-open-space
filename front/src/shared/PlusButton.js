@@ -17,7 +17,7 @@ export const PlusButton = ({
       disabled={conditionToDisable}
       onClick={() => {
         if (conditionToDisable) return;
-        onChange({ target: { value: [...value, item] } });
+        onChange({ value: [...value, item] });
         setItem(initialItem);
       }}
       {...props}

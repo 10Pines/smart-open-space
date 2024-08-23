@@ -10,48 +10,7 @@ import { ColorPicker } from '#shared/ColorPicker';
 const Tracks = ({ value, onChange }) => {
   // TODO: workaround due to an issue with actual grommet version and Select bug using JSX components
   // TODO: Delete this objects and use direct hex color string when it's fixed
-  const colors = [
-    {
-      hex: '#ddaecc',
-      name: 'Rosa',
-    },
-    {
-      hex: '#88d2f2',
-      name: 'Celeste',
-    },
-    {
-      hex: '#d0c9e1',
-      name: 'Lavanda',
-    },
-    {
-      hex: '#fab29e',
-      name: 'Salmon',
-    },
-    {
-      hex: '#fbf7b8',
-      name: 'Amarillo',
-    },
-    {
-      hex: '#a2d0b7',
-      name: 'Turquesa',
-    },
-    {
-      hex: '#aea3c9',
-      name: 'Lila oscuro',
-    },
-    {
-      hex: '#93b7dc',
-      name: 'Celeste oscuro',
-    },
-    {
-      hex: '#c1867b',
-      name: 'Marrón claro',
-    },
-    {
-      hex: '#e2edd4',
-      name: 'Verde claro',
-    },
-  ];
+  const colors = allColors;
   let initialTrack = { name: '', description: '', color: colors[0].hex };
   const [track, setTrack] = useState(initialTrack);
   const [isOpen, setIsOpen] = useState(false);
@@ -103,5 +62,48 @@ const Tracks = ({ value, onChange }) => {
     </Box>
   );
 };
+
+const allColors = [
+  {
+    hex: '#ddaecc',
+    name: 'Rosa',
+  },
+  {
+    hex: '#88d2f2',
+    name: 'Celeste',
+  },
+  {
+    hex: '#d0c9e1',
+    name: 'Lavanda',
+  },
+  {
+    hex: '#fab29e',
+    name: 'Salmon',
+  },
+  {
+    hex: '#fbf7b8',
+    name: 'Amarillo',
+  },
+  {
+    hex: '#a2d0b7',
+    name: 'Turquesa',
+  },
+  {
+    hex: '#aea3c9',
+    name: 'Lila oscuro',
+  },
+  {
+    hex: '#93b7dc',
+    name: 'Celeste oscuro',
+  },
+  {
+    hex: '#c1867b',
+    name: 'Marrón claro',
+  },
+  {
+    hex: '#e2edd4',
+    name: 'Verde claro',
+  },
+];
 
 export default Tracks;

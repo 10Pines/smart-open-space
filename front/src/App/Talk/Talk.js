@@ -80,10 +80,10 @@ const Talk = () => {
       </ul>
       <MainHeader.Title label={'Feedback'} level="3" margin={{ top: 'medium' }} />
       <ReviewForm
-        onSubmit={(event) =>
+        onSubmit={(value) =>
           createReview(id, {
-            comment: event.value.comment,
-            grade: event.value.grade,
+            comment: value.comment,
+            grade: value.grade,
           }).then((talk) => setViewReviews(talk.reviews))
         }
       />

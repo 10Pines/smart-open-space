@@ -19,14 +19,12 @@ const EditTalk = () => {
   if (!user || isRejected || isTalkRejected) return <RedirectToRoot />;
 
   const subtitle = isPending ? <TinySpinner /> : openSpace.name;
-  const onSubmit = ({
-    value: { name, description, meetingLink, trackId, documents },
-  }) => {
+  const onSubmit = ({ name, description, meetingLink, track, documents }) => {
     editTalk(openSpace.id, talk.id, {
       name,
       description,
       meetingLink,
-      trackId,
+      trackId: track.id,
       documents,
     }).then(pushToMyTalks);
   };

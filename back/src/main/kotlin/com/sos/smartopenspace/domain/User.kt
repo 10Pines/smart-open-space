@@ -49,7 +49,7 @@ class User(
       throw UserNotOwnerOfTalkException()
   }
 
-  fun isOwnerOf(talk: Talk) = this == talk.speaker
+  fun isOwnerOf(talk: Talk) = this.id == talk.speaker.id
 
   fun secureResetToken(resetToken: String, lifetime: Long) {
     this.resetToken = secureField(resetToken)

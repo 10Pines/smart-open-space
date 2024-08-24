@@ -88,10 +88,10 @@ const Talk = () => {
         }
       />
       {viewReviews &&
-        viewReviews.map((review) => (
-          <Card background="light-1">
+        viewReviews.map((review, index) => (
+          <Card key={index} background="light-1">
             <Box>
-              <Title justify="start" textAlign="left" level="5">
+              <Title justify="start" textAlign="start" level="5">
                 {review.reviewer.name}
               </Title>
               <Row margin="none" justify="start">

@@ -7,7 +7,7 @@ import { PlusButton } from '#shared/PlusButton';
 import MyCalendar from './MyCalendar';
 import ListWithRemoveButton from '#shared/ListWithRemoveButton';
 
-const Dates = ({ value, onChange, onChangeDates, onRemoveItem }) => {
+const Dates = ({ value = [], onChange, onChangeDates, onRemoveItem }) => {
   const initialDate = '';
   const [date, setDate] = useState(initialDate);
   const isDateEmpty = date.trim().length < 1;

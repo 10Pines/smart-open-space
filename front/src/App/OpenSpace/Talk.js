@@ -47,7 +47,7 @@ const Talk = ({
   const talkLink = meetingLink || room?.link;
   return (
     <>
-      <Card borderColor={color} margin="xsmall" gap="small">
+      <Card key={id} borderColor={color} margin="xsmall" gap="small">
         {children}
         <Title>{name}</Title>
         <Box gap="medium">

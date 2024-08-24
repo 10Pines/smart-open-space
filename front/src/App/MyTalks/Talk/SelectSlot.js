@@ -33,12 +33,13 @@ const SelectSlot = ({ rooms, dates, name, onExit, onSubmit, title }) => {
           <Title level="2">{title}</Title>
           <Detail size="large" text={name} textAlign="center" />
         </Box>
-        <MyForm onSecondary={onExit} onSubmit={onSubmit} value={value}>
+        <MyForm onSecondary={onExit} onSubmit={onSubmit} initialValue={value}>
           <MyForm.Select
-            icon={<HomeIcon />}
             label="Sala"
+            icon={<HomeIcon />}
             name="room"
             options={rooms}
+            emptySearchMessage="No hay salas disponibles"
             labelKey="name"
             onChange={({ selected: selectedIndex }) => {
               setValue({
@@ -48,24 +49,24 @@ const SelectSlot = ({ rooms, dates, name, onExit, onSubmit, title }) => {
           />
           {!hasOneDate && (
             <MyForm.Select
+              label="Fecha"
               icon={<CalendarIcon />}
               disabled={noRoomSelected}
-              label="Fecha"
               name="date"
               options={sortedDates.map((date) => getLocaleDateString(date))}
+              emptySearchMessage="No hay fechas disponibles en esa sala"
               onChange={({ selected: selectedIndex }) =>
                 setValue({ ...value, date: sortedDates[selectedIndex] })
               }
             />
           )}
           <MyForm.Select
+            label="Horario"
             icon={<ClockIcon />}
             disabled={(noDateSelected && !hasOneDate) || noRoomSelected}
-            label="Horario"
             emptySearchMessage="No hay horarios disponibles para esta sala en esa fecha"
-            name="slotId"
+            name="slot"
             labelKey="startTime"
-            valueKey="id"
             options={value.room.slotsAt(value.date).map((slot) => ({
               ...slot,
               startTime: numbersToTime(slot.startTime),

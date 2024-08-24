@@ -54,11 +54,12 @@ const Talk = ({
   const [openExchange, setOpenExchange] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState();
   const shouldDisplayScheduleTalkButton = currentUserIsOrganizer || talk.isToSchedule();
-  const onSubmitSchedule = ({ value: { slotId, room } }) =>
-    scheduleTalk(talk.id, user.id, slotId, room.id).then(pushToSchedule);
 
-  const onSubmitExchange = ({ value: { slotId, room } }) =>
-    exchangeTalk(talk.id, slotId, room.id).then(pushToOpenSpace);
+  const onSubmitSchedule = ({ slot, room }) =>
+    scheduleTalk(talk.id, user.id, slot.id, room.id).then(pushToSchedule);
+
+  const onSubmitExchange = ({ slot, room }) =>
+    exchangeTalk(talk.id, slot.id, room.id).then(pushToOpenSpace);
 
   const color = talk.colorForTalkManagement();
 

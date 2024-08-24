@@ -103,19 +103,25 @@ const MyFieldConfirmPassword = (props) => (
   />
 );
 
-const MyFieldSelect = (props) => (
-  <MyField
-    label="Elegir"
-    name="select"
-    component={({ onChange, ...props }) => (
-      <Select
-        onChange={(e) => onChange({ ...e, target: { value: e.value } })}
-        {...props}
-      />
-    )}
-    {...props}
-  />
+const MyFieldSelect = ({ icon, label, name, ...props }) => (
+  <FormField
+    label={
+      <Row>
+        {icon}
+        {label}
+      </Row>
+    }
+    name={name}
+    required
+  >
+    <Select name={name} {...props} />
+  </FormField>
 );
+MyFieldSelect.propTypes = {
+  icon: PropTypes.node,
+  label: PropTypes.string,
+  name: PropTypes.string,
+};
 
 const Footer = ({ children }) => (
   <RowBetween margin={{ vertical: 'medium' }} justify="evenly">

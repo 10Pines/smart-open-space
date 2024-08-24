@@ -191,8 +191,15 @@ export const OpenSpaceForm = ({
             if (hasTracksWithRepeatedName(tracks))
               return 'No puede haber dos tracks con el mismo nombre';
           }}
+          required={false}
         />
-        <MyForm.Field component={Rooms} icon={<HomeIcon />} label="Salas" name="rooms" />
+        <MyForm.Field
+          component={Rooms}
+          icon={<HomeIcon />}
+          label="Salas"
+          name="rooms"
+          required={false}
+        />
         <Box direction="row">
           <MyForm.Field
             component={Dates}
@@ -201,6 +208,7 @@ export const OpenSpaceForm = ({
             name="dates"
             onRemoveItem={(date) => setDeletedDate(date)}
             onChangeDates={(event) => setAvailableDates(event.value)}
+            required={false}
           />
         </Box>
         <MyForm.Field
@@ -213,6 +221,7 @@ export const OpenSpaceForm = ({
           }}
           deletedDate={deletedDate}
           dates={availableDates}
+          required={false}
         />
       </MyForm>
       {renderSlotInput(showInputSlot)}

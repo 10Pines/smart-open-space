@@ -9,7 +9,7 @@ const emptyTalk = {
   name: '',
   description: '',
   meetingLink: '',
-  track: null,
+  track: undefined,
   documents: [],
 };
 

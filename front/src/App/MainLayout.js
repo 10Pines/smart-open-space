@@ -45,10 +45,10 @@ const MainLayout = ({ children, header }) => {
           <Box as="main" gridArea="main" pad={pad}>
             <div>{children}</div>
           </Box>
+          <Box gridArea="footer" fill background="light-3" overflow="visible" pad={pad}>
+            <Footer />
+          </Box>
         </Grid>
-      </Box>
-      <Box gridArea="footer" fill background="light-3" pad={pad}>
-        <Footer />
       </Box>
     </Box>
   );

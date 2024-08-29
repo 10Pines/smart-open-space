@@ -43,10 +43,10 @@ export const sortTimesByStartTime = (times) => {
 /**
  * Get new Date from date string valid format 'yyyy-MM-dd'
  *  or array with the following structure ([year, month, day]).
- * If date is already a Date, return same value.
+ * If date is already a Date or null/undefined, return same value.
  **/
 export const toDate = (date) => {
-  if (isDateInput(date)) {
+  if (date == null || isDateInput(date)) {
     return date;
   }
   return isStringInput(date) ? getDateFromArray(date.split('-')) : getDateFromArray(date);

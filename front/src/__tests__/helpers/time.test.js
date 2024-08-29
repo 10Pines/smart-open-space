@@ -140,6 +140,8 @@ describe('GIVEN toDate func', () => {
       { date: '2033-12-31', expected: new Date(2033, 11, 31) },
       { date: [2033, 12, 31], expected: new Date(2033, 11, 31) },
       { date: new Date(2033, 11, 31), expected: new Date(2033, 11, 31) },
+      { date: null, expected: null },
+      { date: undefined, expected: undefined },
     ];
 
     tests.forEach((t, index) => {

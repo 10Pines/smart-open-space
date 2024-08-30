@@ -42,7 +42,7 @@ const MainLayout = ({ children, header }) => {
           <BoxBrand gridArea="header" pad={pad} className={'header'}>
             {header}
           </BoxBrand>
-          <Box as="main" gridArea="main" pad={pad}>
+          <Box as="main" gridArea="main" pad={pad} style={{ minHeight: '92vh' }}>
             <div>{children}</div>
           </Box>
           <Box gridArea="footer" fill background="light-3" overflow="visible" pad={pad}>

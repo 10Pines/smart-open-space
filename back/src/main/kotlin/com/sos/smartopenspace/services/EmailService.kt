@@ -1,11 +1,11 @@
 package com.sos.smartopenspace.services
 import com.sos.smartopenspace.domain.Email
-import com.sos.smartopenspace.domain.User
+import jakarta.mail.Message
+import jakarta.mail.internet.InternetAddress
+import org.intellij.lang.annotations.Language
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
-import jakarta.mail.Message
-import jakarta.mail.internet.InternetAddress
 
 @Service
 class EmailService(
@@ -19,24 +19,44 @@ class EmailService(
   @Value("\${frontend.url}")
   private val frontendResetUrl: String = ""
 
-  fun sendRecoveryEmail(email: String): User {
-    val user = userService.findByEmail(email)
-    val resetToken = userService.generatePasswordResetToken(user)
-    sendEmail(email, "recuperación de password", "<html><a href=\"$frontendResetUrl/login?reset=true&email=$email&token=$resetToken\">Resetear contraseña</a></html>")
-    return user
-  }
+  private val emailSubjectPrefix = "[Smart Open Space]"
 
-  fun sendEmail(email: String, subject: String, text: String) {
-    val mail = Email(email, subject, text, withAttachment = false)
-    val msg = createMessage(mail)
-    emailSender.send(msg)
-  }
+  fun sendRecoveryEmail(email: String) =
+    userService.findByEmail(email).also {
+      val resetToken = userService.generatePasswordResetToken(it)
+      sendEmail(email, "$emailSubjectPrefix Recuperación de contraseña", recoveryEmailContent(email, resetToken))
+    }
 
-  private fun createMessage(email: Email) = emailSender.createMimeMessage().apply {
-    setFrom(mailSender)
-    setRecipient(Message.RecipientType.TO, InternetAddress(email.to))
-    subject = email.subject
-    setText(email.text, "UTF-8", "html")
-    setHeader("Content-Type", "text/html; charset=UTF-8")
-  }
+  @Language("HTML")
+  private fun recoveryEmailContent(email: String, resetToken: String) =
+    """
+        <html>
+          <p>
+            ¡Hola! Nos llegó una solicitud para restablecer la contraseña de tu cuenta de Smart Open Space asociada a este correo.
+          </p>
+          
+          <p>
+            Para restablecerla, continúa desde el siguiente enlace: <a href="$frontendResetUrl/login?reset=true&email=$email&token=$resetToken">Restablecer contraseña</a>
+          </p>
+          
+          <p>
+            Si no fuiste tú, puedes ignorar con tranquilidad este correo.
+          </p>
+        </html>
+      """
+
+  fun sendEmail(email: String, subject: String, text: String) =
+    Email(email, subject, text).let {
+      val msg = createMessage(it)
+      emailSender.send(msg)
+    }
+
+  private fun createMessage(email: Email) =
+    emailSender.createMimeMessage().apply {
+      setFrom(mailSender)
+      setRecipient(Message.RecipientType.TO, InternetAddress(email.to))
+      subject = email.subject
+      setText(email.text, "UTF-8", "html")
+      setHeader("Content-Type", "text/html; charset=UTF-8")
+    }
 }

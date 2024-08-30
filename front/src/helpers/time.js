@@ -12,58 +12,66 @@ export const numbersToTime = (number) =>
   isStringInput(number) ? number : number.map(numberToTwoDigitNumber).join(':');
 
 /**
+ * compare two times only Array support: (expected format [HH, mm])
+ **/
+export const compareTimeByArray = ([anHour, aMinute], [otherHour, otherMinute]) => {
+  const anHourInt = getIntNumber(anHour);
+  const otherHourInt = getIntNumber(otherHour);
+  return anHourInt < otherHourInt ||
+    (anHourInt === otherHourInt && getIntNumber(aMinute) < getIntNumber(otherMinute))
+    ? -1
+    : 1;
+};
+
+/**
  * compare two times as Array or String with either of two formats: ([HH, mm] | 'HH:mm')
  **/
 export const compareTime = (t1, t2) =>
-  compareTimeByArray(
-    getTimeArrayIf(t1, isStringInput(t1)),
-    getTimeArrayIf(t2, isStringInput(t2))
+  compareTimeByArray(getTimeArray(t1), getTimeArray(t2));
+
+/**
+ * Sort list of objects with startTimes with array of hours and minutes and return list
+ * (eg: [{startTime: [HH, mm]}, ...] or [{startTime: "HH:mm"}, ...])
+ **/
+export const sortTimesByStartTime = (times) => {
+  times.sort((t1, t2) =>
+    compareTime(getTimeArray(t1.startTime), getTimeArray(t2.startTime))
   );
+  return times;
+};
 
 /**
- * compare two times only Array support: (expected format [HH, mm])
+ * Get new Date from date string valid format 'yyyy-MM-dd'
+ *  or array with the following structure ([year, month, day]).
+ * If date is already a Date or null/undefined, return same value.
  **/
-export function compareTimeByArray([anHour, aMinute], [otherHour, otherMinute]) {
-  return anHour < otherHour || (anHour === otherHour && aMinute < otherMinute) ? -1 : 1;
-}
+export const toDate = (date) => {
+  if (date == null || isDateInput(date)) {
+    return date;
+  }
+  return isStringInput(date) ? getDateFromArray(date.split('-')) : getDateFromArray(date);
+};
 
 /**
- * Sort list of objects with startTimes with array of hours and minutes (eg: [{startTime: [HH, mm]}, {startTime: [HH, mm]}, ...])
- **/
-export function sortTimesByStartTime(times) {
-  return times
-    .map(getTimeArray)
-    .sort(({ startTime: [hour1, minute1] }, { startTime: [hour2, minute2] }) =>
-      compareTime([hour1, minute1], [hour2, minute2])
-    );
-}
+ * Given date argument (which could be an string with format 'yyyy-MM-dd' | [y, m, d] | Date)
+ * return an function which expect an slot (or obj with date key) and return the result of
+ * apply equals with that date argument
+ */
+export const byDate = (date) => (slot) => isEqual(toDate(slot.date), toDate(date));
 
 /**
- * Sort list of times with array of hours and minutes (eg: [[HH, mm], [HH, mm], ...])
- **/
-export function sortTimes(times) {
-  times
-    .map(getTimeArray)
-    .sort(([hour1, minute1], [hour2, minute2]) =>
-      compareTime([hour1, minute1], [hour2, minute2])
-    );
-}
-
-/**
- * Get new Date from date string valid format or array with the following structure ([year, month-1, day])
- **/
-export const toDate = (date) =>
-  isStringInput(date) ? getDateFromArray(date.split('-')) : getDateFromArray(date);
-
-export const byDate = (date) => (slot) => isEqual(toDate(slot.date), date);
-
+ * Get endTime key of the last element of slots array.
+ * If is empty, return undefined
+ */
 export const getLastEndFromCollectionOfSlots = (slots) =>
   slots.length > 0 ? slots.slice(-1)[0].endTime : undefined;
 
 const isStringInput = (input) => typeof input === 'string' || input instanceof String;
 
+const isDateInput = (input) => input instanceof Date;
+
 const getDateFromArray = ([year, month, day]) => new Date(year, month - 1, day);
 
-const getTimeArrayIf = (t, cond) => (cond ? getTimeArray(t) : t);
-
 const getTimeArray = (t) => (isStringInput(t) ? t.split(':') : t);
+
+const getIntNumber = (d) => (isStringInput(d) ? parseInt(d, 10) : d);

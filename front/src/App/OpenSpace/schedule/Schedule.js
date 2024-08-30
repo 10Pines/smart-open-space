@@ -32,8 +32,6 @@ const Schedule = () => {
   if (isPending) return <Spinner />;
   if (isRejected || !dates) return <RedirectToRoot />;
 
-  const sortedSlots = sortTimesByStartTime(slots);
-  console_log_debug(sortedSlots);
   const sortedDates = dates.sort(compareAsc);
   const talksOf = (slotId) =>
     slotsSchedule.filter((slotSchedule) => slotSchedule.slot.id === slotId);
@@ -55,7 +53,10 @@ const Schedule = () => {
       <Tabs>
         {sortedDates.map((date, index) => (
           <Tab key={index} title={format(date, 'yyyy-MM-dd')}>
-            <DateSlots talksOf={talksOf} sortedSlots={sortedSlots.filter(byDate(date))} />
+            <DateSlots
+              talksOf={talksOf}
+              sortedSlots={sortTimesByStartTime(slots.filter(byDate(date)))}
+            />
           </Tab>
         ))}
       </Tabs>

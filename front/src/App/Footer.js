@@ -113,13 +113,13 @@ const Footer = () => {
             </a>
             . Nos encantaría que lo forkeen, adapten y mejoren. Si hicieron un fork que
             les parece que vale la pena incorporar, avísennos. ¡Y si despliegan su propia
-            versión también! Pueden también subir aquí los{' '}
+            versión también! Pueden también subir{' '}
             <a
               href="https://github.com/10Pines/smart-open-space/issues"
               target="_blank"
               rel="noreferrer"
             >
-              aquí
+              issues
             </a>{' '}
             que detecten.
           </p>

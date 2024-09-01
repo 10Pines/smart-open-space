@@ -255,7 +255,7 @@ describe('GIVEN isEqualsDateTime func', () => {
       },
       {
         date1: '2024-09-06T03:00:00.000Z',
-        date2: new Date(2024, 8, 6),
+        date2: new Date(2024, 8, 6, 0, 0, 0, 0),
       },
     ];
 

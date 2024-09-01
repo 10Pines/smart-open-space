@@ -25,13 +25,11 @@ const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
 
   const removeSlot = (date, lastEnd) =>
     onChange({
-      target: {
-        value: value.filter((slot) => !byDate(date)(slot) || slot.endTime != lastEnd),
-      },
+      value: value.filter((slot) => !byDate(date)(slot) || slot.endTime != lastEnd),
     });
 
   const canShowOrElse = (showRes, elseRes) => {
-    if (dates == undefined || dates.length < 1) {
+    if (dates == null || dates.length < 1) {
       return elseRes;
     }
     return showRes;
@@ -39,7 +37,7 @@ const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
 
   useEffect(() => {
     onChange({
-      target: { value: value.filter((slot) => !byDate(deletedDate)(slot)) },
+      value: value.filter((slot) => !byDate(deletedDate)(slot)),
     });
   }, [deletedDate]);
 
@@ -63,6 +61,7 @@ const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
     <Box />
   );
 };
+
 TimeSelector.propTypes = {
   onChange: PropTypes.func.isRequired,
   onNewSlot: PropTypes.func.isRequired,

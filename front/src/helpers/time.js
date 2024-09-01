@@ -49,7 +49,7 @@ export const toDate = (date) => {
   if (date == null || isDateInput(date)) {
     return date;
   }
-  return isStringInput(date) ? getDateFromArray(date.split('-')) : getDateFromArray(date);
+  return isStringInput(date) ? getDateFromString(date) : getDateFromArray(date);
 };
 
 /**
@@ -57,7 +57,13 @@ export const toDate = (date) => {
  * return an function which expect an slot (or obj with date key) and return the result of
  * apply equals with that date argument
  */
-export const byDate = (date) => (slot) => isEqual(toDate(slot.date), toDate(date));
+export const byDate = (date) => (slot) => isEqualsDateTime(slot.date, date);
+
+/**
+ * Given two date params try to apply toDate both params and perform isEqual
+ * If any of two is null or undefined, then return falsy
+ */
+export const isEqualsDateTime = (date1, date2) => isEqual(toDate(date1), toDate(date2));
 
 /**
  * Get endTime key of the last element of slots array.
@@ -71,6 +77,9 @@ const isStringInput = (input) => typeof input === 'string' || input instanceof S
 const isDateInput = (input) => input instanceof Date;
 
 const getDateFromArray = ([year, month, day]) => new Date(year, month - 1, day);
+
+const getDateFromString = (dateStr) =>
+  dateStr.includes('T') ? new Date(dateStr) : getDateFromArray(dateStr.split('-'));
 
 const getTimeArray = (t) => (isStringInput(t) ? t.split(':') : t);
 

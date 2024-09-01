@@ -7,6 +7,7 @@ import {
   sortTimesByStartTime,
   toDate,
   byDate,
+  isEqualsDateTime,
   getLastEndFromCollectionOfSlots,
 } from '../../helpers/time';
 
@@ -226,5 +227,95 @@ describe('GIVEN getLastEndFromCollectionOfSlots func', () => {
     const lastElem = { endTime: '11:15' };
     const slots = [{ endTime: '01:00' }, { endTime: '02:05' }, lastElem];
     expect(getLastEndFromCollectionOfSlots(slots)).toEqual(lastElem.endTime);
+  });
+});
+
+describe('GIVEN isEqualsDateTime func', () => {
+  it('WHEN both dates are equal THEN return truthy', () => {
+    const tests = [
+      {
+        date1: new Date(2024, 0, 1),
+        date2: new Date(2024, 0, 1),
+      },
+      {
+        date1: new Date(2023, 7, 14),
+        date2: new Date(2023, 7, 14),
+      },
+      {
+        date1: new Date(2033, 11, 31),
+        date2: new Date(2033, 11, 31),
+      },
+      {
+        date1: [2023, 8, 14],
+        date2: new Date(2023, 7, 14),
+      },
+      {
+        date1: '2033-12-31',
+        date2: new Date(2033, 11, 31),
+      },
+      {
+        date1: '2024-09-06T03:00:00.000Z',
+        date2: new Date(2024, 8, 6),
+      },
+    ];
+
+    tests.forEach((t, index) => {
+      wrapTestCaseLogError(() => {
+        expect(isEqualsDateTime(t.date1, t.date2)).toBeTruthy();
+        expect(isEqualsDateTime(t.date2, t.date1)).toBeTruthy();
+      }, `Failed at case ${index + 1} with date1: ${t.date1} and date2 :${t.date2}`);
+    });
+  });
+
+  it('WHEN both dates are not equal or both undefined/null THEN return falsy', () => {
+    const tests = [
+      {
+        date1: new Date(2024, 0, 2),
+        date2: new Date(2024, 0, 1),
+      },
+      {
+        date1: new Date(2022, 7, 14),
+        date2: new Date(2023, 7, 14),
+      },
+      {
+        date1: new Date(2033, 11, 31),
+        date2: new Date(2033, 12, 31),
+      },
+      {
+        date1: [2023, 8, 14],
+        date2: new Date(2023, 6, 14),
+      },
+      {
+        date1: '2033-12-31',
+        date2: new Date(2042, 0, 31),
+      },
+      {
+        date1: '2024-09-06T03:00:00.000Z',
+        date2: new Date(2042, 0, 31),
+      },
+      {
+        date1: undefined,
+        date2: new Date(2042, 0, 31),
+      },
+      {
+        date1: null,
+        date2: new Date(2042, 0, 31),
+      },
+      {
+        date1: null,
+        date2: null,
+      },
+      {
+        date1: undefined,
+        date2: undefined,
+      },
+    ];
+
+    tests.forEach((t, index) => {
+      wrapTestCaseLogError(() => {
+        expect(isEqualsDateTime(t.date1, t.date2)).toBeFalsy();
+        expect(isEqualsDateTime(t.date2, t.date1)).toBeFalsy();
+      }, `Failed at case ${index + 1} with date1: ${t.date1} and date2 :${t.date2}`);
+    });
   });
 });

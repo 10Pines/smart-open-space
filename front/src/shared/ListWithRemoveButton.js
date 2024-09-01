@@ -37,7 +37,7 @@ const ListWithRemoveButton = ({
           onRemove={() => {
             onRemoveItem(item);
             onChange({
-              target: { value: items.filter((_, index) => index !== itemIndex) },
+              value: items.filter((_, index) => index !== itemIndex),
             });
           }}
         />

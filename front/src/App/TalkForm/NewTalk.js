@@ -21,7 +21,7 @@ const NewTalk = () => {
       description,
       meetingLink,
       documents,
-      trackId: track.id,
+      trackId: track && track.id,
     }).then(pushToMyTalks);
 
   return (

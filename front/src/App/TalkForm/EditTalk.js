@@ -24,7 +24,7 @@ const EditTalk = () => {
       name,
       description,
       meetingLink,
-      trackId: track.id,
+      trackId: track && track.id,
       documents,
     }).then(pushToMyTalks);
   };

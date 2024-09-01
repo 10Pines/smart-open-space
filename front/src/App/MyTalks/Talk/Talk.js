@@ -53,7 +53,8 @@ const Talk = ({
   const [openSchedule, setOpenSchedule] = useState(false);
   const [openExchange, setOpenExchange] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState();
-  const shouldDisplayScheduleTalkButton = currentUserIsOrganizer || talk.isToSchedule();
+  const shouldDisplayScheduleTalkButton =
+    dates && (currentUserIsOrganizer || talk.isToSchedule());
 
   const onSubmitSchedule = ({ slot, room }) =>
     scheduleTalk(talk.id, user.id, slot.id, room.id).then(pushToSchedule);

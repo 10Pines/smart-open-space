@@ -6,12 +6,19 @@ import RowBetween from '#shared/RowBetween';
 import { PlusButton } from '#shared/PlusButton';
 import MyCalendar from './MyCalendar';
 import ListWithRemoveButton from '#shared/ListWithRemoveButton';
+import { isEqualsDateTime } from '#helpers/time';
 
-const Dates = ({ value, onChange, onRemoveItem }) => {
+const Dates = ({ value = [], onChange, onChangeDates, onRemoveItem }) => {
   const initialDate = '';
   const [date, setDate] = useState(initialDate);
   const isDateEmpty = date.trim().length < 1;
-  const isDateIncluded = value.some((eachDate) => eachDate === date);
+  const isDateIncluded = value.some((valDate) => isEqualsDateTime(valDate, date));
+
+  const handlingOnChangeFuncs = (event) => {
+    onChange(event);
+    onChangeDates(event);
+  };
+
   return (
     <Box pad="small">
       <RowBetween>
@@ -26,12 +33,12 @@ const Dates = ({ value, onChange, onRemoveItem }) => {
           setItem={setDate}
           value={value}
           initialItem={date}
-          onChange={onChange}
+          onChange={handlingOnChangeFuncs}
         />
       </RowBetween>
       <ListWithRemoveButton
         items={value}
-        onChange={onChange}
+        onChange={handlingOnChangeFuncs}
         displayName={(item) => new Date(item).toLocaleDateString('es')}
         onRemoveItem={onRemoveItem}
       />

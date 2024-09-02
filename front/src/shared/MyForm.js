@@ -1,6 +1,6 @@
 import React from 'react';
-
-import { Button, Form, FormField, Select, TextArea } from 'grommet';
+import { console_log_debug } from '#helpers/logging';
+import { Button, Form, FormField, Select, TextArea, TextInput } from 'grommet';
 import PropTypes from 'prop-types';
 
 import MyProps from '#helpers/MyProps';
@@ -27,9 +27,23 @@ const MyField = ({ icon, label, ...props }) => (
 );
 MyField.propTypes = { icon: PropTypes.node, label: PropTypes.string };
 
-const MyFieldText = (props) => (
-  <MyField icon={<TextIcon />} label="Nombre" name="name" {...props} />
+const MyFieldText = ({ id, label, formValueName, ...props }) => (
+  <MyField
+    name={formValueName}
+    icon={<TextIcon />}
+    label={label}
+    htmlFor={`text-input-${id}`}
+    {...props}
+  >
+    <TextInput id={`text-input-${id}`} name={formValueName} {...props} />
+  </MyField>
 );
+
+MyFieldText.propTypes = {
+  id: PropTypes.string,
+  label: PropTypes.string,
+  formValueName: PropTypes.string,
+};
 
 const LinkField = (props) => (
   <MyField
@@ -89,19 +103,25 @@ const MyFieldConfirmPassword = (props) => (
   />
 );
 
-const MyFieldSelect = (props) => (
-  <MyField
-    label="Elegir"
-    name="select"
-    component={({ onChange, ...props }) => (
-      <Select
-        onChange={(e) => onChange({ ...e, target: { value: e.value } })}
-        {...props}
-      />
-    )}
-    {...props}
-  />
+const MyFieldSelect = ({ icon, label, name, ...props }) => (
+  <FormField
+    label={
+      <Row>
+        {icon}
+        {label}
+      </Row>
+    }
+    name={name}
+    required
+  >
+    <Select name={name} {...props} />
+  </FormField>
 );
+MyFieldSelect.propTypes = {
+  icon: PropTypes.node,
+  label: PropTypes.string,
+  name: PropTypes.string,
+};
 
 const Footer = ({ children }) => (
   <RowBetween margin={{ vertical: 'medium' }} justify="evenly">
@@ -116,20 +136,26 @@ const MyForm = ({
   onSubmit,
   primaryLabel = 'Aceptar',
   secondaryLabel = 'Cancelar',
+  initialValue = {},
+  externalOnChange = () => {},
   ...props
 }) => {
   const [loading, withLoading] = useLoading();
-  const [value, setValue] = React.useState({});
+  const [value, setValue] = React.useState(initialValue);
 
-  const useResetValue = () => setValue({});
+  const useResetValue = () => setValue(initialValue);
 
   return (
     <Form
       value={value}
       messages={{ invalid: 'Inválido', required: 'Obligatorio' }}
+      onChange={(nextValue) => {
+        externalOnChange(nextValue);
+        setValue(nextValue);
+      }}
       onSubmit={(event) => {
         event = { ...event, useResetValue };
-        withLoading(onSubmit)(event);
+        withLoading(onSubmit)(event.value);
       }}
       {...props}
     >
@@ -155,6 +181,8 @@ MyForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   primaryLabel: PropTypes.string,
   secondaryLabel: PropTypes.string,
+  initialValue: PropTypes.object,
+  externalOnChange: PropTypes.func,
 };
 
 MyForm.Text = MyFieldText;

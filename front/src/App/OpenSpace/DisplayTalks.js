@@ -24,8 +24,9 @@ export function DisplayTalks({
   }
 
   if (shouldDisplayTrackWithTalks) {
-    return tracks.map((track) => (
+    return tracks.map((track, index) => (
       <TrackWithTalks
+        key={index}
         talks={talks}
         reloadTalks={reloadTalks}
         track={track}

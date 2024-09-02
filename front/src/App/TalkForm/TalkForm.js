@@ -5,7 +5,13 @@ import MyForm from '#shared/MyForm';
 import React from 'react';
 import Documents from './Documents';
 
-const emptyTalk = { name: '', description: '', meetingLink: '' };
+const emptyTalk = {
+  name: '',
+  description: '',
+  meetingLink: '',
+  track: undefined,
+  documents: [],
+};
 
 export const TalkForm = ({
   onSubmit,
@@ -16,36 +22,36 @@ export const TalkForm = ({
 }) => {
   const history = useHistory();
   const openSpaceHasTracks = openSpace && openSpace.tracks.length > 0;
+
   return (
     <>
       <MainHeader>
         <MainHeader.Title icon={TalkIcon} label={title} />
         <MainHeader.SubTitle>{subtitle}</MainHeader.SubTitle>
       </MainHeader>
-      <MyForm onSecondary={history.goBack} onSubmit={onSubmit}>
+      <MyForm
+        onSecondary={history.goBack}
+        onSubmit={onSubmit}
+        initialValue={initialValues}
+      >
         <MyForm.Text
+          id="talk-title-id"
           label="Título"
+          formValueName="name"
           placeholder="¿Como querés nombrar tu charla?"
-          value={initialValues.name}
         />
         <MyForm.TextArea
           style={{ fontFamily: 'monospace' }}
           placeholder="Describí tu charla con mas detalle. Podés usar Markdown"
-          value={initialValues.description ? initialValues.description : ''}
         />
-        <MyForm.Link
-          label="Link"
-          placeholder="Link a la reunión virtual (meet/zoom)"
-          value={initialValues.meetingLink ? initialValues.meetingLink : ''}
-        />
+        <MyForm.Link label="Link" placeholder="Link a la reunión virtual (meet/zoom)" />
         {openSpaceHasTracks && (
           <MyForm.Select
             label="Track"
-            name="trackId"
+            name="track"
             options={openSpace.tracks}
             labelKey="name"
             valueKey="id"
-            value={initialValues.track ? initialValues.track.id : ''}
           />
         )}
         <MyForm.Field
@@ -55,7 +61,7 @@ export const TalkForm = ({
           name="documents"
           labelKey="name"
           valueKey="id"
-          value={initialValues.documents || []}
+          required={false}
         />
       </MyForm>
     </>

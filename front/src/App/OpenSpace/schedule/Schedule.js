@@ -51,8 +51,8 @@ const Schedule = () => {
         </MainHeader.Buttons>
       </MainHeader>
       <Tabs>
-        {sortedDates.map((date) => (
-          <Tab title={format(date, 'yyyy-MM-dd')}>
+        {sortedDates.map((date, index) => (
+          <Tab key={index} title={format(date, 'yyyy-MM-dd')}>
             <DateSlots
               talksOf={talksOf}
               sortedSlots={sortTimesByStartTime(slots.filter(byDate(date)))}

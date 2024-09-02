@@ -25,7 +25,7 @@ const UserCredentialsForm = ({
   const pushToRoute = returnToOpenSpace ? pushToOpenSpace : pushToRoot;
   let passwordValidation = '';
 
-  const onSubmit = ({ value: userData }) => {
+  const onSubmit = (userData) => {
     return action(userData).then(pushToRoute);
   };
 
@@ -49,10 +49,11 @@ const UserCredentialsForm = ({
       primaryLabel={primaryLabel}
       secondaryLabel={secondaryLabel}
       onSubmit={onSubmit}
-      value={{ name: '', email: '', password: '', confirmPassword: '' }}
     >
       <Heading>{title}</Heading>
-      {!hideName && <MyForm.Text />}
+      {!hideName && (
+        <MyForm.Text id="login-name-id" label="Nombre" formValueName="name" />
+      )}
       {!hideEmail && <MyForm.Email />}
       {!hidePassword && <MyForm.Password onChange={updatePasswordConfirm} />}
       {!hideConfirmPassword && <MyForm.ConfirmPassword validate={validateConfirm} />}

@@ -80,18 +80,18 @@ const Talk = () => {
       </ul>
       <MainHeader.Title label={'Feedback'} level="3" margin={{ top: 'medium' }} />
       <ReviewForm
-        onSubmit={(event) =>
+        onSubmit={(value) =>
           createReview(id, {
-            comment: event.value.comment,
-            grade: event.value.grade,
+            comment: value.comment,
+            grade: value.grade,
           }).then((talk) => setViewReviews(talk.reviews))
         }
       />
       {viewReviews &&
-        viewReviews.map((review) => (
-          <Card background="light-1">
+        viewReviews.map((review, index) => (
+          <Card key={index} background="light-1">
             <Box>
-              <Title justify="start" textAlign="left" level="5">
+              <Title justify="start" textAlign="start" level="5">
                 {review.reviewer.name}
               </Title>
               <Row margin="none" justify="start">

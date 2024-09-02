@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import Title from '#shared/Title';
 import Detail from '#shared/Detail';
 import Spinner from '#shared/Spinner';
+import { compareAsc } from 'date-fns';
 
 const OTHER_SLOT = 'OtherSlot';
 
@@ -74,7 +75,9 @@ const InputSlot = ({ onExit, onSubmit, type, start }) => {
         <MyForm
           onSecondary={onExit}
           onSubmit={onSubmit}
-          onChange={({ startTime: time }) => setStartTime(time)}
+          externalOnChange={(value) => {
+            setStartTime(value.startTime);
+          }}
         >
           {start === undefined ? (
             <MyForm.Field
@@ -125,24 +128,37 @@ export const OpenSpaceForm = ({
   initialValues = emptyOpenSpace,
 }) => {
   const [showInputSlot, setShowInputSlot] = useState(null);
-  const [availableDates, setAvailableDates] = useState(initialValues.dates || []);
+  const [availableDates, setAvailableDates] = useState(
+    (initialValues.dates || []).sort(compareAsc)
+  );
   const [deletedDate, setDeletedDate] = useState();
 
-  function isRepeated(tracks, track) {
-    return tracks.filter((eachTrack) => eachTrack.name === track.name).length > 1;
-  }
+  const isRepeatedTrack = (tracks, track) =>
+    tracks.filter((eachTrack) => eachTrack.name === track.name).length > 1;
 
-  function hasTracksWithRepeatedName(tracks) {
-    return tracks.some((eachTrack) => isRepeated(tracks, eachTrack));
-  }
+  const hasTracksWithRepeatedName = (tracks) =>
+    tracks.some((eachTrack) => isRepeatedTrack(tracks, eachTrack));
 
-  const checkSubmit = ({ value }) => {
+  const checkSubmit = (value) => {
     if (value.dates.length > 0 && value.slots.length == 0) {
       alert('Si agregaste una fecha, tenés que agregar slots');
     } else {
       onSubmit({ value });
     }
   };
+
+  const renderSlotInput = (mustShow) =>
+    mustShow !== null && (
+      <InputSlot
+        onExit={() => setShowInputSlot(null)}
+        onSubmit={(data) => {
+          showInputSlot.onSubmitSlot(data);
+          setShowInputSlot(null);
+        }}
+        start={showInputSlot.start}
+        type={showInputSlot.type}
+      />
+    );
 
   if (initialValues === undefined) return <Spinner />;
 
@@ -151,12 +167,20 @@ export const OpenSpaceForm = ({
       <MainHeader>
         <MainHeader.Title label={title} />
       </MainHeader>
-      <MyForm onSecondary={history.goBack} onSubmit={checkSubmit}>
-        <MyForm.Text placeholder="¿Como se va a llamar?" value={initialValues.name} />
+      <MyForm
+        onSecondary={history.goBack}
+        onSubmit={checkSubmit}
+        initialValue={initialValues}
+      >
+        <MyForm.Text
+          id="os-name-input-id"
+          placeholder="¿Como se va a llamar?"
+          label="Nombre"
+          formValueName="name"
+        />
         <MyForm.TextAreaWithCharacterCounter
           placeholder="Añade una descripción."
           maxLength={1000}
-          value={initialValues.description}
         />
         <MyForm.Field
           component={Tracks}
@@ -167,14 +191,14 @@ export const OpenSpaceForm = ({
             if (hasTracksWithRepeatedName(tracks))
               return 'No puede haber dos tracks con el mismo nombre';
           }}
-          value={initialValues.tracks || []}
+          required={false}
         />
         <MyForm.Field
           component={Rooms}
           icon={<HomeIcon />}
           label="Salas"
           name="rooms"
-          value={initialValues.rooms || []}
+          required={false}
         />
         <Box direction="row">
           <MyForm.Field
@@ -183,8 +207,8 @@ export const OpenSpaceForm = ({
             label="Fecha"
             name="dates"
             onRemoveItem={(date) => setDeletedDate(date)}
-            onChange={(event) => setAvailableDates(event.target.value)}
-            value={initialValues.dates || []}
+            onChangeDates={(event) => setAvailableDates(event.value)}
+            required={false}
           />
         </Box>
         <MyForm.Field
@@ -197,20 +221,10 @@ export const OpenSpaceForm = ({
           }}
           deletedDate={deletedDate}
           dates={availableDates}
-          value={initialValues.slots}
+          required={false}
         />
       </MyForm>
-      {showInputSlot !== null && (
-        <InputSlot
-          onExit={() => setShowInputSlot(null)}
-          onSubmit={(data) => {
-            showInputSlot.onSubmitSlot(data);
-            setShowInputSlot(null);
-          }}
-          start={showInputSlot.start}
-          type={showInputSlot.type}
-        />
-      )}
+      {renderSlotInput(showInputSlot)}
     </>
   );
 };

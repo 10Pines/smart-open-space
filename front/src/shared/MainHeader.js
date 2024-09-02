@@ -58,8 +58,8 @@ const Description = ({ children, description, ...props }) => (
 );
 
 const Tracks = ({ children, tracks, ...props }) => {
-  return tracks.map((track) => (
-    <Box margin={{ bottom: '10px' }}>
+  return tracks.map((track, index) => (
+    <Box key={index} margin={{ bottom: '10px' }}>
       <Box background={track.color} pad="10px" margin="10px 0">
         <Text size="large">{track.name}</Text>
       </Box>

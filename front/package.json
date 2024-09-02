@@ -74,7 +74,7 @@
   },
   "dependencies": {
     "date-fns": "^2.28.0",
-    "grommet": "^2.11.3",
+    "grommet": "^2.39.0",
     "grommet-icons": "^4.4.0",
     "logrocket": "^3.0.1",
     "pluralize": "^8.0.0",
@@ -95,8 +95,6 @@
     "@babel/traverse": "^7.23.2",
     "slick-carousel/**/jquery": "^1.8.0",
     "styled-components/**/react-is": "^16.8.0",
-    "eslint-config-react-app/**/eslint-plugin-react-hooks": "^2.5.1",
-    "grommet/**/node-fetch": "^2.6.7",
-    "grommet/**/markdown-to-jsx": "^6.11.4"
+    "eslint-config-react-app/**/eslint-plugin-react-hooks": "^2.5.1"
   }
 }

@@ -12,11 +12,13 @@ export function DisplayTalks({
   tracks,
   activeVoting,
   showSpeakerName,
+  reportMode,
 }) {
   const { data: talks, isPending, isRejected, reload: reloadTalks } = useGetTalks();
   const pushToNewTalk = usePushToNewTalk();
   const shouldDisplayEmptyTalk = amountOfTalks === 0 && activeCallForPapers;
-  const shouldDisplayTrackWithTalks = tracks.length > 0 && amountOfTalks > 0;
+  const shouldDisplayTrackWithTalks =
+    tracks.length > 0 && amountOfTalks > 0 && !reportMode;
   if (isPending) return <Spinner />;
   if (isRejected) return <RedirectToRoot />;
   if (shouldDisplayEmptyTalk) {
@@ -42,6 +44,7 @@ export function DisplayTalks({
       reloadTalks={reloadTalks}
       activeVoting={activeVoting}
       showSpeakerName={showSpeakerName}
+      reportMode={reportMode}
     />
   );
 }

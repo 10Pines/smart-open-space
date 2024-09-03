@@ -135,6 +135,7 @@ const OpenSpace = () => {
           tracks={tracks}
           activeVoting={isActiveVoting}
           showSpeakerName={showSpeakerName}
+          reportMode={window.location.search.includes('reportmode') && amTheOrganizer}
         />
       </Box>
       {redirectToLogin && <RedirectToLoginFromOpenSpace openSpaceId={id} />}

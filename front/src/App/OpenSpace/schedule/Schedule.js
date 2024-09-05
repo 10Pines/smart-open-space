@@ -22,7 +22,7 @@ const Schedule = () => {
   const [redirectToLogin, setRedirectToLogin] = useState(false);
 
   const {
-    data: { id, name, slots, organizer, dates } = {},
+    data: { id, name, slots, organizer, dates, showSpeakerName } = {},
     isPending,
     isRejected,
   } = useGetOpenSpace();
@@ -56,6 +56,7 @@ const Schedule = () => {
             <DateSlots
               talksOf={talksOf}
               sortedSlots={sortTimesByStartTime(slots.filter(byDate(date)))}
+              showSpeakerName={showSpeakerName}
             />
           </Tab>
         ))}

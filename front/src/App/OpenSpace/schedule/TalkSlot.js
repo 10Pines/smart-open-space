@@ -4,13 +4,13 @@ import Talk from '../Talk';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export const TalkSlot = ({ slots }) =>
+export const TalkSlot = ({ slots, showSpeakerName }) =>
   slots.length === 0 ? (
     <Box height="small" />
   ) : (
     <Talks>
       {slots.map(({ talk, room }) => (
-        <Talk key={talk.id} talk={talk} room={room} />
+        <Talk key={talk.id} talk={talk} room={room} showSpeakerName={showSpeakerName} />
       ))}
     </Talks>
   );

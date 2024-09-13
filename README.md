@@ -2,7 +2,7 @@
   Smart Open Space
 </h1>
 <p align="center">
-  <img src="/other/logo.svg" width="150" height="150" />
+  <img src="/docs/other/logo.svg" width="150" height="150" />
 </p>
 <p align="center">
   Organizá tu Open Space! :sunglasses:

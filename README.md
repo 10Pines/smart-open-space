@@ -11,7 +11,8 @@
 <hr />
 
 [![Heroku][heroku-badge]][heroku]
-[![Build Status][build-badge]][build]
+[![Build Back Status][build-back-badge]][build-back]
+[![Build Front Status][build-front-badge]][build-front]
 [![Dependabot Status][dependabot-badge]][dependabot]
 [![Backlog][backlog-badge]][backlog]
 [![License: GPLv3][license-badge]][license]
@@ -133,17 +134,19 @@ JDBC_DATABASE_PASSWORD=openheart
 
 [backlog]: https://trello.com/b/A3IsSe1r/smartopenspace
 [backlog-badge]: https://img.shields.io/badge/trello-backlog-blue?style=flat-square&logo=trello
-[build]: https://travis-ci.org/AugustoConti/smart-open-space
-[build-badge]: https://img.shields.io/travis/AugustoConti/smart-open-space?logo=travis&style=flat-square
+[build-back]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-backend.yml
+[build-back-badge]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-backend.yml/badge.svg
+[build-front]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-frontend.yml
+[build-front-badge]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-frontend.yml/badge.svg
 [demo-link]:https://www.youtube.com/watch?v=cm3D5IztoL0
 [demo-prev]:https://img.youtube.com/vi/cm3D5IztoL0/0.jpg
 [dependabot]: https://dependabot.com
-[dependabot-badge]: https://api.dependabot.com/badges/status?host=github&repo=AugustoConti/smart-open-space
+[dependabot-badge]: https://api.dependabot.com/badges/status?host=github&repo=10Pines/smart-open-space
 [git]: https://help.github.com/set-up-git-redirect
 [heroku]: https://smartopenspace.herokuapp.com
 [heroku-badge]: https://img.shields.io/badge/heroku-deploy-ff69b4?style=flat-square&logo=heroku
-[issues]: https://github.com/AugustoConti/smart-open-space/issues
-[issues-badge]: https://img.shields.io/github/issues-raw/AugustoConti/smart-open-space?style=flat-square
+[issues]: https://github.com/10Pines/smart-open-space/issues
+[issues-badge]: https://img.shields.io/github/issues-raw/10Pines/smart-open-space?style=flat-square
 [java8]: https://www.oracle.com/technetwork/java/javase/downloads/index.html
 [license]: LICENCIA
 [license-badge]: https://img.shields.io/github/license/AugustoConti/smart-open-space?style=flat-square

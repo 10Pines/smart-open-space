@@ -42,7 +42,6 @@ En esta segunda, buscamos construir la mínima herramienta que permita gestionar
   - [PostgreSQL][postgresql] o Docker
   - [JDK 8 update 60 o superior][java8] (Asegurate que la variable de entorno `JAVA_HOME` apunte a la carpeta `jdk1.8.0` que sacaste de la descarga del JDK).
   - [NodeJS][node]
-  - [Yarn][yarn]
 
 ### Descargar el código fuente
 ```sh
@@ -99,14 +98,10 @@ Asegurate de tener la version de node correspondiente:
 cd front && nvm use
 ```
 
-Si no tenes yarn instalado:
-```sh
-npm install -g yarn
-```
 
 Para instalar dependencias y levantar el proyecto:
 ```sh
-yarn && yarn watch
+npm install --legacy-peer-deps && npm run watch
 ```
 
 ### Flyway plugin
@@ -128,57 +123,7 @@ JDBC_DATABASE_PASSWORD=openheart
 
 ## :scroll: Documentación
 
-### Diagrama de Arquitectura
-
-#### Visualización del Open Space
-
-![Diagrama de arquitectura](/other/Arquitectura.png)
-
-- Frontend:
-  - **App.js**: Punto de entrada de la aplicación.
-  - **Routes**: Detecta la ruta, y elige qué componente que corresponde renderizar.
-  - **OpenSpace.js**: Renderiza la pantalla con los datos del Open Space.
-  - **os-client.js**: Conseguir los datos del Open Space, conectandose con el backend.
-- Backend:
-  - **OpenSpaceController**: Exponer los endpoints del OpenSpaceService, como REST-Json.
-  - **OpenSpaceService**: Exponer un servicio para manipular un Open Space.
-  - **OpenSpaceRepository**: Persistir y recuperar objetos OpenSpace de la base de datos.
-  - **OpenSpace**: Objeto que representa un Open Space.
-
-### Casos de uso
-#### Entrega 1
-![Caso de uso entrega 1](/other/CasoDeUso.png)
-- Organizador:
-  - **Crear Open Space**: Nombre, fecha, horarios y salas.
-- Orador:
-  - **Registro / Login**: Registrarse con nombre, email y contraseña. Loguearse con email y contraseña
-  - **Cargar charla**: con título y descripción en un Open Space.
-  - **Agendar charla**: en una sala y un horario disponible en el Open Space.
-- Asistente:
-  - **Ver agenda**: con todas las charlas en su horario y sala de un Open Space.
-  - **Ver detalle de charla**: Título, descripción, orador, sala y horario.
-
-#### Entrega 2
-![Caso de uso entrega 2](/other/CasoDeUso2.png)
-- Organizador:
-  - **Iniciar Marketplace**: Habilitar encolamiento de los oradores para poder exponer su charla.
-  - **Mostrar modo proyección**: Mientras orador expone, mostrar datos de su charla.
-- Orador:
-  - **Encolarse para exponer**: Ponerse en la fila, para exponer su charla.
-
-#### Entrega 3
-![Caso de uso entrega 3](/other/CasoDeUso3.png)
-- Organizador:
-  - **Finalizar Marketplace**: Deshabilitar encolamiento para que no se puedan agendar más charlas.
-- Orador:
-  - **Ingresar con mail**: Ingresar a la app solo con email y nombre.
-
-#### Entrega 4
-![Caso de uso entrega 4](/other/CasoDeUso4.png)
-- Organizador:
-  - **Crear Open Space** (modificado): Cargar estructura de slots (charla - otro).
-  - **Gestionar charlas**: Cargar, encolar y agendar charlas de cualquier orador.
-  - **Intercambiar charlas**: de cualquier orador a otra sala y horario.
+[Ir a documentación](/docs/README.md)
 
 ## :computer: Demo
 [![Youtube demo][demo-prev]][demo-link]
@@ -204,4 +149,3 @@ JDBC_DATABASE_PASSWORD=openheart
 [license-badge]: https://img.shields.io/github/license/AugustoConti/smart-open-space?style=flat-square
 [node]: https://nodejs.org
 [postgresql]: https://www.postgresql.org/download/
-[yarn]: https://yarnpkg.com/en/docs/install

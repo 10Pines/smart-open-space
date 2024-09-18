@@ -12,7 +12,7 @@ class MarketplaceTalk(
     override val reviews: MutableSet<Review> = mutableSetOf(),
     override var speaker: User,
 
-    var is_marketplace_talk: Boolean = false,
-    var speaker_name: String? = null
+    override var is_marketplace_talk: Boolean = false,
+    override var speaker_name: String? = null
 ) : Talk(name, description, id, meetingLink, track, documents, reviews, speaker) {
 }

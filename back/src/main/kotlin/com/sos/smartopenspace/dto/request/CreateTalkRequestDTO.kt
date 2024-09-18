@@ -18,5 +18,7 @@ data class CreateTalkRequestDTO(
     val trackId: Long? = null,
 
     @field:Valid
-    val documents: Set<Document> = emptySet()
+    val documents: Set<Document> = emptySet(),
+
+    val speakername: String? = null
 )

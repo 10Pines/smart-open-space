@@ -40,7 +40,10 @@ class Talk(
   val speaker: User
 ) {
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  val is_marketplace_talk: Boolean = false
+  val speaker_name: String? = null
+
+    @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "vote",
           joinColumns = [JoinColumn(name = "talk_id", referencedColumnName = "id")],
           inverseJoinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")])

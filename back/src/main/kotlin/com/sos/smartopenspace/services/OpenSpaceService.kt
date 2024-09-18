@@ -156,14 +156,24 @@ class OpenSpaceService(
 
     private fun createTalkFrom(createTalkRequestDTO: CreateTalkRequestDTO, user: User): Talk {
         val track: Track? = findTrack(createTalkRequestDTO.trackId)
-        return Talk(
-            name = createTalkRequestDTO.name,
-            description = createTalkRequestDTO.description,
-            meetingLink = createTalkRequestDTO.meetingLink,
-            track = track,
-            speaker = user,
-            documents = createTalkRequestDTO.documents.toMutableSet()
-        )
+        if (createTalkRequestDTO.speakername.isNullOrEmpty()) {
+            return Talk(
+                name = createTalkRequestDTO.name,
+                description = createTalkRequestDTO.description,
+                meetingLink = createTalkRequestDTO.meetingLink,
+                track = track,
+                speaker = user,
+                documents = createTalkRequestDTO.documents.toMutableSet()
+            )
+        } else {
+            return MarketplaceTalk(
+                name = createTalkRequestDTO.name,
+                track = track,
+                speaker = user,
+                is_marketplace_talk = true,
+                speaker_name = createTalkRequestDTO.speakername
+            )
+        }
     }
 
     private fun findTrack(trackId: Long?): Track? {

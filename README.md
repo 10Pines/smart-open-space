@@ -94,7 +94,7 @@ cd back && ./gradlew bootRun
 ```
 
 ### Levantar frontend
-Asegurate de tener la version de node correspondiente:
+Asegurate de tener la version de node correspondiente (revisar .tools-versions):
 ```sh
 cd front && nvm use
 ```

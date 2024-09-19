@@ -6,12 +6,15 @@ function anyTalk(queue = [], slots = [], openSpace = anyOpenSpaceWithNoTalksSche
     'a talk',
     'desc',
     undefined,
+
     {
       email: 'email@email.com',
       id: 1,
       name: 'speaker',
     },
     undefined,
+    false,
+    'Alan Key',
     queue,
     slots,
     openSpace

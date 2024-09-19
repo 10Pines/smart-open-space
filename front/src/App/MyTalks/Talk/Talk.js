@@ -72,7 +72,7 @@ const Talk = ({
         <Title>{talk.name}</Title>
         {currentUserIsOrganizer && (
           <>
-            <Detail icon={UserIcon} text={talk.speaker.name} />
+            <Detail icon={UserIcon} text={talk.speakerName} />
             <Detail size="small" text={talk.speaker.email} />
           </>
         )}

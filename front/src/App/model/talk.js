@@ -6,6 +6,8 @@ export default class Talk {
     meetingLink,
     speaker,
     track,
+    isMarketplaceTalk,
+    speakerName,
     queue,
     slots,
     openSpace
@@ -15,6 +17,8 @@ export default class Talk {
     this.description = description;
     this.meetingLink = meetingLink;
     this.speaker = speaker;
+    this.isMarketplaceTalk = isMarketplaceTalk;
+    this.speakerName = speakerName;
     this.track = track;
     this.queue = queue;
     this.slots = slots;

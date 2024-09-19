@@ -42,6 +42,8 @@ function talkToModel(talk, queue, slots, openSpace) {
     talk.meetingLink,
     talk.speaker,
     talk.track,
+    talk.isMarketplaceTalk,
+    talk.speakerName,
     queue,
     slots,
     openSpace

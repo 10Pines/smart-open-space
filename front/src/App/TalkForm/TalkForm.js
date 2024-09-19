@@ -18,6 +18,7 @@ export const TalkForm = ({
   openSpace,
   subtitle,
   title,
+  amTheOrganizer,
   initialValues = emptyTalk,
 }) => {
   const history = useHistory();
@@ -63,6 +64,14 @@ export const TalkForm = ({
           valueKey="id"
           required={false}
         />
+        {amTheOrganizer && (
+          <MyForm.Text
+            id="talk-speaker-name"
+            label="Nombre del Orador"
+            name="speakerName"
+            placeholder="En caso de ser un orador que pitcheó en el marketplace, ingresa el nombre completo"
+          />
+        )}
       </MyForm>
     </>
   );

@@ -156,8 +156,8 @@ class OpenSpaceControllerTest {
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").exists())
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].is_marketplace_talk").value(true))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].speaker_name").value("Alan Key"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].isMarketplaceTalk").value(true))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].speakerName").value("Alan Key"))
     }
 
     @Test
@@ -483,7 +483,7 @@ class OpenSpaceControllerTest {
         return """
             {
                 "name": "a talk",
-                "speakername": "Alan Key" 
+                "speakerName": "Alan Key" 
             }
         """.trimIndent()
     }

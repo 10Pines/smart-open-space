@@ -29,9 +29,9 @@ class TalkTest {
     val aUser = aUser()
     aUser.addOpenSpace(anOpenSpace)
     anOpenSpace.toggleCallForPapers(aUser)
-    val aMarketplaceTalk = MarketplaceTalk("Una charla", speaker = aUser, is_marketplace_talk=true, speaker_name = "Braulio")
+    val aMarketplaceTalk = Talk("Una charla", speaker = aUser, isMarketplaceTalk=true, speakerName = "Braulio")
 
-    Assertions.assertEquals("Braulio", aMarketplaceTalk.speaker_name)
-    Assertions.assertNotNull(aMarketplaceTalk.is_marketplace_talk)
+    Assertions.assertEquals("Braulio", aMarketplaceTalk.speakerName)
+    Assertions.assertNotNull(aMarketplaceTalk.isMarketplaceTalk)
   }
 }

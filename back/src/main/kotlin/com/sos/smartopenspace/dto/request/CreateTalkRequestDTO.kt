@@ -20,5 +20,5 @@ data class CreateTalkRequestDTO(
     @field:Valid
     val documents: Set<Document> = emptySet(),
 
-    val speakername: String? = null
+    val speakerName: String? = null
 )

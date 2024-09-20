@@ -87,8 +87,10 @@ class OpenSpace(
   }.filter { it.second.isNotEmpty() }
 
   fun addTalk(talk: Talk): OpenSpace {
-    checkIsFinishedQueue()
-    checkIsActiveCallForPapers()
+    if (!talk.isMarketplaceTalk) {
+      checkIsFinishedQueue()
+      checkIsActiveCallForPapers()
+    }
     checkTrackIsValid(talk.track)
     talks.add(talk)
     return this

@@ -18,7 +18,7 @@ const NewTalk = () => {
   const amTheOrganizer = user && openSpace.organizer.id === user.id;
 
   if (!user || isRejected) return <RedirectToRoot />;
-  if (openSpace && openSpace.finishedQueue) return <RedirectToRoot />;
+  if (openSpace && !amTheOrganizer && openSpace.finishedQueue) return <RedirectToRoot />;
 
   const onSubmit = ({ name, description, meetingLink, track, documents, speakerName }) =>
     createTalk(openSpace.id, {

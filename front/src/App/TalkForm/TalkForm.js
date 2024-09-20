@@ -70,6 +70,7 @@ export const TalkForm = ({
             label="Nombre del Orador"
             name="speakerName"
             placeholder="En caso de ser un orador que pitcheó en el marketplace, ingresa el nombre completo"
+            required={false}
           />
         )}
       </MyForm>

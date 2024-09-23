@@ -162,7 +162,10 @@ class OpenSpaceService(
             meetingLink = createTalkRequestDTO.meetingLink,
             track = track,
             speaker = user,
-            documents = createTalkRequestDTO.documents.toMutableSet()
+            documents = createTalkRequestDTO.documents.toMutableSet(),
+            isMarketplaceTalk = !createTalkRequestDTO.speakerName.isNullOrEmpty(),
+            speakerName = createTalkRequestDTO.speakerName
+
         )
     }
 

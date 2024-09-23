@@ -2,6 +2,7 @@ package com.sos.smartopenspace.domain
 
 import com.sos.smartopenspace.aUser
 import com.sos.smartopenspace.anOpenSpace
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -20,5 +21,17 @@ class TalkTest {
     assertThrows< NotValidTrackForOpenSpaceException > {
       aTalk.update(name = aTalk.name, description = aTalk.description, track = aTrack, openSpace = anOpenSpace)
     }
+  }
+
+  @Test
+  fun `a marketplace talk has speaker name`() {
+    val anOpenSpace = anOpenSpace()
+    val aUser = aUser()
+    aUser.addOpenSpace(anOpenSpace)
+    anOpenSpace.toggleCallForPapers(aUser)
+    val aMarketplaceTalk = Talk("Una charla", speaker = aUser, isMarketplaceTalk=true, speakerName = "Braulio")
+
+    Assertions.assertEquals("Braulio", aMarketplaceTalk.speakerName)
+    Assertions.assertNotNull(aMarketplaceTalk.isMarketplaceTalk)
   }
 }

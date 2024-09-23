@@ -11,4 +11,6 @@ data class TalkResponseDTO(
     val reviews: List<ReviewResponseDTO>,
     val votingUsers: List<UserResponseDTO>,
     val votes: Int,
+    val isMarketplaceTalk: Boolean,
+    val speakerName: String?,
 )

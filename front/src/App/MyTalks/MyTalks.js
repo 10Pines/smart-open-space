@@ -42,6 +42,8 @@ function talkToModel(talk, queue, slots, openSpace) {
     talk.meetingLink,
     talk.speaker,
     talk.track,
+    talk.isMarketplaceTalk,
+    talk.speakerName,
     queue,
     slots,
     openSpace
@@ -175,7 +177,9 @@ const MyTalks = () => {
   const talks = (currentUserIsOrganizer ? allTalks : currentUserTalks)?.map((talk) =>
     talkToModel(talk, queue || [], assignedSlots, openSpace)
   );
-  const canAddTalk = openSpace && isActiveCallForPapers && !openSpace.finishedQueue;
+  const canAddTalk =
+    openSpace &&
+    (currentUserIsOrganizer || (isActiveCallForPapers && !openSpace.finishedQueue));
   const hasTalks = allTalks && currentUserTalks && talks.length > 0;
   const shouldDisplayEmptyTalkButton = !hasTalks && canAddTalk;
 

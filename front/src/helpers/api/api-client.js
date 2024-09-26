@@ -7,7 +7,7 @@ const doFetch = (method) => async (endpoint, body) => {
     body: JSON.stringify(body),
   };
   try {
-    const response = await window.fetch(`${process.env.API_URL}/${endpoint}`, config);
+    const response = await window.fetch(`${import.meta.env.VITE_API_URL}/${endpoint}`, config);
     const jsonResponse = await response.json();
     if (!response.ok) {
       throw new Error(jsonResponse.message);

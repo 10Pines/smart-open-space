@@ -30,7 +30,7 @@ const Schedule = () => {
   } = useGetOpenSpace();
 
   const sortedDates = dates.sort(compareAsc);
-  const todaysDate = new Date(2024, 9, 2);
+  const todaysDate = new Date();
 
   useEffect(() => {
     const firstActiveIndex = sortedDates.findIndex((element) =>

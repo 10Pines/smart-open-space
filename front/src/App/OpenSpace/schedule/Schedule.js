@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { console_log_debug } from '#helpers/logging';
+import React, { useEffect, useState } from 'react';
 import { useSlots } from '#api/sockets-client';
 import { useGetOpenSpace } from '#api/os-client';
 import MainHeader from '#shared/MainHeader';
@@ -17,22 +16,35 @@ import { DateSlots } from './DateSlots';
 import { Tab, Tabs } from 'grommet';
 import { compareAsc, format, isEqual } from 'date-fns';
 import { ButtonMyTalks } from '../buttons/ButtonMyTalks';
+import { isEqualsDateTime } from '../../../helpers/time';
+
 const Schedule = () => {
   const user = useUser();
   const [redirectToLogin, setRedirectToLogin] = useState(false);
+  const [activeDateIndex, setActiveDateIndex] = useState(0);
 
   const {
-    data: { id, name, slots, organizer, dates, showSpeakerName } = {},
+    data: { id, name, slots, organizer, dates = [], showSpeakerName } = {},
     isPending,
     isRejected,
   } = useGetOpenSpace();
+
+  const sortedDates = dates.sort(compareAsc);
+  const todaysDate = new Date();
+
+  useEffect(() => {
+    const firstActiveIndex = sortedDates.findIndex((element) =>
+      isEqualsDateTime(element, todaysDate)
+    );
+    setActiveDateIndex(firstActiveIndex == -1 ? 0 : firstActiveIndex);
+  }, [sortedDates, todaysDate]);
+
   const slotsSchedule = useSlots();
   const pushToOpenSpace = usePushToOpenSpace(id);
 
   if (isPending) return <Spinner />;
-  if (isRejected || !dates) return <RedirectToRoot />;
+  if (isRejected || !dates.length) return <RedirectToRoot />;
 
-  const sortedDates = dates.sort(compareAsc);
   const talksOf = (slotId) =>
     slotsSchedule.filter((slotSchedule) => slotSchedule.slot.id === slotId);
   const amTheOrganizer = user && organizer.id === user.id;
@@ -50,7 +62,7 @@ const Schedule = () => {
           )}
         </MainHeader.Buttons>
       </MainHeader>
-      <Tabs>
+      <Tabs activeIndex={activeDateIndex} onActive={setActiveDateIndex}>
         {sortedDates.map((date, index) => (
           <Tab key={index} title={format(date, 'yyyy-MM-dd')}>
             <DateSlots

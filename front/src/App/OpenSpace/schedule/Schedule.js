@@ -30,14 +30,16 @@ const Schedule = () => {
   } = useGetOpenSpace();
 
   const sortedDates = dates.sort(compareAsc);
-  const todaysDate = new Date();
+  const todaysDate = new Date(2024, 9, 2);
 
   useEffect(() => {
     const firstActiveIndex = sortedDates.findIndex((element) =>
       isEqualsDateTime(element, todaysDate)
     );
-    setActiveDateIndex(firstActiveIndex == -1 ? 0 : firstActiveIndex);
-  }, [sortedDates, todaysDate]);
+    if (firstActiveIndex !== -1) {
+      setActiveDateIndex(firstActiveIndex);
+    }
+  }, [sortedDates]);
 
   const slotsSchedule = useSlots();
   const pushToOpenSpace = usePushToOpenSpace(id);
@@ -64,7 +66,22 @@ const Schedule = () => {
       </MainHeader>
       <Tabs activeIndex={activeDateIndex} onActive={setActiveDateIndex}>
         {sortedDates.map((date, index) => (
-          <Tab key={index} title={format(date, 'yyyy-MM-dd')}>
+          <Tab
+            key={index}
+            title={format(date, 'yyyy-MM-dd')}
+            style={
+              activeDateIndex == index
+                ? {
+                    border: '2px solid #7D4CDB',
+                    borderRadius: '5px',
+                    padding: '0.5rem',
+                    backgroundColor: 'white',
+                    cursor: 'default',
+                    textDecoration: 'none',
+                  }
+                : {}
+            }
+          >
             <DateSlots
               talksOf={talksOf}
               sortedSlots={sortTimesByStartTime(slots.filter(byDate(date)))}

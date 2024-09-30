@@ -11,12 +11,11 @@ import {
 import Spinner from '#shared/Spinner';
 import { useUser } from '#helpers/useAuth';
 import { ButtonSingIn } from '#shared/ButtonSingIn';
-import { sortTimesByStartTime, byDate } from '#helpers/time';
+import { sortTimesByStartTime, byDate, isSameDate } from '#helpers/time';
 import { DateSlots } from './DateSlots';
 import { Tab, Tabs } from 'grommet';
 import { compareAsc, format, isEqual } from 'date-fns';
 import { ButtonMyTalks } from '../buttons/ButtonMyTalks';
-import { isEqualsDateTime } from '../../../helpers/time';
 
 const Schedule = () => {
   const user = useUser();
@@ -34,7 +33,7 @@ const Schedule = () => {
 
   useEffect(() => {
     const firstActiveIndex = sortedDates.findIndex((element) =>
-      isEqualsDateTime(element, todaysDate)
+      isSameDate(element, todaysDate)
     );
     if (firstActiveIndex !== -1) {
       setActiveDateIndex(firstActiveIndex);

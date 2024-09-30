@@ -8,6 +8,7 @@ import {
   toDate,
   byDate,
   isEqualsDateTime,
+  isSameDate,
   getLastEndFromCollectionOfSlots,
 } from '../../helpers/time';
 
@@ -315,6 +316,68 @@ describe('GIVEN isEqualsDateTime func', () => {
       wrapTestCaseLogError(() => {
         expect(isEqualsDateTime(t.date1, t.date2)).toBeFalsy();
         expect(isEqualsDateTime(t.date2, t.date1)).toBeFalsy();
+      }, `Failed at case ${index + 1} with date1: ${t.date1} and date2 :${t.date2}`);
+    });
+  });
+});
+
+describe('GIVEN isSameDate func', () => {
+  it('WHEN both dates are equal THEN return truthy', () => {
+    const tests = [
+      {
+        date1: new Date(2024, 0, 1),
+        date2: new Date(2024, 0, 1),
+      },
+      {
+        date1: new Date(2023, 7, 14, 3),
+        date2: new Date(2023, 7, 14, 2),
+      },
+    ];
+
+    tests.forEach((t, index) => {
+      wrapTestCaseLogError(() => {
+        expect(isSameDate(t.date1, t.date2)).toBeTruthy();
+        expect(isSameDate(t.date2, t.date1)).toBeTruthy();
+      }, `Failed at case ${index + 1} with date1: ${t.date1} and date2 :${t.date2}`);
+    });
+  });
+
+  it('WHEN both dates are not equal or both undefined/null THEN return falsy', () => {
+    const tests = [
+      {
+        date1: new Date(2024, 0, 2),
+        date2: new Date(2024, 0, 1),
+      },
+      {
+        date1: new Date(2022, 7, 14),
+        date2: new Date(2023, 7, 14),
+      },
+      {
+        date1: new Date(2033, 11, 31),
+        date2: new Date(2033, 12, 31),
+      },
+      {
+        date1: undefined,
+        date2: new Date(2042, 0, 31),
+      },
+      {
+        date1: null,
+        date2: new Date(2042, 0, 31),
+      },
+      {
+        date1: null,
+        date2: null,
+      },
+      {
+        date1: undefined,
+        date2: undefined,
+      },
+    ];
+
+    tests.forEach((t, index) => {
+      wrapTestCaseLogError(() => {
+        expect(isSameDate(t.date1, t.date2)).toBeFalsy();
+        expect(isSameDate(t.date2, t.date1)).toBeFalsy();
       }, `Failed at case ${index + 1} with date1: ${t.date1} and date2 :${t.date2}`);
     });
   });

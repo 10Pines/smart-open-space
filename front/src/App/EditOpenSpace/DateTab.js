@@ -9,9 +9,9 @@ import { TrashIcon } from '#shared/icons';
 const TALK_SLOT = 'TalkSlot';
 const OTHER_SLOT = 'OtherSlot';
 
-const Slot = ({ color, onRemove, start, text }) => (
+const Slot = ({ color, onRemove, start, text, index }) => (
   <>
-    <HourHeader hour={start} />
+    <HourHeader hour={start} isInitial={index == 0} />
     <Box
       background={{ color, opacity: 'medium' }}
       direction="row"
@@ -34,7 +34,9 @@ Slot.propTypes = {
 };
 
 const CloseSlot = ({ time }) => (
-  <Slot color="accent-1" key={`cierre-${time}`} start={time} text="Cierre" />
+  <React.Fragment key="cierre">
+    <HourHeader hour={time} isFinal />
+  </React.Fragment>
 );
 CloseSlot.propTypes = {
   time: PropTypes.string.isRequired,
@@ -42,7 +44,6 @@ CloseSlot.propTypes = {
 
 export const DateTab = ({ value, addSlot, removeSlot, date }) => {
   const lastEnd = getLastEndFromCollectionOfSlots(value);
-
   return (
     <>
       {value.map(({ type, startTime, description }, i) => (
@@ -52,6 +53,7 @@ export const DateTab = ({ value, addSlot, removeSlot, date }) => {
           start={startTime}
           text={type === TALK_SLOT ? 'Charla' : description}
           onRemove={i === value.length - 1 ? () => removeSlot(date, lastEnd) : null}
+          index={i}
         />
       ))}
       {value.length > 0 && <CloseSlot time={lastEnd} />}

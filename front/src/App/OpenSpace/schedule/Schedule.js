@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { console_log_debug } from '#helpers/logging';
+import React, { useEffect, useState } from 'react';
 import { useSlots } from '#api/sockets-client';
 import { useGetOpenSpace } from '#api/os-client';
 import MainHeader from '#shared/MainHeader';
@@ -12,27 +11,41 @@ import {
 import Spinner from '#shared/Spinner';
 import { useUser } from '#helpers/useAuth';
 import { ButtonSingIn } from '#shared/ButtonSingIn';
-import { sortTimesByStartTime, byDate } from '#helpers/time';
+import { sortTimesByStartTime, byDate, isSameDate } from '#helpers/time';
 import { DateSlots } from './DateSlots';
 import { Tab, Tabs } from 'grommet';
 import { compareAsc, format, isEqual } from 'date-fns';
 import { ButtonMyTalks } from '../buttons/ButtonMyTalks';
+
 const Schedule = () => {
   const user = useUser();
   const [redirectToLogin, setRedirectToLogin] = useState(false);
+  const [activeDateIndex, setActiveDateIndex] = useState(0);
 
   const {
-    data: { id, name, slots, organizer, dates, showSpeakerName } = {},
+    data: { id, name, slots, organizer, dates = [], showSpeakerName } = {},
     isPending,
     isRejected,
   } = useGetOpenSpace();
+
+  const sortedDates = dates.sort(compareAsc);
+  const todaysDate = new Date();
+
+  useEffect(() => {
+    const firstActiveIndex = sortedDates.findIndex((element) =>
+      isSameDate(element, todaysDate)
+    );
+    if (firstActiveIndex !== -1) {
+      setActiveDateIndex(firstActiveIndex);
+    }
+  }, [sortedDates]);
+
   const slotsSchedule = useSlots();
   const pushToOpenSpace = usePushToOpenSpace(id);
 
   if (isPending) return <Spinner />;
-  if (isRejected || !dates) return <RedirectToRoot />;
+  if (isRejected || !dates.length) return <RedirectToRoot />;
 
-  const sortedDates = dates.sort(compareAsc);
   const talksOf = (slotId) =>
     slotsSchedule.filter((slotSchedule) => slotSchedule.slot.id === slotId);
   const amTheOrganizer = user && organizer.id === user.id;
@@ -50,9 +63,24 @@ const Schedule = () => {
           )}
         </MainHeader.Buttons>
       </MainHeader>
-      <Tabs>
+      <Tabs activeIndex={activeDateIndex} onActive={setActiveDateIndex}>
         {sortedDates.map((date, index) => (
-          <Tab key={index} title={format(date, 'yyyy-MM-dd')}>
+          <Tab
+            key={index}
+            title={format(date, 'yyyy-MM-dd')}
+            style={
+              activeDateIndex == index
+                ? {
+                    border: '2px solid #7D4CDB',
+                    borderRadius: '5px',
+                    padding: '0.5rem',
+                    backgroundColor: 'white',
+                    cursor: 'default',
+                    textDecoration: 'none',
+                  }
+                : {}
+            }
+          >
             <DateSlots
               talksOf={talksOf}
               sortedSlots={sortTimesByStartTime(slots.filter(byDate(date)))}

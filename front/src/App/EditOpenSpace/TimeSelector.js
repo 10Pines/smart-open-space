@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Tabs, Tab } from 'grommet';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
@@ -6,6 +6,7 @@ import { DateTab } from './DateTab';
 import { byDate } from '#helpers/time';
 
 const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
+  const [activeDateIndex, setActiveDateIndex] = useState(0);
   const addSlot = (type, date, lastEnd) => {
     return onNewSlot(type, lastEnd, ({ startTime, endTime, description }) => {
       onChange({
@@ -43,9 +44,24 @@ const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
 
   return canShowOrElse(
     <Box>
-      <Tabs>
+      <Tabs activeIndex={activeDateIndex} onActive={setActiveDateIndex}>
         {dates.map((date, i) => (
-          <Tab key={i} title={format(date, 'yyyy-MM-dd')}>
+          <Tab
+            key={i}
+            title={format(date, 'yyyy-MM-dd')}
+            style={
+              activeDateIndex == i
+                ? {
+                    border: '2px solid #7D4CDB',
+                    borderRadius: '5px',
+                    padding: '0.5rem',
+                    backgroundColor: 'white',
+                    cursor: 'default',
+                    textDecoration: 'none',
+                  }
+                : {}
+            }
+          >
             <DateTab
               key={i}
               value={value.filter(byDate(date))}

@@ -33,15 +33,6 @@ Slot.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
-const CloseSlot = ({ time }) => (
-  <React.Fragment key="cierre">
-    <HourHeader hour={time} isFinal />
-  </React.Fragment>
-);
-CloseSlot.propTypes = {
-  time: PropTypes.string.isRequired,
-};
-
 export const DateTab = ({ value, addSlot, removeSlot, date }) => {
   const lastEnd = getLastEndFromCollectionOfSlots(value);
   return (
@@ -56,7 +47,7 @@ export const DateTab = ({ value, addSlot, removeSlot, date }) => {
           index={i}
         />
       ))}
-      {value.length > 0 && <CloseSlot time={lastEnd} />}
+      {value.length > 0 && <HourHeader hour={lastEnd} isFinal />}
 
       <Box direction="row" margin={{ vertical: 'medium' }} justify="evenly">
         <ButtonNew

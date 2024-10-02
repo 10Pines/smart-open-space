@@ -41,7 +41,7 @@ En esta segunda, buscamos construir la mínima herramienta que permita gestionar
 ### Antes de empezar, vas a necesitar:
   - [Git][git]
   - [PostgreSQL][postgresql] o Docker
-  - [JDK 8 update 60 o superior][java8] (Asegurate que la variable de entorno `JAVA_HOME` apunte a la carpeta `jdk1.8.0` que sacaste de la descarga del JDK).
+  - [Java 21 / JDK 21][java] (Asegurate que la variable de entorno `JAVA_HOME` apunte a la carpeta del jdk que sacaste de la descarga del JDK).
   - [NodeJS][node]
 
 ### Descargar el código fuente
@@ -147,7 +147,7 @@ JDBC_DATABASE_PASSWORD=openheart
 [heroku-badge]: https://img.shields.io/badge/heroku-deploy-ff69b4?style=flat-square&logo=heroku
 [issues]: https://github.com/10Pines/smart-open-space/issues
 [issues-badge]: https://img.shields.io/github/issues-raw/10Pines/smart-open-space?style=flat-square
-[java8]: https://www.oracle.com/technetwork/java/javase/downloads/index.html
+[java]: https://www.oracle.com/technetwork/java/javase/downloads/index.html
 [license]: LICENCIA
 [license-badge]: https://img.shields.io/github/license/AugustoConti/smart-open-space?style=flat-square
 [node]: https://nodejs.org

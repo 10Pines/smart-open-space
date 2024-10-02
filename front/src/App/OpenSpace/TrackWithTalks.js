@@ -10,7 +10,7 @@ export function TrackWithTalks({
   activeVoting,
   showSpeakerName,
 }) {
-  let byTrack = (talk) => talk.track.id === track.id;
+  let byTrack = (talk) => talk.track?.id === track.id;
   const talksFromTrack = talks.filter(byTrack);
   return (
     <>

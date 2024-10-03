@@ -102,7 +102,7 @@ cd front && nvm use
 
 Para instalar dependencias y levantar el proyecto:
 ```sh
-npm install --legacy-peer-deps && npm run watch
+npm install && npm run watch
 ```
 
 ### Flyway plugin

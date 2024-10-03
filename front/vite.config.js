@@ -14,6 +14,10 @@ export default ({ mode }) => {
   //TODO: use 'mode' for build prod or dev
   return defineConfig({
     root,
+    build: {
+      outDir: resolve(__dirname, './dist'),
+      emptyOutDir: true,
+    },
     resolve: {
       alias: {
         '@': root,

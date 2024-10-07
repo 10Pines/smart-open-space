@@ -13,15 +13,17 @@ Dots.propTypes = {
   gridArea: PropTypes.string.isRequired,
 };
 
-const HourHeader = ({ hour }) => (
+const HourHeader = ({ hour, isInitial, isFinal }) => (
   <Grid
     areas={[['left', 'main', 'right']]}
-    columns={['flex', 'xsmall', 'flex']}
+    columns={['flex', isInitial || isFinal ? 'small' : 'xsmall', 'flex']}
     rows={['xxsmall']}
   >
     <Dots gridArea="left" />
     <Box align="center" alignSelf="center" gridArea="main" flex>
       {`${hour} hs`}
+      {isInitial && ` (inicio)`}
+      {isFinal && ` (fin)`}
     </Box>
     <Dots gridArea="right" />
   </Grid>

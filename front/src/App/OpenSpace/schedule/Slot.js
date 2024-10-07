@@ -5,10 +5,10 @@ import { OtherSlot } from './OtherSlot';
 import { TalkSlot } from './TalkSlot';
 import PropTypes from 'prop-types';
 
-export const Slot = ({ slot, talksOf, showSpeakerName }) => {
+export const Slot = ({ slot, talksOf, showSpeakerName, index }) => {
   return (
     <React.Fragment>
-      <HourHeader hour={numbersToTime(slot.startTime)} />
+      <HourHeader hour={numbersToTime(slot.startTime)} isInitial={index == 0} />
       {!slot.assignable ? (
         <OtherSlot description={slot.description} />
       ) : (

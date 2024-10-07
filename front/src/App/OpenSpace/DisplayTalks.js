@@ -39,11 +39,13 @@ export function DisplayTalks({
             showSpeakerName={showSpeakerName}
           />
         ))}
-        <Heading color="gray" size="sm">
-          Charlas sin track
-        </Heading>
+        {talksWithoutTrack.length > 0 && (
+          <Heading color="gray" size="sm">
+            Sin track
+          </Heading>
+        )}
         <TalksGrid
-          talks={talks}
+          talks={talksWithoutTrack}
           reloadTalks={reloadTalks}
           activeVoting={activeVoting}
           showSpeakerName={showSpeakerName}
@@ -53,11 +55,16 @@ export function DisplayTalks({
   }
 
   return (
-    <TalksGrid
-      talks={talks}
-      reloadTalks={reloadTalks}
-      activeVoting={activeVoting}
-      showSpeakerName={showSpeakerName}
-    />
+    <>
+      <Heading color="gray" size="sm">
+        Sin track
+      </Heading>
+      <TalksGrid
+        talks={talks}
+        reloadTalks={reloadTalks}
+        activeVoting={activeVoting}
+        showSpeakerName={showSpeakerName}
+      />
+    </>
   );
 }

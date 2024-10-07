@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import { wrapTestCaseLogError } from '../../helpers/testUtils';
 import {
   numberToTwoDigitNumber,
@@ -12,13 +13,13 @@ import {
 } from '../../helpers/time';
 
 describe('GIVEN numberToTwoDigitNumber func', () => {
-  it('WHEN receives a number with more than two digits THEN return the same number', () => {
+  test('WHEN receives a number with more than two digits THEN return the same number', () => {
     expect(numberToTwoDigitNumber(10)).toBe('10');
     expect(numberToTwoDigitNumber(59)).toBe('59');
     expect(numberToTwoDigitNumber(100)).toBe('100');
   });
 
-  it('WHEN receives a number with two digits THEN return the same number', () => {
+  test('WHEN receives a number with two digits THEN return the same number', () => {
     expect(numberToTwoDigitNumber(0)).toBe('00');
     expect(numberToTwoDigitNumber(1)).toBe('01');
     expect(numberToTwoDigitNumber(9)).toBe('09');
@@ -26,13 +27,13 @@ describe('GIVEN numberToTwoDigitNumber func', () => {
 });
 
 describe('GIVEN numbersToTime func', () => {
-  it('WHEN receives a string number THEN return the same value (no formatting)', () => {
+  test('WHEN receives a string number THEN return the same value (no formatting)', () => {
     expect(numbersToTime('10:20')).toBe('10:20');
     expect(numbersToTime('01:59')).toBe('01:59');
     expect(numbersToTime('0:0')).toBe('0:0');
   });
 
-  it('WHEN receives a number as array format THEN return hour with format HH:mm', () => {
+  test('WHEN receives a number as array format THEN return hour with format HH:mm', () => {
     expect(numbersToTime([0, 0])).toBe('00:00');
     expect(numbersToTime([1, 5])).toBe('01:05');
     expect(numbersToTime([10, 23])).toBe('10:23');
@@ -41,7 +42,7 @@ describe('GIVEN numbersToTime func', () => {
 });
 
 describe('GIVEN compareTimeByArray func', () => {
-  it('WHEN receives two arrays with format [HH, mm] THEN should be -1 if first argument is lower than second argument, otherwise 1', () => {
+  test('WHEN receives two arrays with format [HH, mm] THEN should be -1 if first argument is lower than second argument, otherwise 1', () => {
     const samples = [
       { fstArg: '11:00', sndArg: '11:10' },
       { fstArg: '00:00', sndArg: '01:10' },
@@ -59,7 +60,7 @@ describe('GIVEN compareTimeByArray func', () => {
 });
 
 describe('GIVEN compareTime func', () => {
-  it('WHEN receives two arrays/strings with format [HH, mm]/HH:mm THEN should be -1 if first argument is lower than second argument, otherwise 1', () => {
+  test('WHEN receives two arrays/strings with format [HH, mm]/HH:mm THEN should be -1 if first argument is lower than second argument, otherwise 1', () => {
     const samples = [
       { fstArg: '11:00', sndArg: '11:10' },
       { fstArg: '00:00', sndArg: '01:10' },
@@ -83,20 +84,20 @@ describe('GIVEN compareTime func', () => {
 describe('GIVEN sortTimesByStartTime func', () => {
   const buildTime = (st) => ({ startTime: st });
 
-  it('WHEN times is empty THEN return empty', () => {
+  test('WHEN times is empty THEN return empty', () => {
     const times = [];
     const expected = [];
     expect(sortTimesByStartTime(times)).toEqual(expected);
   });
 
-  it('WHEN list have an element THEN return same list', () => {
+  test('WHEN list have an element THEN return same list', () => {
     const anElement = buildTime('11:00');
     const times = [anElement];
     const expected = [anElement];
     expect(sortTimesByStartTime(times)).toEqual(expected);
   });
 
-  it('WHEN list size is greather than 1 THEN return same list but sorted by startTime', () => {
+  test('WHEN list size is greather than 1 THEN return same list but sorted by startTime', () => {
     const times = [
       buildTime('10:10'),
       buildTime('11:00'),
@@ -132,7 +133,7 @@ describe('GIVEN sortTimesByStartTime func', () => {
 });
 
 describe('GIVEN toDate func', () => {
-  it('WHEN receives date string with format yyyy-MM-dd or array format THEN return Date object with these values', () => {
+  test('WHEN receives date string with format yyyy-MM-dd or array format THEN return Date object with these values', () => {
     const tests = [
       { date: '2024-01-01', expected: new Date(2024, 0, 1) },
       { date: [2024, 1, 1], expected: new Date(2024, 0, 1) },
@@ -154,7 +155,7 @@ describe('GIVEN toDate func', () => {
 });
 
 describe('GIVEN byDate func', () => {
-  it('WHEN receives a date and object with the same date key THEN return truthy', () => {
+  test('WHEN receives a date and object with the same date key THEN return truthy', () => {
     const tests = [
       {
         date: new Date(2024, 0, 1),
@@ -185,7 +186,7 @@ describe('GIVEN byDate func', () => {
     });
   });
 
-  it('WHEN receives a date and object with the not equals date key THEN return falsy', () => {
+  test('WHEN receives a date and object with the not equals date key THEN return falsy', () => {
     const tests = [
       {
         date: new Date(2024, 0, 2),
@@ -218,12 +219,12 @@ describe('GIVEN byDate func', () => {
 });
 
 describe('GIVEN getLastEndFromCollectionOfSlots func', () => {
-  it('WHEN list is empty THEN return undefined', () => {
+  test('WHEN list is empty THEN return undefined', () => {
     const slots = [];
     expect(getLastEndFromCollectionOfSlots(slots)).toBeUndefined();
   });
 
-  it('WHEN list is not empty THEN return endTime of last element', () => {
+  test('WHEN list is not empty THEN return endTime of last element', () => {
     const lastElem = { endTime: '11:15' };
     const slots = [{ endTime: '01:00' }, { endTime: '02:05' }, lastElem];
     expect(getLastEndFromCollectionOfSlots(slots)).toEqual(lastElem.endTime);
@@ -231,7 +232,7 @@ describe('GIVEN getLastEndFromCollectionOfSlots func', () => {
 });
 
 describe('GIVEN isEqualsDateTime func', () => {
-  it('WHEN both dates are equal THEN return truthy', () => {
+  test('WHEN both dates are equal THEN return truthy', () => {
     const tests = [
       {
         date1: new Date(2024, 0, 1),
@@ -267,7 +268,7 @@ describe('GIVEN isEqualsDateTime func', () => {
     });
   });
 
-  it('WHEN both dates are not equal or both undefined/null THEN return falsy', () => {
+  test('WHEN both dates are not equal or both undefined/null THEN return falsy', () => {
     const tests = [
       {
         date1: new Date(2024, 0, 2),

@@ -17,7 +17,7 @@ const Detail = ({ children, icon: Icon, text, ...props }) => (
 );
 Detail.propTypes = {
   children: MyProps.children,
-  icon: PropTypes.func,
+  icon: PropTypes.object,
   text: PropTypes.string,
 };
 

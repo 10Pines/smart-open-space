@@ -1,5 +1,4 @@
-import React, { useContext, useEffect } from 'react';
-import LogRocket from 'logrocket';
+import React, { useContext } from 'react';
 import useLocalStorage from './useLocalStorage';
 import * as userClient from './api/user-client';
 

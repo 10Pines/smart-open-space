@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 import jakarta.persistence.*
+import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
@@ -36,7 +37,7 @@ class OpenSpace(
   var description: String = "",
 
   @field:Valid
-  @OneToMany(cascade = [CascadeType.ALL])
+  @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
   @JoinColumn(name = "open_space_id")
   val tracks: MutableSet<Track> = mutableSetOf(),
 
@@ -235,9 +236,19 @@ class OpenSpace(
     this.slots.addAll(newSlots)
   }
 
+  @Transactional
   fun updateTracks(newTracks: Set<Track>, deletedTracks: Set<Track>) {
     this.tracks.removeAll(deletedTracks)
     this.tracks.addAll(newTracks)
+  }
+
+  @Transactional
+  fun removeDeletedTracksFromTalks(deletedItems: Set<Track>) {
+    for (talk in talks) {
+      if (talk.track != null && deletedItems.any { it.id == talk.track?.id }) {
+        talk.track = null
+      }
+    }
   }
 
   fun removeInvalidAssignedSlots() {
@@ -245,7 +256,6 @@ class OpenSpace(
     val existingSlotIds = this.slots.map { it.id }
     this.assignedSlots.removeIf { !existingRoomIds.contains(it.room.id) || !existingSlotIds.contains(it.slot.id) }
   }
-
 
   private fun isTrackValid(track: Track?) =
     !(areTracksUsed(track) && !trackIsFromThisOpenSpace(track))

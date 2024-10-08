@@ -98,7 +98,7 @@ class OpenSpace(
   }
 
   fun checkTrackIsValid(track: Track?) {
-    if (!isTrackValid(track))
+    if (!isTrackValid(track) && track != null)
       throw NotValidTrackForOpenSpaceException()
   }
 

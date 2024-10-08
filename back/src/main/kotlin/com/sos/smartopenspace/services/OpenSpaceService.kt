@@ -38,10 +38,6 @@ class OpenSpaceService(
         val openSpace = findById(openSpaceID)
         val user = findUser(userID)
 
-        println("Old os: ${openSpace.tracks}")
-        println("New os: ${openSpaceRequestDTO.tracks}")
-        println("deleted items: ${updatableItemCollectionService.getDeletedItems(openSpaceRequestDTO.tracks, openSpace.tracks)}")
-
         openSpace.updateRooms(
             updatableItemCollectionService.getNewItems(openSpaceRequestDTO.rooms),
             updatableItemCollectionService.getDeletedItems(openSpaceRequestDTO.rooms, openSpace.rooms)

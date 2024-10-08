@@ -186,6 +186,24 @@ class OpenSpaceTest {
         assertEquals(track.name, openSpace.tracks.first().name)
         assertEquals(track.description, openSpace.tracks.first().description)
     }
+
+    @Test
+    fun `an open space updates talk when removing associated track`() {
+        val track = Track(name = "track", color = "#FFFFFF")
+        val organizer = anyUser()
+        val aTalk = Talk("Talk", track = track, speaker = organizer)
+
+        val openSpace = OpenSpace(
+            name = "os", rooms = mutableSetOf(), slots = mutableSetOf(),
+            talks = mutableSetOf(aTalk), tracks = mutableSetOf(track)
+        )
+        openSpace.updateTracks(mutableSetOf(), mutableSetOf(track))
+        openSpace.removeDeletedTracksFromTalks(mutableSetOf(track))
+
+        assertEquals(0, openSpace.tracks.size)
+        assertEquals(null, openSpace.talks.first().track)
+    }
+
     @Test
     fun `an openSpace knows when it starts`() {
         val startDate = LocalDate.now()

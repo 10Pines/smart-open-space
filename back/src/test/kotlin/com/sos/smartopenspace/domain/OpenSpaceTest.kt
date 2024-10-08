@@ -135,7 +135,7 @@ class OpenSpaceTest {
     }
 
     @Test
-    fun `an open space with tracks cant add a talk without track`() {
+    fun `an open space with tracks can add a talk without track`() {
         val aTrack = Track(name = "track", color = "#FFFFFF")
         val organizer = anyUser()
         val openSpace = anOpenSpace(tracks = setOf(aTrack))
@@ -143,9 +143,9 @@ class OpenSpaceTest {
         openSpace.toggleCallForPapers(organizer)
         val aTalk = Talk("Talk", speaker = organizer)
 
-        assertThrows<NotValidTrackForOpenSpaceException> {
-            openSpace.addTalk(aTalk)
-        }
+        openSpace.addTalk(aTalk)
+
+        assertTrue(openSpace.containsTalk(aTalk))
     }
 
     @Test

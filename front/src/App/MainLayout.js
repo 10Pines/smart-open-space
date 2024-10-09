@@ -8,7 +8,7 @@ import Footer from './Footer';
 const areasThree = [
   ['headerL', 'header', 'headerR'],
   ['l', 'main', 'r'],
-  ['l', 'footer', 'r'],
+  ['footerL', 'footer', 'footerR'],
 ];
 
 const layouts = {
@@ -45,9 +45,18 @@ const MainLayout = ({ children, header }) => {
           <Box as="main" gridArea="main" pad={pad} style={{ minHeight: '92vh' }}>
             <div>{children}</div>
           </Box>
-          <Box gridArea="footer" fill background="light-3" overflow="visible" pad={pad}>
+          <BoxBrand gridArea="footerL" />
+          <BoxBrand gridArea="footerR" />
+          <BoxBrand
+            gridArea="footer"
+            fill
+            background="#7D4CDB"
+            minHeight="85rem"
+            overflow="visible"
+            pad={{ vertical: 'small', horizontal: 'small' }}
+          >
             <Footer />
-          </Box>
+          </BoxBrand>
         </Grid>
       </Box>
     </Box>

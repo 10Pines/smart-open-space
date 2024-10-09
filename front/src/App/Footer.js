@@ -9,7 +9,7 @@ const Footer = () => {
   return (
     <Box direction="row" justify="between" align="center">
       <Anchor label="Historia" onClick={() => setShow(true)} color="white" />
-      {show && <ProjectHistory />}
+      {show && <ProjectHistory setShow />}
       <div style={{ textAlign: 'center', alignItems: 'center' }}>
         <img
           src={logo10PinesWhite}

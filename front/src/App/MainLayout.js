@@ -17,8 +17,8 @@ const layouts = {
     columns: ['flex'],
     pad: { horizontal: 'medium' },
   },
-  medium: { areas: areasThree, columns: ['flex', 'large', 'flex'] },
-  large: { areas: areasThree, columns: ['flex', 'xlarge', 'flex'] },
+  medium: { areas: areasThree, columns: ['xsmall', 'flex', 'xsmall'] },
+  large: { areas: areasThree, columns: ['xsmall', 'flex', 'xsmall'] },
 };
 
 const useMainLayout = () => layouts[useSize()];

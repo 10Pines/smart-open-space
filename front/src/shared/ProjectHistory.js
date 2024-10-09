@@ -2,11 +2,11 @@ import React from 'react';
 import { Layer } from 'grommet';
 import logo10Pines from '#assets/10Pines-logo.svg';
 
-const ProjectHistory = (setShow) => {
+const ProjectHistory = ({ close }) => {
   return (
     <Layer
-      onEsc={() => setShow(false)}
-      onClickOutside={() => setShow(false)}
+      onEsc={close}
+      onClickOutside={close}
       background={'white'}
       style={{ padding: 10, overflowY: 'scroll' }}
     >

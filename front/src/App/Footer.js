@@ -9,15 +9,24 @@ const Footer = () => {
   return (
     <Box direction="row" justify="between" align="center">
       <Anchor label="Historia" onClick={() => setShow(true)} color="white" />
-      {show && <ProjectHistory setShow />}
+      {show && <ProjectHistory close={() => setShow(false)} />}
       <div style={{ textAlign: 'center', alignItems: 'center' }}>
-        <img
-          src={logo10PinesWhite}
-          width="130px"
-          alt="10Pines Logo"
-          style={{ paddingRight: '2rem' }}
-        />
-        <img src={logoUnquiWhite} width="130px" alt="UNQ logo" />
+        <a href="https://www.10pines.com/" target="_blank" rel="noopener noreferrer">
+          <img
+            src={logo10PinesWhite}
+            width="130px"
+            alt="10Pines Logo"
+            style={{ paddingRight: '2rem', cursor: 'pointer' }}
+          />
+        </a>
+        <a href="https://www.unq.edu.ar/" target="_blank" rel="noopener noreferrer">
+          <img
+            src={logoUnquiWhite}
+            width="130px"
+            alt="UNQ logo"
+            style={{ cursor: 'pointer' }}
+          />
+        </a>
       </div>
     </Box>
   );

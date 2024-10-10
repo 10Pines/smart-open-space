@@ -98,7 +98,7 @@ class OpenSpace(
   }
 
   fun checkTrackIsValid(track: Track?) {
-    if (!isTrackValid(track) && track != null)
+    if (!isTrackValid(track))
       throw NotValidTrackForOpenSpaceException()
   }
 
@@ -237,18 +237,10 @@ class OpenSpace(
   }
 
   @Transactional
-  fun updateTracks(newTracks: Set<Track>, deletedTracks: Set<Track>) {
+  fun updateTracksAndAssociatedTalks(newTracks: Set<Track>, deletedTracks: Set<Track>, talksWithoutTrack: List<Talk>) {
     this.tracks.removeAll(deletedTracks)
     this.tracks.addAll(newTracks)
-  }
-
-  @Transactional
-  fun removeDeletedTracksFromTalks(deletedItems: Set<Track>) {
-    for (talk in talks) {
-      if (talk.track != null && deletedItems.any { it.id == talk.track?.id }) {
-        talk.track = null
-      }
-    }
+    talksWithoutTrack.map { talk: Talk -> talk.track = null }
   }
 
   fun removeInvalidAssignedSlots() {
@@ -258,7 +250,7 @@ class OpenSpace(
   }
 
   private fun isTrackValid(track: Track?) =
-    !(areTracksUsed(track) && !trackIsFromThisOpenSpace(track))
+    !(areTracksUsed(track) && !trackIsFromThisOpenSpace(track)) && track != null
 
   private fun trackIsFromThisOpenSpace(track: Track?) = tracks.any { it == track }
 

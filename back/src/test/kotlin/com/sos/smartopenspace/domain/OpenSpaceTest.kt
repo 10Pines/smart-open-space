@@ -197,8 +197,7 @@ class OpenSpaceTest {
             name = "os", rooms = mutableSetOf(), slots = mutableSetOf(),
             talks = mutableSetOf(aTalk), tracks = mutableSetOf(track)
         )
-        openSpace.updateTracks(mutableSetOf(), mutableSetOf(track))
-        openSpace.removeDeletedTracksFromTalks(mutableSetOf(track))
+        openSpace.updateTracksAndAssociatedTalks(mutableSetOf(), mutableSetOf(track), mutableListOf(aTalk))
 
         assertEquals(0, openSpace.tracks.size)
         assertEquals(null, openSpace.talks.first().track)

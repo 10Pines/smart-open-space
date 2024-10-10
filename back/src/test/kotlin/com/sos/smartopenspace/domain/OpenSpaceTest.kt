@@ -135,7 +135,7 @@ class OpenSpaceTest {
     }
 
     @Test
-    fun `an open space with tracks cant add a talk without track`() {
+    fun `an open space with tracks can add a talk without track`() {
         val aTrack = Track(name = "track", color = "#FFFFFF")
         val organizer = anyUser()
         val openSpace = anOpenSpace(tracks = setOf(aTrack))
@@ -143,9 +143,9 @@ class OpenSpaceTest {
         openSpace.toggleCallForPapers(organizer)
         val aTalk = Talk("Talk", speaker = organizer)
 
-        assertThrows<NotValidTrackForOpenSpaceException> {
-            openSpace.addTalk(aTalk)
-        }
+        openSpace.addTalk(aTalk)
+
+        assertTrue(openSpace.containsTalk(aTalk))
     }
 
     @Test
@@ -186,6 +186,23 @@ class OpenSpaceTest {
         assertEquals(track.name, openSpace.tracks.first().name)
         assertEquals(track.description, openSpace.tracks.first().description)
     }
+
+    @Test
+    fun `an open space updates talk when removing associated track`() {
+        val track = Track(name = "track", color = "#FFFFFF")
+        val organizer = anyUser()
+        val aTalk = Talk("Talk", track = track, speaker = organizer)
+
+        val openSpace = OpenSpace(
+            name = "os", rooms = mutableSetOf(), slots = mutableSetOf(),
+            talks = mutableSetOf(aTalk), tracks = mutableSetOf(track)
+        )
+        openSpace.updateTracksAndAssociatedTalks(mutableSetOf(), mutableSetOf(track), mutableListOf(aTalk))
+
+        assertEquals(0, openSpace.tracks.size)
+        assertEquals(null, openSpace.talks.first().track)
+    }
+
     @Test
     fun `an openSpace knows when it starts`() {
         val startDate = LocalDate.now()

@@ -250,7 +250,7 @@ class OpenSpace(
   }
 
   private fun isTrackValid(track: Track?) =
-    !(areTracksUsed(track) && !trackIsFromThisOpenSpace(track)) && track != null
+    !(areTracksUsed(track) && !trackIsFromThisOpenSpace(track)) || track == null
 
   private fun trackIsFromThisOpenSpace(track: Track?) = tracks.any { it == track }
 

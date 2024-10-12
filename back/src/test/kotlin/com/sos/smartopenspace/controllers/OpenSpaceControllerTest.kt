@@ -140,6 +140,27 @@ class OpenSpaceControllerTest {
     }
 
     @Test
+    fun `can create a valid marketplace talk and get it correctly`() {
+        val user = repoUser.save(aUser())
+        val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(user))
+        anOpenSpace.toggleCallForPapers(user)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/openSpace/talk/${user.id}/${anOpenSpace.id}")
+                .contentType("application/json")
+                .content(generateMarketplaceTalkWithTrackBody())
+        ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/openSpace/talks/${anOpenSpace.id}")
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].isMarketplaceTalk").value(true))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].speakerName").value("Alan Key"))
+    }
+
+    @Test
     fun `creating an invalid talk return an bad request status`() {
         val user = repoUser.save(aUser())
         val anOpenSpace = repoOpenSpace.save(anyOpenSpace())
@@ -454,6 +475,15 @@ class OpenSpaceControllerTest {
                 "meetingLink": "$aMeeting",
                 "trackId": ${track.id},
                 "documents": [{"name": "${document.name}", "link": "${document.link}"}] 
+            }
+        """.trimIndent()
+    }
+
+    private fun generateMarketplaceTalkWithTrackBody(): String {
+        return """
+            {
+                "name": "a talk",
+                "speakerName": "Alan Key" 
             }
         """.trimIndent()
     }

@@ -16,5 +16,7 @@ object TalkResTranslator : TranslatorFrom<Talk, TalkResponseDTO> {
         reviews = ReviewResTranslator.translateAllFrom(domain.reviews.toList()),
         votingUsers = UserResTranslator.translateAllFrom(domain.votingUsers.toList()),
         votes = domain.votes(),
+        isMarketplaceTalk = domain.isMarketplaceTalk,
+        speakerName = domain.speakerName,
     )
 }

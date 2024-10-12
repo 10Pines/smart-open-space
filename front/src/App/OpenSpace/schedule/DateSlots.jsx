@@ -10,17 +10,17 @@ export const DateSlots = ({ talksOf, sortedSlots, showSpeakerName }) => {
   return (
     <Box margin={{ bottom: 'medium' }}>
       {[
-        ...sortedSlots.map((slot) => (
+        ...sortedSlots.map((slot, index) => (
           <Slot
             key={slot.id}
             talksOf={talksOf}
             slot={slot}
             showSpeakerName={showSpeakerName}
+            index={index}
           />
         )),
         <React.Fragment key="cierre">
-          <HourHeader hour={numbersToTime(sortedSlots.slice(-1)[0].endTime)} />
-          <OtherSlot description="Cierre" />
+          <HourHeader hour={numbersToTime(sortedSlots.slice(-1)[0].endTime)} isFinal />
         </React.Fragment>,
       ]}
     </Box>

@@ -18,10 +18,12 @@ export const TalkForm = ({
   openSpace,
   subtitle,
   title,
+  amTheOrganizer,
   initialValues = emptyTalk,
 }) => {
   const history = useHistory();
-  const openSpaceHasTracks = openSpace && openSpace.tracks.length > 0;
+  const nullTrackOption = { id: null, name: 'Sin track' }; // Customize the name as needed
+  const trackOptionsWithNull = [nullTrackOption, ...(openSpace?.tracks || [])];
 
   return (
     <>
@@ -45,15 +47,13 @@ export const TalkForm = ({
           placeholder="Describí tu charla con mas detalle. Podés usar Markdown"
         />
         <MyForm.Link label="Link" placeholder="Link a la reunión virtual (meet/zoom)" />
-        {openSpaceHasTracks && (
-          <MyForm.Select
-            label="Track"
-            name="track"
-            options={openSpace.tracks}
-            labelKey="name"
-            valueKey="id"
-          />
-        )}
+        <MyForm.Select
+          label="Track"
+          name="track"
+          options={trackOptionsWithNull}
+          labelKey="name"
+          valueKey="id"
+        />
         <MyForm.Field
           component={Documents}
           icon={<TextAreaIcon />}
@@ -63,6 +63,15 @@ export const TalkForm = ({
           valueKey="id"
           required={false}
         />
+        {amTheOrganizer && (
+          <MyForm.Text
+            id="talk-speaker-name"
+            label="Nombre del Orador"
+            name="speakerName"
+            placeholder="En caso de ser un orador que pitcheó en el marketplace, ingresa el nombre completo"
+            required={false}
+          />
+        )}
       </MyForm>
     </>
   );

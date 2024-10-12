@@ -64,7 +64,8 @@ const Talk = ({
 
   const color = talk.colorForTalkManagement();
 
-  const shouldDisplayDeleteTalkButton = user && talk.speaker.id === user.id;
+  const shouldDisplayDeleteTalkButton =
+    user && (currentUserIsOrganizer || talk.speaker.id === user.id);
 
   return (
     <Card borderColor={color} gap="small">
@@ -72,7 +73,7 @@ const Talk = ({
         <Title>{talk.name}</Title>
         {currentUserIsOrganizer && (
           <>
-            <Detail icon={UserIcon} text={talk.speaker.name} />
+            <Detail icon={UserIcon} text={talk.speakerName} />
             <Detail size="small" text={talk.speaker.email} />
           </>
         )}

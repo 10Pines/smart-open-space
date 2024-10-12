@@ -37,6 +37,8 @@ class OpenSpaceService(
     fun update(userID: Long, openSpaceID: Long, openSpaceRequestDTO: OpenSpaceRequestDTO): OpenSpace {
         val openSpace = findById(openSpaceID)
         val user = findUser(userID)
+        val deletedTracks = updatableItemCollectionService.getDeletedItems(openSpaceRequestDTO.tracks, openSpace.tracks)
+        val talksWithoutTrack = talkRepository.findByOpenSpaceIdAndTrackIds(openSpaceID, deletedTracks.map { it.id }) ?: emptyList()
 
         openSpace.updateRooms(
             updatableItemCollectionService.getNewItems(openSpaceRequestDTO.rooms),
@@ -46,9 +48,10 @@ class OpenSpaceService(
             updatableItemCollectionService.getNewItems(openSpaceRequestDTO.slots),
             updatableItemCollectionService.getDeletedItems(openSpaceRequestDTO.slots, openSpace.slots)
         )
-        openSpace.updateTracks(
+        openSpace.updateTracksAndAssociatedTalks(
             updatableItemCollectionService.getNewItems(openSpaceRequestDTO.tracks),
-            updatableItemCollectionService.getDeletedItems(openSpaceRequestDTO.tracks, openSpace.tracks)
+            deletedTracks,
+            talksWithoutTrack
         )
         openSpace.removeInvalidAssignedSlots()
 
@@ -162,7 +165,10 @@ class OpenSpaceService(
             meetingLink = createTalkRequestDTO.meetingLink,
             track = track,
             speaker = user,
-            documents = createTalkRequestDTO.documents.toMutableSet()
+            documents = createTalkRequestDTO.documents.toMutableSet(),
+            isMarketplaceTalk = !createTalkRequestDTO.speakerName.isNullOrEmpty(),
+            speakerName = createTalkRequestDTO.speakerName
+
         )
     }
 

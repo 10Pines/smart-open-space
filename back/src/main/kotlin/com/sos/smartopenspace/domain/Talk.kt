@@ -37,10 +37,13 @@ class Talk(
   val reviews: MutableSet<Review> = mutableSetOf(),
 
   @ManyToOne
-  val speaker: User
+  val speaker: User,
+
+  var isMarketplaceTalk: Boolean = false,
+  var speakerName: String? = null
 ) {
 
-  @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "vote",
           joinColumns = [JoinColumn(name = "talk_id", referencedColumnName = "id")],
           inverseJoinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")])

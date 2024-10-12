@@ -32,18 +32,19 @@ const ButtonGoToLink = ({ onClick }) => (
 );
 
 const Talk = ({
-  talk: { id, name, speaker, meetingLink, track },
+  talk: { id, name, speaker, meetingLink, track, speakerName },
   room,
   children,
   showSpeakerName,
 }) => {
+  const realSpeakerName = speakerName || speaker.name;
   const pushToTalk = usePushToTalk(
     useParams().id,
     id,
-    showSpeakerName ? speaker.name : null
+    showSpeakerName ? realSpeakerName : null
   );
 
-  const color = track ? track.color : 'accent-3';
+  const color = track ? track.color : 'gray';
   const talkLink = meetingLink || room?.link;
   return (
     <>
@@ -51,7 +52,7 @@ const Talk = ({
         {children}
         <Title>{name}</Title>
         <Box gap="medium">
-          {showSpeakerName && <Detail icon={UserIcon} text={speaker.name} />}
+          {showSpeakerName && <Detail icon={UserIcon} text={realSpeakerName} />}
           {room && <Detail icon={HomeIcon} text={room.name} />}
           <ButtonMoreInfo onClick={() => pushToTalk()} />
           {talkLink && <ButtonGoToLink onClick={() => window.open(talkLink, '_blank')} />}

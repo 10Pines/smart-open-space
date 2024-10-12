@@ -323,7 +323,7 @@ describe('GIVEN isEqualsDateTime func', () => {
 });
 
 describe('GIVEN isSameDate func', () => {
-  it('WHEN both dates are equal THEN return truthy', () => {
+  test('WHEN both dates are equal THEN return truthy', () => {
     const tests = [
       {
         date1: new Date(2024, 0, 1),
@@ -343,7 +343,7 @@ describe('GIVEN isSameDate func', () => {
     });
   });
 
-  it('WHEN both dates are not equal or both undefined/null THEN return falsy', () => {
+  test('WHEN both dates are not equal or both undefined/null THEN return falsy', () => {
     const tests = [
       {
         date1: new Date(2024, 0, 2),

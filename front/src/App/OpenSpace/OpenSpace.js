@@ -10,19 +10,17 @@ import {
   usePushToSchedule,
   usePushToEditOS,
 } from '#helpers/routes';
-import { EditIcon, ScheduleIcon } from '#shared/icons';
+import { ScheduleIcon } from '#shared/icons';
 import MainHeader from '#shared/MainHeader';
 import Spinner from '#shared/Spinner';
 import { ButtonSingIn } from '#shared/ButtonSingIn';
 import { ButtonFinishMarketplace } from './buttons/ButtonFinishMarketplace';
 import { ButtonProjector } from './buttons/ButtonProjector';
 import { ButtonStartMarketplace } from './buttons/ButtonStartMarketplace';
-import { ButtonToSwitchCallForPapers } from './buttons/ButtonToSwitchCallForPapers';
-import { ButtonToToggleVoting } from './buttons/ButtonToToggleVoting';
-import { ButtonToToggleShowSpeakerName } from './buttons/ButtonToToggleShowSpeakerName';
 import { ButtonMyTalks } from './buttons/ButtonMyTalks';
 import { QueryForm } from './QueryForm';
 import { DisplayTalks } from './DisplayTalks';
+import OrganizerButtons from './OrganizerButtons';
 
 const OpenSpace = () => {
   const user = useUser();
@@ -92,32 +90,13 @@ const OpenSpace = () => {
         {finishedQueue && <MainHeader.SubTitle label="Marketplace finalizado" />}
         <MainHeader.Buttons>
           {amTheOrganizer && (
-            <Button
-              icon={<EditIcon />}
-              color="accent-4"
-              label="Editar"
-              onClick={pushToEditOS}
-            />
-          )}
-          {amTheOrganizer && (
-            <ButtonToSwitchCallForPapers
-              openSpaceID={id}
+            <OrganizerButtons
+              id={id}
               setData={setData}
               isActiveCallForPapers={isActiveCallForPapers}
-            />
-          )}
-          {amTheOrganizer && (
-            <ButtonToToggleVoting
-              openSpaceID={id}
-              setData={setData}
               isActiveVoting={isActiveVoting}
-            />
-          )}
-          {amTheOrganizer && (
-            <ButtonToToggleShowSpeakerName
-              openSpaceID={id}
-              setData={setData}
               showSpeakerName={showSpeakerName}
+              pushToEditOS={pushToEditOS}
             />
           )}
           {user ? (

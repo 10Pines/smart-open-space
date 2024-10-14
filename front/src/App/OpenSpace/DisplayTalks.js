@@ -1,5 +1,6 @@
 import { RedirectToRoot, usePushToNewTalk } from '#helpers/routes';
 import EmptyTalk from '../MyTalks/EmptyTalk';
+import { Heading } from 'grommet';
 import { TrackWithTalks } from './TrackWithTalks';
 import TalksGrid from './TalksGrid';
 import React from 'react';
@@ -17,6 +18,7 @@ export function DisplayTalks({
   const pushToNewTalk = usePushToNewTalk();
   const shouldDisplayEmptyTalk = amountOfTalks === 0 && activeCallForPapers;
   const shouldDisplayTrackWithTalks = tracks.length > 0 && amountOfTalks > 0;
+  let talksWithoutTrack = [];
   if (isPending) return <Spinner />;
   if (isRejected) return <RedirectToRoot />;
   if (shouldDisplayEmptyTalk) {
@@ -24,24 +26,45 @@ export function DisplayTalks({
   }
 
   if (shouldDisplayTrackWithTalks) {
-    return tracks.map((track, index) => (
-      <TrackWithTalks
-        key={index}
-        talks={talks}
-        reloadTalks={reloadTalks}
-        track={track}
-        activeVoting={activeVoting}
-        showSpeakerName={showSpeakerName}
-      />
-    ));
+    talksWithoutTrack = talks.filter((talk) => !talk.track);
+    return (
+      <>
+        {tracks.map((track, index) => (
+          <TrackWithTalks
+            key={index}
+            talks={talks}
+            reloadTalks={reloadTalks}
+            track={track}
+            activeVoting={activeVoting}
+            showSpeakerName={showSpeakerName}
+          />
+        ))}
+        {talksWithoutTrack.length > 0 && (
+          <Heading color="gray" size="sm">
+            Sin track
+          </Heading>
+        )}
+        <TalksGrid
+          talks={talksWithoutTrack}
+          reloadTalks={reloadTalks}
+          activeVoting={activeVoting}
+          showSpeakerName={showSpeakerName}
+        />
+      </>
+    );
   }
 
   return (
-    <TalksGrid
-      talks={talks}
-      reloadTalks={reloadTalks}
-      activeVoting={activeVoting}
-      showSpeakerName={showSpeakerName}
-    />
+    <>
+      <Heading color="gray" size="sm">
+        Sin track
+      </Heading>
+      <TalksGrid
+        talks={talks}
+        reloadTalks={reloadTalks}
+        activeVoting={activeVoting}
+        showSpeakerName={showSpeakerName}
+      />
+    </>
   );
 }

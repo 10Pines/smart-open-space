@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { Box, Heading, Text } from 'grommet';
+import { Box, Button, DataTable, Heading, Meter, Text } from 'grommet';
 import PropTypes from 'prop-types';
 
 import { nextTalk, useGetCurrentUserTalks, useGetTalks } from '#api/os-client';
@@ -191,6 +191,10 @@ const MyTalks = () => {
         new Room(slots, room.id, room.name, room.description)
     );
   }
+  console.log('talks:', talks);
+  const assignedTalks = talks ? talks[0].slots.map((slot) => slot.talk.id) : [];
+
+  console.log('assigned talks talks:', assignedTalks);
 
   return (
     <>
@@ -227,6 +231,52 @@ const MyTalks = () => {
               title={myEnqueuedTalk().name}
             />
           )}
+          <DataTable
+            columns={[
+              {
+                property: 'title',
+                header: <Text>Título</Text>,
+                primary: true,
+              },
+              {
+                property: 'author',
+                header: 'Autor/a',
+              },
+              {
+                property: 'votes',
+                header: 'Votos',
+              },
+              {
+                property: 'state',
+                header: 'Estado',
+              },
+              {
+                property: 'actions',
+                header: 'Acciones',
+                render: (datum) => (
+                  <Box pad={{ vertical: 'xsmall' }} direction="row" gap="xsmall">
+                    {datum.state == 'Presentada' ? (
+                      <Button>Agendar</Button>
+                    ) : (
+                      <Button>Reagendar</Button>
+                    )}
+                    <Button>Eliminar</Button>
+                    <Button>Encolar</Button>
+                    <Button>Editar</Button>
+                  </Box>
+                ),
+              },
+            ]}
+            data={talks.map((talk) => {
+              return {
+                title: talk.name,
+                author: talk.speaker.name,
+                votes: talk.votes,
+                state: assignedTalks.includes(talk.id) ? 'Agendada' : 'Presentada',
+                actions: 'todo',
+              };
+            })}
+          />
           <MyGrid>
             {talks.map((talk) => (
               <TalkView

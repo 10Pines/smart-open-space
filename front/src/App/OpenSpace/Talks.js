@@ -6,7 +6,7 @@ import MyProps from '#helpers/MyProps';
 import { NextIcon, PreviousIcon } from '#shared/icons';
 
 const sliderSettings = {
-  centerMode: true,
+  centerMode: false,
   arrows: true,
   dots: false,
   speed: 500,
@@ -27,7 +27,7 @@ const sliderSettings = {
 };
 
 const Talks = ({ children }) => (
-  <Slider {...sliderSettings} infinite={children.length > 3}>
+  <Slider {...sliderSettings} infinite={false}>
     {children}
   </Slider>
 );

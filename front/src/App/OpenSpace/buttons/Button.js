@@ -7,10 +7,8 @@ const customTheme = {
   },
 };
 
-function App({ label, showIf = true, onClick }) {
-  return showIf ? (
-    <Button style={customTheme.button} primary label={label} onClick={onClick} />
-  ) : null;
+function App({ label, onClick }) {
+  return <Button style={customTheme.button} primary label={label} onClick={onClick} />;
 }
 
 export default App;

@@ -3,6 +3,7 @@ import { Grid } from 'grommet';
 import Button from './Button';
 
 const ControlButtons = ({ controlButtons, size }) => {
+  console.info('Recibo controlButtons', controlButtons);
   return (
     <Grid
       columns={{
@@ -12,17 +13,14 @@ const ControlButtons = ({ controlButtons, size }) => {
       gap="1rem"
       responsive
     >
-      {controlButtons.map(
-        ({ label, showIf, onClick }) =>
-          showIf && (
-            <Button
-              key={label}
-              label={label}
-              onClick={onClick}
-              style={{ minWidth: '150px', width: '100%' }}
-            />
-          )
-      )}
+      {controlButtons.map(({ label, onClick }) => (
+        <Button
+          key={label}
+          label={label}
+          onClick={onClick}
+          style={{ minWidth: '150px', width: '100%' }}
+        />
+      ))}
     </Grid>
   );
 };

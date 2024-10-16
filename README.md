@@ -2,7 +2,7 @@
   Smart Open Space
 </h1>
 <p align="center">
-  <img src="/other/logo.svg" width="150" height="150" />
+  <img src="/docs/other/logo.svg" width="150" height="150" />
 </p>
 <p align="center">
   Organizá tu Open Space! :sunglasses:
@@ -11,7 +11,8 @@
 <hr />
 
 [![Heroku][heroku-badge]][heroku]
-[![Build Status][build-badge]][build]
+[![Build Back Status][build-back-badge]][build-back]
+[![Build Front Status][build-front-badge]][build-front]
 [![Dependabot Status][dependabot-badge]][dependabot]
 [![Backlog][backlog-badge]][backlog]
 [![License: GPLv3][license-badge]][license]
@@ -40,9 +41,8 @@ En esta segunda, buscamos construir la mínima herramienta que permita gestionar
 ### Antes de empezar, vas a necesitar:
   - [Git][git]
   - [PostgreSQL][postgresql] o Docker
-  - [JDK 8 update 60 o superior][java8] (Asegurate que la variable de entorno `JAVA_HOME` apunte a la carpeta `jdk1.8.0` que sacaste de la descarga del JDK).
+  - [Java 21 / JDK 21][java] (Asegurate que la variable de entorno `JAVA_HOME` apunte a la carpeta del jdk que sacaste de la descarga del JDK).
   - [NodeJS][node]
-  - [Yarn][yarn]
 
 ### Descargar el código fuente
 ```sh
@@ -94,19 +94,15 @@ cd back && ./gradlew bootRun
 ```
 
 ### Levantar frontend
-Asegurate de tener la version de node correspondiente:
+Asegurate de tener la version de node correspondiente (revisar .tool-versions):
 ```sh
 cd front && nvm use
 ```
 
-Si no tenes yarn instalado:
-```sh
-npm install -g yarn
-```
 
 Para instalar dependencias y levantar el proyecto:
 ```sh
-yarn && yarn watch
+npm install && npm run watch
 ```
 
 ### Flyway plugin
@@ -128,57 +124,7 @@ JDBC_DATABASE_PASSWORD=openheart
 
 ## :scroll: Documentación
 
-### Diagrama de Arquitectura
-
-#### Visualización del Open Space
-
-![Diagrama de arquitectura](/other/Arquitectura.png)
-
-- Frontend:
-  - **App.js**: Punto de entrada de la aplicación.
-  - **Routes**: Detecta la ruta, y elige qué componente que corresponde renderizar.
-  - **OpenSpace.js**: Renderiza la pantalla con los datos del Open Space.
-  - **os-client.js**: Conseguir los datos del Open Space, conectandose con el backend.
-- Backend:
-  - **OpenSpaceController**: Exponer los endpoints del OpenSpaceService, como REST-Json.
-  - **OpenSpaceService**: Exponer un servicio para manipular un Open Space.
-  - **OpenSpaceRepository**: Persistir y recuperar objetos OpenSpace de la base de datos.
-  - **OpenSpace**: Objeto que representa un Open Space.
-
-### Casos de uso
-#### Entrega 1
-![Caso de uso entrega 1](/other/CasoDeUso.png)
-- Organizador:
-  - **Crear Open Space**: Nombre, fecha, horarios y salas.
-- Orador:
-  - **Registro / Login**: Registrarse con nombre, email y contraseña. Loguearse con email y contraseña
-  - **Cargar charla**: con título y descripción en un Open Space.
-  - **Agendar charla**: en una sala y un horario disponible en el Open Space.
-- Asistente:
-  - **Ver agenda**: con todas las charlas en su horario y sala de un Open Space.
-  - **Ver detalle de charla**: Título, descripción, orador, sala y horario.
-
-#### Entrega 2
-![Caso de uso entrega 2](/other/CasoDeUso2.png)
-- Organizador:
-  - **Iniciar Marketplace**: Habilitar encolamiento de los oradores para poder exponer su charla.
-  - **Mostrar modo proyección**: Mientras orador expone, mostrar datos de su charla.
-- Orador:
-  - **Encolarse para exponer**: Ponerse en la fila, para exponer su charla.
-
-#### Entrega 3
-![Caso de uso entrega 3](/other/CasoDeUso3.png)
-- Organizador:
-  - **Finalizar Marketplace**: Deshabilitar encolamiento para que no se puedan agendar más charlas.
-- Orador:
-  - **Ingresar con mail**: Ingresar a la app solo con email y nombre.
-
-#### Entrega 4
-![Caso de uso entrega 4](/other/CasoDeUso4.png)
-- Organizador:
-  - **Crear Open Space** (modificado): Cargar estructura de slots (charla - otro).
-  - **Gestionar charlas**: Cargar, encolar y agendar charlas de cualquier orador.
-  - **Intercambiar charlas**: de cualquier orador a otra sala y horario.
+[Ir a documentación](/docs/README.md)
 
 ## :computer: Demo
 [![Youtube demo][demo-prev]][demo-link]
@@ -188,20 +134,21 @@ JDBC_DATABASE_PASSWORD=openheart
 
 [backlog]: https://trello.com/b/A3IsSe1r/smartopenspace
 [backlog-badge]: https://img.shields.io/badge/trello-backlog-blue?style=flat-square&logo=trello
-[build]: https://travis-ci.org/AugustoConti/smart-open-space
-[build-badge]: https://img.shields.io/travis/AugustoConti/smart-open-space?logo=travis&style=flat-square
+[build-back]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-backend.yml
+[build-back-badge]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-backend.yml/badge.svg
+[build-front]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-frontend.yml
+[build-front-badge]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-frontend.yml/badge.svg
 [demo-link]:https://www.youtube.com/watch?v=cm3D5IztoL0
 [demo-prev]:https://img.youtube.com/vi/cm3D5IztoL0/0.jpg
 [dependabot]: https://dependabot.com
-[dependabot-badge]: https://api.dependabot.com/badges/status?host=github&repo=AugustoConti/smart-open-space
+[dependabot-badge]: https://api.dependabot.com/badges/status?host=github&repo=10Pines/smart-open-space
 [git]: https://help.github.com/set-up-git-redirect
 [heroku]: https://smartopenspace.herokuapp.com
 [heroku-badge]: https://img.shields.io/badge/heroku-deploy-ff69b4?style=flat-square&logo=heroku
-[issues]: https://github.com/AugustoConti/smart-open-space/issues
-[issues-badge]: https://img.shields.io/github/issues-raw/AugustoConti/smart-open-space?style=flat-square
-[java8]: https://www.oracle.com/technetwork/java/javase/downloads/index.html
+[issues]: https://github.com/10Pines/smart-open-space/issues
+[issues-badge]: https://img.shields.io/github/issues-raw/10Pines/smart-open-space?style=flat-square
+[java]: https://www.oracle.com/technetwork/java/javase/downloads/index.html
 [license]: LICENCIA
 [license-badge]: https://img.shields.io/github/license/AugustoConti/smart-open-space?style=flat-square
 [node]: https://nodejs.org
 [postgresql]: https://www.postgresql.org/download/
-[yarn]: https://yarnpkg.com/en/docs/install

@@ -14,7 +14,8 @@ const useSocket = (endpoint, onUpdate, initialState) => {
     [onUpdate]
   );
   useEffect(() => {
-    socketRef.current = new SockJS(`${process.env.API_URL}/${endpoint}`);
+    const uri = `${import.meta.env.VITE_API_URL}/${endpoint}`;
+    socketRef.current = new SockJS(uri);
     socketRef.current.onmessage = (msg) => onUpd(JSON.parse(msg.data));
     socketRef.current.onopen = () => socketRef.current.send(id);
     return () => socketRef.current.close();

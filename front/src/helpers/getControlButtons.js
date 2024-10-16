@@ -15,11 +15,13 @@ export const getControlButtons = ({
   pendingQueue,
   activeQueue,
   ...props
-}) => [
-  ...(amTheOrganizer ? getOrganizerButtons(props) : []),
-  ...(user ? getUserButtons({ amTheOrganizer, ...props }) : []),
-  ...(pendingQueue || activeQueue ? getQueueButtons(props) : []),
-];
+}) => {
+  return [
+    ...(amTheOrganizer ? getOrganizerButtons(props) : []),
+    ...(user ? getUserButtons({ amTheOrganizer, ...props }) : []),
+    ...(amTheOrganizer ? getQueueButtons({ ...props, activeQueue, pendingQueue }) : []),
+  ];
+};
 
 const getLockIcon = (isActive) => (isActive ? <LockIcon /> : <UnlockIcon />);
 
@@ -59,17 +61,12 @@ const getOrganizerButtons = ({
   },
 ];
 
-const getUserButtons = ({ amTheOrganizer, pushToMyTalks, pushToProjector }) =>
+const getUserButtons = ({ amTheOrganizer, pushToMyTalks }) =>
   [
     !amTheOrganizer && {
       label: 'Mis charlas',
       onClick: pushToMyTalks,
       icon: <TalkIcon />,
-    },
-    {
-      label: 'Proyector',
-      onClick: pushToProjector,
-      icon: <VideoIcon />,
     },
   ].filter(Boolean);
 
@@ -79,22 +76,29 @@ const getQueueButtons = ({
   queue,
   setShowQuery,
   doFinishQueue,
-  activateQueue,
-}) => [
-  {
-    label: pendingQueue ? 'Finalizar MarketPlace' : 'Abrir MarketPlace',
-    onClick: () =>
-      handleMarketplaceQueueState({
-        pendingQueue,
-        activeQueue,
-        queue,
-        setShowQuery,
-        doFinishQueue,
-        activateQueue,
-      }),
-    icon: <CartIcon />,
-  },
-];
+  handleActivateQueue,
+  pushToProjector,
+}) =>
+  [
+    {
+      label: 'Proyector',
+      onClick: pushToProjector,
+      icon: <VideoIcon />,
+    },
+    (pendingQueue || activeQueue) && {
+      label: activeQueue ? 'Finalizar MarketPlace' : 'Abrir MarketPlace',
+      onClick: () =>
+        handleMarketplaceQueueState({
+          pendingQueue,
+          activeQueue,
+          queue,
+          setShowQuery,
+          doFinishQueue,
+          handleActivateQueue,
+        }),
+      icon: <CartIcon />,
+    },
+  ].filter(Boolean);
 
 const handleMarketplaceQueueState = async ({
   pendingQueue,
@@ -102,10 +106,10 @@ const handleMarketplaceQueueState = async ({
   queue,
   setShowQuery,
   doFinishQueue,
-  activateQueue,
+  handleActivateQueue,
 }) => {
   if (pendingQueue) {
-    return activateQueue();
+    return handleActivateQueue();
   }
 
   if (activeQueue) {

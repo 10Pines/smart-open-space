@@ -1,3 +1,5 @@
+import React from 'react';
+import { EditIcon, LockIcon, TalkIcon, UnlockIcon } from '#shared/icons';
 import { startCallForPapers, toggleShowSpeakerName, toggleVoting } from './api/os-client';
 
 export const getControlButtons = ({
@@ -8,9 +10,11 @@ export const getControlButtons = ({
   ...props
 }) => [
   ...(amTheOrganizer ? getOrganizerButtons(props) : []),
-  ...(user ? getUserButtons(props) : []),
+  ...(user ? getUserButtons({ amTheOrganizer, ...props }) : []),
   ...(pendingQueue || activeQueue ? getQueueButtons(props) : []),
 ];
+
+const getLockIcon = (isActive) => (isActive ? <LockIcon /> : <UnlockIcon />);
 
 const getOrganizerButtons = ({
   isActiveCallForPapers,
@@ -24,35 +28,42 @@ const getOrganizerButtons = ({
   {
     label: 'Editar',
     onClick: pushToEditOS,
+    icon: <EditIcon />,
   },
   {
     label: isActiveCallForPapers ? 'Cerrar convocatoria' : 'Abrir convocatoria',
     onClick: () => startCallForPapers(id).then(setData),
+    icon: getLockIcon(isActiveCallForPapers),
   },
   {
     label: isActiveVoting ? 'Cerrar votación' : 'Abrir votación',
     onClick: () => toggleVoting(id).then(setData),
+    icon: isActiveVoting ? <LockIcon /> : <UnlockIcon />,
   },
   {
     label: showSpeakerName ? 'No Mostrar Speaker' : 'Mostrar Speaker',
     onClick: () => toggleShowSpeakerName(id).then(setData),
+    icon: showSpeakerName ? <LockIcon /> : <UnlockIcon />,
   },
   {
     label: 'Gestionar Charlas',
     onClick: pushToMyTalks,
+    icon: <TalkIcon />,
   },
 ];
 
-const getUserButtons = ({ pushToMyTalks, pushToProjector }) => [
-  {
-    label: 'Mis charlas',
-    onClick: pushToMyTalks,
-  },
-  {
-    label: 'Proyector',
-    onClick: pushToProjector,
-  },
-];
+const getUserButtons = ({ amTheOrganizer, pushToMyTalks, pushToProjector }) =>
+  [
+    !amTheOrganizer && {
+      label: 'Mis charlas',
+      onClick: pushToMyTalks,
+      icon: <TalkIcon />,
+    },
+    {
+      label: 'Proyector',
+      onClick: pushToProjector,
+    },
+  ].filter(Boolean);
 
 const getQueueButtons = ({
   pendingQueue,

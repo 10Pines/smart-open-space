@@ -1,5 +1,12 @@
 import React from 'react';
-import { EditIcon, LockIcon, TalkIcon, UnlockIcon } from '#shared/icons';
+import {
+  CartIcon,
+  EditIcon,
+  LockIcon,
+  TalkIcon,
+  UnlockIcon,
+  VideoIcon,
+} from '#shared/icons';
 import { startCallForPapers, toggleShowSpeakerName, toggleVoting } from './api/os-client';
 
 export const getControlButtons = ({
@@ -38,12 +45,12 @@ const getOrganizerButtons = ({
   {
     label: isActiveVoting ? 'Cerrar votación' : 'Abrir votación',
     onClick: () => toggleVoting(id).then(setData),
-    icon: isActiveVoting ? <LockIcon /> : <UnlockIcon />,
+    icon: getLockIcon(isActiveVoting),
   },
   {
     label: showSpeakerName ? 'No Mostrar Speaker' : 'Mostrar Speaker',
     onClick: () => toggleShowSpeakerName(id).then(setData),
-    icon: showSpeakerName ? <LockIcon /> : <UnlockIcon />,
+    icon: getLockIcon(showSpeakerName),
   },
   {
     label: 'Gestionar Charlas',
@@ -62,6 +69,7 @@ const getUserButtons = ({ amTheOrganizer, pushToMyTalks, pushToProjector }) =>
     {
       label: 'Proyector',
       onClick: pushToProjector,
+      icon: <VideoIcon />,
     },
   ].filter(Boolean);
 
@@ -84,6 +92,7 @@ const getQueueButtons = ({
         doFinishQueue,
         activateQueue,
       }),
+    icon: <CartIcon />,
   },
 ];
 

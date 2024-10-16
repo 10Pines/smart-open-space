@@ -7,8 +7,16 @@ const customTheme = {
   },
 };
 
-function App({ label, onClick }) {
-  return <Button style={customTheme.button} primary label={label} onClick={onClick} />;
+function App({ label, onClick, icon = undefined }) {
+  return (
+    <Button
+      style={customTheme.button}
+      primary
+      label={label}
+      onClick={onClick}
+      icon={icon}
+    />
+  );
 }
 
 export default App;

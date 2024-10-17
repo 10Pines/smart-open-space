@@ -65,9 +65,9 @@ const getOrganizerButtons = ({
   showSpeakerName,
   pushToEditOS,
   pushToMyTalks,
-  pushToRoot,
   id,
   setData,
+  setShowDeleteModal,
 }) => [
   {
     label: 'Editar',
@@ -78,7 +78,7 @@ const getOrganizerButtons = ({
   },
   {
     label: 'Eliminar',
-    onClick: () => deleteOS(id).then(() => pushToRoot()),
+    onClick: () => setShowDeleteModal(true),
     icon: <DeleteIcon />,
     category: 'os',
     order: 2,

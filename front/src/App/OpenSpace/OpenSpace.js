@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box } from 'grommet';
 
-import { activateQueue, finishQueue, useGetOpenSpace } from '#api/os-client';
+import { activateQueue, deleteOS, finishQueue, useGetOpenSpace } from '#api/os-client';
 import { useQueue } from '#api/sockets-client';
 import { useUser } from '#helpers/useAuth';
 import {
@@ -21,11 +21,13 @@ import { DisplayTalks } from './DisplayTalks';
 import useSize from '#helpers/useSize';
 import { getControlButtons } from '#helpers/getControlButtons';
 import ControlButtons from './buttons/ControlButtons';
+import ConfirmationDialog from '#shared/ConfirmationDialog';
 
 const OpenSpace = () => {
   const user = useUser();
   const size = useSize();
   const [showQuery, setShowQuery] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { data = {}, isPending, isRejected, setData } = useGetOpenSpace();
   const queue = useQueue();
   const pushHandlers = {
@@ -53,6 +55,7 @@ const OpenSpace = () => {
     setShowQuery,
     id: data.id,
     setData,
+    setShowDeleteModal,
     ...pushHandlers,
     ...apiHandlers,
     ...data,
@@ -106,6 +109,13 @@ const OpenSpace = () => {
           onSubmit={apiHandlers.doFinishQueue}
         />
       )}
+
+      <ConfirmationDialog
+        isOpen={showDeleteModal}
+        message="¿Estás seguro de que deseas eliminar la convocatoria?"
+        onConfirm={() => deleteOS(data.id).then(() => pushHandlers.pushToRoot())}
+        onCancel={() => setShowDeleteModal(false)}
+      />
     </>
   );
 };

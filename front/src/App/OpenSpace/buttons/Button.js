@@ -4,6 +4,7 @@ import { Button } from 'grommet';
 const customTheme = {
   button: {
     borderRadius: '4px',
+    whiteSpace: 'nowrap',
   },
 };
 

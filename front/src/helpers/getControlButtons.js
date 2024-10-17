@@ -134,7 +134,7 @@ const getQueueButtons = ({
   pushToProjector,
 }) =>
   [
-    {
+    activeQueue && {
       label: 'Proyector',
       onClick: pushToProjector,
       icon: <VideoIcon />,

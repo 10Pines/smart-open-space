@@ -64,7 +64,7 @@ const OpenSpace = () => {
         <MainHeader>
           <MainHeader.Title label={`Tablero de control: ${data.name}`} />
         </MainHeader>
-        <ControlButtons controlButtons={controlButtons} size={size} />
+        <ControlButtons controlButtons={controlButtons} size={size} withIcons />
       </Box>
 
       <Box>

@@ -5,14 +5,26 @@ import Button from './Button';
 const ControlButtons = ({ controlButtons, size, withIcons = false }) => {
   console.info('Recibo controlButtons', controlButtons);
 
-  // Separar los botones por categoría
-  const generalButtons = controlButtons.filter((button) => button.category === 'general');
-  const stateChangeButtons = controlButtons.filter(
-    (button) => button.category === 'action'
+  const buttonCategories = controlButtons.reduce((acc, button) => {
+    if (!acc[button.category]) {
+      acc[button.category] = [];
+    }
+    acc[button.category].push(button);
+    return acc;
+  }, {});
+
+  const buttonCategoriesArray = Object.entries(buttonCategories).map(
+    ([category, buttons]) => ({ category, buttons })
   );
-  const managementButtons = controlButtons.filter(
-    (button) => button.category === 'management'
-  );
+
+  const buttonStyle = {
+    minWidth: '150px',
+    width: '100%',
+    height: 'auto',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  };
 
   return (
     <Grid
@@ -23,39 +35,19 @@ const ControlButtons = ({ controlButtons, size, withIcons = false }) => {
       gap="1rem"
       responsive
     >
-      <Box gap="1rem">
-        {generalButtons.map(({ label, onClick, icon }) => (
-          <Button
-            key={label}
-            label={label}
-            onClick={onClick}
-            style={{ minWidth: '150px', width: '100%' }}
-            icon={withIcons ? icon : undefined}
-          />
-        ))}
-      </Box>
-      <Box gap="1rem">
-        {stateChangeButtons.map(({ label, onClick, icon }) => (
-          <Button
-            key={label}
-            label={label}
-            onClick={onClick}
-            style={{ minWidth: '150px', width: '100%' }}
-            icon={withIcons ? icon : undefined}
-          />
-        ))}
-      </Box>
-      <Box gap="1rem">
-        {managementButtons.map(({ label, onClick, icon }) => (
-          <Button
-            key={label}
-            label={label}
-            onClick={onClick}
-            style={{ minWidth: '150px', width: '100%' }}
-            icon={withIcons ? icon : undefined}
-          />
-        ))}
-      </Box>
+      {buttonCategoriesArray.map(({ category, buttons }) => (
+        <Box key={category} gap="1rem">
+          {buttons.map(({ label, onClick, icon }) => (
+            <Button
+              key={label}
+              label={label}
+              onClick={onClick}
+              style={buttonStyle}
+              icon={withIcons ? icon : undefined}
+            />
+          ))}
+        </Box>
+      ))}
     </Grid>
   );
 };

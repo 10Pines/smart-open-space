@@ -11,6 +11,7 @@ import {
   usePushToMyTalks,
   usePushToProjector,
   usePushToRoot,
+  usePushToLoginFromOpenSpace,
 } from '#helpers/routes';
 import { ScheduleIcon } from '#shared/icons';
 import MainHeader from '#shared/MainHeader';
@@ -33,6 +34,7 @@ const OpenSpace = () => {
     pushToMyTalks: usePushToMyTalks(),
     pushToProjector: usePushToProjector(),
     pushToRoot: usePushToRoot(),
+    pushToLogin: usePushToLoginFromOpenSpace(data.id),
   };
 
   if (isPending) return <Spinner />;

@@ -14,6 +14,7 @@ import {
   toggleShowSpeakerName,
   toggleVoting,
 } from './api/os-client';
+import { Login } from 'grommet-icons';
 
 export const getControlButtons = ({
   amTheOrganizer,
@@ -22,13 +23,33 @@ export const getControlButtons = ({
   activeQueue,
   ...props
 }) => {
-  const buttons = [
-    ...(amTheOrganizer ? getOrganizerButtons(props) : []),
-    ...(user ? getUserButtons({ amTheOrganizer, ...props }) : []),
-    ...(amTheOrganizer ? getQueueButtons({ ...props, activeQueue, pendingQueue }) : []),
+  const buttonConfigs = [
+    {
+      condition: amTheOrganizer,
+      getButtons: () => getOrganizerButtons(props),
+    },
+    {
+      condition: user,
+      getButtons: () => getUserButtons({ amTheOrganizer, ...props }),
+    },
+    {
+      condition: amTheOrganizer,
+      getButtons: () => getQueueButtons({ ...props, activeQueue, pendingQueue }),
+    },
+    {
+      condition: !user,
+      getButtons: () => getUnloggedButtons({ pushToLogin: props.pushToLogin }),
+    },
   ];
 
-  // Ordenar los botones según la propiedad "order" si está definida
+  const buttons = buttonConfigs
+    .filter(({ condition }) => condition)
+    .flatMap(({ getButtons }) => getButtons());
+
+  return sortButtonsByOrder(buttons);
+};
+
+const sortButtonsByOrder = (buttons) => {
   return buttons.sort((a, b) => {
     const orderA = a.order ?? Number.MAX_VALUE;
     const orderB = b.order ?? Number.MAX_VALUE;
@@ -52,43 +73,43 @@ const getOrganizerButtons = ({
     label: 'Editar',
     onClick: pushToEditOS,
     icon: <EditIcon />,
-    category: 'general', // Categoría para la primera columna
-    order: 1, // Orden personalizado
+    category: 'general',
+    order: 1,
   },
   {
     label: 'Eliminar',
     onClick: () => deleteOS(id).then(() => pushToRoot()),
     icon: <DeleteIcon />,
-    category: 'general', // Categoría para la primera columna
-    order: 2, // Orden personalizado
+    category: 'general',
+    order: 2,
   },
   {
     label: isActiveCallForPapers ? 'Cerrar convocatoria' : 'Abrir convocatoria',
     onClick: () => startCallForPapers(id).then(setData),
     icon: getLockIcon(isActiveCallForPapers),
-    category: 'action', // Categoría para la segunda columna
-    order: 4, // Orden personalizado
+    category: 'action',
+    order: 4,
   },
   {
     label: isActiveVoting ? 'Cerrar votación' : 'Abrir votación',
     onClick: () => toggleVoting(id).then(setData),
     icon: getLockIcon(isActiveVoting),
-    category: 'action', // Categoría para la segunda columna
-    order: 5, // Orden personalizado
+    category: 'action',
+    order: 5,
   },
   {
     label: showSpeakerName ? 'No Mostrar Speaker' : 'Mostrar Speaker',
     onClick: () => toggleShowSpeakerName(id).then(setData),
     icon: getLockIcon(showSpeakerName),
-    category: 'general', // Categoría para la segunda columna
-    order: 3, // Orden personalizado
+    category: 'general',
+    order: 3,
   },
   {
     label: 'Gestionar Charlas',
     onClick: pushToMyTalks,
     icon: <TalkIcon />,
-    category: 'management', // Categoría para la tercera columna
-    order: 7, // Orden personalizado
+    category: 'management',
+    order: 7,
   },
 ];
 
@@ -98,8 +119,8 @@ const getUserButtons = ({ amTheOrganizer, pushToMyTalks }) =>
       label: 'Mis charlas',
       onClick: pushToMyTalks,
       icon: <TalkIcon />,
-      category: 'general', // Categoría para la primera columna
-      order: 2, // Orden personalizado
+      category: 'general',
+      order: 2,
     },
   ].filter(Boolean);
 
@@ -117,8 +138,8 @@ const getQueueButtons = ({
       label: 'Proyector',
       onClick: pushToProjector,
       icon: <VideoIcon />,
-      category: 'management', // Categoría para la primera columna
-      order: 8, // Orden personalizado
+      category: 'management',
+      order: 8,
     },
     (pendingQueue || activeQueue) && {
       label: activeQueue ? 'Finalizar MarketPlace' : 'Iniciar MarketPlace',
@@ -132,10 +153,20 @@ const getQueueButtons = ({
           handleActivateQueue,
         }),
       icon: <CartIcon />,
-      category: 'action', // Categoría para la segunda columna
-      order: 6, // Orden personalizado
+      category: 'action',
+      order: 6,
     },
   ].filter(Boolean);
+
+const getUnloggedButtons = ({ pushToLogin }) => [
+  {
+    label: 'Iniciar sesión',
+    onClick: pushToLogin,
+    icon: <Login />,
+    category: 'general',
+    order: 1,
+  },
+];
 
 const handleMarketplaceQueueState = async ({
   pendingQueue,

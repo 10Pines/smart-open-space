@@ -13,9 +13,10 @@ const ControlButtons = ({ controlButtons, size, withIcons = false }) => {
     return acc;
   }, {});
 
-  const buttonCategoriesArray = Object.entries(buttonCategories).map(
-    ([category, buttons]) => ({ category, buttons })
-  );
+  // Filtrar categorías que no tienen ningún botón
+  const filteredButtonCategoriesArray = Object.entries(buttonCategories)
+    .filter(([, buttons]) => buttons.length > 0)
+    .map(([category, buttons]) => ({ category, buttons }));
 
   const buttonStyle = {
     minWidth: '150px',
@@ -29,13 +30,13 @@ const ControlButtons = ({ controlButtons, size, withIcons = false }) => {
   return (
     <Grid
       columns={{
-        count: size === 'small' ? 1 : 3,
-        size: size === 'small' ? 'auto' : '1/3',
+        count: size === 'small' ? 1 : filteredButtonCategoriesArray.length,
+        size: size === 'small' ? 'auto' : '1/' + filteredButtonCategoriesArray.length,
       }}
       gap="1rem"
       responsive
     >
-      {buttonCategoriesArray.map(({ category, buttons }) => (
+      {filteredButtonCategoriesArray.map(({ category, buttons }) => (
         <Box key={category} gap="1rem">
           {buttons.map(({ label, onClick, icon }) => (
             <Button

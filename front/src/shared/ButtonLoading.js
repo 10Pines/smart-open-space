@@ -1,13 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'grommet';
+import { Button, Tip } from 'grommet';
 import MyProps from '#helpers/MyProps';
 import useLoading from '#helpers/useLoading';
 import { TinySpinner } from '#shared/Spinner';
 
-const ButtonLoading = ({ disabled = false, icon, onClick, ...props }) => {
+const ButtonLoading = ({ disabled = false, icon, onClick, tooltipText, ...props }) => {
   const [loading, withLoading] = useLoading();
-  return (
+
+  return tooltipText ? (
+    <Tip content={tooltipText}>
+      <Button
+        disabled={disabled || loading}
+        icon={loading ? <TinySpinner /> : icon}
+        onClick={withLoading(onClick)}
+        primary
+        {...props}
+      />
+    </Tip>
+  ) : (
     <Button
       disabled={disabled || loading}
       icon={loading ? <TinySpinner /> : icon}

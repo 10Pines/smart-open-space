@@ -229,7 +229,13 @@ const MyTalks = () => {
               title={myEnqueuedTalk().name}
             />
           )}
-          <TalkTable talks={talks} reloadTalks={reload} openSpaceId={openSpace.id} />
+          <TalkTable
+            talks={talks}
+            reloadTalks={reload}
+            openSpaceId={openSpace.id}
+            roomsWithFreeSlots={getRoomsWithSlots(openSpace.freeSlots)}
+            dates={openSpace.dates}
+          />
           <MyGrid>
             {talks.map((talk) => (
               <TalkView

@@ -8,15 +8,36 @@ import {
   TransactionIcon,
 } from '#shared/icons';
 import React, { useEffect, useState } from 'react';
-import { usePushToTalk } from '#helpers/routes';
+import { usePushToSchedule, usePushToTalk } from '#helpers/routes';
 import { useParams } from 'react-router-dom';
-import { deleteTalk } from '#api/os-client';
+import { deleteTalk, exchangeTalk, scheduleTalk } from '#api/os-client';
+import SelectSlot from './Talk/SelectSlot';
 
-const TalkTable = ({ talks, reloadTalks, openSpaceId }) => {
+const TalkTable = ({ talks, reloadTalks, openSpaceId, roomsWithFreeSlots, dates }) => {
   const [selectedToEditTalkId, setSelectedToEditTalkId] = useState(null);
+
   const [selectedToDeleteTalkId, setSelectedToDeleteTalkId] = useState(null);
-  const [deleteSelectedTalkId, setDeleteSelectedTalkId] = useState(false);
+
+  const [selectedToScheduleTalkId, setSelectedToScheduleTalkId] = useState(null);
+  const [selectedToScheduleUserId, setSelectedToScheduleUserId] = useState(null);
+  const [selectedToScheduleTalkName, setSelectedToScheduleTalkName] = useState(null);
+
+  const [confirmDeleteSelectedTalkId, setConfirmDeleteSelectedTalkId] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState();
+
+  const pushToSchedule = usePushToSchedule();
+  const [openSchedule, setOpenSchedule] = useState(false);
+  const [openExchange, setOpenExchange] = useState(false);
+  const onSubmitSchedule = ({ slot, room }) =>
+    scheduleTalk(
+      selectedToScheduleTalkId,
+      selectedToScheduleUserId,
+      slot.id,
+      room.id
+    ).then(pushToSchedule);
+  /* const onSubmitExchange = ({ slot, room }) =>
+    exchangeTalk(talk.id, slot.id, room.id).then(pushToOpenSpace);*/
+
   const pushToTalk = usePushToTalk(useParams().id, selectedToEditTalkId);
 
   const assignedTalks = talks
@@ -36,11 +57,11 @@ const TalkTable = ({ talks, reloadTalks, openSpaceId }) => {
   }, [selectedToEditTalkId]);
 
   useEffect(() => {
-    if (deleteSelectedTalkId) {
+    if (confirmDeleteSelectedTalkId) {
       deleteTalk(openSpaceId, selectedToDeleteTalkId).then(reloadTalks);
-      setDeleteSelectedTalkId(false);
+      setConfirmDeleteSelectedTalkId(false);
     }
-  }, [deleteSelectedTalkId]);
+  }, [confirmDeleteSelectedTalkId]);
 
   return (
     <>
@@ -162,7 +183,12 @@ const TalkTable = ({ talks, reloadTalks, openSpaceId }) => {
                     <ButtonLoading
                       icon={<ScheduleIcon />}
                       color={'transparent'}
-                      onClick={() => {}}
+                      onClick={() => {
+                        setSelectedToScheduleTalkId(datum.id);
+                        setSelectedToScheduleUserId(datum.authorId);
+                        setSelectedToScheduleTalkName(datum.name);
+                        setOpenSchedule(true);
+                      }}
                       tooltipText={'Agendar'}
                     />
                   ) : (
@@ -196,35 +222,6 @@ const TalkTable = ({ talks, reloadTalks, openSpaceId }) => {
                     }}
                     tooltipText={'Editar'}
                   />
-                  {showDeleteModal && (
-                    <Layer
-                      onEsc={() => setShowDeleteModal(false)}
-                      onClickOutside={() => {
-                        setSelectedToDeleteTalkId(null);
-                        setShowDeleteModal(false);
-                      }}
-                    >
-                      <Box pad="medium" gap="medium">
-                        <Text>¿Estás seguro que querés eliminar esta charla?</Text>
-                        <Box justify="around" direction="row" pad="small">
-                          <Button
-                            label="Si"
-                            onClick={() => {
-                              setDeleteSelectedTalkId(true);
-                              setShowDeleteModal(false);
-                            }}
-                          />
-                          <Button
-                            label="No"
-                            onClick={() => {
-                              setSelectedToDeleteTalkId(null);
-                              setShowDeleteModal(false);
-                            }}
-                          />
-                        </Box>
-                      </Box>
-                    </Layer>
-                  )}
                 </Box>
               );
             },
@@ -240,6 +237,7 @@ const TalkTable = ({ talks, reloadTalks, openSpaceId }) => {
             id: talk.id,
             authorName: talk.speaker.name,
             authorEmail: talk.speaker.email,
+            authorId: talk.speaker.id,
             trackName: talk.track?.name,
             trackColor: talk.track?.color,
             votes: talk.votes,
@@ -257,6 +255,58 @@ const TalkTable = ({ talks, reloadTalks, openSpaceId }) => {
         }}
         sortable
       />
+      {showDeleteModal && (
+        <Layer
+          onEsc={() => setShowDeleteModal(false)}
+          onClickOutside={() => {
+            setSelectedToDeleteTalkId(null);
+            setShowDeleteModal(false);
+          }}
+        >
+          <Box pad="medium" gap="medium">
+            <Text>¿Estás seguro que querés eliminar esta charla?</Text>
+            <Box justify="around" direction="row" pad="small">
+              <Button
+                label="Si"
+                onClick={() => {
+                  setConfirmDeleteSelectedTalkId(true);
+                  setShowDeleteModal(false);
+                }}
+              />
+              <Button
+                label="No"
+                onClick={() => {
+                  setSelectedToDeleteTalkId(null);
+                  setShowDeleteModal(false);
+                }}
+              />
+            </Box>
+          </Box>
+        </Layer>
+      )}
+      {openSchedule && roomsWithFreeSlots && (
+        <SelectSlot
+          rooms={roomsWithFreeSlots}
+          name={selectedToScheduleTalkName}
+          dates={dates}
+          onExit={() => {
+            setOpenSchedule(false);
+          }}
+          onSubmit={onSubmitSchedule}
+          title="Agendate!"
+        />
+      )}
+      {/*
+                  {openExchange && (
+                    <SelectSlot
+                      rooms={roomsWithAssignableSlots}
+                      name={talk.name}
+                      dates={dates}
+                      onExit={() => setOpenExchange(false)}
+                      onSubmit={onSubmitExchange}
+                      title="Mover a:"
+                    />
+                  )}*/}
     </>
   );
 };

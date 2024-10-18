@@ -234,6 +234,7 @@ const MyTalks = () => {
             reloadTalks={reload}
             openSpaceId={openSpace.id}
             roomsWithFreeSlots={getRoomsWithSlots(openSpace.freeSlots)}
+            roomsWithAssignableSlots={getRoomsWithSlots(openSpace.assignableSlots)}
             dates={openSpace.dates}
           />
           <MyGrid>

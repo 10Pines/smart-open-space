@@ -8,12 +8,19 @@ import {
   TransactionIcon,
 } from '#shared/icons';
 import React, { useEffect, useState } from 'react';
-import { usePushToSchedule, usePushToTalk } from '#helpers/routes';
+import { usePushToOpenSpace, usePushToSchedule, usePushToTalk } from '#helpers/routes';
 import { useParams } from 'react-router-dom';
 import { deleteTalk, exchangeTalk, scheduleTalk } from '#api/os-client';
 import SelectSlot from './Talk/SelectSlot';
 
-const TalkTable = ({ talks, reloadTalks, openSpaceId, roomsWithFreeSlots, dates }) => {
+const TalkTable = ({
+  talks,
+  reloadTalks,
+  openSpaceId,
+  roomsWithFreeSlots,
+  dates,
+  roomsWithAssignableSlots,
+}) => {
   const [selectedToEditTalkId, setSelectedToEditTalkId] = useState(null);
 
   const [selectedToDeleteTalkId, setSelectedToDeleteTalkId] = useState(null);
@@ -22,10 +29,14 @@ const TalkTable = ({ talks, reloadTalks, openSpaceId, roomsWithFreeSlots, dates 
   const [selectedToScheduleUserId, setSelectedToScheduleUserId] = useState(null);
   const [selectedToScheduleTalkName, setSelectedToScheduleTalkName] = useState(null);
 
+  const [selectedToExchangeTalkId, setSelectedToExchangeTalkId] = useState(null);
+  const [selectedToExchangeTalkName, setSelectedToExchangeTalkName] = useState(null);
+
   const [confirmDeleteSelectedTalkId, setConfirmDeleteSelectedTalkId] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState();
 
   const pushToSchedule = usePushToSchedule();
+  const pushToOpenSpace = usePushToOpenSpace();
   const [openSchedule, setOpenSchedule] = useState(false);
   const [openExchange, setOpenExchange] = useState(false);
   const onSubmitSchedule = ({ slot, room }) =>
@@ -35,8 +46,8 @@ const TalkTable = ({ talks, reloadTalks, openSpaceId, roomsWithFreeSlots, dates 
       slot.id,
       room.id
     ).then(pushToSchedule);
-  /* const onSubmitExchange = ({ slot, room }) =>
-    exchangeTalk(talk.id, slot.id, room.id).then(pushToOpenSpace);*/
+  const onSubmitExchange = ({ slot, room }) =>
+    exchangeTalk(selectedToExchangeTalkId, slot.id, room.id).then(pushToOpenSpace);
 
   const pushToTalk = usePushToTalk(useParams().id, selectedToEditTalkId);
 
@@ -195,7 +206,11 @@ const TalkTable = ({ talks, reloadTalks, openSpaceId, roomsWithFreeSlots, dates 
                     <ButtonLoading
                       icon={<TransactionIcon />}
                       color={'transparent'}
-                      onClick={() => {}}
+                      onClick={() => {
+                        setSelectedToExchangeTalkId(datum.id);
+                        setSelectedToExchangeTalkName(datum.name);
+                        setOpenExchange(true);
+                      }}
                       tooltipText={'Reagendar'}
                     />
                   )}
@@ -296,17 +311,16 @@ const TalkTable = ({ talks, reloadTalks, openSpaceId, roomsWithFreeSlots, dates 
           title="Agendate!"
         />
       )}
-      {/*
-                  {openExchange && (
-                    <SelectSlot
-                      rooms={roomsWithAssignableSlots}
-                      name={talk.name}
-                      dates={dates}
-                      onExit={() => setOpenExchange(false)}
-                      onSubmit={onSubmitExchange}
-                      title="Mover a:"
-                    />
-                  )}*/}
+      {openExchange && (
+        <SelectSlot
+          rooms={roomsWithAssignableSlots}
+          name={selectedToExchangeTalkName}
+          dates={dates}
+          onExit={() => setOpenExchange(false)}
+          onSubmit={onSubmitExchange}
+          title="Mover a:"
+        />
+      )}
     </>
   );
 };

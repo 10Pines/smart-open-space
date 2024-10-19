@@ -7,13 +7,16 @@ import com.sos.smartopenspace.dto.request.UserValidateTokenRequestDTO
 import com.sos.smartopenspace.services.EmailService
 import com.sos.smartopenspace.services.UserService
 import com.sos.smartopenspace.translators.response.UserResTranslator
-import org.springframework.web.bind.annotation.*
 import jakarta.validation.Valid
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
 @RequestMapping("user")
-class UserServiceREST(private val userService: UserService, private val emailService: EmailService) {
+class UserController(private val userService: UserService, private val emailService: EmailService) {
   @PostMapping
   fun create(@Valid @RequestBody user: User) =
     UserResTranslator.translateFrom(userService.create(user))

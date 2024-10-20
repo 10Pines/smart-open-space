@@ -22,6 +22,8 @@ import { EditTalk, NewTalk } from './TalkForm';
 import NewOpenSpace from './EditOpenSpace/NewOpenSpace';
 import Talk from './Talk';
 import ResetPassword from './ResetPassword';
+import { deepMerge } from 'grommet/utils';
+import customTheme from './theme';
 
 const Routes = () => (
   <Switch>
@@ -43,8 +45,10 @@ const Routes = () => (
   </Switch>
 );
 
+const theme = deepMerge(grommet, customTheme);
+
 const App = () => (
-  <Grommet full theme={grommet}>
+  <Grommet full theme={theme}>
     <ErrorBoundary>
       <Router>
         <AuthProvider>

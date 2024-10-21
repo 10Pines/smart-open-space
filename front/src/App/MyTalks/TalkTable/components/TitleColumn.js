@@ -4,7 +4,7 @@ import React from 'react';
 export function TitleColumn({ datum }) {
   return (
     <Box direction="column">
-      <Text weight={'bold'} color={'dark-2'}>
+      <Text weight="bold" color="dark-2">
         {datum.title}
       </Text>
       {datum.trackName ? (
@@ -12,7 +12,7 @@ export function TitleColumn({ datum }) {
           {datum.trackName}
         </Text>
       ) : (
-        <Text weight="normal" color={'gray'}>
+        <Text weight="normal" color="gray">
           Sin track
         </Text>
       )}

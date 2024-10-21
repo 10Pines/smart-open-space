@@ -60,6 +60,7 @@ const TalkTable = ({
           id: slot.talk.id,
           startTime: slot.slot.startTime,
           date: slot.slot.date,
+          room: slot.room.name,
         };
       })
     : [];
@@ -68,14 +69,14 @@ const TalkTable = ({
     if (selectedToEditTalkId) {
       pushToTalk();
     }
-  }, [selectedToEditTalkId]);
+  }, [pushToTalk, selectedToEditTalkId]);
 
   useEffect(() => {
     if (confirmDeleteSelectedTalkId) {
       deleteTalk(openSpaceId, selectedToDeleteTalkId).then(reloadTalks);
       setConfirmDeleteSelectedTalkId(false);
     }
-  }, [confirmDeleteSelectedTalkId]);
+  }, [confirmDeleteSelectedTalkId, openSpaceId, reloadTalks, selectedToDeleteTalkId]);
 
   return (
     <>
@@ -187,6 +188,7 @@ const TalkTable = ({
             state: talkSchedule ? 'Agendada' : 'Presentada',
             talkDate: talkSchedule?.date,
             talkStartTime: talkSchedule?.startTime,
+            room: talkSchedule?.room,
             openSpaceId: talk.openSpace.id,
           };
         })}

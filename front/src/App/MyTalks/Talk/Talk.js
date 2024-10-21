@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Box, Button, Grid, Layer, Markdown, Text } from 'grommet';
+import { Box, Grid, Text } from 'grommet';
 import PropTypes from 'prop-types';
 
 import {
@@ -13,8 +13,7 @@ import {
 import { useUser } from '#helpers/useAuth';
 import ButtonLoading from '#shared/ButtonLoading';
 import Card from '#shared/Card';
-import Detail from '#shared/Detail';
-import { DeleteIcon, TransactionIcon, UserIcon } from '#shared/icons';
+import { DeleteIcon } from '#shared/icons';
 import Title from '#shared/Title';
 import { useParams } from 'react-router-dom';
 import SelectSlot from './SelectSlot';
@@ -52,7 +51,7 @@ const Talk = ({
   const user = useUser();
   const [openSchedule, setOpenSchedule] = useState(false);
   const [openExchange, setOpenExchange] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = React.useState();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const shouldDisplayScheduleTalkButton = dates && talk.isToSchedule();
 
   const onSubmitSchedule = ({ slot, room }) =>

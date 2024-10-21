@@ -1,6 +1,7 @@
 import { Anchor, Box, Button, DataTable, Layer, Text } from 'grommet';
 import ButtonLoading from '#shared/ButtonLoading';
 import {
+  CheckmarkIcon,
   DeleteIcon,
   EditIcon,
   QueueIcon,
@@ -10,8 +11,9 @@ import {
 import React, { useEffect, useState } from 'react';
 import { usePushToOpenSpace, usePushToSchedule, usePushToTalk } from '#helpers/routes';
 import { useParams } from 'react-router-dom';
-import { deleteTalk, exchangeTalk, scheduleTalk } from '#api/os-client';
+import { deleteTalk, enqueueTalk, exchangeTalk, scheduleTalk } from '#api/os-client';
 import SelectSlot from './Talk/SelectSlot';
+import { InProgress } from 'grommet-icons';
 
 const TalkTable = ({
   talks,
@@ -21,33 +23,38 @@ const TalkTable = ({
   dates,
   roomsWithAssignableSlots,
 }) => {
-  const [selectedToEditTalkId, setSelectedToEditTalkId] = useState(null);
-
-  const [selectedToDeleteTalkId, setSelectedToDeleteTalkId] = useState(null);
-
-  const [selectedToScheduleTalkId, setSelectedToScheduleTalkId] = useState(null);
-  const [selectedToScheduleUserId, setSelectedToScheduleUserId] = useState(null);
-  const [selectedToScheduleTalkName, setSelectedToScheduleTalkName] = useState(null);
-
-  const [selectedToExchangeTalkId, setSelectedToExchangeTalkId] = useState(null);
-  const [selectedToExchangeTalkName, setSelectedToExchangeTalkName] = useState(null);
-
-  const [confirmDeleteSelectedTalkId, setConfirmDeleteSelectedTalkId] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = React.useState();
-
   const pushToSchedule = usePushToSchedule();
   const pushToOpenSpace = usePushToOpenSpace();
-  const [openSchedule, setOpenSchedule] = useState(false);
-  const [openExchange, setOpenExchange] = useState(false);
+
+  const [selectedToEditTalkId, setSelectedToEditTalkId] = useState(null);
+  const [selectedToDeleteTalkId, setSelectedToDeleteTalkId] = useState(null);
+  const [confirmDeleteSelectedTalkId, setConfirmDeleteSelectedTalkId] = useState(false);
+  const [selectedToScheduleTalkInfo, setSelectedToScheduleTalkInfo] = useState({
+    talkId: null,
+    userId: null,
+    talkName: null,
+  });
+  const [selectedToExchangeTalkInfo, setSelectedToExchangeTalkInfo] = useState({
+    talkId: null,
+    talkName: null,
+  });
+  const [showModals, setShowModals] = useState({
+    deleteModal: false,
+    scheduleModal: false,
+    exchangeModal: false,
+  });
+
   const onSubmitSchedule = ({ slot, room }) =>
     scheduleTalk(
-      selectedToScheduleTalkId,
-      selectedToScheduleUserId,
+      selectedToScheduleTalkInfo.talkId,
+      selectedToScheduleTalkInfo.userId,
       slot.id,
       room.id
     ).then(pushToSchedule);
   const onSubmitExchange = ({ slot, room }) =>
-    exchangeTalk(selectedToExchangeTalkId, slot.id, room.id).then(pushToOpenSpace);
+    exchangeTalk(selectedToExchangeTalkInfo.talkId, slot.id, room.id).then(
+      pushToOpenSpace
+    );
 
   const pushToTalk = usePushToTalk(useParams().id, selectedToEditTalkId);
 
@@ -195,10 +202,12 @@ const TalkTable = ({
                       icon={<ScheduleIcon />}
                       color={'transparent'}
                       onClick={() => {
-                        setSelectedToScheduleTalkId(datum.id);
-                        setSelectedToScheduleUserId(datum.authorId);
-                        setSelectedToScheduleTalkName(datum.name);
-                        setOpenSchedule(true);
+                        setSelectedToScheduleTalkInfo({
+                          talkId: datum.id,
+                          userId: datum.authorId,
+                          talkName: datum.name,
+                        });
+                        setShowModals({ ...showModals, scheduleModal: true });
                       }}
                       tooltipText={'Agendar'}
                     />
@@ -207,9 +216,11 @@ const TalkTable = ({
                       icon={<TransactionIcon />}
                       color={'transparent'}
                       onClick={() => {
-                        setSelectedToExchangeTalkId(datum.id);
-                        setSelectedToExchangeTalkName(datum.name);
-                        setOpenExchange(true);
+                        setSelectedToExchangeTalkInfo({
+                          talkId: datum.id,
+                          talkName: datum.name,
+                        });
+                        setShowModals({ ...showModals, exchangeModal: true });
                       }}
                       tooltipText={'Reagendar'}
                     />
@@ -219,14 +230,14 @@ const TalkTable = ({
                     color={'transparent'}
                     onClick={() => {
                       setSelectedToDeleteTalkId(datum.id);
-                      setShowDeleteModal(true);
+                      setShowModals({ ...showModals, deleteModal: true });
                     }}
                     tooltipText={'Eliminar'}
                   />
                   <ButtonLoading
-                    icon={<QueueIcon />}
+                    icon={<CheckmarkIcon />}
                     color={'transparent'}
-                    onClick={() => {}}
+                    onClick={() => enqueueTalk(datum.id).then(reloadTalks)}
                     tooltipText={'Encolar'}
                   />
                   <ButtonLoading
@@ -270,12 +281,12 @@ const TalkTable = ({
         }}
         sortable
       />
-      {showDeleteModal && (
+      {showModals.deleteModal && (
         <Layer
-          onEsc={() => setShowDeleteModal(false)}
+          onEsc={() => setShowModals({ ...showModals, deleteModal: false })}
           onClickOutside={() => {
             setSelectedToDeleteTalkId(null);
-            setShowDeleteModal(false);
+            setShowModals({ ...showModals, deleteModal: false });
           }}
         >
           <Box pad="medium" gap="medium">
@@ -285,38 +296,38 @@ const TalkTable = ({
                 label="Si"
                 onClick={() => {
                   setConfirmDeleteSelectedTalkId(true);
-                  setShowDeleteModal(false);
+                  setShowModals({ ...showModals, deleteModal: false });
                 }}
               />
               <Button
                 label="No"
                 onClick={() => {
                   setSelectedToDeleteTalkId(null);
-                  setShowDeleteModal(false);
+                  setShowModals({ ...showModals, deleteModal: false });
                 }}
               />
             </Box>
           </Box>
         </Layer>
       )}
-      {openSchedule && roomsWithFreeSlots && (
+      {showModals.scheduleModal && roomsWithFreeSlots && (
         <SelectSlot
           rooms={roomsWithFreeSlots}
-          name={selectedToScheduleTalkName}
+          name={selectedToScheduleTalkInfo.talkName}
           dates={dates}
           onExit={() => {
-            setOpenSchedule(false);
+            setShowModals({ ...showModals, scheduleModal: false });
           }}
           onSubmit={onSubmitSchedule}
           title="Agendate!"
         />
       )}
-      {openExchange && (
+      {showModals.exchangeModal && (
         <SelectSlot
           rooms={roomsWithAssignableSlots}
-          name={selectedToExchangeTalkName}
+          name={selectedToScheduleTalkInfo.talkName}
           dates={dates}
-          onExit={() => setOpenExchange(false)}
+          onExit={() => setShowModals({ ...showModals, exchangeModal: false })}
           onSubmit={onSubmitExchange}
           title="Mover a:"
         />

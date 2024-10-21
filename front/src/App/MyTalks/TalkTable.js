@@ -16,6 +16,7 @@ import SelectSlot from './Talk/SelectSlot';
 import { InProgress } from 'grommet-icons';
 
 const TalkTable = ({
+  activeQueue,
   talks,
   reloadTalks,
   openSpaceId,
@@ -234,12 +235,25 @@ const TalkTable = ({
                     }}
                     tooltipText={'Eliminar'}
                   />
-                  <ButtonLoading
-                    icon={<CheckmarkIcon />}
-                    color={'transparent'}
-                    onClick={() => enqueueTalk(datum.id).then(reloadTalks)}
-                    tooltipText={'Encolar'}
-                  />
+                  {datum.isInqueue ? (
+                    <ButtonLoading
+                      icon={<InProgress />}
+                      color={'transparent'}
+                      onClick={() => {}}
+                      tooltipText={'Esperando turno'}
+                      disabled
+                    />
+                  ) : (
+                    datum.canBeQueued &&
+                    activeQueue && (
+                      <ButtonLoading
+                        icon={<QueueIcon />}
+                        color={'transparent'}
+                        onClick={() => enqueueTalk(datum.id).then(reloadTalks)}
+                        tooltipText={'Encolar'}
+                      />
+                    )
+                  )}
                   <ButtonLoading
                     icon={<EditIcon />}
                     color={'transparent'}
@@ -257,10 +271,11 @@ const TalkTable = ({
           const talkSchedule = assignedTalks.find(
             (assignedTalk) => assignedTalk.id === talk.id
           );
-          console.log('talksh: ', talkSchedule);
           return {
             title: talk.name,
             id: talk.id,
+            isInQueue: talk.isInqueue(),
+            canBeQueued: talk.canBeQueued(),
             authorName: talk.speaker.name,
             authorEmail: talk.speaker.email,
             authorId: talk.speaker.id,

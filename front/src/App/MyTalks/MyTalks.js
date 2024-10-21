@@ -230,6 +230,7 @@ const MyTalks = () => {
             />
           )}
           <TalkTable
+            activeQueue={openSpace.activeQueue}
             talks={talks}
             reloadTalks={reload}
             openSpaceId={openSpace.id}

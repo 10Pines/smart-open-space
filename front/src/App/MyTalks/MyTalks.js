@@ -25,7 +25,7 @@ import EmptyTalk from './EmptyTalk';
 import TalkView from './Talk';
 import Talk from '../model/talk';
 import { Room } from '../model/room';
-import TalkTable from './TalkTable';
+import TalkTable from './TalkTable/TalkTable';
 
 const slideDownAnimation = {
   type: 'slideDown',

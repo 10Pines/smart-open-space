@@ -229,30 +229,33 @@ const MyTalks = () => {
               title={myEnqueuedTalk().name}
             />
           )}
-          <TalkTable
-            activeQueue={openSpace.activeQueue}
-            talks={talks}
-            reloadTalks={reload}
-            openSpaceId={openSpace.id}
-            roomsWithFreeSlots={getRoomsWithSlots(openSpace.freeSlots)}
-            roomsWithAssignableSlots={getRoomsWithSlots(openSpace.assignableSlots)}
-            dates={openSpace.dates}
-          />
-          <MyGrid>
-            {talks.map((talk) => (
-              <TalkView
-                talk={talk}
-                activeQueue={openSpace.activeQueue}
-                roomsWithFreeSlots={getRoomsWithSlots(openSpace.freeSlots)}
-                hasAnother={hasAnother(talk.id)}
-                onEnqueue={reload}
-                roomsWithAssignableSlots={getRoomsWithSlots(openSpace.assignableSlots)}
-                currentUserIsOrganizer={currentUserIsOrganizer}
-                dates={openSpace.dates}
-                key={talk.id}
-              />
-            ))}
-          </MyGrid>
+          {currentUserIsOrganizer ? (
+            <TalkTable
+              activeQueue={openSpace.activeQueue}
+              talks={talks}
+              reloadTalks={reload}
+              openSpaceId={openSpace.id}
+              roomsWithFreeSlots={getRoomsWithSlots(openSpace.freeSlots)}
+              roomsWithAssignableSlots={getRoomsWithSlots(openSpace.assignableSlots)}
+              dates={openSpace.dates}
+            />
+          ) : (
+            <MyGrid>
+              {talks.map((talk) => (
+                <TalkView
+                  talk={talk}
+                  activeQueue={openSpace.activeQueue}
+                  roomsWithFreeSlots={getRoomsWithSlots(openSpace.freeSlots)}
+                  hasAnother={hasAnother(talk.id)}
+                  onEnqueue={reload}
+                  roomsWithAssignableSlots={getRoomsWithSlots(openSpace.assignableSlots)}
+                  currentUserIsOrganizer={currentUserIsOrganizer}
+                  dates={openSpace.dates}
+                  key={talk.id}
+                />
+              ))}
+            </MyGrid>
+          )}
         </>
       )}
       {!isActiveCallForPapers && (

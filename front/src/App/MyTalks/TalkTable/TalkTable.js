@@ -187,7 +187,6 @@ const TalkTable = ({
             state: talkSchedule ? 'Agendada' : 'Presentada',
             talkDate: talkSchedule?.date,
             talkStartTime: talkSchedule?.startTime,
-            actions: 'todo',
             openSpaceId: talk.openSpace.id,
           };
         })}

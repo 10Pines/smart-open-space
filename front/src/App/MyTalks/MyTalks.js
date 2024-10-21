@@ -96,7 +96,7 @@ const PlaceBox = ({ place }) => (
 );
 PlaceBox.propTypes = { place: PropTypes.number.isRequired };
 
-const EnqueuedTalkCurrent = ({ description, onFinish, title }) => (
+const EnqueuedTalkCurrent = ({ description, title }) => (
   <EnqueuedTalkCard bgColor="accent-1">
     <Heading margin={{ horizontal: 'medium', vertical: 'none' }}>PASÁ!!</Heading>
     <>
@@ -192,7 +192,6 @@ const MyTalks = () => {
         new Room(slots, room.id, room.name, room.description)
     );
   }
-  console.log('talks:', talks);
 
   return (
     <>

@@ -8,7 +8,6 @@ import { StateColumn } from './components/StateColumn';
 import { TitleColumn } from './components/TitleColumn';
 import { AuthorColumn } from './components/AuthorColumn';
 import { VotesColumn } from './components/VotesColumn';
-import * as PropTypes from 'prop-types';
 import { ActionsColumn } from './components/ActionsColumn/ActionsColumn';
 import { DeleteModal } from '../components/DeleteModal';
 
@@ -201,17 +200,12 @@ const TalkTable = ({
       />
       {showModals.deleteModal && (
         <DeleteModal
-          onEsc={() => setShowModals({ ...showModals, deleteModal: false })}
-          onClickOutside={() => {
+          onEsc={() => {
             setSelectedToDeleteTalkId(null);
             setShowModals({ ...showModals, deleteModal: false });
           }}
           onConfirmDelete={() => {
             setConfirmDeleteSelectedTalkId(true);
-            setShowModals({ ...showModals, deleteModal: false });
-          }}
-          onCancelDeletion={() => {
-            setSelectedToDeleteTalkId(null);
             setShowModals({ ...showModals, deleteModal: false });
           }}
         />

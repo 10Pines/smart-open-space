@@ -21,6 +21,7 @@ import SelectSlot from './SelectSlot';
 import { usePushToOpenSpace, usePushToSchedule } from '#helpers/routes';
 import { Room } from '../../model/room';
 import { usePushToTalk } from '#helpers/routes';
+import { DeleteModal } from '../components/DeleteModal';
 
 const Badge = ({ color, text }) => (
   <Box alignSelf="center">
@@ -143,24 +144,13 @@ const Talk = ({
         />
       )}
       {showDeleteModal && (
-        <Layer
+        <DeleteModal
           onEsc={() => setShowDeleteModal(false)}
-          onClickOutside={() => setShowDeleteModal(false)}
-        >
-          <Box pad="medium" gap="medium">
-            <Text>¿Estás seguro que querés eliminar esta charla?</Text>
-            <Box justify="around" direction="row" pad="small">
-              <Button
-                label="Si"
-                onClick={() => {
-                  deleteTalk(openSpace.id, talk.id).then(reloadTalks);
-                  setShowDeleteModal(false);
-                }}
-              />
-              <Button label="No" onClick={() => setShowDeleteModal(false)} />
-            </Box>
-          </Box>
-        </Layer>
+          onConfirmDelete={() => {
+            deleteTalk(openSpace.id, talk.id).then(reloadTalks);
+            setShowDeleteModal(false);
+          }}
+        />
       )}
     </Card>
   );

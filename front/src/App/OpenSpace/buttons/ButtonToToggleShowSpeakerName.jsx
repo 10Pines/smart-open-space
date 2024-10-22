@@ -1,6 +1,6 @@
 import MainHeader from '#shared/MainHeader';
 import { LockIcon, UnlockIcon } from '#shared/icons';
-import { showSpeakerName, toggleShowSpeakerName } from '#api/os-client';
+import { toggleShowSpeakerName } from '#api/os-client';
 import React from 'react';
 
 export const ButtonToToggleShowSpeakerName = ({

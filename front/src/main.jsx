@@ -10,7 +10,8 @@ import LogRocket from 'logrocket';
 
 import App from './App';
 
-process.env.LOGROCKET_KEY && LogRocket.init(process.env.LOGROCKET_KEY);
+const logRocketKey = import.meta.env.VITE_LOGROCKET_KEY;
+logRocketKey && LogRocket.init(logRocketKey);
 toast.configure();
 
 render(

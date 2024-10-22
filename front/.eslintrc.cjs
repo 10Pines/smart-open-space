@@ -1,5 +1,5 @@
 module.exports = {
-  env: { browser: true, 'jest/globals': true },
+  env: { browser: true },
   extends: [
     'react-app',
     'plugin:@typescript-eslint/eslint-recommended',
@@ -8,7 +8,7 @@ module.exports = {
     'prettier/@typescript-eslint',
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['jest', 'prettier', 'jsx-a11y', 'react-hooks', '@typescript-eslint'],
+  plugins: ['prettier', 'jsx-a11y', 'react-hooks', '@typescript-eslint'],
   rules: {
     'import/no-unresolved': [2, { ignore: ['#'] }],
     'no-nested-ternary': 'off',

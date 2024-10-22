@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import Talk from '../App/model/talk';
 
 function anyTalk(queue = [], slots = [], openSpace = anyOpenSpaceWithNoTalksScheduled()) {
@@ -53,40 +54,40 @@ function anyOpenSpaceWithTalkScheduled(talk) {
 }
 
 describe('talk', () => {
-  it('a talk can be not assigned to a slot', () => {
+  test('a talk can be not assigned to a slot', () => {
     const slots = [];
     const talk = anyTalk([], slots);
     expect(talk.isAssigned()).toBe(false);
   });
 
-  it('a talk can be assigned to a slot', () => {
+  test('a talk can be assigned to a slot', () => {
     const slots = slotsWithTalk();
     const talk = anyTalk([], slots);
     expect(talk.isAssigned()).toBe(true);
   });
 
-  it('can be not in the queue', () => {
+  test('can be not in the queue', () => {
     const queue = [];
     const talk = anyTalk(queue);
 
     expect(talk.isInqueue()).toBe(false);
   });
 
-  it('can be in queue', () => {
+  test('can be in queue', () => {
     const queue = queueWithTalk(anyTalk());
     const talk = anyTalk(queue);
 
     expect(talk.isInqueue()).toBe(true);
   });
 
-  it('can be not to schedule', () => {
+  test('can be not to schedule', () => {
     const openSpace = anyOpenSpaceWithNoTalksScheduled();
     const talk = anyTalk([], [], openSpace);
 
     expect(talk.isToSchedule()).toBe(false);
   });
 
-  it('can be to schedule', () => {
+  test('can be to schedule', () => {
     const openSpace = anyOpenSpaceWithTalkScheduled(anyTalk());
     const talk = anyTalk([], [], openSpace);
 

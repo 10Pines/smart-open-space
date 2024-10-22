@@ -66,11 +66,6 @@ const OpenSpace = ({ deleteOS, startDate, endTime, id, name, startTime, urlImage
               />
             </Box>
           </Button>
-          <ButtonAction
-            icon={<DeleteIcon />}
-            label="Eliminar"
-            onClick={() => setShowDeleteModal(true)}
-          />
           {showDeleteModal && (
             <Layer
               onEsc={() => setShowDeleteModal(false)}

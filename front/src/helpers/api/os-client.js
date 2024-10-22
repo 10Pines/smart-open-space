@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 
 import { console_log_debug } from '#helpers/logging';
 import { get, post, put, remove } from './api-client';
-import { getUser } from '../useAuth';
-import { OpenSpace } from '../../App/model/openSpace';
+import { getUser } from '#helpers/useAuth';
+import { OpenSpace } from '#model/openSpace';
 
 const withUser = (fn) => fn(getUser());
 

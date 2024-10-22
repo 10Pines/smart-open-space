@@ -10,6 +10,7 @@ import { AuthorColumn } from './components/AuthorColumn';
 import { VotesColumn } from './components/VotesColumn';
 import { ActionsColumn } from './components/ActionsColumn/ActionsColumn';
 import { DeleteModal } from '../components/DeleteModal';
+import { useUser } from '#helpers/useAuth';
 
 const TalkTable = ({
   activeQueue,
@@ -20,12 +21,12 @@ const TalkTable = ({
   dates,
   roomsWithAssignableSlots,
 }) => {
+  const user = useUser();
   const [selectedToEditTalkId, setSelectedToEditTalkId] = useState(null);
   const [selectedToDeleteTalkId, setSelectedToDeleteTalkId] = useState(null);
   const [confirmDeleteSelectedTalkId, setConfirmDeleteSelectedTalkId] = useState(false);
   const [selectedToScheduleTalkInfo, setSelectedToScheduleTalkInfo] = useState({
     talkId: null,
-    userId: null,
     talkName: null,
   });
   const [selectedToRescheduleTalkInfo, setSelectedToRescheduleTalkInfo] = useState({
@@ -43,12 +44,9 @@ const TalkTable = ({
   const pushToTalk = usePushToTalk(useParams().id, selectedToEditTalkId);
 
   const onSubmitSchedule = ({ slot, room }) =>
-    scheduleTalk(
-      selectedToScheduleTalkInfo.talkId,
-      selectedToScheduleTalkInfo.userId,
-      slot.id,
-      room.id
-    ).then(pushToSchedule);
+    scheduleTalk(selectedToScheduleTalkInfo.talkId, user.id, slot.id, room.id).then(
+      pushToSchedule
+    );
   const onSubmitExchange = ({ slot, room }) =>
     exchangeTalk(selectedToRescheduleTalkInfo.talkId, slot.id, room.id).then(
       pushToOpenSpace
@@ -144,7 +142,6 @@ const TalkTable = ({
                   onClickScheduleButton={() => {
                     setSelectedToScheduleTalkInfo({
                       talkId: datum.id,
-                      userId: datum.authorId,
                       talkName: datum.name,
                     });
                     setShowModals({ ...showModals, scheduleModal: true });
@@ -181,7 +178,6 @@ const TalkTable = ({
             canBeQueued: talk.canBeQueued(),
             authorName: talk.speaker.name,
             authorEmail: talk.speaker.email,
-            authorId: talk.speaker.id,
             trackName: talk.track?.name,
             trackColor: talk.track?.color,
             votes: talk.votes,

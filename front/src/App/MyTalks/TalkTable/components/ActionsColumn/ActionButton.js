@@ -2,13 +2,13 @@ import ButtonLoading from '#shared/ButtonLoading';
 import { ScheduleIcon } from '#shared/icons';
 import React from 'react';
 
-export function ScheduleButton(props) {
+export function ActionButton({ onClick, tooltipText, icon }) {
   return (
     <ButtonLoading
-      icon={<ScheduleIcon />}
+      icon={icon}
       color={'transparent'}
-      onClick={props.onClick}
-      tooltipText={'Agendar'}
+      onClick={onClick}
+      tooltipText={tooltipText}
     />
   );
 }

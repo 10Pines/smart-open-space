@@ -1,11 +1,14 @@
 import { Box } from 'grommet';
-import { ScheduleButton } from './ScheduleButton';
-import { RescheduleButton } from './RescheduleButton';
-import { DeleteButton } from './DeleteButton';
-import { InQueueButton } from './InQueueButton';
-import { QueueButton } from './QueueButton';
-import { EditButton } from './EditButton';
+import { ActionButton } from './ActionButton';
 import React from 'react';
+import {
+  DeleteIcon,
+  EditIcon,
+  QueueIcon,
+  ScheduleIcon,
+  TransactionIcon,
+} from '#shared/icons';
+import { InProgress } from 'grommet-icons';
 
 export function ActionsColumn({
   activeQueue,
@@ -20,17 +23,44 @@ export function ActionsColumn({
   return (
     <Box pad={{ vertical: 'xsmall' }} direction="row" gap="xsmall">
       {datum.state == 'Presentada' ? (
-        <ScheduleButton onClick={onClickScheduleButton} />
+        <ActionButton
+          onClick={onClickScheduleButton}
+          tooltipText="Agendar"
+          icon={<ScheduleIcon />}
+        />
       ) : (
-        <RescheduleButton onClick={onClickRescheduleButton} />
+        <ActionButton
+          onClick={onClickRescheduleButton}
+          tooltipText="Reagendar"
+          icon={<TransactionIcon />}
+        />
       )}
-      <DeleteButton onClick={onClickDeleteButton} />
+      <ActionButton
+        onClick={onClickDeleteButton}
+        tooltipText="Eliminar"
+        icon={<DeleteIcon />}
+      />
       {datum.isInqueue ? (
-        <InQueueButton onClick={onClickInQueueButton} />
+        <ActionButton
+          onClick={onClickInQueueButton}
+          tooltipText="Esperando turno"
+          icon={<InProgress />}
+        />
       ) : (
-        datum.canBeQueued && activeQueue && <QueueButton onClick={onClickQueueButton} />
+        datum.canBeQueued &&
+        activeQueue && (
+          <ActionButton
+            onClick={onClickQueueButton}
+            tooltipText="Encolar"
+            icon={<QueueIcon />}
+          />
+        )
       )}
-      <EditButton onClick={onClickEditButton} />
+      <ActionButton
+        onClick={onClickEditButton}
+        tooltipText="Editar"
+        icon={<EditIcon />}
+      />
     </Box>
   );
 }

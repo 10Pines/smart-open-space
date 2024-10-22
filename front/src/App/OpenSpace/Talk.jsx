@@ -44,7 +44,7 @@ const Talk = ({
     showSpeakerName ? realSpeakerName : null
   );
 
-  const color = track ? track.color : 'accent-3';
+  const color = track ? track.color : 'gray';
   const talkLink = meetingLink || room?.link;
   return (
     <>

@@ -6,3 +6,5 @@
 /db-data/
 
 .gradle
+
+jsconfig.json

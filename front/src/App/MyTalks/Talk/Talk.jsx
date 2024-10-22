@@ -64,7 +64,8 @@ const Talk = ({
 
   const color = talk.colorForTalkManagement();
 
-  const shouldDisplayDeleteTalkButton = user && talk.speaker.id === user.id;
+  const shouldDisplayDeleteTalkButton =
+    user && (currentUserIsOrganizer || talk.speaker.id === user.id);
 
   return (
     <Card borderColor={color} gap="small">

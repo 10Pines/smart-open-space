@@ -1,151 +1,121 @@
 import React, { useState } from 'react';
-import { Box, Button } from 'grommet';
+import { Box } from 'grommet';
 
-import { activateQueue, finishQueue, useGetOpenSpace } from '#api/os-client';
+import { activateQueue, deleteOS, finishQueue, useGetOpenSpace } from '#api/os-client';
 import { useQueue } from '#api/sockets-client';
 import { useUser } from '#helpers/useAuth';
 import {
-  RedirectToLoginFromOpenSpace,
   RedirectToRoot,
   usePushToSchedule,
   usePushToEditOS,
+  usePushToMyTalks,
+  usePushToProjector,
+  usePushToRoot,
+  usePushToLoginFromOpenSpace,
 } from '#helpers/routes';
-import { EditIcon, ScheduleIcon } from '#shared/icons';
+import { ScheduleIcon } from '#shared/icons';
 import MainHeader from '#shared/MainHeader';
 import Spinner from '#shared/Spinner';
-import { ButtonSingIn } from '#shared/ButtonSingIn';
-import { ButtonFinishMarketplace } from './buttons/ButtonFinishMarketplace';
-import { ButtonProjector } from './buttons/ButtonProjector';
-import { ButtonStartMarketplace } from './buttons/ButtonStartMarketplace';
-import { ButtonToSwitchCallForPapers } from './buttons/ButtonToSwitchCallForPapers';
-import { ButtonToToggleVoting } from './buttons/ButtonToToggleVoting';
-import { ButtonToToggleShowSpeakerName } from './buttons/ButtonToToggleShowSpeakerName';
-import { ButtonMyTalks } from './buttons/ButtonMyTalks';
 import { QueryForm } from './QueryForm';
 import { DisplayTalks } from './DisplayTalks';
+import useSize from '#helpers/useSize';
+import { getControlButtons } from '#helpers/getControlButtons';
+import ControlButtons from './buttons/ControlButtons';
+import ConfirmationDialog from '#shared/ConfirmationDialog';
 
 const OpenSpace = () => {
   const user = useUser();
+  const size = useSize();
   const [showQuery, setShowQuery] = useState(false);
-  const [redirectToLogin, setRedirectToLogin] = useState(false);
-  const {
-    data: {
-      id,
-      activeQueue,
-      finishedQueue,
-      name,
-      description,
-      tracks,
-      organizer,
-      pendingQueue,
-      isActiveCallForPapers,
-      isActiveVoting,
-      showSpeakerName,
-      amountOfTalks,
-      dates,
-    } = {},
-    isPending,
-    isRejected,
-    setData,
-  } = useGetOpenSpace();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { data = {}, isPending, isRejected, setData } = useGetOpenSpace();
   const queue = useQueue();
-  const pushToSchedule = usePushToSchedule(id);
-  const pushToEditOS = usePushToEditOS(id);
+  const pushHandlers = {
+    pushToSchedule: usePushToSchedule(data.id),
+    pushToEditOS: usePushToEditOS(data.id),
+    pushToMyTalks: usePushToMyTalks(),
+    pushToProjector: usePushToProjector(),
+    pushToRoot: usePushToRoot(),
+    pushToLogin: usePushToLoginFromOpenSpace(data.id),
+  };
 
   if (isPending) return <Spinner />;
   if (isRejected) return <RedirectToRoot />;
 
-  const amTheOrganizer = user && organizer.id === user.id;
-  const doFinishQueue = () => finishQueue(id).then(setData);
-  const marketPlaceButtons = () =>
-    (pendingQueue && (
-      <ButtonStartMarketplace onClick={() => activateQueue(id).then(setData)} />
-    )) ||
-    (activeQueue && [
-      <ButtonProjector key="projector" />,
-      <ButtonFinishMarketplace
-        key="finishMarketplace"
-        onClick={() => {
-          if (queue && queue.length > 0) {
-            setShowQuery(true);
-            return Promise.resolve();
-          }
-          return doFinishQueue();
-        }}
-      />,
-    ]);
+  const amTheOrganizer = user && data.organizer?.id === user.id;
+  const apiHandlers = {
+    doFinishQueue: () => finishQueue(data.id).then(setData),
+    handleActivateQueue: () => activateQueue(data.id).then(setData),
+  };
+
+  const controlButtons = getControlButtons({
+    amTheOrganizer,
+    user,
+    queue,
+    setShowQuery,
+    id: data.id,
+    setData,
+    setShowDeleteModal,
+    ...pushHandlers,
+    ...apiHandlers,
+    ...data,
+  });
+
   return (
     <>
-      <MainHeader>
-        <MainHeader.Title label={name} />
-        {dates && (
-          <MainHeader.Button
-            margin={{ top: 'medium' }}
-            color="accent-1"
-            icon={<ScheduleIcon />}
-            label="Agenda"
-            onClick={pushToSchedule}
-          />
-        )}
-        <MainHeader.Description description={description} />
-        <MainHeader.Tracks tracks={tracks} />
-        {finishedQueue && <MainHeader.SubTitle label="Marketplace finalizado" />}
-        <MainHeader.Buttons>
-          {amTheOrganizer && (
-            <Button
-              icon={<EditIcon />}
-              color="accent-4"
-              label="Editar"
-              onClick={pushToEditOS}
+      <Box>
+        <MainHeader>
+          <MainHeader.Title label={`Tablero de control: ${data.name}`} />
+        </MainHeader>
+        <ControlButtons controlButtons={controlButtons} size={size} withIcons />
+      </Box>
+
+      <Box>
+        <MainHeader>
+          <MainHeader.Title label={data.name} />
+          <MainHeader.Description description={data.description} />
+          {data.dates && (
+            <MainHeader.Button
+              margin={{ top: 'medium' }}
+              color="accent-1"
+              icon={<ScheduleIcon />}
+              label="Agenda"
+              onClick={pushHandlers.pushToSchedule}
             />
           )}
-          {amTheOrganizer && (
-            <ButtonToSwitchCallForPapers
-              openSpaceID={id}
-              setData={setData}
-              isActiveCallForPapers={isActiveCallForPapers}
-            />
-          )}
-          {amTheOrganizer && (
-            <ButtonToToggleVoting
-              openSpaceID={id}
-              setData={setData}
-              isActiveVoting={isActiveVoting}
-            />
-          )}
-          {amTheOrganizer && (
-            <ButtonToToggleShowSpeakerName
-              openSpaceID={id}
-              setData={setData}
-              showSpeakerName={showSpeakerName}
-            />
-          )}
-          {user ? (
-            <ButtonMyTalks amTheOrganizer={amTheOrganizer} />
-          ) : (
-            <ButtonSingIn onClick={() => setRedirectToLogin(true)} />
-          )}
-          {amTheOrganizer && marketPlaceButtons()}
-        </MainHeader.Buttons>
-      </MainHeader>
+        </MainHeader>
+      </Box>
+
+      <Box>
+        <MainHeader.Tracks tracks={data.tracks} />
+        {data.finishedQueue && <MainHeader.SubTitle label="Marketplace finalizado" />}
+      </Box>
+
       <Box margin={{ bottom: 'medium' }}>
         <DisplayTalks
-          amountOfTalks={amountOfTalks}
-          activeCallForPapers={isActiveCallForPapers}
-          tracks={tracks}
-          activeVoting={isActiveVoting}
-          showSpeakerName={showSpeakerName}
+          amountOfTalks={data.amountOfTalks}
+          activeCallForPapers={data.isActiveCallForPapers}
+          tracks={data.tracks}
+          activeVoting={data.isActiveVoting}
+          showSpeakerName={data.showSpeakerName}
         />
       </Box>
-      {redirectToLogin && <RedirectToLoginFromOpenSpace openSpaceId={id} />}
+
       {showQuery && (
         <QueryForm
           title="¿Seguro?"
           subTitle={`Queda${queue.length > 1 ? 'n' : ''} ${queue.length} en la cola`}
           onExit={() => setShowQuery(false)}
-          onSubmit={doFinishQueue}
+          onSubmit={apiHandlers.doFinishQueue}
         />
       )}
+
+      <ConfirmationDialog
+        isOpen={showDeleteModal}
+        message="¿Estás seguro de que deseas eliminar la convocatoria?"
+        onConfirm={() => deleteOS(data.id).then(() => pushHandlers.pushToRoot())}
+        onCancel={() => setShowDeleteModal(false)}
+      />
     </>
   );
 };

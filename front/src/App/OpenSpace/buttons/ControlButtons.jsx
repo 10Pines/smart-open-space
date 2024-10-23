@@ -3,8 +3,6 @@ import { Grid, Box } from 'grommet';
 import Button from './Button';
 
 const ControlButtons = ({ controlButtons, size, withIcons = false }) => {
-  console.info('Recibo controlButtons', controlButtons);
-
   const buttonCategories = controlButtons.reduce((acc, button) => {
     if (!acc[button.category]) {
       acc[button.category] = [];

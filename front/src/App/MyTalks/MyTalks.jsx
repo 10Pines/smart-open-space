@@ -236,8 +236,8 @@ const MyTalks = () => {
               talks={talks}
               reloadTalks={reload}
               openSpaceId={openSpace.id}
-              roomsWithFreeSlots={getRoomsWithSlots(openSpace.freeSlots)}
-              roomsWithAssignableSlots={getRoomsWithSlots(openSpace.assignableSlots)}
+              roomsWithFreeSlots={roomsWithFreeSlots}
+              roomsWithAssignableSlots={roomsWithAssignableSlots}
               dates={openSpace.dates}
             />
           ) : (

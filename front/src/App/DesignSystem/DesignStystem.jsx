@@ -9,6 +9,7 @@ import {
   InstagramIcon,
   NotesIcon,
 } from '#shared/icons';
+import SocialNetworkButton from '../components/atom/SocialNetworkButton';
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -61,7 +62,7 @@ const DesignSystem = () => {
 
   const DSButtons = (props) => (
     <Box direction="row" gap="small" {...props}>
-      <Box direction="column" flex="grow" gap="1rem">
+      <Box direction="column" style={{ flex: 1 }} gap="1rem">
         <Button>Nuevo +</Button>
         <Button loading>Nuevo +</Button>
         <Button secondary>Nuevo +</Button>
@@ -71,71 +72,18 @@ const DesignSystem = () => {
         </Button>
       </Box>
       <Divider />
-      <Box direction="column" flex="grow" align="center">
-        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center">
-          <Button
-            variant="square"
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<GoogleIcon />}
-            width={{
-              min: '150px',
-            }}
-          >
-            Google
-          </Button>
-          <Button
-            variant="square"
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<FacebookIcon />}
-            width={{
-              min: '150px',
-            }}
-          >
-            Facebook
-          </Button>
-          <Button
-            variant="square"
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<InstagramIcon />}
-            width={{
-              min: '150px',
-            }}
-          >
+      <Box direction="column" style={{ flex: 1 }} align="center">
+        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center" wrap>
+          <SocialNetworkButton icon={<GoogleIcon />}>Google</SocialNetworkButton>
+          <SocialNetworkButton icon={<FacebookIcon />}>Facebook</SocialNetworkButton>
+          <SocialNetworkButton icon={<InstagramIcon />}>Instagram</SocialNetworkButton>
+          <SocialNetworkButton icon={<InstagramIcon />} disabled>
             Instagram
-          </Button>
-          <Button
-            variant="square"
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<InstagramIcon />}
-            width={{
-              min: '150px',
-            }}
-            disabled
-          >
-            Instagram
-          </Button>
-          <Button
-            variant="square"
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<InstagramIcon />}
-            width={{
-              min: '150px',
-            }}
-            loading
-          />
+          </SocialNetworkButton>
+          <SocialNetworkButton icon={<InstagramIcon />} loading />
         </Box>
         <Divider horizontal margin={0} />
-        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center">
+        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center" wrap>
           <Button
             autoWidth
             secondary

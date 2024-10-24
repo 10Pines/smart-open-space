@@ -63,6 +63,7 @@ const DesignSystem = () => {
     <Box direction="row" gap="small">
       <Box direction="column" flex="grow" gap="1rem">
         <Button>Nuevo +</Button>
+        <Button loading>Nuevo +</Button>
         <Button secondary>Nuevo +</Button>
         <Button blackAndWhite>Nuevo +</Button>
         <Button blackAndWhite secondary>
@@ -108,6 +109,17 @@ const DesignSystem = () => {
           >
             Instagram
           </Button>
+          <Button
+            variant="square"
+            autoWidth
+            secondary
+            blackAndWhite
+            icon={<InstagramIcon />}
+            width={{
+              min: '150px',
+            }}
+            loading
+          />
         </Box>
         <Divider horizontal margin={0} />
         <Box direction="row" gap="1rem" justify="center" flex="grow" align="center">
@@ -120,15 +132,25 @@ const DesignSystem = () => {
           >
             Hola
           </Button>
-          <Button autoWidth blackAndWhite icon={<NotesIcon />} variant="circular">
-            Hola
-          </Button>
-          <Button autoWidth blackAndWhite icon={<AddIcon />} variant="circular">
-            Hola
-          </Button>
-          <Button autoWidth icon={<AddIcon />} variant="circular">
-            Hola
-          </Button>
+          <Button
+            autoWidth
+            secondary
+            blackAndWhite
+            icon={<HaltIcon />}
+            variant="circular"
+            loading
+          ></Button>
+          <Button autoWidth blackAndWhite icon={<NotesIcon />} variant="circular" />
+          <Button
+            autoWidth
+            blackAndWhite
+            icon={<NotesIcon />}
+            variant="circular"
+            loading
+          />
+          <Button autoWidth blackAndWhite icon={<AddIcon />} variant="circular" />
+          <Button autoWidth icon={<AddIcon />} variant="circular" />
+          <Button autoWidth icon={<AddIcon />} variant="circular" loading />
         </Box>
       </Box>
     </Box>

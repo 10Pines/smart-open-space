@@ -1,18 +1,5 @@
 import React from 'react';
-import { Button as GrommetButton, Text } from 'grommet';
-
-// TODO:
-// - [X] Add blackAndWhite option
-// - [X] Add label option (children)
-// - [X] Add button variant (normal, circular, square)
-//    - [X] normal
-//    - [X] circular
-//    - [X] square
-// - [X] add option for change width to fit-content called autoWidth
-// - [X] Add icon option
-// - [ ] Add onClick option
-// - [ ] Add disabled option
-// - [ ] Add loading option
+import { Box, Button as GrommetButton, Spinner, Text } from 'grommet';
 
 const Button = ({
   children = 'Boton',
@@ -21,6 +8,8 @@ const Button = ({
   variant = 'normal', // normal, circular, square
   autoWidth = false,
   icon,
+  onClick = () => {},
+  loading = false,
   ...props
 }) => {
   const blackAndWhiteColor = '#35270D';
@@ -29,7 +18,16 @@ const Button = ({
 
   const styledIcon = icon
     ? React.cloneElement(icon, {
-        color: secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : undefined,
+        color:
+          variant === 'circular'
+            ? secondary && blackAndWhite
+              ? blackAndWhiteColor
+              : 'white'
+            : secondary
+            ? !blackAndWhite
+              ? 'primary'
+              : blackAndWhiteColor
+            : undefined,
       })
     : undefined;
 
@@ -38,7 +36,15 @@ const Button = ({
       primary={!secondary}
       secondary={secondary}
       label={
-        variant !== 'circular' && (
+        loading ? (
+          <Box width="100%" align="center">
+            <Spinner
+              color={
+                secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white'
+              }
+            />
+          </Box>
+        ) : variant !== 'circular' ? (
           <Text
             color={
               secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white'
@@ -49,10 +55,13 @@ const Button = ({
           >
             {children}
           </Text>
+        ) : (
+          styledIcon
         )
       }
+      onClick={onClick}
       color={!blackAndWhite ? 'primary' : blackAndWhiteColor}
-      icon={styledIcon}
+      icon={!loading && variant != 'circular' && styledIcon}
       style={{
         display: variant === 'circular' ? 'flex' : undefined,
         alignItems: variant === 'circular' ? 'center' : undefined,

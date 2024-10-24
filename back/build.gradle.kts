@@ -41,6 +41,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-validation")
   implementation("org.springframework.boot:spring-boot-starter-web")
   implementation("org.springframework.boot:spring-boot-starter-websocket")
+  implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("com.google.guava:guava:32.0.0-android")
   implementation("net.sargue:mailgun:1.10.0")
   implementation("org.glassfish.jersey.inject:jersey-hk2")

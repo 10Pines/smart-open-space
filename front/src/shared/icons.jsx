@@ -34,6 +34,11 @@ import {
   Favorite,
   Trash,
   Star,
+  Instagram,
+  Facebook,
+  Google,
+  Halt,
+  Notes,
 } from 'grommet-icons';
 
 export {
@@ -73,4 +78,9 @@ export {
   Edit as EditIcon,
   Favorite as VoteIcon,
   Star as StarIcon,
+  Instagram as InstagramIcon,
+  Facebook as FacebookIcon,
+  Google as GoogleIcon,
+  Halt as HaltIcon,
+  Notes as NotesIcon,
 };

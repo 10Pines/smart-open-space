@@ -11,6 +11,7 @@ const Button = ({
   icon,
   onClick = () => {},
   loading = false,
+  style,
   ...props
 }) => {
   const blackAndWhiteColor = customTheme.global.colors.typography.light;
@@ -66,7 +67,10 @@ const Button = ({
       ? renderIconLabel()
       : renderTextLabel();
 
-  const getStyles = styles[variant]({ autoWidth, secondary, props });
+  const getStyles = {
+    ...styles[variant]({ autoWidth, secondary, props }),
+    ...style,
+  };
 
   return (
     <GrommetButton
@@ -94,7 +98,7 @@ const styles = {
     justifyContent: 'center',
     width: '3rem',
     height: '3rem',
-    minWidth: props.width?.min ?? '3rem',
+    minWidth: props.width?.min ?? undefined,
     padding: '0',
     borderRadius: '50%',
     border: secondary ? '2px solid rgb(53, 39, 13)' : null,

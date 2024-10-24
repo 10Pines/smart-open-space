@@ -1,4 +1,14 @@
-import { Box, Button, Text } from 'grommet';
+import React from 'react';
+import { Box, Text } from 'grommet';
+import Button from '#components/atom/Button';
+import {
+  AddIcon,
+  FacebookIcon,
+  GoogleIcon,
+  HaltIcon,
+  InstagramIcon,
+  NotesIcon,
+} from '#shared/icons';
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -24,9 +34,103 @@ const DesignSystem = () => {
     </Box>
   );
 
+  // TODO: Extraer componente
+  const Divider = ({ horizontal = false, margin }) =>
+    !horizontal ? (
+      <Box
+        background={{
+          color: 'light-4',
+        }}
+        width="1px"
+        margin={{
+          horizontal: margin ?? 'medium',
+        }}
+      />
+    ) : (
+      <Box
+        background={{
+          color: 'light-4',
+        }}
+        height="1px"
+        width={'100%'}
+        margin={{
+          vertical: margin ?? 'medium',
+        }}
+      />
+    );
+
   const DSButtons = () => (
     <Box direction="row" gap="small">
-      {/* Botones */}
+      <Box direction="column" flex="grow" gap="1rem">
+        <Button>Nuevo +</Button>
+        <Button secondary>Nuevo +</Button>
+        <Button blackAndWhite>Nuevo +</Button>
+        <Button blackAndWhite secondary>
+          Nuevo +
+        </Button>
+      </Box>
+      <Divider />
+      <Box direction="column" flex="grow" align="center">
+        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center">
+          <Button
+            variant="square"
+            autoWidth
+            secondary
+            blackAndWhite
+            icon={<GoogleIcon />}
+            width={{
+              min: '150px',
+            }}
+          >
+            Google
+          </Button>
+          <Button
+            variant="square"
+            autoWidth
+            secondary
+            blackAndWhite
+            icon={<FacebookIcon />}
+            width={{
+              min: '150px',
+            }}
+          >
+            Facebook
+          </Button>
+          <Button
+            variant="square"
+            autoWidth
+            secondary
+            blackAndWhite
+            icon={<InstagramIcon />}
+            width={{
+              min: '150px',
+            }}
+          >
+            Instagram
+          </Button>
+        </Box>
+        <Divider horizontal margin={0} />
+        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center">
+          <Button
+            autoWidth
+            secondary
+            blackAndWhite
+            icon={<HaltIcon />}
+            variant="circular"
+          >
+            Hola
+          </Button>
+          <Button autoWidth blackAndWhite icon={<NotesIcon />} variant="circular">
+            Hola
+          </Button>
+          <Button autoWidth blackAndWhite icon={<AddIcon />} variant="circular">
+            Hola
+          </Button>
+          <Button autoWidth icon={<AddIcon />} variant="circular">
+            Hola
+          </Button>
+        </Box>
+      </Box>
     </Box>
   );
 

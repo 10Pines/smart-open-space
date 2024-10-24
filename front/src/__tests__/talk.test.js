@@ -16,6 +16,7 @@ function anyTalk(queue = [], slots = [], openSpace = anyOpenSpaceWithNoTalksSche
     undefined,
     false,
     'Alan Key',
+    0,
     queue,
     slots,
     openSpace

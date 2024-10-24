@@ -25,6 +25,7 @@ import {
   Video,
   Workshop,
   Link,
+  ChapterAdd,
   Unlock,
   StatusGoodSmall,
   Projects,
@@ -33,6 +34,11 @@ import {
   Favorite,
   Trash,
   Star,
+  Instagram,
+  Facebook,
+  Google,
+  Halt,
+  Notes,
 } from 'grommet-icons';
 
 export {
@@ -51,6 +57,7 @@ export {
   FormNext as NextIcon,
   Workshop as OpenSpaceIcon,
   Lock as PasswordIcon,
+  ChapterAdd as QueueIcon,
   FormPrevious as PreviousIcon,
   Schedules as ScheduleIcon,
   Announce as TalkIcon,
@@ -71,4 +78,9 @@ export {
   Edit as EditIcon,
   Favorite as VoteIcon,
   Star as StarIcon,
+  Instagram as InstagramIcon,
+  Facebook as FacebookIcon,
+  Google as GoogleIcon,
+  Halt as HaltIcon,
+  Notes as NotesIcon,
 };

@@ -13,7 +13,6 @@ import {
   usePushToOpenSpace,
   usePushToSchedule,
 } from '#helpers/routes';
-import ButtonLoading from '#shared/ButtonLoading';
 import Detail from '#shared/Detail';
 import { TalkIcon, ScheduleIcon } from '#shared/icons';
 import MainHeader from '#shared/MainHeader';
@@ -26,6 +25,7 @@ import EmptyTalk from './EmptyTalk';
 import TalkView from './Talk';
 import Talk from '../model/talk';
 import { Room } from '../model/room';
+import TalkTable from './TalkTable';
 
 const slideDownAnimation = {
   type: 'slideDown',
@@ -44,6 +44,7 @@ function talkToModel(talk, queue, slots, openSpace) {
     talk.track,
     talk.isMarketplaceTalk,
     talk.speakerName,
+    talk.votes,
     queue,
     slots,
     openSpace
@@ -191,6 +192,7 @@ const MyTalks = () => {
         new Room(slots, room.id, room.name, room.description)
     );
   }
+  console.log('talks:', talks);
 
   return (
     <>
@@ -227,6 +229,14 @@ const MyTalks = () => {
               title={myEnqueuedTalk().name}
             />
           )}
+          <TalkTable
+            talks={talks}
+            reloadTalks={reload}
+            openSpaceId={openSpace.id}
+            roomsWithFreeSlots={getRoomsWithSlots(openSpace.freeSlots)}
+            roomsWithAssignableSlots={getRoomsWithSlots(openSpace.assignableSlots)}
+            dates={openSpace.dates}
+          />
           <MyGrid>
             {talks.map((talk) => (
               <TalkView

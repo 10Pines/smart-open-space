@@ -28,6 +28,7 @@ export default ({ mode }) => {
         '#shared': root + '/shared',
         '#app': root + '/App',
         '#model': root + '/App/model',
+        '#components': root + '/App/components',
       },
     },
     plugins: [htmlPlugin, react()],

@@ -8,6 +8,7 @@ export default class Talk {
     track,
     isMarketplaceTalk,
     speakerName,
+    votes,
     queue,
     slots,
     openSpace
@@ -19,6 +20,7 @@ export default class Talk {
     this.speaker = speaker;
     this.isMarketplaceTalk = isMarketplaceTalk;
     this.speakerName = speakerName;
+    this.votes = votes;
     this.track = track;
     this.queue = queue;
     this.slots = slots;

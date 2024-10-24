@@ -59,8 +59,8 @@ const DesignSystem = () => {
       />
     );
 
-  const DSButtons = () => (
-    <Box direction="row" gap="small">
+  const DSButtons = (props) => (
+    <Box direction="row" gap="small" {...props}>
       <Box direction="column" flex="grow" gap="1rem">
         <Button>Nuevo +</Button>
         <Button loading>Nuevo +</Button>
@@ -201,7 +201,7 @@ const DesignSystem = () => {
       <Box direction="column" gap="1rem">
         {sections.map(({ title, Component }) => (
           <DesignSystemSection title={title}>
-            {Component && <Component />}
+            {Component && <Component pad="1rem" />}
           </DesignSystemSection>
         ))}
       </Box>

@@ -17,73 +17,96 @@ const Button = ({
 
   if (typeof children !== 'string') throw new Error('Children must be a string');
 
+  const getColorForIcon = () => {
+    return variant === 'circular'
+      ? secondary && blackAndWhite
+        ? blackAndWhiteColor
+        : 'white'
+      : secondary
+      ? blackAndWhite
+        ? blackAndWhiteColor
+        : 'primary'
+      : undefined;
+  };
+
   const styledIcon = icon
     ? React.cloneElement(icon, {
-        color:
-          variant === 'circular'
-            ? secondary && blackAndWhite
-              ? blackAndWhiteColor
-              : 'white'
-            : secondary
-            ? !blackAndWhite
-              ? 'primary'
-              : blackAndWhiteColor
-            : undefined,
+        color: getColorForIcon(),
         'data-testid': 'so-button-icon',
       })
     : undefined;
+
+  const renderLoadingLabel = () => (
+    <Box width="100%" align="center">
+      <Spinner
+        data-testid="so-button-spinner"
+        color={secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white'}
+      />
+    </Box>
+  );
+
+  const renderTextLabel = () => (
+    <Text
+      data-testid="so-button-label-text"
+      color={secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white'}
+      style={{
+        textWrap: 'nowrap',
+      }}
+    >
+      {children}
+    </Text>
+  );
+
+  const renderIconLabel = () => styledIcon;
+
+  const renderLabel = () =>
+    loading
+      ? renderLoadingLabel()
+      : variant === 'circular'
+      ? renderIconLabel()
+      : renderTextLabel();
+
+  const getStyles = styles[variant]({ autoWidth, secondary, props });
 
   return (
     <GrommetButton
       data-testid="so-button"
       primary={!secondary}
       secondary={secondary}
-      label={
-        loading ? (
-          <Box width="100%" align="center">
-            <Spinner
-              data-testid="so-button-spinner"
-              color={
-                secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white'
-              }
-            />
-          </Box>
-        ) : variant !== 'circular' ? (
-          <Text
-            data-testid="so-button-label-text"
-            color={
-              secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white'
-            }
-            style={{
-              textWrap: 'nowrap',
-            }}
-          >
-            {children}
-          </Text>
-        ) : (
-          styledIcon
-        )
-      }
+      label={renderLabel()}
       onClick={onClick}
       color={!blackAndWhite ? 'primary' : blackAndWhiteColor}
-      icon={!loading && variant != 'circular' && styledIcon}
-      style={{
-        display: variant === 'circular' ? 'flex' : undefined,
-        alignItems: variant === 'circular' ? 'center' : undefined,
-        justifyContent: variant === 'circular' ? 'center' : undefined,
-        width: variant === 'circular' ? '3rem' : !autoWidth ? '100%' : 'fit-content',
-        height: variant === 'circular' ? '3rem' : 'fit-content',
-        minWidth: props.width?.min ?? (variant === 'circular' ? '3rem' : 'auto'),
-        color: secondary && 'primary',
-        padding: variant === 'circular' ? '0' : `0.5rem 1rem`,
-        lineHeight: '1rem',
-        borderRadius:
-          variant === 'square' ? '0.5rem' : variant === 'circular' ? '50%' : '2rem',
-        border: variant === 'circular' && secondary ? '2px solid rgb(53, 39, 13)' : null,
-      }}
+      icon={!loading && variant !== 'circular' && styledIcon}
+      style={getStyles}
       {...props}
     />
   );
+};
+
+const styles = {
+  base: ({ secondary }) => ({
+    lineHeight: '1rem',
+    color: secondary && 'primary',
+  }),
+  circular: ({ secondary, props }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '3rem',
+    height: '3rem',
+    minWidth: props.width?.min ?? '3rem',
+    padding: '0',
+    borderRadius: '50%',
+    border: secondary ? '2px solid rgb(53, 39, 13)' : null,
+  }),
+  square: () => ({
+    borderRadius: '0.5rem',
+  }),
+  normal: ({ autoWidth }) => ({
+    width: autoWidth ? 'fit-content' : '100%',
+    padding: '0.5rem 1rem',
+    borderRadius: '2rem',
+  }),
 };
 
 export default Button;

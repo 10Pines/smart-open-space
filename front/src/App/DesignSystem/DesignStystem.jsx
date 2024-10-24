@@ -118,6 +118,19 @@ const DesignSystem = () => {
             width={{
               min: '150px',
             }}
+            disabled
+          >
+            Instagram
+          </Button>
+          <Button
+            variant="square"
+            autoWidth
+            secondary
+            blackAndWhite
+            icon={<InstagramIcon />}
+            width={{
+              min: '150px',
+            }}
             loading
           />
         </Box>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Button as GrommetButton, Spinner, Text } from 'grommet';
+import customTheme from '../../../App/theme';
 
 const Button = ({
   children = 'Boton',
@@ -12,7 +13,7 @@ const Button = ({
   loading = false,
   ...props
 }) => {
-  const blackAndWhiteColor = '#35270D';
+  const blackAndWhiteColor = customTheme.global.colors.typography.light;
 
   if (typeof children !== 'string') throw new Error('Children must be a string');
 
@@ -28,17 +29,20 @@ const Button = ({
               ? 'primary'
               : blackAndWhiteColor
             : undefined,
+        'data-testid': 'so-button-icon',
       })
     : undefined;
 
   return (
     <GrommetButton
+      data-testid="so-button"
       primary={!secondary}
       secondary={secondary}
       label={
         loading ? (
           <Box width="100%" align="center">
             <Spinner
+              data-testid="so-button-spinner"
               color={
                 secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white'
               }
@@ -46,6 +50,7 @@ const Button = ({
           </Box>
         ) : variant !== 'circular' ? (
           <Text
+            data-testid="so-button-label-text"
             color={
               secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white'
             }

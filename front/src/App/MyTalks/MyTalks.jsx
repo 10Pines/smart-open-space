@@ -185,6 +185,8 @@ const MyTalks = () => {
   const shouldDisplayEmptyTalkButton = !hasTalks && canAddTalk;
 
   const shouldDisplayAddTalkButton = hasTalks && canAddTalk;
+  const roomsWithFreeSlots = getRoomsWithSlots(openSpace.freeSlots);
+  const roomsWithAssignableSlots = getRoomsWithSlots(openSpace.assignableSlots);
 
   function getRoomsWithSlots(roomWithSlots) {
     return roomWithSlots.map(
@@ -240,19 +242,21 @@ const MyTalks = () => {
             />
           ) : (
             <MyGrid>
-              {talks.map((talk) => (
-                <TalkView
-                  talk={talk}
-                  activeQueue={openSpace.activeQueue}
-                  roomsWithFreeSlots={getRoomsWithSlots(openSpace.freeSlots)}
-                  hasAnother={hasAnother(talk.id)}
-                  onEnqueue={reload}
-                  roomsWithAssignableSlots={getRoomsWithSlots(openSpace.assignableSlots)}
-                  currentUserIsOrganizer={currentUserIsOrganizer}
-                  dates={openSpace.dates}
-                  key={talk.id}
-                />
-              ))}
+              {talks.map((talk) => {
+                return (
+                    <TalkView
+                        talk={talk}
+                        activeQueue={openSpace.activeQueue}
+                        roomsWithFreeSlots={roomsWithFreeSlots}
+                        hasAnother={hasAnother(talk.id)}
+                        onEnqueue={reload}
+                        roomsWithAssignableSlots={roomsWithAssignableSlots}
+                        currentUserIsOrganizer={currentUserIsOrganizer}
+                        dates={openSpace.dates}
+                        key={talk.id}
+                    />
+                );
+              })}
             </MyGrid>
           )}
         </>

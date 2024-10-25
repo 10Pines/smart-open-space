@@ -194,6 +194,7 @@ const MyTalks = () => {
         new Room(slots, room.id, room.name, room.description)
     );
   }
+  console.log('talks:', talks);
 
   return (
     <>

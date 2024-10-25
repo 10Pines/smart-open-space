@@ -21,6 +21,9 @@ import { EditTalk, NewTalk } from './TalkForm';
 import NewOpenSpace from './EditOpenSpace/NewOpenSpace';
 import Talk from './Talk';
 import ResetPassword from './ResetPassword';
+import { deepMerge } from 'grommet/utils';
+import customTheme from './theme';
+import DesignSystem from './DesignSystem/DesignStystem';
 
 const Routes = () => (
   <Switch>
@@ -38,12 +41,15 @@ const Routes = () => (
     <Route path="/recovery-email" exact component={RecoveryEmail} />
     <Route path="/reset-password" exact component={ResetPassword} />
     <Route path="/" exact component={Home} />
+    <Route path="/design-system" exact component={DesignSystem} />
     {/* <Route component={Page404} /> */}
   </Switch>
 );
 
+const theme = deepMerge(grommet, customTheme);
+
 const App = () => (
-  <Grommet full theme={grommet}>
+  <Grommet full theme={theme}>
     <ErrorBoundary>
       <Router>
         <AuthProvider>

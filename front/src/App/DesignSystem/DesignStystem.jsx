@@ -10,6 +10,7 @@ import {
   NotesIcon,
 } from '#shared/icons';
 import SocialNetworkButton from '../components/atom/SocialNetworkButton';
+import IconButton from '../components/atom/IconButton';
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -84,34 +85,13 @@ const DesignSystem = () => {
         </Box>
         <Divider horizontal margin={0} />
         <Box direction="row" gap="1rem" justify="center" flex="grow" align="center" wrap>
-          <Button
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<HaltIcon />}
-            variant="circular"
-          >
-            Hola
-          </Button>
-          <Button
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<HaltIcon />}
-            variant="circular"
-            loading
-          ></Button>
-          <Button autoWidth blackAndWhite icon={<NotesIcon />} variant="circular" />
-          <Button
-            autoWidth
-            blackAndWhite
-            icon={<NotesIcon />}
-            variant="circular"
-            loading
-          />
-          <Button autoWidth blackAndWhite icon={<AddIcon />} variant="circular" />
-          <Button autoWidth icon={<AddIcon />} variant="circular" />
-          <Button autoWidth icon={<AddIcon />} variant="circular" loading />
+          <IconButton icon={<HaltIcon />} secondary blackAndWhite />
+          <IconButton icon={<HaltIcon />} secondary blackAndWhite loading />
+          <IconButton icon={<NotesIcon />} blackAndWhite />
+          <IconButton icon={<NotesIcon />} blackAndWhite loading />
+          <IconButton icon={<AddIcon />} blackAndWhite />
+          <IconButton icon={<AddIcon />} />
+          <IconButton icon={<AddIcon />} loading />
         </Box>
       </Box>
     </Box>

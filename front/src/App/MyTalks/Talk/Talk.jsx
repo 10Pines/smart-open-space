@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Box, Button, Grid, Layer, Markdown, Text } from 'grommet';
+import { Box, Grid, Text } from 'grommet';
 import PropTypes from 'prop-types';
 
 import {
@@ -13,14 +13,14 @@ import {
 import { useUser } from '#helpers/useAuth';
 import ButtonLoading from '#shared/ButtonLoading';
 import Card from '#shared/Card';
-import Detail from '#shared/Detail';
-import { DeleteIcon, TransactionIcon, UserIcon } from '#shared/icons';
+import { DeleteIcon } from '#shared/icons';
 import Title from '#shared/Title';
 import { useParams } from 'react-router-dom';
 import SelectSlot from './SelectSlot';
 import { usePushToOpenSpace, usePushToSchedule } from '#helpers/routes';
 import { Room } from '../../model/room';
 import { usePushToTalk } from '#helpers/routes';
+import { DeleteModal } from '../components/DeleteModal';
 
 const Badge = ({ color, text }) => (
   <Box alignSelf="center">
@@ -42,7 +42,6 @@ const Talk = ({
   roomsWithFreeSlots,
   hasAnother,
   onEnqueue: reloadTalks,
-  currentUserIsOrganizer,
   dates,
 }) => {
   const pushToSchedule = usePushToSchedule();
@@ -52,9 +51,8 @@ const Talk = ({
   const user = useUser();
   const [openSchedule, setOpenSchedule] = useState(false);
   const [openExchange, setOpenExchange] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = React.useState();
-  const shouldDisplayScheduleTalkButton =
-    dates && (currentUserIsOrganizer || talk.isToSchedule());
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const shouldDisplayScheduleTalkButton = dates && talk.isToSchedule();
 
   const onSubmitSchedule = ({ slot, room }) =>
     scheduleTalk(talk.id, user.id, slot.id, room.id).then(pushToSchedule);
@@ -64,32 +62,17 @@ const Talk = ({
 
   const color = talk.colorForTalkManagement();
 
-  const shouldDisplayDeleteTalkButton =
-    user && (currentUserIsOrganizer || talk.speaker.id === user.id);
+  const shouldDisplayDeleteTalkButton = user && talk.speaker.id === user.id;
 
   return (
     <Card borderColor={color} gap="small">
       <Box onClick={pushToTalk}>
         <Title>{talk.name}</Title>
-        {currentUserIsOrganizer && (
-          <>
-            <Detail icon={UserIcon} text={talk.speakerName} />
-            <Detail size="small" text={talk.speaker.email} />
-          </>
-        )}
       </Box>
       <Grid gap={'xsmall'}>
         {talk.isAssigned() ? (
           <Box direction="row" justify="evenly">
             <Badge color={color} text="Agendada" />
-            {currentUserIsOrganizer && (
-              <Button
-                hoverIndicator
-                icon={<TransactionIcon />}
-                onClick={() => setOpenExchange(true)}
-                plain
-              />
-            )}
           </Box>
         ) : (
           shouldDisplayScheduleTalkButton && (
@@ -107,7 +90,7 @@ const Talk = ({
           activeQueue && (
             <ButtonAction
               color={color}
-              disabled={!currentUserIsOrganizer && hasAnother}
+              disabled={hasAnother}
               label="Encolar"
               onClick={() => enqueueTalk(talk.id).then(reloadTalks)}
             />
@@ -143,24 +126,13 @@ const Talk = ({
         />
       )}
       {showDeleteModal && (
-        <Layer
+        <DeleteModal
           onEsc={() => setShowDeleteModal(false)}
-          onClickOutside={() => setShowDeleteModal(false)}
-        >
-          <Box pad="medium" gap="medium">
-            <Text>¿Estás seguro que querés eliminar esta charla?</Text>
-            <Box justify="around" direction="row" pad="small">
-              <Button
-                label="Si"
-                onClick={() => {
-                  deleteTalk(openSpace.id, talk.id).then(reloadTalks);
-                  setShowDeleteModal(false);
-                }}
-              />
-              <Button label="No" onClick={() => setShowDeleteModal(false)} />
-            </Box>
-          </Box>
-        </Layer>
+          onConfirmDelete={() => {
+            deleteTalk(openSpace.id, talk.id).then(reloadTalks);
+            setShowDeleteModal(false);
+          }}
+        />
       )}
     </Card>
   );

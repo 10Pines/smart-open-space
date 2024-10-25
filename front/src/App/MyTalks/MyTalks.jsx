@@ -13,7 +13,6 @@ import {
   usePushToOpenSpace,
   usePushToSchedule,
 } from '#helpers/routes';
-import ButtonLoading from '#shared/ButtonLoading';
 import Detail from '#shared/Detail';
 import { TalkIcon, ScheduleIcon } from '#shared/icons';
 import MainHeader from '#shared/MainHeader';
@@ -26,6 +25,7 @@ import EmptyTalk from './EmptyTalk';
 import TalkView from './Talk';
 import Talk from '../model/talk';
 import { Room } from '../model/room';
+import TalkTable from './TalkTable/TalkTable';
 
 const slideDownAnimation = {
   type: 'slideDown',
@@ -44,6 +44,7 @@ function talkToModel(talk, queue, slots, openSpace) {
     talk.track,
     talk.isMarketplaceTalk,
     talk.speakerName,
+    talk.votes,
     queue,
     slots,
     openSpace
@@ -95,7 +96,7 @@ const PlaceBox = ({ place }) => (
 );
 PlaceBox.propTypes = { place: PropTypes.number.isRequired };
 
-const EnqueuedTalkCurrent = ({ description, onFinish, title }) => (
+const EnqueuedTalkCurrent = ({ description, title }) => (
   <EnqueuedTalkCard bgColor="accent-1">
     <Heading margin={{ horizontal: 'medium', vertical: 'none' }}>PASÁ!!</Heading>
     <>
@@ -184,6 +185,8 @@ const MyTalks = () => {
   const shouldDisplayEmptyTalkButton = !hasTalks && canAddTalk;
 
   const shouldDisplayAddTalkButton = hasTalks && canAddTalk;
+  const roomsWithFreeSlots = getRoomsWithSlots(openSpace.freeSlots);
+  const roomsWithAssignableSlots = getRoomsWithSlots(openSpace.assignableSlots);
 
   function getRoomsWithSlots(roomWithSlots) {
     return roomWithSlots.map(
@@ -191,6 +194,7 @@ const MyTalks = () => {
         new Room(slots, room.id, room.name, room.description)
     );
   }
+  console.log('talks:', talks);
 
   return (
     <>
@@ -227,21 +231,35 @@ const MyTalks = () => {
               title={myEnqueuedTalk().name}
             />
           )}
-          <MyGrid>
-            {talks.map((talk) => (
-              <TalkView
-                talk={talk}
-                activeQueue={openSpace.activeQueue}
-                roomsWithFreeSlots={getRoomsWithSlots(openSpace.freeSlots)}
-                hasAnother={hasAnother(talk.id)}
-                onEnqueue={reload}
-                roomsWithAssignableSlots={getRoomsWithSlots(openSpace.assignableSlots)}
-                currentUserIsOrganizer={currentUserIsOrganizer}
-                dates={openSpace.dates}
-                key={talk.id}
-              />
-            ))}
-          </MyGrid>
+          {currentUserIsOrganizer ? (
+            <TalkTable
+              activeQueue={openSpace.activeQueue}
+              talks={talks}
+              reloadTalks={reload}
+              openSpaceId={openSpace.id}
+              roomsWithFreeSlots={roomsWithFreeSlots}
+              roomsWithAssignableSlots={roomsWithAssignableSlots}
+              dates={openSpace.dates}
+            />
+          ) : (
+            <MyGrid>
+              {talks.map((talk) => {
+                return (
+                    <TalkView
+                        talk={talk}
+                        activeQueue={openSpace.activeQueue}
+                        roomsWithFreeSlots={roomsWithFreeSlots}
+                        hasAnother={hasAnother(talk.id)}
+                        onEnqueue={reload}
+                        roomsWithAssignableSlots={roomsWithAssignableSlots}
+                        currentUserIsOrganizer={currentUserIsOrganizer}
+                        dates={openSpace.dates}
+                        key={talk.id}
+                    />
+                );
+              })}
+            </MyGrid>
+          )}
         </>
       )}
       {!isActiveCallForPapers && (

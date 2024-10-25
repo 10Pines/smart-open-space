@@ -11,6 +11,7 @@ import {
 import Input from "../components/atom/Input.jsx";
 import Button from "../components/atom/Button.jsx";
 import {FormSearch, View} from "grommet-icons";
+import Dropdown from "../components/atom/Dropdown.jsx";
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -172,6 +173,9 @@ const DesignSystem = () => {
       <Input icon={<View color={'primary'}/>}>
         Contraseña...
       </Input>
+        <Dropdown>
+
+        </Dropdown>
     </Box>
   );
 

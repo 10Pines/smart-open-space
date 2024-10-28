@@ -33,6 +33,20 @@ const customTheme = {
       size: '16px',
       weight: 400,
     },
+    layout: {
+      padding: {
+        horizontal: {
+          small: '30px',
+          medium: '80px',
+          large: '120px',
+        },
+        vertical: {
+          small: 'medium',
+          medium: 'medium',
+          large: 'medium',
+        },
+      },
+    },
   },
 };
 

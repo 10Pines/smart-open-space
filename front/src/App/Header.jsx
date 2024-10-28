@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Button, Menu, Text, Image } from 'grommet';
+import { Box, Button, Menu, Text, Image, Avatar } from 'grommet';
 import PropTypes from 'prop-types';
 
 import logo from '#assets/logo.svg';
@@ -12,20 +12,35 @@ import Row from '#shared/Row';
 import RowBetween from '#shared/RowBetween';
 import { useInRegister, usePushToLogin, usePushToRoot } from '#helpers/routes';
 import { TinySpinner } from '#shared/Spinner';
+import { getLayoutGeneralPadding } from '#helpers/layoutUtils';
 
 const SmallMenu = ({ color }) => (
-  <Box pad="medium">
+  <Box pad={getLayoutGeneralPadding(useSize())}>
     <MenuIcon color={color} />
   </Box>
 );
 SmallMenu.propTypes = { color: PropTypes.string.isRequired };
 
-const LargeMenu = ({ color, name, pad }) => (
-  <Row gap="xsmall" pad={pad}>
-    <Text color={color}>{name}</Text>
-    <DownIcon color={color} />
-  </Row>
-);
+const LargeMenu = ({ color, name, pad }) => {
+  const textSize = '16px';
+
+  return (
+    <Row gap="small" pad={pad}>
+      <Box>
+        <Avatar
+          size="30px"
+          src="https://yt3.googleusercontent.com/ytc/AIdro_ldtrV5DnqyZGv5osF-mi8Z7hXHAU5NhlEiP56G5QW5jl8z=s900-c-k-c0x00ffffff-no-rj"
+        />
+      </Box>
+      <Row gap="xxsmall">
+        <Text color={color} size={textSize}>
+          {name}
+        </Text>
+        <DownIcon color={color} size={textSize} />
+      </Row>
+    </Row>
+  );
+};
 LargeMenu.propTypes = {
   color: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
@@ -40,10 +55,8 @@ const LogoSmall = () => (
 
 const HomeButton = ({ onClick }) => (
   <Button
-    hoverIndicator
-    icon={<LogoSmall />}
     label={
-      <Text color="light-1" size="xlarge">
+      <Text color="black" size="20px" weight="bolder">
         {useSize() === 'small' ? 'SOS' : 'Smart Open Spaces'}
       </Text>
     }
@@ -60,10 +73,6 @@ const MyMenu = ({ user }) => {
   const { logout } = useAuth();
   if (loading) return <TinySpinner color="light-1" size="large" />;
   const menuItems = [
-    // {
-    //   label: 'Help',
-    //   onClick: () => {},
-    // },
     {
       label: <Text color="status-error">Cerrar sesión</Text>,
       onClick: withLoading(() => logout().then(pushToLogin)),
@@ -72,12 +81,11 @@ const MyMenu = ({ user }) => {
   return (
     <Menu plain items={menuItems} size="medium">
       {({ drop, hover }) => {
-        // eslint-disable-next-line no-nested-ternary
-        const color = hover && !drop ? 'accent-1' : !drop ? 'light-2' : '';
+        const color = 'black';
         return isSmall && !drop ? (
           <SmallMenu color={color} />
         ) : (
-          <LargeMenu color={color} name={user.name} pad={isSmall ? 'medium' : 'small'} />
+          <LargeMenu color={color} name={user.name} />
         );
       }}
     </Menu>

@@ -46,7 +46,7 @@ const MainLayout = ({ children, header }) => {
   };
 
   return (
-    <Box>
+    <Box style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <NavBar />
       {/* //TODO: Make the next box customizable, as a color or an img */}
       <Box
@@ -59,6 +59,10 @@ const MainLayout = ({ children, header }) => {
         background="background"
         pad={{
           horizontal: pad.horizontal,
+        }}
+        style={{ flex: 1 }}
+        margin={{
+          bottom: '2rem',
         }}
       >
         <Box
@@ -73,33 +77,8 @@ const MainLayout = ({ children, header }) => {
           {children}
         </Box>
       </Box>
+      <Footer />
     </Box>
-    // <Box>
-    //   <Box fill background="light-3" overflow="auto">
-    //     <Grid areas={areas} columns={columns} fill rows={['xxsmall', 'flex']}>
-    //       <BoxBrand gridArea="headerL" className={'header'} />
-    //       <BoxBrand gridArea="headerR" className={'header'} />
-    //       <BoxBrand gridArea="header" pad={pad} className={'header'}>
-    //         {header}
-    //       </BoxBrand>
-    //       <Box as="main" gridArea="main" pad={pad} style={{ minHeight: '92vh' }}>
-    //         <div>{children}</div>
-    //       </Box>
-    //       <BoxBrand gridArea="footerL" />
-    //       <BoxBrand gridArea="footerR" />
-    //       <BoxBrand
-    //         gridArea="footer"
-    //         fill
-    //         background="#7D4CDB"
-    //         minHeight="85rem"
-    //         overflow="visible"
-    //         pad={{ vertical: 'small', horizontal: 'small' }}
-    //       >
-    //         <Footer />
-    //       </BoxBrand>
-    //     </Grid>
-    //   </Box>
-    // </Box>
   );
 };
 MainLayout.propTypes = {

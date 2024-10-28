@@ -119,10 +119,23 @@ tasks.register<Download>("downloadNewrelic") {
   dest(file("/newrelic"))
 }
 
-tasks.register<Copy>("unzipNewrelic") {
+tasks.register<Copy>("unzipAndSetUpNewrelic") {
+  doNotTrackState("disable unzip check")
   dependsOn("downloadNewrelic")
   from(zipTree(file("/newrelic/newrelic-java.zip")))
   into(rootDir)
-  doNotTrackState("disable unzip check")
-  delete("/newrelic/newrelic-java.zip")
+  doLast {
+    delete("/newrelic/newrelic-java.zip")
+    delete("/newrelic/newrelic.yml")
+    copy {
+      from("/config/newrelic.yml")
+      into("/newrelic")
+    }
+  }
 }
+
+// Heroku post-build tasks executions
+tasks.register<Copy>("stage") {
+  dependsOn("downloadNewrelic", "unzipAndSetUpNewrelic")
+}
+

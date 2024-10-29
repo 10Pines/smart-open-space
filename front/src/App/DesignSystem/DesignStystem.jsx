@@ -11,7 +11,9 @@ import {
 import Input from "../components/atom/Input.jsx";
 import Button from "../components/atom/Button.jsx";
 import {FormSearch, View} from "grommet-icons";
-import SelectDropdown from "#components/atom/SelectDropdown.jsx";
+import SelectDropdown from "../components/atom/SelectDropdown.jsx";
+import SocialNetworkButton from '../components/atom/SocialNetworkButton';
+import IconButton from '../components/atom/IconButton';
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -64,7 +66,7 @@ const DesignSystem = () => {
 
   const DSButtons = (props) => (
     <Box direction="row" gap="small" {...props}>
-      <Box direction="column" flex="grow" gap="1rem">
+      <Box direction="column" style={{ flex: 1 }} gap="1rem">
         <Button>Nuevo +</Button>
         <Button loading>Nuevo +</Button>
         <Button secondary>Nuevo +</Button>
@@ -74,86 +76,25 @@ const DesignSystem = () => {
         </Button>
       </Box>
       <Divider />
-      <Box direction="column" flex="grow" align="center">
-        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center">
-          <Button
-            variant="square"
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<GoogleIcon />}
-            width={{
-              min: '150px',
-            }}
-          >
-            Google
-          </Button>
-          <Button
-            variant="square"
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<FacebookIcon />}
-            width={{
-              min: '150px',
-            }}
-          >
-            Facebook
-          </Button>
-          <Button
-            variant="square"
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<InstagramIcon />}
-            width={{
-              min: '150px',
-            }}
-          >
+      <Box direction="column" style={{ flex: 1 }} align="center">
+        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center" wrap>
+          <SocialNetworkButton icon={<GoogleIcon />}>Google</SocialNetworkButton>
+          <SocialNetworkButton icon={<FacebookIcon />}>Facebook</SocialNetworkButton>
+          <SocialNetworkButton icon={<InstagramIcon />}>Instagram</SocialNetworkButton>
+          <SocialNetworkButton icon={<InstagramIcon />} disabled>
             Instagram
-          </Button>
-          <Button
-            variant="square"
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<InstagramIcon />}
-            width={{
-              min: '150px',
-            }}
-            loading
-          />
+          </SocialNetworkButton>
+          <SocialNetworkButton icon={<InstagramIcon />} loading />
         </Box>
         <Divider horizontal margin={0} />
-        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center">
-          <Button
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<HaltIcon />}
-            variant="circular"
-          >
-            Hola
-          </Button>
-          <Button
-            autoWidth
-            secondary
-            blackAndWhite
-            icon={<HaltIcon />}
-            variant="circular"
-            loading
-          ></Button>
-          <Button autoWidth blackAndWhite icon={<NotesIcon />} variant="circular" />
-          <Button
-            autoWidth
-            blackAndWhite
-            icon={<NotesIcon />}
-            variant="circular"
-            loading
-          />
-          <Button autoWidth blackAndWhite icon={<AddIcon />} variant="circular" />
-          <Button autoWidth icon={<AddIcon />} variant="circular" />
-          <Button autoWidth icon={<AddIcon />} variant="circular" loading />
+        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center" wrap>
+          <IconButton icon={<HaltIcon />} secondary blackAndWhite />
+          <IconButton icon={<HaltIcon />} secondary blackAndWhite loading />
+          <IconButton icon={<NotesIcon />} blackAndWhite />
+          <IconButton icon={<NotesIcon />} blackAndWhite loading />
+          <IconButton icon={<AddIcon />} blackAndWhite />
+          <IconButton icon={<AddIcon />} />
+          <IconButton icon={<AddIcon />} loading />
         </Box>
       </Box>
     </Box>

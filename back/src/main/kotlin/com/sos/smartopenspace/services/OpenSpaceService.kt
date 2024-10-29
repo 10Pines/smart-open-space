@@ -131,7 +131,7 @@ class OpenSpaceService(
     }
 
     private fun userIsOrganizerOf(openSpace: OpenSpace, userID: Long) =
-        openSpace.organizer.id != userID
+        openSpace.organizer.id == userID
 
     private fun userIsSpeakerOf(talk: Talk, userID: Long) = talk.speaker.id == userID
 
@@ -184,7 +184,10 @@ class OpenSpaceService(
         val openSpace = findById(openSpaceID)
         val user = findUser(userID)
         val talk = findTalk(talkID)
-        user.checkOwnershipOf(talk)
+
+        if (!userIsOrganizerOf(openSpace, userID)) {
+            user.checkOwnershipOf(talk)
+        }
 
         openSpace.removeTalk(talk)
         talkRepository.delete(talk)

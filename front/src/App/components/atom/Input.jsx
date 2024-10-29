@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Box, TextInput} from 'grommet';
+import React from 'react';
+import { TextInput } from 'grommet';
 import customTheme from '../../../App/theme';
 import globalStyles from "#shared/styles/styles.js";
 

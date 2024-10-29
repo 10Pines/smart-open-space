@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Box, Select, Text} from 'grommet';
+import React, { useState } from 'react';
+import { Box, Select, Text } from 'grommet';
 import customTheme from '../../../App/theme';
 import { Down } from "grommet-icons";
 

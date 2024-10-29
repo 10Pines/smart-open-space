@@ -27,10 +27,7 @@ const LargeMenu = ({ color, name, pad }) => {
   return (
     <Row gap="small" pad={pad}>
       <Box>
-        <Avatar
-          size="30px"
-          src="https://yt3.googleusercontent.com/ytc/AIdro_ldtrV5DnqyZGv5osF-mi8Z7hXHAU5NhlEiP56G5QW5jl8z=s900-c-k-c0x00ffffff-no-rj"
-        />
+        <Avatar size="30px" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" />
       </Box>
       <Row gap="xxsmall">
         <Text color={color} size={textSize}>

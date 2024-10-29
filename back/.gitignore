@@ -31,6 +31,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-### New relic agent ###
-newrelic/

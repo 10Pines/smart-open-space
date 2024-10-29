@@ -5,8 +5,8 @@ import com.sos.smartopenspace.dto.request.OpenSpaceRequestDTO
 import com.sos.smartopenspace.services.OpenSpaceService
 import com.sos.smartopenspace.translators.response.OpenSpaceResTranslator
 import com.sos.smartopenspace.translators.response.TalkResTranslator
-import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
+import jakarta.validation.Valid
 
 @RestController
 @RequestMapping("openSpace")

@@ -1,26 +1,7 @@
 import React from 'react';
 import Button from './Button';
 
-/**
- * <Button
-      autoWidth
-      secondary
-      blackAndWhite
-      icon={<HaltIcon />}
-      variant="circular"
-    >
-      Hola
-    </Button>
- */
-
-const IconButton = ({
-  // children = 'Button',
-  icon,
-  secondary = false,
-  blackAndWhite = false,
-  ...props
-}) => {
-  // if (typeof children !== 'string') throw new Error('Children must be a string');
+const IconButton = ({ icon, secondary = false, blackAndWhite = false, ...props }) => {
   if (!icon) throw new Error('Icon is required');
 
   return (

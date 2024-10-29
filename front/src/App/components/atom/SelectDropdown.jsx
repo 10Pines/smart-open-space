@@ -1,38 +1,39 @@
 import React, {useState} from 'react';
-import {Box, Select, Text, TextInput} from 'grommet';
+import {Box, Select, Text} from 'grommet';
 import customTheme from '../../../App/theme';
-import globalStyles from "#shared/styles/styles.js";
-import {CaretDown, Down} from "grommet-icons";
+import { Down } from "grommet-icons";
 
-const Dropdown = ({
-                   children = 'Input...',
+const SelectDropdown = ({
+                   defaultMessage = 'Ordenar por',
                    onChangeValue,
+                   options = [],
                    icon,
+                    ...props
                }) => {
     const [value, setValue] = useState('');
-    if (typeof children !== 'string') throw new Error('Children must be a string');
 
     return (
         <Box style={{
-            width: '24rem',
+            width: '100%',
             background: `${customTheme.global.colors.primary.light}`,
             borderRadius: '5px'
         }}>
             <Select
-                options={['small', 'medium', 'large']}
+                options={options}
                 value={value}
                 onChange={({ option }) => setValue(option)}
                 placeholder={<Text color={customTheme.global.colors.background.light}
                                    size={customTheme.global.font.size}
                                    weight={600}
-                margin={{left: "6px", top: "8px", bottom: "8px"}}>
-                    Ordenar por
-            </Text>
-            }
-                icon={<Down color={customTheme.global.colors.background.light}/>}
+                            >
+                                {defaultMessage}
+                            </Text>
+                            }
+                icon={<Down color={customTheme.global.colors.background.light}  />}
+                {...props}
             />
         </Box>
     );
 };
 
-export default Dropdown;
+export default SelectDropdown;

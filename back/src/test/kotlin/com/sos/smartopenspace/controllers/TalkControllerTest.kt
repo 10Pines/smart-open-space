@@ -1,34 +1,27 @@
 package com.sos.smartopenspace.controllers
 
 import com.jayway.jsonpath.JsonPath
-import com.sos.smartopenspace.*
+import com.sos.smartopenspace.aUser
+import com.sos.smartopenspace.anOpenSpace
+import com.sos.smartopenspace.anOpenSpaceWith
 import com.sos.smartopenspace.domain.*
+import com.sos.smartopenspace.generateTalkBody
 import com.sos.smartopenspace.persistence.*
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.LocalTime
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 @Transactional
-class TalkControllerTest {
+class TalkControllerTest: BaseControllerTest() {
 
   @Autowired
   lateinit var slotRepository: SlotRepository
-
-  @Autowired
-  lateinit var mockMvc: MockMvc
-
 
   @Autowired
   lateinit var userRepository: UserRepository

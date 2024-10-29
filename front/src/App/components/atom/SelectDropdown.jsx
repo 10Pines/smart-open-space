@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Select, Text } from 'grommet';
 import customTheme from '../../../App/theme';
 import { Down } from "grommet-icons";
 
 const SelectDropdown = ({
                    defaultMessage = 'Ordenar por',
+                    value,
                    onChangeValue,
                    options = [],
                    icon,
                     ...props
                }) => {
-    const [value, setValue] = useState('');
 
     return (
         <Box style={{
@@ -21,7 +21,7 @@ const SelectDropdown = ({
             <Select
                 options={options}
                 value={value}
-                onChange={({ option }) => setValue(option)}
+                onChange={({ option }) => onChangeValue(option)}
                 placeholder={<Text color={customTheme.global.colors.background.light}
                                    size={customTheme.global.font.size}
                                    weight={600}

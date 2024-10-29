@@ -1,8 +1,8 @@
 package com.sos.smartopenspace.controllers
 
 import com.sos.smartopenspace.domain.BadRequestException
-import com.sos.smartopenspace.domain.NotFoundException
 import com.sos.smartopenspace.domain.UnauthorizedException
+import com.sos.smartopenspace.domain.NotFoundException
 import com.sos.smartopenspace.domain.UnprocessableEntityException
 import com.sos.smartopenspace.dto.DefaultErrorDto
 import org.springframework.http.HttpStatus

@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.Download
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
@@ -7,7 +6,6 @@ plugins {
   id("org.springframework.boot") version "3.2.7"
   id("io.spring.dependency-management") version "1.1.5"
   id("org.flywaydb.flyway") version "10.15.2"
-  id("de.undercouch.download") version "5.3.0"
   kotlin("jvm") version kotlinVersion
   kotlin("plugin.spring") version kotlinVersion
   kotlin("plugin.jpa") version kotlinVersion
@@ -43,13 +41,10 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-validation")
   implementation("org.springframework.boot:spring-boot-starter-web")
   implementation("org.springframework.boot:spring-boot-starter-websocket")
-  implementation("org.springframework.boot:spring-boot-starter-actuator")
-  implementation("io.micrometer:micrometer-registry-prometheus")
   implementation("com.google.guava:guava:32.0.0-android")
   implementation("net.sargue:mailgun:1.10.0")
   implementation("org.glassfish.jersey.inject:jersey-hk2")
   runtimeOnly("com.h2database:h2")
-  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.15.0")
   testImplementation("org.springframework.boot:spring-boot-starter-test"){
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }
@@ -111,31 +106,3 @@ tasks.jar {
   archiveBaseName=project.name
   project.version=""
 }
-
-// New relic instrumentation
-tasks.register<Download>("downloadNewrelic") {
-  mkdir("/newrelic")
-  src("https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip")
-  dest(file("/newrelic"))
-}
-
-tasks.register<Copy>("unzipAndSetUpNewrelic") {
-  doNotTrackState("disable unzip check")
-  dependsOn("downloadNewrelic")
-  from(zipTree(file("/newrelic/newrelic-java.zip")))
-  into(rootDir)
-  doLast {
-    delete("/newrelic/newrelic-java.zip")
-    delete("/newrelic/newrelic.yml")
-    copy {
-      from("/config/newrelic.yml")
-      into("/newrelic")
-    }
-  }
-}
-
-// Heroku post-build tasks executions
-tasks.register<Copy>("stage") {
-  dependsOn("downloadNewrelic", "unzipAndSetUpNewrelic")
-}
-

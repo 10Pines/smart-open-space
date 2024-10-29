@@ -1,4 +1,16 @@
-import { Box, Button, Text } from 'grommet';
+import React from 'react';
+import { Box, Text } from 'grommet';
+import Button from '#components/atom/Button';
+import {
+  AddIcon,
+  FacebookIcon,
+  GoogleIcon,
+  HaltIcon,
+  InstagramIcon,
+  NotesIcon,
+} from '#shared/icons';
+import SocialNetworkButton from '../components/atom/SocialNetworkButton';
+import IconButton from '../components/atom/IconButton';
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -24,9 +36,64 @@ const DesignSystem = () => {
     </Box>
   );
 
-  const DSButtons = () => (
-    <Box direction="row" gap="small">
-      {/* Botones */}
+  // TODO: Extraer componente
+  const Divider = ({ horizontal = false, margin }) =>
+    !horizontal ? (
+      <Box
+        background={{
+          color: 'light-4',
+        }}
+        width="1px"
+        margin={{
+          horizontal: margin ?? 'medium',
+        }}
+      />
+    ) : (
+      <Box
+        background={{
+          color: 'light-4',
+        }}
+        height="1px"
+        width={'100%'}
+        margin={{
+          vertical: margin ?? 'medium',
+        }}
+      />
+    );
+
+  const DSButtons = (props) => (
+    <Box direction="row" gap="small" {...props}>
+      <Box direction="column" style={{ flex: 1 }} gap="1rem">
+        <Button>Nuevo +</Button>
+        <Button loading>Nuevo +</Button>
+        <Button secondary>Nuevo +</Button>
+        <Button blackAndWhite>Nuevo +</Button>
+        <Button blackAndWhite secondary>
+          Nuevo +
+        </Button>
+      </Box>
+      <Divider />
+      <Box direction="column" style={{ flex: 1 }} align="center">
+        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center" wrap>
+          <SocialNetworkButton icon={<GoogleIcon />}>Google</SocialNetworkButton>
+          <SocialNetworkButton icon={<FacebookIcon />}>Facebook</SocialNetworkButton>
+          <SocialNetworkButton icon={<InstagramIcon />}>Instagram</SocialNetworkButton>
+          <SocialNetworkButton icon={<InstagramIcon />} disabled>
+            Instagram
+          </SocialNetworkButton>
+          <SocialNetworkButton icon={<InstagramIcon />} loading />
+        </Box>
+        <Divider horizontal margin={0} />
+        <Box direction="row" gap="1rem" justify="center" flex="grow" align="center" wrap>
+          <IconButton icon={<HaltIcon />} secondary blackAndWhite />
+          <IconButton icon={<HaltIcon />} secondary blackAndWhite loading />
+          <IconButton icon={<NotesIcon />} blackAndWhite />
+          <IconButton icon={<NotesIcon />} blackAndWhite loading />
+          <IconButton icon={<AddIcon />} blackAndWhite />
+          <IconButton icon={<AddIcon />} />
+          <IconButton icon={<AddIcon />} loading />
+        </Box>
+      </Box>
     </Box>
   );
 
@@ -75,7 +142,7 @@ const DesignSystem = () => {
       <Box direction="column" gap="1rem">
         {sections.map(({ title, Component }) => (
           <DesignSystemSection title={title}>
-            {Component && <Component />}
+            {Component && <Component pad="1rem" />}
           </DesignSystemSection>
         ))}
       </Box>

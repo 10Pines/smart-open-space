@@ -93,7 +93,7 @@ buildscript {
 }
 
 tasks.clean {
-  delete("/newrelic")
+  delete("newrelic")
 }
 
 tasks.build {
@@ -122,9 +122,9 @@ tasks.jar {
 
 // New relic instrumentation
 tasks.register<Download>("downloadNewrelic") {
-  mkdir("/newrelic")
+  mkdir("newrelic")
   src("https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip")
-  dest(file("/newrelic"))
+  dest(file("newrelic"))
 }
 
 tasks.register<Copy>("unzipAndSetUpNewrelic") {
@@ -134,11 +134,11 @@ tasks.register<Copy>("unzipAndSetUpNewrelic") {
   from(zipTree(file("/newrelic/newrelic-java.zip")))
   into(rootDir)
   doLast {
-    delete("/newrelic/newrelic-java.zip")
-    delete("/newrelic/newrelic.yml")
+    delete("newrelic/newrelic-java.zip")
+    delete("newrelic/newrelic.yml")
     copy {
-      from("/config/newrelic.yml")
-      into("/newrelic")
+      from("config/newrelic.yml")
+      into("newrelic")
     }
   }
 }

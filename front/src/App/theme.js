@@ -38,7 +38,21 @@ const customTheme = {
         size: '1px',
         color: "#3F8880"
       }
-    }
+    },
+    layout: {
+      padding: {
+        horizontal: {
+          small: '30px',
+          medium: '80px',
+          large: '120px',
+        },
+        vertical: {
+          small: 'medium',
+          medium: 'medium',
+          large: 'medium',
+        },
+      },
+    },
   },
 };
 

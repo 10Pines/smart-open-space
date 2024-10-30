@@ -15,8 +15,6 @@ const Button = ({
   style,
   ...props
 }) => {
-  console.info('logicHover', logicHover);
-
   const blackAndWhiteColor = customTheme.global.colors.typography.light;
 
   if (typeof children !== 'string') throw new Error('Children must be a string');

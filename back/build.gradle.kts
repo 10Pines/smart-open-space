@@ -92,6 +92,14 @@ buildscript {
   }
 }
 
+tasks.clean {
+  delete("/newrelic")
+}
+
+tasks.build {
+  finalizedBy("stage")
+}
+
 tasks.jacocoTestReport {
   reports {
     xml.required.value(true)
@@ -121,7 +129,8 @@ tasks.register<Download>("downloadNewrelic") {
 
 tasks.register<Copy>("unzipAndSetUpNewrelic") {
   doNotTrackState("disable unzip check")
-  dependsOn("downloadNewrelic")
+  dependsOn("downloadNewrelic", "jar", "bootJar",
+    "resolveMainClassName", "compileKotlin", "processResources")
   from(zipTree(file("/newrelic/newrelic-java.zip")))
   into(rootDir)
   doLast {
@@ -136,6 +145,6 @@ tasks.register<Copy>("unzipAndSetUpNewrelic") {
 
 // Heroku post-build tasks executions
 tasks.register<Copy>("stage") {
-  dependsOn("downloadNewrelic", "unzipAndSetUpNewrelic")
+  doNotTrackState("disable unzip check")
+  dependsOn("unzipAndSetUpNewrelic")
 }
-

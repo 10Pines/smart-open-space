@@ -33,6 +33,12 @@ const customTheme = {
       size: '16px',
       weight: 400,
     },
+    focus: {
+      outline: {
+        size: '1px',
+        color: "#3F8880"
+      }
+    },
     layout: {
       padding: {
         horizontal: {

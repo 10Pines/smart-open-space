@@ -1,14 +1,17 @@
 import React from 'react';
 import { Box, Text } from 'grommet';
-import Button from '#components/atom/Button';
 import {
-  AddIcon,
+  AddIcon, ClockIcon,
   FacebookIcon,
   GoogleIcon,
   HaltIcon,
   InstagramIcon,
-  NotesIcon,
+  NotesIcon, UserIcon,
 } from '#shared/icons';
+import Input from "../components/atom/Input.jsx";
+import Button from "../components/atom/Button.jsx";
+import {FormSearch, View} from "grommet-icons";
+import SelectDropdown from "../components/atom/SelectDropdown.jsx";
 import SocialNetworkButton from '../components/atom/SocialNetworkButton';
 import IconButton from '../components/atom/IconButton';
 
@@ -98,8 +101,12 @@ const DesignSystem = () => {
   );
 
   const DSInputs = () => (
-    <Box direction="row" gap="small">
-      {/* Inputs y Selects */}
+    <Box direction="column" gap="small">
+      <Input placeholder={"Input..."}/>
+      <Input icon={<FormSearch color={'primary'}/>} placeholder={"Buscar..."} />
+      <Input icon={<UserIcon color={'primary'}/>} placeholder={"Usuario..."} />
+      <Input icon={<View color={'primary'}/>} placeholder={"Contraseña..."} />
+        <SelectDropdown />
     </Box>
   );
 

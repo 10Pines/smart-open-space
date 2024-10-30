@@ -97,7 +97,7 @@ tasks.clean {
 }
 
 tasks.build {
-  finalizedBy("stage")
+  //finalizedBy("stage")
 }
 
 tasks.jacocoTestReport {
@@ -122,7 +122,7 @@ tasks.jar {
 
 // New relic instrumentation
 tasks.register<Download>("downloadNewrelic") {
-  mkdir("/newrelic")
+  mkdir("newrelic")
   src("https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip")
   dest(file("/newrelic"))
 }

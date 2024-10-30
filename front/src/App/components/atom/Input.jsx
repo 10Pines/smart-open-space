@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput } from 'grommet';
-import customTheme from '../../../App/theme';
+import customTheme from '#app/theme';
 import globalStyles from "#shared/styles/styles.js";
 
 const Input = ({
@@ -26,9 +26,7 @@ const Input = ({
                 ...globalStyles.meera
         }}
             borderRadius= '1px'
-            icon= {icon &&
-                icon
-            }
+            icon= { icon }
             reverse
             {...props}
         />

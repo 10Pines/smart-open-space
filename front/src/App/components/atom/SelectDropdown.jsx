@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Select, Text } from 'grommet';
-import customTheme from '../../../App/theme';
+import customTheme from '#app/theme';
 import { Down } from "grommet-icons";
 
 const SelectDropdown = ({
@@ -15,7 +15,7 @@ const SelectDropdown = ({
     return (
         <Box style={{
             width: '100%',
-            background: `${customTheme.global.colors.primary.light}`,
+            background: customTheme.global.colors.primary.light,
             borderRadius: '5px'
         }}>
             <Select

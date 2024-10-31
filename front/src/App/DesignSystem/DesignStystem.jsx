@@ -16,6 +16,7 @@ import SelectDropdown from '../components/atom/SelectDropdown.jsx';
 import SocialNetworkButton from '../components/atom/SocialNetworkButton';
 import IconButton from '../components/atom/IconButton';
 import AddElementBox from '../components/molecule/AddElementBox.jsx';
+import DateTimeIndicator from '../components/atom/DateTimeIndicator.jsx';
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -124,6 +125,24 @@ const DesignSystem = () => {
             height: '220px',
           }}
           onClick={() => console.log('Clicked')}
+        />
+      </Box>
+
+      <Text>Date Time Indicator:</Text>
+      <Box direction="row" gap="medium">
+        <DateTimeIndicator
+          date={{
+            start: new Date(new Date().setHours(10, 0, 0, 0)),
+            end: new Date(new Date().setHours(15, 0, 0, 0)),
+          }}
+        />
+        <DateTimeIndicator
+          date={{
+            start: new Date(2024, 3, 19, 16, 30, 0, 0),
+            end: new Date(2024, 3, 19, 20, 0, 0, 0),
+          }}
+          width="150px"
+          background="primary"
         />
       </Box>
     </Box>

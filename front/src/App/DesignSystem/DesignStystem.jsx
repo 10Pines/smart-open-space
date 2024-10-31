@@ -12,6 +12,7 @@ import Input from "../components/atom/Input.jsx";
 import Button from "../components/atom/Button.jsx";
 import {FormSearch, View} from "grommet-icons";
 import SelectDropdown from "../components/atom/SelectDropdown.jsx";
+import ColorPicker from "../components/atom/ColorPicker.jsx";
 import SocialNetworkButton from '../components/atom/SocialNetworkButton';
 import IconButton from '../components/atom/IconButton';
 
@@ -118,7 +119,7 @@ const DesignSystem = () => {
 
   const DSColors = () => (
     <Box direction="row" gap="small">
-      {/* Colores */}
+      <ColorPicker pad={{top: "medium"}}/>
     </Box>
   );
 

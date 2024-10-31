@@ -11,6 +11,7 @@ const Button = ({
   icon,
   onClick = () => {},
   loading = false,
+  logicHover = false,
   style,
   ...props
 }) => {
@@ -68,7 +69,8 @@ const Button = ({
       : renderTextLabel();
 
   const getStyles = {
-    ...styles[variant]({ autoWidth, secondary, props }),
+    ...styles.base({ secondary, logicHover }),
+    ...styles[variant]({ autoWidth, secondary, logicHover, props }),
     ...style,
   };
 
@@ -88,16 +90,17 @@ const Button = ({
 };
 
 const styles = {
-  base: ({ secondary }) => ({
+  base: ({ secondary, logicHover }) => ({
     lineHeight: '1rem',
     color: secondary && 'primary',
+    boxShadow: logicHover ? 'rgb(63, 136, 128) 0px 0px 0px 2px' : undefined,
   }),
   circular: ({ secondary, props }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '3rem',
-    height: '3rem',
+    width: props.size == 'small' ? '2.5rem' : '3rem',
+    height: props.size == 'small' ? '2.5rem' : '3rem',
     minWidth: props.width?.min ?? undefined,
     padding: '0',
     borderRadius: '50%',

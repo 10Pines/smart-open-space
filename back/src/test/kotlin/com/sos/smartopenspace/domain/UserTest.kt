@@ -1,32 +1,31 @@
 package com.sos.smartopenspace.domain;
 
-import com.sos.smartopenspace.services.UserService
-import org.junit.jupiter.api.Assertions
+import com.sos.smartopenspace.util.sampler.TalkSampler
+import com.sos.smartopenspace.util.sampler.UserSampler
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.transaction.annotation.Transactional
 
-@SpringBootTest
-@ActiveProfiles("test")
-@Transactional
+
 class UserTest {
 
-  @Autowired
-  lateinit var userService: UserService
+    @Test
+    fun `GIVEN user1 and talk with speaker user1 WHEN user1 isOwnerOf that talk THEN should be return truthy`() {
+        val user = UserSampler.getWith(id = 1)
+        val talk = TalkSampler.getWith(speaker = user)
 
-  @Test
-  fun `generate reset token for user saves reset token`() {
-    val user = userService.create(aUser())
+        assertTrue(user.isOwnerOf(talk))
+    }
 
-    userService.generatePasswordResetToken(user)
+    @Test
+    fun `GIVEN user1 and talk with speaker user2 WHEN user1 isOwnerOf that talk THEN should be return falsy`() {
+        val user1 = UserSampler.getWith(id = 1)
+        val user2 = UserSampler.getWith(id = 2)
+        val talk = TalkSampler.getWith(speaker = user2)
 
-    Assertions.assertNotNull(userService.findByEmail(user.email).resetToken)
-  }
+        assertFalse(user1.isOwnerOf(talk))
+    }
 
-  private fun aUser(): User {
-    return User("test@mail.com", "testuser", "password")
-  }
+    //TODO: Add more domain method tests
 
 }

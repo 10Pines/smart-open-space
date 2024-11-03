@@ -9,7 +9,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 import java.util.UUID
 
 @Component
-class LogFilter : OncePerRequestFilter() {
+class LogFilterConfig : OncePerRequestFilter() {
 
     companion object {
         private const val REQUEST_ID_HEADER = "X-Request-Id"

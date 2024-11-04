@@ -70,7 +70,7 @@
     "react-router-dom": "^5.1.2",
     "react-slick": "^0.25.2",
     "react-toastify": "^5.5.0",
-    "serve": "^14.2.0",
+    "serve": "^14.2.4",
     "slick-carousel": "^1.8.1",
     "sockjs-client": "^1.4.0",
     "styled-components": "^5.0.1"

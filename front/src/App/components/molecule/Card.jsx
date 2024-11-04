@@ -17,6 +17,7 @@ const Card = ({
   color = 'card-blue',
   showVotes = false,
   width = '300px',
+  ...props
 }) => {
   return (
     <GrommetCard
@@ -25,7 +26,7 @@ const Card = ({
       gap="1rem"
       height="fit-content"
       width={width}
-      round="xsmall"
+      round={props.round ?? 'xsmall'}
     >
       <CardHeader>
         <Text as="h2" size="large" weight="normal" margin="0" color="black">

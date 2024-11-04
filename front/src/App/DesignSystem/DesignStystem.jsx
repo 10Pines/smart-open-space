@@ -19,6 +19,7 @@ import IconButton from '../components/atom/IconButton';
 import AddElementBox from '../components/molecule/AddElementBox.jsx';
 import DateTimeIndicator from '../components/atom/DateTimeIndicator.jsx';
 import Card from '../components/molecule/Card.jsx';
+import TimeCard from '../components/molecule/TimeCard.jsx';
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -190,6 +191,15 @@ const DesignSystem = () => {
             },
           ]}
         />
+      </Box>
+      <Divider horizontal />
+      <Box direction="row" gap="medium" wrap>
+        <TimeCard
+          time="10:00"
+          title="Título de la Card"
+          description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        ></TimeCard>
+        <TimeCard time="10:00" title="Título de la Card" showVotes />
       </Box>
     </Box>
   );

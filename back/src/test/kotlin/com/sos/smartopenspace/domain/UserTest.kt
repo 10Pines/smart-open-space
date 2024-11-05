@@ -2,8 +2,7 @@ package com.sos.smartopenspace.domain;
 
 import com.sos.smartopenspace.util.sampler.TalkSampler
 import com.sos.smartopenspace.util.sampler.UserSampler
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 
@@ -24,6 +23,35 @@ class UserTest {
         val talk = TalkSampler.getWith(speaker = user2)
 
         assertFalse(user1.isOwnerOf(talk))
+    }
+
+    @Test
+    fun `test user toString without sensitive data (password, etc)`() {
+        val email1 = "asd@gmail.com"
+        val name1 = "asd123"
+        val id1 = 1L
+
+        val email2 = "pepe@gmail.com"
+        val name2 = "pepe"
+        val id2 = 1123L
+
+        val user1 = User(
+            email = email1,
+            name = name1,
+            password = "123",
+            id = id1, resetToken = "123312312312", resetTokenLifetime = 1232131
+        )
+        val user2 = User(
+            email = email2,
+            name = name2,
+            password = "123",
+            id = id2,
+            resetToken = "123312312312",
+            resetTokenLifetime = 1232131
+        )
+
+        assertEquals("User(id=$id1, email='$email1', name='$name1')", user1.toString())
+        assertEquals("User(id=$id2, email='$email2', name='$name2')", user2.toString())
     }
 
     //TODO: Add more domain method tests

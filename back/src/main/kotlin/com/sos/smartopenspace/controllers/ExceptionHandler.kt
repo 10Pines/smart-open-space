@@ -23,21 +23,21 @@ class ExceptionHandler {
     @ExceptionHandler(BadRequestException::class)
     fun badRequestHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
         val httpStatus = HttpStatus.BAD_REQUEST
-        handleLogError(httpStatus, ex)
+        handleLogError(httpStatus, ex, false)
         return ResponseEntity(DefaultErrorDto(ex.message, httpStatus.name), httpStatus)
     }
 
     @ExceptionHandler(UnprocessableEntityException::class)
     fun unprocessableEntityHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
         val httpStatus = HttpStatus.UNPROCESSABLE_ENTITY
-        handleLogError(httpStatus, ex)
+        handleLogError(httpStatus, ex, false)
         return ResponseEntity(DefaultErrorDto(ex.message, httpStatus.name), httpStatus)
     }
 
     @ExceptionHandler(NotFoundException::class)
     fun notFoundHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
         val httpStatus = HttpStatus.NOT_FOUND
-        handleLogError(httpStatus, ex)
+        handleLogError(httpStatus, ex, false)
         return ResponseEntity(DefaultErrorDto(ex.message, httpStatus.name), httpStatus)
     }
 
@@ -70,10 +70,13 @@ class ExceptionHandler {
         throw ex
     }
 
-    private fun handleLogError(status: HttpStatus, ex: Exception) {
-        LOGGER.error(
-            "Handling http status ${status.name} with exception ${ex.javaClass} and message: ${ex.message}",
-            ex
-        )
+    private fun handleLogError(status: HttpStatus, ex: Exception, withStackTrace: Boolean = true) {
+        val errMsg =
+            "Handling http status ${status.name} with exception ${ex.javaClass} and message: ${ex.message}."
+        if (withStackTrace) {
+            LOGGER.error(errMsg, ex)
+        } else {
+            LOGGER.error(errMsg)
+        }
     }
 }

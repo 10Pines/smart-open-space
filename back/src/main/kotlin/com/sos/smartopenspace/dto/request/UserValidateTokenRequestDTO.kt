@@ -13,4 +13,7 @@ class UserValidateTokenRequestDTO(
 
   @field:NotEmpty(message = "Ingrese un reset token")
   val resetToken: String
-)
+) {
+  override fun toString(): String =
+    "UserValidateTokenRequestDTO(email='$email', password='***', resetToken='***')"
+}

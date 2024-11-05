@@ -5,10 +5,13 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 
 class UserLoginRequestDTO(
-  @field:NotEmpty(message = "Ingrese un email")
-  @field:Email
-  val email: String,
-  @field:NotEmpty(message = "Ingrese una contraseña")
-  @field:NotBlank(message = "Contraseña no puede ser vacía")
-  val password: String
-)
+    @field:NotEmpty(message = "Ingrese un email")
+    @field:Email
+    val email: String,
+    @field:NotEmpty(message = "Ingrese una contraseña")
+    @field:NotBlank(message = "Contraseña no puede ser vacía")
+    val password: String
+) {
+    override fun toString(): String =
+        "UserLoginRequestDTO(email='$email', password='***')"
+}

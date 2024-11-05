@@ -25,11 +25,7 @@ class LogFilterConfig : OncePerRequestFilter() {
         val requestId = request.getHeader(REQUEST_ID_HEADER)?.ifBlank { defaultRequestId }
             ?: defaultRequestId
         MDC.put(CTX_REQUEST_ID_KEY, requestId)
-        try {
-            filterChain.doFilter(request, response)
-        } finally {
-            MDC.clear()
-        }
+        filterChain.doFilter(request, response)
     }
 
 }

@@ -34,6 +34,9 @@ class User(
   var id: Long = 0
 ) {
 
+  override fun toString(): String =
+    "User(id=$id, email='$email', name='$name')"
+
   fun addOpenSpace(openSpace: OpenSpace): User {
     openSpace.organizer = this
     return this

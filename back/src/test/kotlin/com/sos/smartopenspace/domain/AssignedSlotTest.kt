@@ -33,10 +33,10 @@ class AssignedSlotTest {
         )
 
         val expectedRes = "AssignedSlot(id=0, room=Room(description=A room for meetings, id=0, link=http://example.com, " +
-                "name=Conference Room), slot=TalkSlot(date=2024-11-05, endTime=09:30, id=0, startTime=09:00), " +
-                "talk=Talk(description=, documents=[], id=1, isMarketplaceTalk=false, meetingLink=null, " +
-                "name=talk-test, reviews=[], speaker=User(email=test@mail.com, id=1, name=testuser, password=***, " +
-                "resetToken=***, resetTokenLifetime=***), speakerName=user-test, track=null, votingUsers=[]))"
+                "name=Conference Room), slot=TalkSlot(date=2024-11-06, endTime=09:30, id=0, startTime=09:00)," +
+                " talk=Talk(description=, documents=[], id=1, isMarketplaceTalk=false, meetingLink=null, name=talk-test, " +
+                "reviews=[], speaker=User(email=test@mail.com, id=1, name=testuser, password=***, resetToken=***, " +
+                "resetTokenLifetime=***), speakerName=user-test, track=null, votingUsers=[]))"
         assertEquals(expectedRes, assignedSlot.toString())
     }
 

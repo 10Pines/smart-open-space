@@ -1,9 +1,10 @@
 package com.sos.smartopenspace.dto.request
 
+import com.sos.smartopenspace.util.toStringByReflex
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
 
-class UserValidateTokenRequestDTO(
+data class UserValidateTokenRequestDTO(
   @field:NotEmpty(message = "Ingrese un email")
   @field:Email
   val email: String,
@@ -15,5 +16,5 @@ class UserValidateTokenRequestDTO(
   val resetToken: String
 ) {
   override fun toString(): String =
-    "UserValidateTokenRequestDTO(email='$email', password='***', resetToken='***')"
+    toStringByReflex(this, mask = listOf("password", "resetToken"))
 }

@@ -12,7 +12,7 @@ class UserLoginRequestDTOTest {
             password = "secret"
         )
 
-        val expectedString = "UserLoginRequestDTO(email='test@example.com', password='***')"
+        val expectedString = "UserLoginRequestDTO(email=test@example.com, password=***)"
         assertEquals(expectedString, userLoginRequestDTO.toString())
     }
 }

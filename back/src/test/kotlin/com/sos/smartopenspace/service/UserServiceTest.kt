@@ -1,7 +1,7 @@
 package com.sos.smartopenspace.service
 
 import com.sos.smartopenspace.services.UserService
-import com.sos.smartopenspace.util.sampler.UserSampler
+import com.sos.smartopenspace.sampler.UserSampler
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

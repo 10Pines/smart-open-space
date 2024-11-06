@@ -1,4 +1,4 @@
-package com.sos.smartopenspace.util.sampler
+package com.sos.smartopenspace.sampler
 
 import com.sos.smartopenspace.domain.User
 

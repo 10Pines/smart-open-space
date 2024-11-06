@@ -13,7 +13,7 @@ class UserValidateTokenRequestDTOTest {
             resetToken = "reset123"
         )
 
-        val expectedString = "UserValidateTokenRequestDTO(email='test@example.com', password='***', resetToken='***')"
+        val expectedString = "UserValidateTokenRequestDTO(email=test@example.com, password=***, resetToken=***)"
         assertEquals(expectedString, userValidateTokenRequestDTO.toString())
     }
 }

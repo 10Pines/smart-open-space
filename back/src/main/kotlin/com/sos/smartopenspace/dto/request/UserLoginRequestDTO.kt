@@ -1,5 +1,6 @@
 package com.sos.smartopenspace.dto.request
 
+import com.sos.smartopenspace.util.toStringByReflex
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
@@ -13,5 +14,5 @@ class UserLoginRequestDTO(
     val password: String
 ) {
     override fun toString(): String =
-        "UserLoginRequestDTO(email='$email', password='***')"
+        toStringByReflex(this, mask = listOf("password"))
 }

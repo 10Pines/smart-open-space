@@ -1,7 +1,7 @@
 package com.sos.smartopenspace.domain;
 
-import com.sos.smartopenspace.util.sampler.TalkSampler
-import com.sos.smartopenspace.util.sampler.UserSampler
+import com.sos.smartopenspace.sampler.TalkSampler
+import com.sos.smartopenspace.sampler.UserSampler
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -39,7 +39,9 @@ class UserTest {
             email = email1,
             name = name1,
             password = "123",
-            id = id1, resetToken = "123312312312", resetTokenLifetime = 1232131
+            id = id1,
+            resetToken = "123312312312",
+            resetTokenLifetime = 1232131
         )
         val user2 = User(
             email = email2,
@@ -50,8 +52,8 @@ class UserTest {
             resetTokenLifetime = 1232131
         )
 
-        assertEquals("User(id=$id1, email='$email1', name='$name1')", user1.toString())
-        assertEquals("User(id=$id2, email='$email2', name='$name2')", user2.toString())
+        assertEquals("User(email=$email1, id=$id1, name=$name1, password=***, resetToken=***, resetTokenLifetime=***)", user1.toString())
+        assertEquals("User(email=$email2, id=$id2, name=$name2, password=***, resetToken=***, resetTokenLifetime=***)", user2.toString())
     }
 
     //TODO: Add more domain method tests

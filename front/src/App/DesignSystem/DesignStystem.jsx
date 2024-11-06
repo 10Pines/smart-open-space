@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Box, Text } from 'grommet';
 import {
   AddIcon, ClockIcon,
@@ -117,11 +117,20 @@ const DesignSystem = () => {
     </Box>
   );
 
-  const DSColors = () => (
-    <Box direction="row" gap="small">
-      <ColorPicker pad={{top: "medium"}}/>
-    </Box>
-  );
+    const DSColors = () => {
+        const [selectedColor, setSelectedColor] = useState(undefined);
+
+        return (
+            <Box direction="column" gap="small">
+                <ColorPicker value={selectedColor} onChange={setSelectedColor} />
+                {selectedColor ?
+                    <Text>El color elegido es <Text color={selectedColor}>{selectedColor}</Text></Text>
+                    :
+                    <Text>No hay color elegido todavía</Text>
+                }
+            </Box>
+        );
+    };
 
   const DSTypography = () => (
     <Box direction="row" gap="small">

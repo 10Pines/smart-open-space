@@ -4,6 +4,7 @@ import customTheme from "#app/theme.js";
 
 const ColorPicker = ({
                    onChange = (e) => {},
+                    value,
                    ...props
                }) => {
     

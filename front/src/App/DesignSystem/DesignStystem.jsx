@@ -1,20 +1,23 @@
 import React, {useState} from 'react';
 import { Box, Text } from 'grommet';
 import {
-  AddIcon, ClockIcon,
+  AddIcon,
   FacebookIcon,
   GoogleIcon,
   HaltIcon,
   InstagramIcon,
-  NotesIcon, UserIcon,
+  NotesIcon,
+  UserIcon,
 } from '#shared/icons';
-import Input from "../components/atom/Input.jsx";
-import Button from "../components/atom/Button.jsx";
-import {FormSearch, View} from "grommet-icons";
-import SelectDropdown from "../components/atom/SelectDropdown.jsx";
+import Input from '../components/atom/Input.jsx';
+import Button from '../components/atom/Button.jsx';
+import { FormSearch, View } from 'grommet-icons';
+import SelectDropdown from '../components/atom/SelectDropdown.jsx';
 import ColorPicker from "../components/atom/ColorPicker.jsx";
 import SocialNetworkButton from '../components/atom/SocialNetworkButton';
 import IconButton from '../components/atom/IconButton';
+import AddElementBox from '../components/molecule/AddElementBox.jsx';
+import DateTimeIndicator from '../components/atom/DateTimeIndicator.jsx';
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -103,17 +106,46 @@ const DesignSystem = () => {
 
   const DSInputs = () => (
     <Box direction="column" gap="small">
-      <Input placeholder={"Input..."}/>
-      <Input icon={<FormSearch color={'primary'}/>} placeholder={"Buscar..."} />
-      <Input icon={<UserIcon color={'primary'}/>} placeholder={"Usuario..."} />
-      <Input icon={<View color={'primary'}/>} placeholder={"Contraseña..."} />
-        <SelectDropdown />
+      <Input placeholder={'Input...'} />
+      <Input icon={<FormSearch color={'primary'} />} placeholder={'Buscar...'} />
+      <Input icon={<UserIcon color={'primary'} />} placeholder={'Usuario...'} />
+      <Input icon={<View color={'primary'} />} placeholder={'Contraseña...'} />
+      <SelectDropdown />
     </Box>
   );
 
   const DSComponents = () => (
-    <Box direction="row" gap="small">
-      {/* Componentes */}
+    <Box direction="column" gap="medium">
+      <Text>Add Element Box:</Text>
+      <Box direction="row" gap="medium">
+        <AddElementBox />
+        <AddElementBox size="100px" />
+        <AddElementBox
+          size={{
+            width: '150px',
+            height: '220px',
+          }}
+          onClick={() => console.log('Clicked')}
+        />
+      </Box>
+
+      <Text>Date Time Indicator:</Text>
+      <Box direction="row" gap="medium">
+        <DateTimeIndicator
+          date={{
+            start: new Date(new Date().setHours(10, 0, 0, 0)),
+            end: new Date(new Date().setHours(15, 0, 0, 0)),
+          }}
+        />
+        <DateTimeIndicator
+          date={{
+            start: new Date(2024, 3, 19, 16, 30, 0, 0),
+            end: new Date(2024, 3, 19, 20, 0, 0, 0),
+          }}
+          width="150px"
+          background="primary"
+        />
+      </Box>
     </Box>
   );
 

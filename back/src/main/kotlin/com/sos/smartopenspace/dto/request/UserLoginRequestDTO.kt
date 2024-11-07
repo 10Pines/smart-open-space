@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 
-class UserLoginRequestDTO(
+data class UserLoginRequestDTO(
     @field:NotEmpty(message = "Ingrese un email")
     @field:Email
     val email: String,

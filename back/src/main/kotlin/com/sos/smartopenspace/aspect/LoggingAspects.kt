@@ -34,7 +34,7 @@ class LoggingAspects {
     }
 
     @AfterReturning(pointcut = "@annotation(com.sos.smartopenspace.aspect.LoggingInputExecution)")
-    fun logSuccessAfterReturning(joinPoint: JoinPoint, result: Any?) {
+    fun logSuccessAfterReturning(joinPoint: JoinPoint) {
         val methodName = joinPoint.signature.name
         val className = joinPoint.target::class.simpleName
         LOGGER.info("Success execution of method: $className.$methodName")

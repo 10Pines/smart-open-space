@@ -19,6 +19,7 @@ import AddElementBox from '../components/molecule/AddElementBox.jsx';
 import DateTimeIndicator from '../components/atom/DateTimeIndicator.jsx';
 import DateTimePicker from "../components/atom/DateTimePicker.jsx";
 import customTheme from "#app/theme.js";
+import DateTimeForm from "#components/molecule/DateTimeForm.jsx";
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -153,13 +154,14 @@ const DesignSystem = () => {
                   />
               </Box>
 
-
               <Text>Date Time Picker:</Text>
               <DateTimePicker onChange={(newDate) => {setSelectedDate(newDate)}} value={selectedDate} primary={false}/>
-
               <Box style={{backgroundColor: backgroundColor}} width={'500px'} height={'100px'} align={'center'} justify={'center'}>
                   <DateTimePicker onChange={(newDate2)=>{setSelectedDate2(newDate2)}} value={selectedDate2} primary={true}/>
               </Box>
+
+              <Text>Date Time Form:</Text>
+                <DateTimeForm title={"Día 1"}/>
           </Box>
       )
   };

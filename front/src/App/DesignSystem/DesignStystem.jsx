@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Text } from 'grommet';
+import React, {useState} from 'react';
+import {Box, DateInput, Text} from 'grommet';
 import {
   AddIcon,
   FacebookIcon,
@@ -17,6 +17,8 @@ import SocialNetworkButton from '../components/atom/SocialNetworkButton';
 import IconButton from '../components/atom/IconButton';
 import AddElementBox from '../components/molecule/AddElementBox.jsx';
 import DateTimeIndicator from '../components/atom/DateTimeIndicator.jsx';
+import DateTimePicker from "../components/atom/DateTimePicker.jsx";
+import customTheme from "#app/theme.js";
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -113,40 +115,54 @@ const DesignSystem = () => {
     </Box>
   );
 
-  const DSComponents = () => (
-    <Box direction="column" gap="medium">
-      <Text>Add Element Box:</Text>
-      <Box direction="row" gap="medium">
-        <AddElementBox />
-        <AddElementBox size="100px" />
-        <AddElementBox
-          size={{
-            width: '150px',
-            height: '220px',
-          }}
-          onClick={() => console.log('Clicked')}
-        />
-      </Box>
+  const DSComponents = () => {
+      const [selectedDate, setSelectedDate] = useState();
+      const [selectedDate2, setSelectedDate2] = useState();
+      const backgroundColor = "#3F8880";
 
-      <Text>Date Time Indicator:</Text>
-      <Box direction="row" gap="medium">
-        <DateTimeIndicator
-          date={{
-            start: new Date(new Date().setHours(10, 0, 0, 0)),
-            end: new Date(new Date().setHours(15, 0, 0, 0)),
-          }}
-        />
-        <DateTimeIndicator
-          date={{
-            start: new Date(2024, 3, 19, 16, 30, 0, 0),
-            end: new Date(2024, 3, 19, 20, 0, 0, 0),
-          }}
-          width="150px"
-          background="primary"
-        />
-      </Box>
-    </Box>
-  );
+      return (
+          <Box direction="column" gap="medium">
+              <Text>Add Element Box:</Text>
+              <Box direction="row" gap="medium">
+                  <AddElementBox/>
+                  <AddElementBox size="100px"/>
+                  <AddElementBox
+                      size={{
+                          width: '150px',
+                          height: '220px',
+                      }}
+                      onClick={() => console.log('Clicked')}
+                  />
+              </Box>
+
+              <Text>Date Time Indicator:</Text>
+              <Box direction="row" gap="medium">
+                  <DateTimeIndicator
+                      date={{
+                          start: new Date(new Date().setHours(10, 0, 0, 0)),
+                          end: new Date(new Date().setHours(15, 0, 0, 0)),
+                      }}
+                  />
+                  <DateTimeIndicator
+                      date={{
+                          start: new Date(2024, 3, 19, 16, 30, 0, 0),
+                          end: new Date(2024, 3, 19, 20, 0, 0, 0),
+                      }}
+                      width="150px"
+                      background="primary"
+                  />
+              </Box>
+
+
+              <Text>Date Time Picker:</Text>
+              <DateTimePicker onChange={(newDate) => {setSelectedDate(newDate)}} value={selectedDate} primary={false}/>
+
+              <Box style={{backgroundColor: backgroundColor}} width={'500px'} height={'100px'} align={'center'} justify={'center'}>
+                  <DateTimePicker onChange={(newDate2)=>{setSelectedDate2(newDate2)}} value={selectedDate2} primary={true}/>
+              </Box>
+          </Box>
+      )
+  };
 
   const DSColors = () => (
     <Box direction="row" gap="small">

@@ -214,7 +214,7 @@ const DesignSystem = () => {
               },
             ],
           }}
-        ></TimeCard>
+        />
         <TimeCard
           time={{
             start: new Date(new Date().setHours(18, 0, 0, 0)),

@@ -14,7 +14,7 @@ class AssignedSlotTest {
         val talkSlot = TalkSlot(
             startTime = LocalTime.parse("09:00"),
             endTime = LocalTime.parse("09:30"),
-            date = LocalDate.now()
+            date = LocalDate.of(2024, 11, 18)
         )
         val room = Room(
             name = "Conference Room",
@@ -33,7 +33,7 @@ class AssignedSlotTest {
         )
 
         val expectedRes = "AssignedSlot(id=0, room=Room(description=A room for meetings, id=0, link=http://example.com, " +
-                "name=Conference Room), slot=TalkSlot(date=2024-11-06, endTime=09:30, id=0, startTime=09:00)," +
+                "name=Conference Room), slot=TalkSlot(date=2024-11-18, endTime=09:30, id=0, startTime=09:00)," +
                 " talk=Talk(description=, documents=[], id=1, isMarketplaceTalk=false, meetingLink=null, name=talk-test, " +
                 "reviews=[], speaker=User(email=test@mail.com, id=1, name=testuser, password=***, resetToken=***, " +
                 "resetTokenLifetime=***), speakerName=user-test, track=null, votingUsers=[]))"

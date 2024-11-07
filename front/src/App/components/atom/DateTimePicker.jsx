@@ -6,7 +6,7 @@ import customTheme from "#app/theme.js";
 
 const getNextYear = () => new Date(new Date().setFullYear(new Date().getFullYear() + 1));
 
-const DateTimePicker = ({ onChange, value, primary = true, ...calendarProps, ...dropButtonProps }) => {
+const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, dropButtonProps = {} }) => {
     const [open, setOpen] = useState(false);
 
     const onSelect = (nextDate) => {
@@ -33,7 +33,7 @@ const DateTimePicker = ({ onChange, value, primary = true, ...calendarProps, ...
                             paddingBottom: '10px',
                         }}
                         alignSelf={'center'}
-                        {...calendarProps}
+                        { ...calendarProps }
                     />
                 }
                 onClose={() => setOpen(false)}

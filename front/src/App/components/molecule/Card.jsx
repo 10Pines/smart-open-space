@@ -20,6 +20,7 @@ const Card = ({
   showVotes = false,
   width = '300px',
   footerDescription,
+  author,
   ...props
 }) => {
   return (
@@ -57,10 +58,12 @@ const Card = ({
         <Box direction="row" align="center" gap="0.5rem">
           <Avatar
             size="30px"
-            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            src={
+              author?.avatar ?? 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+            }
           />
           <Text size="small" color="black">
-            Autor del evento
+            {author?.username ?? 'Autor del evento'}
           </Text>
         </Box>
         {showVotes && (
@@ -149,6 +152,10 @@ Card.propTypes = {
       })
     ),
     props: PropTypes.object,
+  }),
+  author: PropTypes.shape({
+    username: PropTypes.string,
+    avatar: PropTypes.string,
   }),
 };
 

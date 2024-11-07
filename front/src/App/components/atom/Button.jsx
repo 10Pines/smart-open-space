@@ -89,6 +89,13 @@ const Button = ({
   );
 };
 
+const circularSize = {
+  xsmall: '2rem',
+  small: '2.5rem',
+  medium: '3rem',
+  large: '3.5rem',
+};
+
 const styles = {
   base: ({ secondary, logicHover }) => ({
     lineHeight: '1rem',
@@ -99,8 +106,8 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: props.size == 'small' ? '2.5rem' : '3rem',
-    height: props.size == 'small' ? '2.5rem' : '3rem',
+    width: props.size ? circularSize[props.size] : '3rem',
+    height: props.size ? circularSize[props.size] : '3rem',
     minWidth: props.width?.min ?? undefined,
     padding: '0',
     borderRadius: '50%',

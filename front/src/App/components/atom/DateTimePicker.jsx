@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import {Calendar, DropButton, Text} from 'grommet';
 import PropTypes from 'prop-types';
 import {CalendarIcon} from '#shared/icons';
@@ -7,7 +6,7 @@ import customTheme from "#app/theme.js";
 
 const getNextYear = () => new Date(new Date().setFullYear(new Date().getFullYear() + 1));
 
-const DateTimePicker = ({ onChange, value, primary = true, ...props }) => {
+const DateTimePicker = ({ onChange, value, primary = true, ...calendarProps, ...dropButtonProps }) => {
     const [open, setOpen] = useState(false);
 
     const onSelect = (nextDate) => {
@@ -34,7 +33,7 @@ const DateTimePicker = ({ onChange, value, primary = true, ...props }) => {
                             paddingBottom: '10px',
                         }}
                         alignSelf={'center'}
-                        {...props}
+                        {...calendarProps}
                     />
                 }
                 onClose={() => setOpen(false)}
@@ -48,12 +47,12 @@ const DateTimePicker = ({ onChange, value, primary = true, ...props }) => {
                     display: 'flex',
                     justifyContent: 'flex-start',
                     alignItems: 'center',
-            }}
+                }}
                 icon={<CalendarIcon color={ primary ? 'white' : primaryColor } />}
-                label={<Text color={ primary ? "white" : primaryColor } weight={'normal'}>
-                    {value ? new Date(value).toLocaleDateString('es') : 'dd/mm/yyyy'}
-                    </Text>}
-
+                label={ <Text color={ primary ? "white" : primaryColor } weight={'normal'}>
+                        {value ? new Date(value).toLocaleDateString('es') : 'dd/mm/yyyy'}
+                        </Text> }
+                { ...dropButtonProps }
             />
     );
 };

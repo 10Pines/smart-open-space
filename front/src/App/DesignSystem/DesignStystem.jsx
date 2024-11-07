@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Text } from 'grommet';
 import {
   AddIcon,
+  ChatIcon,
   EditIcon,
   FacebookIcon,
   GoogleIcon,
@@ -174,18 +175,18 @@ const DesignSystem = () => {
           color="card-green"
           buttons={[
             {
-              icon: <HaltIcon />,
+              icon: HaltIcon,
               onClick: () => console.log('Clicked halt in card'),
               secondary: true,
               blackAndWhite: true,
             },
             {
-              icon: <EditIcon />,
+              icon: EditIcon,
               onClick: () => console.log('Clicked edit in card'),
               blackAndWhite: true,
             },
             {
-              icon: <AddIcon />,
+              icon: AddIcon,
               onClick: () => console.log('Clicked add in card'),
               blackAndWhite: true,
             },
@@ -195,11 +196,33 @@ const DesignSystem = () => {
       <Divider horizontal />
       <Box direction="row" gap="medium" wrap>
         <TimeCard
-          time="10:00"
+          time={{
+            start: new Date(new Date().setHours(10, 0, 0, 0)),
+            end: new Date(new Date().setHours(16, 0, 0, 0)),
+          }}
           title="Título de la Card"
           description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          footerDescription={{
+            items: [
+              {
+                icon: <UserIcon />,
+                text: '25 invitados',
+              },
+              {
+                icon: <ChatIcon />,
+                text: '21 charlas postuladas',
+              },
+            ],
+          }}
         ></TimeCard>
-        <TimeCard time="10:00" title="Título de la Card" showVotes />
+        <TimeCard
+          time={{
+            start: new Date(new Date().setHours(18, 0, 0, 0)),
+            end: new Date(new Date().setHours(21, 0, 0, 0)),
+          }}
+          title="Título de la Card"
+          showVotes
+        />
       </Box>
     </Box>
   );

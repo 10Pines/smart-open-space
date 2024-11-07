@@ -1,8 +1,9 @@
 import DateTimeIndicator from '../atom/DateTimeIndicator';
 import Card from '../molecule/Card';
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
+import PropTypes from 'prop-types';
 
-const TimeCard = ({ date, ...props }) => {
+const TimeCard = ({ time, ...props }) => {
   return (
     <Box direction="row" height="fit-content">
       <Box
@@ -12,13 +13,14 @@ const TimeCard = ({ date, ...props }) => {
         }}
         style={{
           backgroundColor: '#3F8880',
+          boxShadow: '-4px 0px 4px rgba(0, 0, 0, 0.2), 0px 2px 4px rgba(0, 0, 0, 0.2)',
         }}
       >
         <DateTimeIndicator
           style={{ transform: 'scale(0.7)' }}
           date={{
-            start: new Date(new Date().setHours(10, 0, 0, 0)),
-            end: new Date(new Date().setHours(15, 0, 0, 0)),
+            start: time.start,
+            end: time.end,
           }}
         />
       </Box>
@@ -32,6 +34,14 @@ const TimeCard = ({ date, ...props }) => {
       />
     </Box>
   );
+};
+
+TimeCard.propTypes = {
+  time: PropTypes.shape({
+    start: PropTypes.instanceOf(Date).isRequired,
+    end: PropTypes.instanceOf(Date).isRequired,
+  }).isRequired,
+  props: PropTypes.object,
 };
 
 export default TimeCard;

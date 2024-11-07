@@ -1,4 +1,5 @@
-import { AddIcon, EditIcon, HaltIcon, UpIcon } from '#shared/icons';
+import React from 'react';
+import { HaltIcon } from '#shared/icons';
 import {
   Avatar,
   Box,
@@ -9,6 +10,7 @@ import {
   Text,
 } from 'grommet';
 import IconButton from '../atom/IconButton';
+import PropTypes from 'prop-types';
 
 const Card = ({
   title,
@@ -17,6 +19,7 @@ const Card = ({
   color = 'card-blue',
   showVotes = false,
   width = '300px',
+  footerDescription,
   ...props
 }) => {
   return (
@@ -76,18 +79,77 @@ const Card = ({
       </CardFooter>
       {buttons && (
         <Box width="100%" direction="row" flex justify="end" gap="xsmall">
-          <IconButton
-            size="xsmall"
-            icon={<HaltIcon size="1rem" />}
-            secondary
-            blackAndWhite
-          />
-          <IconButton size="xsmall" icon={<EditIcon size="1rem" />} blackAndWhite />
-          <IconButton size="xsmall" icon={<AddIcon size="1rem" />} blackAndWhite />
+          {buttons.map(({ icon: Icon, ...button }) => (
+            <IconButton
+              size="xsmall"
+              icon={<Icon size="1rem" />}
+              secondary={button.secondary}
+              blackAndWhite={button.blackAndWhite}
+              onClick={button.onClick}
+              {...button}
+            />
+          ))}
+        </Box>
+      )}
+      {footerDescription && (
+        <Box direction="row" gap="small" {...footerDescription.props}>
+          {footerDescription.items
+            ? footerDescription.items.map((item) => (
+                <Box direction="row" align="center" gap="xsmall">
+                  {item.icon &&
+                    React.cloneElement(item.icon, {
+                      size: 'small',
+                      color: item.color ?? 'primary',
+                    })}
+                  <Text
+                    size="small"
+                    color={item.color ?? 'primary'}
+                    weight={item.weight ?? 'normal'}
+                  >
+                    {item.text}
+                  </Text>
+                </Box>
+              ))
+            : null}
         </Box>
       )}
     </GrommetCard>
   );
+};
+
+Card.propTypes = {
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  buttons: PropTypes.arrayOf(
+    PropTypes.shape({
+      icon: PropTypes.element.isRequired,
+      text: PropTypes.string.isRequired,
+      onClick: PropTypes.func,
+      secondary: PropTypes.bool,
+      blackAndWhite: PropTypes.bool,
+    })
+  ),
+  color: PropTypes.string,
+  showVotes: PropTypes.bool,
+  width: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      width: PropTypes.string,
+      min: PropTypes.string,
+      max: PropTypes.string,
+    }),
+  ]),
+  footer: PropTypes.shape({
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        icon: PropTypes.element.isRequired,
+        text: PropTypes.string.isRequired,
+        onClick: PropTypes.func,
+        color: PropTypes.string,
+      })
+    ),
+    props: PropTypes.object,
+  }),
 };
 
 export default Card;

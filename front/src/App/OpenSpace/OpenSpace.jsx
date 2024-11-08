@@ -64,9 +64,11 @@ const OpenSpace = () => {
   return (
     <>
       <Box>
-        <MainHeader>
-          <MainHeader.Title label={`Tablero de control: ${data.name}`} />
-        </MainHeader>
+        {amTheOrganizer && (
+          <MainHeader>
+            <MainHeader.SubTitle label="Tablero de Control" />
+          </MainHeader>
+        )}
         <ControlButtons controlButtons={controlButtons} size={size} withIcons />
       </Box>
 

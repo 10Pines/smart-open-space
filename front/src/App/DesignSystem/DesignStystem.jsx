@@ -107,15 +107,36 @@ const DesignSystem = () => {
     </Box>
   );
 
-  const DSInputs = () => (
-    <Box direction="column" gap="small">
-      <Input placeholder={'Input...'} />
-      <Input icon={<FormSearch color={'primary'} />} placeholder={'Buscar...'} />
-      <Input icon={<UserIcon color={'primary'} />} placeholder={'Usuario...'} />
-      <Input icon={<View color={'primary'} />} placeholder={'Contraseña...'} />
-      <SelectDropdown />
-    </Box>
-  );
+  const DSInputs = () => {
+    const [input, setInput] = React.useState('');
+    const [description, setDescription] = React.useState('');
+    return (
+      <Box direction="column" gap="small">
+        <Input
+          placeholder={'Input...'}
+          label="Label del input"
+          value={input}
+          onChange={setInput}
+        />
+        <Input
+          placeholder={'Descripcion'}
+          label="Descripcion"
+          value={description}
+          onChange={setDescription}
+          rows={3}
+          multiline
+        />
+        <Input icon={<FormSearch color={'primary'} />} placeholder={'Buscar...'} />
+        <Input icon={<UserIcon color={'primary'} />} placeholder={'Usuario...'} />
+        <Input
+          icon={<View color={'primary'} />}
+          placeholder={'Contraseña...'}
+          type="password"
+        />
+        <SelectDropdown />
+      </Box>
+    );
+  };
 
   const DSComponents = () => (
     <Box direction="column" gap="medium">

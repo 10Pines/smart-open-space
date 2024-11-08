@@ -119,6 +119,7 @@ const DesignSystem = () => {
   const DSComponents = () => {
       const [selectedDate, setSelectedDate] = useState();
       const [selectedDate2, setSelectedDate2] = useState();
+      const [selectedDate3, setSelectedDate4] = useState();
       const backgroundColor = "#3F8880";
 
       return (
@@ -162,7 +163,7 @@ const DesignSystem = () => {
               </Box>
 
               <Text>Date Time Form:</Text>
-                <DateTimeForm title={"Día 1"}/>
+                <DateTimeForm title={"Día 1"} />
           </Box>
       )
   };

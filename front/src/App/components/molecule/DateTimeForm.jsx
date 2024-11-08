@@ -10,7 +10,7 @@ const DateTimeForm = ({ title, value, onChange, ...props }) => {
              direction='column'
              {...props}
         >
-            <Text color={"white"} style={{padding: '10px 10px 10px 17px'}}>{title}</Text>
+            <Text color={"white"} weight={'bold'} style={{padding: '10px 10px 10px 17px'}}>{title}</Text>
             <DateTimePicker onChange={(date)=>{onChange(date)}} value={value} primary={true} alignSelf={"center"}/>
         </Box>
     );

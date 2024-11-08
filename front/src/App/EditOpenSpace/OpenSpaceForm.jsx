@@ -4,7 +4,7 @@ import { CalendarIcon, ClockIcon, HomeIcon, TracksIcon } from '#shared/icons';
 import MyForm from '#shared/MyForm';
 import Tracks from './Tracks';
 import Rooms from './Rooms';
-import { Box, Layer, MaskedInput, Text } from 'grommet';
+import { Box, Form, Layer, MaskedInput, Text } from 'grommet';
 import Dates from './Dates';
 import TimeSelector from './TimeSelector';
 import PropTypes from 'prop-types';
@@ -12,6 +12,10 @@ import Title from '#shared/Title';
 import Detail from '#shared/Detail';
 import Spinner from '#shared/Spinner';
 import { compareAsc } from 'date-fns';
+import Input from '../components/atom/Input';
+import AddElementBox from '../components/molecule/AddElementBox';
+import Button from '../components/atom/Button';
+import useSize from '#helpers/useSize';
 
 const OTHER_SLOT = 'OtherSlot';
 
@@ -132,6 +136,7 @@ export const OpenSpaceForm = ({
     (initialValues.dates || []).sort(compareAsc)
   );
   const [deletedDate, setDeletedDate] = useState();
+  const isSmall = useSize() === 'small';
 
   const isRepeatedTrack = (tracks, track) =>
     tracks.filter((eachTrack) => eachTrack.name === track.name).length > 1;
@@ -167,63 +172,59 @@ export const OpenSpaceForm = ({
       <MainHeader>
         <MainHeader.Title label={title} />
       </MainHeader>
-      <MyForm
-        onSecondary={history.goBack}
-        onSubmit={checkSubmit}
-        initialValue={initialValues}
-      >
-        <MyForm.Text
-          id="os-name-input-id"
-          placeholder="¿Como se va a llamar?"
-          label="Nombre"
-          formValueName="name"
+      <Box direction="column" gap="medium">
+        <Input label="Nombre" placeholder="¿Cómo se va a llamar?" />
+        <Input
+          label="Descripción"
+          placeholder="Añade una descripción..."
+          multiline
+          rows={7}
         />
-        <MyForm.TextAreaWithCharacterCounter
-          placeholder="Añade una descripción."
-          maxLength={1000}
-        />
-        <MyForm.Field
-          component={Tracks}
-          icon={<TracksIcon />}
-          label="Tracks"
-          name="tracks"
-          validate={(tracks) => {
-            if (hasTracksWithRepeatedName(tracks))
-              return 'No puede haber dos tracks con el mismo nombre';
-          }}
-          required={false}
-        />
-        <MyForm.Field
-          component={Rooms}
-          icon={<HomeIcon />}
-          label="Salas"
-          name="rooms"
-          required={false}
-        />
-        <Box direction="row">
-          <MyForm.Field
-            component={Dates}
-            icon={<CalendarIcon />}
-            label="Fecha"
-            name="dates"
-            onRemoveItem={(date) => setDeletedDate(date)}
-            onChangeDates={(event) => setAvailableDates(event.value)}
-            required={false}
-          />
+        <Box gap="medium">
+          <Text>Tracks</Text>
+          <Box direction="row" gap="small">
+            {/* // TODO: Tracks Box */}
+            <AddElementBox />
+          </Box>
         </Box>
-        <MyForm.Field
-          component={TimeSelector}
-          icon={<ClockIcon />}
-          label="Grilla Horaria"
-          name="slots"
-          onNewSlot={(type, start, onSubmitSlot) => {
-            setShowInputSlot({ onSubmitSlot, start, type });
+
+        <Box gap="medium">
+          <Text>Salas</Text>
+          <Box direction="row" gap="small">
+            {/* // TODO: Salas Box */}
+            <AddElementBox />
+          </Box>
+        </Box>
+
+        <Box gap="medium">
+          <Text>Fecha</Text>
+          <Box direction="row" gap="small">
+            {/* // TODO: Fechas Box */}
+            <AddElementBox />
+          </Box>
+        </Box>
+
+        <Box gap="medium">
+          <Text>Grilla Horaria</Text>
+          {/* // TODO: Add grilla horaria */}
+          Aca iria la grilla horaria
+        </Box>
+
+        <Box
+          direction={!isSmall ? 'row-reverse' : 'column'}
+          justify="center"
+          gap="medium"
+          pad={{
+            horizontal: 'large',
           }}
-          deletedDate={deletedDate}
-          dates={availableDates}
-          required={false}
-        />
-      </MyForm>
+          margin={{
+            top: 'medium',
+          }}
+        >
+          <Button primary>Aceptar</Button>
+          <Button secondary>Cancelar</Button>
+        </Box>
+      </Box>
       {renderSlotInput(showInputSlot)}
     </>
   );

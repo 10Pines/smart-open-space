@@ -156,6 +156,7 @@ const DesignSystem = () => {
 
               <Text>Date Time Picker:</Text>
               <DateTimePicker onChange={(newDate) => {setSelectedDate(newDate)}} value={selectedDate} primary={false}/>
+
               <Box style={{backgroundColor: backgroundColor}} width={'500px'} height={'100px'} align={'center'} justify={'center'}>
                   <DateTimePicker onChange={(newDate2)=>{setSelectedDate2(newDate2)}} value={selectedDate2} primary={true}/>
               </Box>

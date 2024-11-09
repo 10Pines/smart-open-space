@@ -26,7 +26,7 @@ const useBrowserStorage = (key, initialValue, isLocalStorage=true) => {
       setStoredValue(valueToStore);
       setStorage(key, valueToStore);
     } catch (error) {
-      console.error('error useBrowserStorage.setValue', error);
+      console.error(`error useBrowserStorage.setValue and isLocalStorage=${isLocalStorage}`, error);
     }
   };
 

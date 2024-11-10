@@ -1,5 +1,6 @@
 package com.sos.smartopenspace.dto.response
 
+import com.sos.smartopenspace.util.toStringByReflex
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -14,7 +15,10 @@ abstract class SlotResponseDTO(
     val date: LocalDate,
     val type: String,
     val assignable: Boolean,
-)
+) {
+    override fun toString(): String =
+        toStringByReflex(this)
+}
 
 class TalkSlotResponseDTO(
     id: Long,

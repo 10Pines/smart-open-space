@@ -2,6 +2,7 @@ package com.sos.smartopenspace.domain
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.sos.smartopenspace.util.toStringByReflex
 import jakarta.persistence.Id
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -32,6 +33,9 @@ abstract class Slot(
 ) : UpdatableItemCollection {
   abstract fun isAssignable(): Boolean
   abstract fun cloneWithDate(date: LocalDate): Slot
+
+  override fun toString(): String =
+    toStringByReflex(this)
 }
 
 @Entity
@@ -72,4 +76,7 @@ class AssignedSlot(
   fun hasDate(date: LocalDate?): Boolean {
     return slot.date == date
   }
+
+  override fun toString(): String =
+    toStringByReflex(this)
 }

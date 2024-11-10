@@ -129,8 +129,11 @@ tasks.register<Download>("downloadNewrelic") {
 
 tasks.register<Copy>("unzipAndSetUpNewrelic") {
   doNotTrackState("disable unzip check")
-  dependsOn("downloadNewrelic", "jar", "bootJar",
-    "resolveMainClassName", "compileKotlin", "processResources")
+  dependsOn(
+    "downloadNewrelic", "jar", "bootJar",
+    "test", "compileTestKotlin", "processTestResources",
+    "resolveMainClassName", "compileKotlin", "processResources"
+  )
   from(zipTree(file("newrelic/newrelic-java.zip")))
   into(rootDir)
   doLast {

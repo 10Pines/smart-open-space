@@ -1,6 +1,7 @@
 package com.sos.smartopenspace.domain
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.sos.smartopenspace.util.toStringByReflex
 import jakarta.persistence.*
 import java.net.URL
 import jakarta.validation.Valid
@@ -43,7 +44,7 @@ class Talk(
   var speakerName: String? = null
 ) {
 
-    @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "vote",
           joinColumns = [JoinColumn(name = "talk_id", referencedColumnName = "id")],
           inverseJoinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")])
@@ -79,4 +80,7 @@ class Talk(
   }
 
   fun addReview(review: Review) = this.reviews.add(review)
+
+  override fun toString(): String =
+    toStringByReflex(this)
 }

@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {Box, DateInput, Text} from 'grommet';
 import {
   AddIcon,
+  ChatIcon,
+  EditIcon,
   FacebookIcon,
   GoogleIcon,
   HaltIcon,
@@ -13,12 +15,11 @@ import Input from '../components/atom/Input.jsx';
 import Button from '../components/atom/Button.jsx';
 import { FormSearch, View } from 'grommet-icons';
 import SelectDropdown from '../components/atom/SelectDropdown.jsx';
+import ColorPicker from "../components/atom/ColorPicker.jsx";
 import SocialNetworkButton from '../components/atom/SocialNetworkButton';
 import IconButton from '../components/atom/IconButton';
 import AddElementBox from '../components/molecule/AddElementBox.jsx';
 import DateTimeIndicator from '../components/atom/DateTimeIndicator.jsx';
-import DateTimePicker from "../components/atom/DateTimePicker.jsx";
-import customTheme from "#app/theme.js";
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -135,40 +136,122 @@ const DesignSystem = () => {
                   />
               </Box>
 
-              <Text>Date Time Indicator:</Text>
-              <Box direction="row" gap="medium">
-                  <DateTimeIndicator
-                      date={{
-                          start: new Date(new Date().setHours(10, 0, 0, 0)),
-                          end: new Date(new Date().setHours(15, 0, 0, 0)),
-                      }}
-                  />
-                  <DateTimeIndicator
-                      date={{
-                          start: new Date(2024, 3, 19, 16, 30, 0, 0),
-                          end: new Date(2024, 3, 19, 20, 0, 0, 0),
-                      }}
-                      width="150px"
-                      background="primary"
-                  />
-              </Box>
+      <Text>Date Time Indicator:</Text>
+      <Box direction="row" gap="medium">
+        <DateTimeIndicator
+          date={{
+            start: new Date(new Date().setHours(10, 0, 0, 0)),
+            end: new Date(new Date().setHours(15, 0, 0, 0)),
+          }}
+        />
+        <DateTimeIndicator
+          date={{
+            start: new Date(2024, 3, 19, 16, 30, 0, 0),
+            end: new Date(2024, 3, 19, 20, 0, 0, 0),
+          }}
+          width="150px"
+          background="primary"
+        />
+      </Box>
 
+      <Text>Card:</Text>
+      <Box direction="row" gap="medium" wrap>
+        <Box direction="column" gap="1rem">
+          <Card title="Título de la Card" color="card-blue" showVotes />
+          <Card title="Título de la Card" color="card-green" showVotes />
+          <Card title="Título de la Card" color="card-yellow" showVotes />
+          <Card title="Título de la Card" color="card-purple" showVotes />
+          <Card title="Título de la Card" color="card-pink" showVotes />
+        </Box>
+        <Card
+          title="Título de la Card"
+          description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        />
+        <Card
+          title="Título de la Card"
+          description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque tincidunt eleifend ultrices. Aenean quis nibh quis ante laoreet tempus. Proin condimentum pulvinar condimentum. Vivamus scelerisque finibus dui, eget euismod dui elementum id. Donec ullamcorper nibh ut nunc porttitor commodo. Cras tincidunt elit ullamcorper hendrerit porta. Phasellus vestibulum nibh at mauris pellentesque, et bibendum odio volutpat. Maecenas diam lectus, egestas non nulla id, mattis fringilla mi. Suspendisse potenti. Nulla in accumsan augue. Maecenas sit amet iaculis nibh. Integer scelerisque aliquet blandit. Ut euismod diam nec nulla laoreet, eget tempor ante facilisis."
+          color="card-pink"
+          showVotes
+        />
+        <Card
+          title="Título de la Card"
+          description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          color="card-green"
+          buttons={[
+            {
+              icon: HaltIcon,
+              onClick: () => console.log('Clicked halt in card'),
+              secondary: true,
+              blackAndWhite: true,
+            },
+            {
+              icon: EditIcon,
+              onClick: () => console.log('Clicked edit in card'),
+              blackAndWhite: true,
+            },
+            {
+              icon: AddIcon,
+              onClick: () => console.log('Clicked add in card'),
+              blackAndWhite: true,
+            },
+          ]}
+        />
+      </Box>
+      <Divider horizontal />
+      <Box direction="row" gap="medium" wrap>
+        <TimeCard
+          time={{
+            start: new Date(new Date().setHours(10, 0, 0, 0)),
+            end: new Date(new Date().setHours(16, 0, 0, 0)),
+          }}
+          title="Título de la Card"
+          description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          footerDescription={{
+            items: [
+              {
+                icon: <UserIcon />,
+                text: '25 invitados',
+              },
+              {
+                icon: <ChatIcon />,
+                text: '21 charlas postuladas',
+              },
+            ],
+          }}
+        />
+        <TimeCard
+          time={{
+            start: new Date(new Date().setHours(18, 0, 0, 0)),
+            end: new Date(new Date().setHours(21, 0, 0, 0)),
+          }}
+          title="Título de la Card"
+          showVotes
+        />
+      </Box>
 
-              <Text>Date Time Picker:</Text>
-              <DateTimePicker onChange={(newDate) => {setSelectedDate(newDate)}} value={selectedDate} primary={false}/>
+      <Text>Date Time Picker:</Text>
+      <DateTimePicker onChange={(newDate) => {setSelectedDate(newDate)}} value={selectedDate} primary={false}/>
 
-              <Box style={{backgroundColor: backgroundColor}} width={'500px'} height={'100px'} align={'center'} justify={'center'}>
-                  <DateTimePicker onChange={(newDate2)=>{setSelectedDate2(newDate2)}} value={selectedDate2} primary={true}/>
-              </Box>
-          </Box>
-      )
-  };
-
-  const DSColors = () => (
-    <Box direction="row" gap="small">
-      {/* Colores */}
+      <Box style={{backgroundColor: backgroundColor}} width={'500px'} height={'100px'} align={'center'} justify={'center'}>
+          <DateTimePicker onChange={(newDate2)=>{setSelectedDate2(newDate2)}} value={selectedDate2} primary={true}/>
+      </Box>
     </Box>
-  );
+  )};
+
+    const DSColors = () => {
+        const [selectedColor, setSelectedColor] = useState(undefined);
+
+        return (
+            <Box direction="column" gap="small">
+                <ColorPicker value={selectedColor} onChange={setSelectedColor} />
+                {selectedColor ?
+                    <Text>El color elegido es <Text color={selectedColor}>{selectedColor}</Text></Text>
+                    :
+                    <Text>No hay color elegido todavía</Text>
+                }
+            </Box>
+        );
+    };
 
   const DSTypography = () => (
     <Box direction="row" gap="small">

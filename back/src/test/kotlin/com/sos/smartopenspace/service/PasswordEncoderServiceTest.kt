@@ -3,11 +3,13 @@ package com.sos.smartopenspace.service
 import com.sos.smartopenspace.services.PasswordEncoderService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 
 
-class PasswordEncoderServiceTest {
+class PasswordEncoderServiceTest: BaseServiceTest() {
 
-    private val passwordEncoderService = PasswordEncoderService()
+    @Autowired
+    private lateinit var passwordEncoderService: PasswordEncoderService
 
     @Test
     fun `encode password`() {

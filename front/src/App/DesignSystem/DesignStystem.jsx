@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Box, Text } from 'grommet';
 import {
   AddIcon,
@@ -15,6 +15,7 @@ import Input from '../components/atom/Input.jsx';
 import Button from '../components/atom/Button.jsx';
 import { FormSearch, View } from 'grommet-icons';
 import SelectDropdown from '../components/atom/SelectDropdown.jsx';
+import ColorPicker from "../components/atom/ColorPicker.jsx";
 import SocialNetworkButton from '../components/atom/SocialNetworkButton';
 import IconButton from '../components/atom/IconButton';
 import AddElementBox from '../components/molecule/AddElementBox.jsx';
@@ -227,11 +228,20 @@ const DesignSystem = () => {
     </Box>
   );
 
-  const DSColors = () => (
-    <Box direction="row" gap="small">
-      {/* Colores */}
-    </Box>
-  );
+    const DSColors = () => {
+        const [selectedColor, setSelectedColor] = useState(undefined);
+
+        return (
+            <Box direction="column" gap="small">
+                <ColorPicker value={selectedColor} onChange={setSelectedColor} />
+                {selectedColor ?
+                    <Text>El color elegido es <Text color={selectedColor}>{selectedColor}</Text></Text>
+                    :
+                    <Text>No hay color elegido todavía</Text>
+                }
+            </Box>
+        );
+    };
 
   const DSTypography = () => (
     <Box direction="row" gap="small">

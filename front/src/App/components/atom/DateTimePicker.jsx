@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import {Calendar, DropButton, Text} from 'grommet';
+import {Box, Calendar, DropButton, Text} from 'grommet';
 import PropTypes from 'prop-types';
 import {CalendarIcon} from '#shared/icons';
 import customTheme from "#app/theme.js";
 
 const getNextYear = () => new Date(new Date().setFullYear(new Date().getFullYear() + 1));
 
-const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, ...props }) => {
+const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, label = "Fecha", ...props }) => {
     const [open, setOpen] = useState(false);
 
     const onSelect = (nextDate) => {
@@ -16,6 +16,30 @@ const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, .
     const primaryColor = customTheme.global.colors.primary.light;
 
     return (
+        <Box
+            style={{
+                position: 'relative',
+            }}
+        >
+            {label && (
+                <label
+                    style={{
+                        position: 'absolute',
+                        left: '16px',
+                        fontSize: '1rem',
+                        color: primary ?  "white" : primaryColor,
+                        backgroundColor: primary ? primaryColor : "white",
+                        padding: '0 2px 2px 2px',
+                        transform: 'translateY(-50%)',
+                        transition: '0.2s ease all',
+                        pointerEvents: 'none',
+                        zIndex: 1,
+                        borderRadius: '5px'
+                    }}
+                >
+                    {label}
+                </label>
+            )}
             <DropButton
                 dropContent={
                     <Calendar
@@ -54,6 +78,7 @@ const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, .
                         </Text> }
                 { ...props }
             />
+        </Box>
     );
 };
 DateTimePicker.propTypes = {

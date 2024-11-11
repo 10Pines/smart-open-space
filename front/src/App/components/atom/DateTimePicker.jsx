@@ -19,6 +19,7 @@ const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, l
         <Box
             style={{
                 position: 'relative',
+                display: 'inline-block',
             }}
         >
             {label && (
@@ -26,7 +27,7 @@ const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, l
                     style={{
                         position: 'absolute',
                         left: '16px',
-                        fontSize: '1rem',
+                        fontSize: '0.8rem',
                         color: primary ?  "white" : primaryColor,
                         backgroundColor: primary ? primaryColor : "white",
                         padding: '0 2px 2px 2px',
@@ -74,8 +75,8 @@ const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, l
                 }}
                 icon={<CalendarIcon color={ primary ? 'white' : primaryColor } />}
                 label={ <Text color={ primary ? "white" : primaryColor } weight={'normal'}>
-                        {value ? new Date(value).toLocaleDateString('es') : 'dd/mm/yyyy'}
-                        </Text> }
+                    {value ? new Date(value).toLocaleDateString('es') : 'dd/mm/yyyy'}
+                </Text> }
                 { ...props }
             />
         </Box>

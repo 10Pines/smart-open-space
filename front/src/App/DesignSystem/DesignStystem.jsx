@@ -119,7 +119,7 @@ const DesignSystem = () => {
   const DSComponents = () => {
       const [selectedDate, setSelectedDate] = useState();
       const [selectedDate2, setSelectedDate2] = useState();
-      const [selectedDate3, setSelectedDate4] = useState();
+      const [selectedDate3, setSelectedDate3] = useState();
       const backgroundColor = "#3F8880";
 
       return (
@@ -159,11 +159,11 @@ const DesignSystem = () => {
               <DateTimePicker onChange={(newDate) => {setSelectedDate(newDate)}} value={selectedDate} primary={false}/>
 
               <Box style={{backgroundColor: backgroundColor}} width={'500px'} height={'100px'} align={'center'} justify={'center'}>
-                  <DateTimePicker onChange={(newDate2)=>{setSelectedDate2(newDate2)}} value={selectedDate2} primary={true}/>
+                  <DateTimePicker onChange={(newDate)=>{setSelectedDate2(newDate)}} value={selectedDate2} primary={true}/>
               </Box>
 
               <Text>Date Time Form:</Text>
-                <DateTimeForm title={"Día 1"} />
+                <DateTimeForm title={"Día 1"} onChange={(newDate)=>{setSelectedDate3(newDate)}} value={selectedDate3}/>
           </Box>
       )
   };

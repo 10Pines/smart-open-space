@@ -20,6 +20,9 @@ import SocialNetworkButton from '../components/atom/SocialNetworkButton';
 import IconButton from '../components/atom/IconButton';
 import AddElementBox from '../components/molecule/AddElementBox.jsx';
 import DateTimeIndicator from '../components/atom/DateTimeIndicator.jsx';
+import DateTimePicker from "../components/atom/DateTimePicker.jsx";
+import Card from '../components/molecule/Card.jsx';
+import TimeCard from "../components/molecule/TimeCard.jsx";
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (

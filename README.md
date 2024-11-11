@@ -1,5 +1,5 @@
 <h1 align="center">
-  Smart Open Space
+  Smart Open Space 
 </h1>
 <p align="center">
   <img src="/docs/other/logo.svg" width="150" height="150" />

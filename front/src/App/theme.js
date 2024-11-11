@@ -53,6 +53,11 @@ const customTheme = {
         },
       },
     },
+    drop: {
+      border: {
+        radius: '4px'
+      },
+    }
   },
 };
 

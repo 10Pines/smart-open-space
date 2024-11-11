@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Box, Text } from 'grommet';
+import {Box, DateInput, Text} from 'grommet';
 import {
   AddIcon,
   ChatIcon,
@@ -20,8 +20,10 @@ import SocialNetworkButton from '../components/atom/SocialNetworkButton';
 import IconButton from '../components/atom/IconButton';
 import AddElementBox from '../components/molecule/AddElementBox.jsx';
 import DateTimeIndicator from '../components/atom/DateTimeIndicator.jsx';
+import DateTimePicker from "../components/atom/DateTimePicker.jsx";
 import Card from '../components/molecule/Card.jsx';
-import TimeCard from '../components/molecule/TimeCard.jsx';
+import TimeCard from "../components/molecule/TimeCard.jsx";
+import DateTimeForm from "../components/molecule/DateTimeForm.jsx";
 import RoomPickerForm from "../components/molecule/RoomPickerForm.jsx";
 import customTheme from "#app/theme.js";
 
@@ -127,8 +129,12 @@ const DesignSystem = () => {
   );
 
   const DSComponents = () => {
+      const [selectedDate, setSelectedDate] = useState();
+      const [selectedDate2, setSelectedDate2] = useState();
+      const [selectedDate3, setSelectedDate3] = useState();
       const [roomName, setRoomName] = React.useState('');
       const [link, setLink] = React.useState('');
+      const backgroundColor = "#3F8880";
 
       return (
           <Box direction="column" gap="medium">
@@ -237,6 +243,16 @@ const DesignSystem = () => {
                       showVotes
                   />
               </Box>
+
+              <Text>Date Time Picker:</Text>
+              <DateTimePicker onChange={(newDate) => {setSelectedDate(newDate)}} value={selectedDate} primary={false}/>
+
+              <Box style={{backgroundColor: backgroundColor}} width={'500px'} height={'100px'} align={'center'} justify={'center'}>
+                  <DateTimePicker onChange={(newDate)=>{setSelectedDate2(newDate)}} value={selectedDate2} primary={true}/>
+              </Box>
+
+              <Text>Date Time Form:</Text>
+              <DateTimeForm title={"Día 1"} onChange={(newDate)=>{setSelectedDate3(newDate)}} value={selectedDate3}/>
 
               <Text>Add room editor:</Text>
               <RoomPickerForm

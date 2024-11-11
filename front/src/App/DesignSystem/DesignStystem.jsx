@@ -23,7 +23,7 @@ import DateTimeIndicator from '../components/atom/DateTimeIndicator.jsx';
 import DateTimePicker from "../components/atom/DateTimePicker.jsx";
 import Card from '../components/molecule/Card.jsx';
 import TimeCard from "../components/molecule/TimeCard.jsx";
-import DateTimeForm from "#components/molecule/DateTimeForm.jsx";
+import DateTimeForm from "../components/molecule/DateTimeForm.jsx";
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (

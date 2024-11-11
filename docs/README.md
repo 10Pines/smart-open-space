@@ -1,6 +1,11 @@
 
 ## :scroll: Documentación
 
+### Build and execute container with docker
+
+- [Go to doc files to build and run app with docker](/docs/container)
+
+
 ### Diagrama de Arquitectura
 
 #### Visualización del Open Space

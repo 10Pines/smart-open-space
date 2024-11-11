@@ -1,11 +1,13 @@
 package com.sos.smartopenspace.services
 
+import com.sos.smartopenspace.aspect.LoggingExecution
 import com.sos.smartopenspace.domain.*
 import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
 import com.sos.smartopenspace.dto.request.OpenSpaceRequestDTO
 import com.sos.smartopenspace.persistence.*
 import com.sos.smartopenspace.translators.response.AssignedSlotResTranslator
 import com.sos.smartopenspace.websockets.QueueSocket
+import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -65,13 +67,13 @@ class OpenSpaceService(
     }
 
     fun delete(userID: Long, openSpaceID: Long): Long {
+        //FIXME: Add auth + authorization JWT or similar
         val user = findUser(userID)
         val openSpace = findById(openSpaceID)
 
         user.checkOwnershipOf(openSpace)
-
         openSpaceRepository.delete(openSpace)
-
+        LOGGER.info("Success delete OpenSpace: $openSpace")
         return openSpace.id
     }
 
@@ -194,4 +196,7 @@ class OpenSpaceService(
         return talk
     }
 
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(this::class.java)
+    }
 }

@@ -1,5 +1,6 @@
 package com.sos.smartopenspace.domain
 
+import com.sos.smartopenspace.util.toStringByReflex
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -29,4 +30,7 @@ class Review (
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long = 0
-)
+) {
+    override fun toString(): String =
+        toStringByReflex(this)
+}

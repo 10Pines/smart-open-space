@@ -1,8 +1,10 @@
 package com.sos.smartopenspace.services
+
 import com.sos.smartopenspace.domain.Email
 import jakarta.mail.Message
 import jakarta.mail.internet.InternetAddress
 import org.intellij.lang.annotations.Language
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
@@ -25,7 +27,7 @@ class EmailService(
     userService.findByEmail(email).also {
       val resetToken = userService.generatePasswordResetToken(it)
       sendEmail(email, "$emailSubjectPrefix Recuperación de contraseña", recoveryEmailContent(email, resetToken))
-    }
+    }.also { LOGGER.info("Send recovery email successfully with $email and user id ${it.id}") }
 
   @Language("HTML")
   private fun recoveryEmailContent(email: String, resetToken: String) =
@@ -45,7 +47,7 @@ class EmailService(
         </html>
       """
 
-  fun sendEmail(email: String, subject: String, text: String) =
+  private fun sendEmail(email: String, subject: String, text: String) =
     Email(email, subject, text).let {
       val msg = createMessage(it)
       emailSender.send(msg)
@@ -59,4 +61,8 @@ class EmailService(
       setText(email.text, "UTF-8", "html")
       setHeader("Content-Type", "text/html; charset=UTF-8")
     }
+
+  companion object {
+    private val LOGGER = LoggerFactory.getLogger(this::class.java)
+  }
 }

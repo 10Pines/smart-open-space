@@ -13,9 +13,21 @@ class OpenSpaceTest {
     private fun anyOpenSpace(talks: MutableSet<Talk> = mutableSetOf()) =
         OpenSpace(
             "os", mutableSetOf(), mutableSetOf(
-                TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("10:00"), LocalDate.parse("2007-12-03")),
-                TalkSlot(LocalTime.parse("10:00"), LocalTime.parse("11:00"), LocalDate.parse("2007-12-03")),
-                TalkSlot(LocalTime.parse("11:00"), LocalTime.parse("12:00"), LocalDate.parse("2007-12-03"))
+                TalkSlot(
+                    LocalTime.parse("09:00"),
+                    LocalTime.parse("10:00"),
+                    LocalDate.parse("2007-12-03")
+                ),
+                TalkSlot(
+                    LocalTime.parse("10:00"),
+                    LocalTime.parse("11:00"),
+                    LocalDate.parse("2007-12-03")
+                ),
+                TalkSlot(
+                    LocalTime.parse("11:00"),
+                    LocalTime.parse("12:00"),
+                    LocalDate.parse("2007-12-03")
+                )
             ),
             talks
         )
@@ -26,7 +38,10 @@ class OpenSpaceTest {
         return openSpace
     }
 
-    private fun anyUser(openSpaces: MutableSet<OpenSpace> = mutableSetOf(), talks: MutableSet<Talk> = mutableSetOf()): User {
+    private fun anyUser(
+        openSpaces: MutableSet<OpenSpace> = mutableSetOf(),
+        talks: MutableSet<Talk> = mutableSetOf()
+    ): User {
         val user = User("augusto@sos.sos", "augusto", "Augusto")
         openSpaces.forEach { user.addOpenSpace(it) }
         return user
@@ -197,7 +212,11 @@ class OpenSpaceTest {
             name = "os", rooms = mutableSetOf(), slots = mutableSetOf(),
             talks = mutableSetOf(aTalk), tracks = mutableSetOf(track)
         )
-        openSpace.updateTracksAndAssociatedTalks(mutableSetOf(), mutableSetOf(track), mutableListOf(aTalk))
+        openSpace.updateTracksAndAssociatedTalks(
+            mutableSetOf(),
+            mutableSetOf(track),
+            mutableListOf(aTalk)
+        )
 
         assertEquals(0, openSpace.tracks.size)
         assertEquals(null, openSpace.talks.first().track)
@@ -236,7 +255,12 @@ class OpenSpaceTest {
         val aTalk = Talk("Talk", speaker = organizer)
         val aSlot = TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now())
         val aRoom = Room("Sala")
-        val openSpace = anOpenSpaceWith(organizer = organizer, talk = aTalk, slots = setOf(aSlot), rooms = setOf(aRoom))
+        val openSpace = anOpenSpaceWith(
+            organizer = organizer,
+            talk = aTalk,
+            slots = setOf(aSlot),
+            rooms = setOf(aRoom)
+        )
         createAndScheduleTalk(openSpace, organizer, aTalk, aSlot, aRoom)
 
         openSpace.removeTalk(aTalk)
@@ -250,7 +274,12 @@ class OpenSpaceTest {
         val aTalk = Talk("Talk", speaker = organizer)
         val aSlot = TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now())
         val aRoom = Room("Sala")
-        val openSpace = anOpenSpaceWith(organizer = organizer, talk = aTalk, slots = setOf(aSlot), rooms = setOf(aRoom))
+        val openSpace = anOpenSpaceWith(
+            organizer = organizer,
+            talk = aTalk,
+            slots = setOf(aSlot),
+            rooms = setOf(aRoom)
+        )
         createAndEnqueueTalk(openSpace, organizer, aTalk)
 
         openSpace.removeTalk(aTalk)
@@ -264,7 +293,12 @@ class OpenSpaceTest {
         val aTalk = Talk("Talk", speaker = organizer)
         val aSlot = TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now())
         val aRoom = Room("Sala")
-        val openSpace = anOpenSpaceWith(organizer = organizer, talk = aTalk, slots = setOf(aSlot), rooms = setOf(aRoom))
+        val openSpace = anOpenSpaceWith(
+            organizer = organizer,
+            talk = aTalk,
+            slots = setOf(aSlot),
+            rooms = setOf(aRoom)
+        )
         createATalkThatIsToBeScheduled(openSpace, organizer, aTalk)
 
         openSpace.removeTalk(aTalk)
@@ -341,6 +375,20 @@ class OpenSpaceTest {
         }
     }
 
+    @Test
+    fun `test toString`() {
+        val organizer = anyUser()
+        val openSpace = anyOpenSpaceWith(organizer)
+
+        val expectedStr = "OpenSpace(assignedSlots=[], description=, id=0, isActiveCallForPapers=false, isActiveVoting=false, " +
+                "name=os, organizer=User(email=augusto@sos.sos, id=0, name=augusto, password=***, resetToken=***, " +
+                "resetTokenLifetime=***), queue=[], queueState=PENDING, rooms=[], showSpeakerName=true, " +
+                "slots=[TalkSlot(date=2007-12-03, endTime=10:00, id=0, startTime=09:00), TalkSlot(date=2007-12-03, " +
+                "endTime=11:00, id=0, startTime=10:00), TalkSlot(date=2007-12-03, endTime=12:00, id=0, startTime=11:00)], " +
+                "talks=[], toSchedule=[], tracks=[], urlImage=)"
+        assertEquals(expectedStr, openSpace.toString())
+    }
+
     private fun createAndEnqueueTalk(openSpace: OpenSpace, organizer: User, aTalk: Talk) {
         openSpace.toggleCallForPapers(organizer)
         openSpace.addTalk(aTalk)
@@ -356,7 +404,13 @@ class OpenSpaceTest {
         openSpace.nextTalk(organizer)
     }
 
-    private fun createAndScheduleTalk(openSpace: OpenSpace, organizer: User, aTalk: Talk, aSlot: TalkSlot, aRoom: Room) {
+    private fun createAndScheduleTalk(
+        openSpace: OpenSpace,
+        organizer: User,
+        aTalk: Talk,
+        aSlot: TalkSlot,
+        aRoom: Room
+    ) {
         openSpace.toggleCallForPapers(organizer)
         openSpace.addTalk(aTalk)
         openSpace.scheduleTalk(aTalk, organizer, aSlot, aRoom)
@@ -369,7 +423,9 @@ class OpenSpaceTest {
         val first_date_slot = TalkSlot(LocalTime.of(9, 0), LocalTime.of(10, 0), startDate)
         val end_date_slot = TalkSlot(LocalTime.of(9, 0), LocalTime.of(10, 0), endDate)
         val openSpace = OpenSpace(
-            name = "os", rooms = mutableSetOf(), slots = mutableSetOf(first_date_slot, end_date_slot),
+            name = "os",
+            rooms = mutableSetOf(),
+            slots = mutableSetOf(first_date_slot, end_date_slot),
             talks = mutableSetOf()
         )
         return openSpace

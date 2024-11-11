@@ -21,3 +21,12 @@ docker build -t smart-open-space
 ```bash
 docker-compose -p 'tesis' up -d --build
 ```
+
+4. Available services:
+
+- Backend app server: `localhost:8080` (example: [ping url](http://localhost:8080/ping))
+- Frontend app server: `not-available-by-now`
+- Postgresql db: `localhost:6543`
+- [Pgadmin](http://localhost:8888): `localhost:8888`
+    - email: postgres@asd.com
+    - password: postgres

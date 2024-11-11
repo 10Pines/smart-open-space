@@ -10,6 +10,7 @@ const Input = ({
   onChange,
   icon,
   multiline,
+  resize = 'vertical',
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -57,6 +58,7 @@ const Input = ({
         }}
         icon={icon}
         reverse
+        resize={multiline ? resize : undefined}
         {...props}
       />
     </Box>

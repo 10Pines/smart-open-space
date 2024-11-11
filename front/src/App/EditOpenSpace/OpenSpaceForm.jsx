@@ -131,6 +131,8 @@ export const OpenSpaceForm = ({
   title,
   initialValues = emptyOpenSpace,
 }) => {
+  const [name, setName] = useState(initialValues.name);
+
   const [showInputSlot, setShowInputSlot] = useState(null);
   const [availableDates, setAvailableDates] = useState(
     (initialValues.dates || []).sort(compareAsc)
@@ -173,7 +175,12 @@ export const OpenSpaceForm = ({
         <MainHeader.Title label={title} />
       </MainHeader>
       <Box direction="column" gap="medium">
-        <Input label="Nombre" placeholder="¿Cómo se va a llamar?" />
+        <Input
+          label="Nombre"
+          placeholder="¿Cómo se va a llamar?"
+          value={name}
+          onChange={setName}
+        />
         <Input
           label="Descripción"
           placeholder="Añade una descripción..."
@@ -191,7 +198,7 @@ export const OpenSpaceForm = ({
         <Box gap="medium">
           <Text>Salas</Text>
           <Box direction="row" gap="small">
-            {/* // TODO: Salas Box */}
+            {/* // TODO: RoomsBox */}
             <AddElementBox />
           </Box>
         </Box>
@@ -199,7 +206,7 @@ export const OpenSpaceForm = ({
         <Box gap="medium">
           <Text>Fecha</Text>
           <Box direction="row" gap="small">
-            {/* // TODO: Fechas Box */}
+            {/* // TODO: DateTimeBox */}
             <AddElementBox />
           </Box>
         </Box>

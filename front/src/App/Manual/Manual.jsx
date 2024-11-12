@@ -6,9 +6,16 @@ import {useEffect, useState} from "react";
 
 const Manual = () => {
   const [activeSection, setActiveSection] = useState(null);
+  const subSections = {
+    "ejes-tematicos": "Ejes temáticos",
+    "salas": "Salas",
+    "grilla-horaria": "Grilla horaria",
+    "slot-charla": "Slot charla",
+    "slot-miscelaneo": "Slot miscelaneo",
+  }
 
   useEffect(() => {
-    const sections = document.querySelectorAll('#ejes-tematicos, #salas, #grilla-horaria, #slot-charla, #slot-miscelaneo');
+    const sections = document.querySelectorAll(Object.keys(subSections).map(key => `#${key}`).join(", "));
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -52,31 +59,13 @@ const Manual = () => {
           >
             <Heading level={3}>Índice</Heading>
             <Box direction="column" gap="small">
-              <Anchor
-                onClick={(e) => scrollToSection(e, 'ejes-tematicos')}
-                color={activeSection === 'ejes-tematicos' ? 'dark-1' : 'dark-4'}
-                label="Ejes temáticos"
-              />
-              <Anchor
-                onClick={(e) => scrollToSection(e, 'salas')}
-                color={activeSection === 'salas' ? 'dark-1' : 'dark-4'}
-                label="Salas"
-              />
-              <Anchor
-                onClick={(e) => scrollToSection(e, 'grilla-horaria')}
-                color={activeSection === 'grilla-horaria' ? 'dark-1' : 'dark-4'}
-                label="Grilla horaria"
-              />
-              <Anchor
-                onClick={(e) => scrollToSection(e, 'slot-charla')}
-                color={activeSection === 'slot-charla' ? 'dark-1' : 'dark-4'}
-                label="Slot de charla"
-              />
-              <Anchor
-                onClick={(e) => scrollToSection(e, 'slot-miscelaneo')}
-                color={activeSection === 'slot-miscelaneo' ? 'dark-1' : 'dark-4'}
-                label="Slot miscelaneo"
-              />
+              { Object.entries(subSections).map(([section, label]) => (
+                <Anchor
+                  onClick={(e) => scrollToSection(e, section)}
+                  color={activeSection === section ? 'dark-1' : 'dark-4'}
+                  label={label}
+                />
+              ))}
             </Box>
           </Box>
 

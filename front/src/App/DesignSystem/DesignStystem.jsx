@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Text } from 'grommet';
+import React, {useState} from 'react';
+import {Box, DateInput, Text} from 'grommet';
 import {
   AddIcon,
   ChatIcon,
@@ -15,12 +15,15 @@ import Input from '../components/atom/Input.jsx';
 import Button from '../components/atom/Button.jsx';
 import { FormSearch, View } from 'grommet-icons';
 import SelectDropdown from '../components/atom/SelectDropdown.jsx';
+import ColorPicker from "../components/atom/ColorPicker.jsx";
 import SocialNetworkButton from '../components/atom/SocialNetworkButton';
 import IconButton from '../components/atom/IconButton';
 import AddElementBox from '../components/molecule/AddElementBox.jsx';
 import DateTimeIndicator from '../components/atom/DateTimeIndicator.jsx';
+import DateTimePicker from "../components/atom/DateTimePicker.jsx";
 import Card from '../components/molecule/Card.jsx';
-import TimeCard from '../components/molecule/TimeCard.jsx';
+import TimeCard from "../components/molecule/TimeCard.jsx";
+import DateTimeForm from "../components/molecule/DateTimeForm.jsx";
 
 const DesignSystem = () => {
   const DesignSystemSection = ({ title, children }) => (
@@ -117,20 +120,26 @@ const DesignSystem = () => {
     </Box>
   );
 
-  const DSComponents = () => (
-    <Box direction="column" gap="medium">
-      <Text>Add Element Box:</Text>
-      <Box direction="row" gap="medium">
-        <AddElementBox />
-        <AddElementBox size="100px" />
-        <AddElementBox
-          size={{
-            width: '150px',
-            height: '220px',
-          }}
-          onClick={() => console.log('Clicked')}
-        />
-      </Box>
+  const DSComponents = () => {
+      const [selectedDate, setSelectedDate] = useState();
+      const [selectedDate2, setSelectedDate2] = useState();
+      const [selectedDate3, setSelectedDate3] = useState();
+      const backgroundColor = "#3F8880";
+
+      return (
+          <Box direction="column" gap="medium">
+              <Text>Add Element Box:</Text>
+              <Box direction="row" gap="medium">
+                  <AddElementBox/>
+                  <AddElementBox size="100px"/>
+                  <AddElementBox
+                      size={{
+                          width: '150px',
+                          height: '220px',
+                      }}
+                      onClick={() => console.log('Clicked')}
+                  />
+              </Box>
 
       <Text>Date Time Indicator:</Text>
       <Box direction="row" gap="medium">
@@ -224,14 +233,33 @@ const DesignSystem = () => {
           showVotes
         />
       </Box>
-    </Box>
-  );
 
-  const DSColors = () => (
-    <Box direction="row" gap="small">
-      {/* Colores */}
+              <Text>Date Time Picker:</Text>
+              <DateTimePicker onChange={(newDate) => {setSelectedDate(newDate)}} value={selectedDate} primary={false}/>
+
+      <Box style={{backgroundColor: backgroundColor}} width={'500px'} height={'100px'} align={'center'} justify={'center'}>
+          <DateTimePicker onChange={(newDate)=>{setSelectedDate2(newDate)}} value={selectedDate2} primary={true}/>
+      </Box>
+
+              <Text>Date Time Form:</Text>
+                <DateTimeForm title={"Día 1"} onChange={(newDate)=>{setSelectedDate3(newDate)}} value={selectedDate3}/>
     </Box>
-  );
+  )};
+
+    const DSColors = () => {
+        const [selectedColor, setSelectedColor] = useState(undefined);
+
+        return (
+            <Box direction="column" gap="small">
+                <ColorPicker value={selectedColor} onChange={setSelectedColor} />
+                {selectedColor ?
+                    <Text>El color elegido es <Text color={selectedColor}>{selectedColor}</Text></Text>
+                    :
+                    <Text>No hay color elegido todavía</Text>
+                }
+            </Box>
+        );
+    };
 
   const DSTypography = () => (
     <Box direction="row" gap="small">

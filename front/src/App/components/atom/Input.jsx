@@ -11,17 +11,19 @@ const Input = ({
   icon,
   multiline,
   resize = 'vertical',
+  primary = true,
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
-  const Input = multiline ? TextArea : TextInput;
+  const InputComponent = multiline ? TextArea : TextInput;
 
   return (
     <Box
       style={{
         position: 'relative',
         width: '100%',
+        display: 'inline-block',
       }}
     >
       {label && (
@@ -31,8 +33,20 @@ const Input = ({
             top: isFocused || value ? '0px' : !multiline ? '50%' : '24px',
             left: '16px',
             fontSize: isFocused || value ? '0.75rem' : '1rem',
-            color: isFocused || value ? customTheme.global.colors.primary.light : '#666',
-            backgroundColor: isFocused || value ? 'white' : 'transparent',
+            color:
+              isFocused || value
+                ? primary
+                  ? customTheme.global.colors.primary.light
+                  : 'white'
+                : primary
+                ? '#666'
+                : 'lightgrey',
+            backgroundColor:
+              isFocused || value
+                ? primary
+                  ? 'white'
+                  : customTheme.global.colors.primary.light
+                : 'transparent',
             padding: isFocused || value ? '0 4px' : '0',
             transform: isFocused || value ? 'translateY(-50%)' : 'translateY(-50%)',
             transition: '0.2s ease all',
@@ -43,7 +57,7 @@ const Input = ({
           {label}
         </label>
       )}
-      <Input
+      <InputComponent
         placeholder={!isFocused && label ? '' : placeholder}
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -52,8 +66,13 @@ const Input = ({
         fill
         style={{
           width: '100%',
-          border: `1px solid ${customTheme.global.colors.primary.light}`,
+          border: `1px solid ${
+            primary
+              ? customTheme.global.colors.primary.light
+              : customTheme.global.colors.background.light
+          }`,
           padding: '12px 16px',
+          color: primary ? 'inherit' : 'white',
           ...globalStyles.meera,
         }}
         icon={icon}

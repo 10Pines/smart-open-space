@@ -1,5 +1,6 @@
 package com.sos.smartopenspace.domain
 
+import com.sos.smartopenspace.util.toStringByReflex
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -21,4 +22,9 @@ class Document(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   override val id: Long = 0
-) : UpdatableItemCollection
+) : UpdatableItemCollection {
+
+  override fun toString(): String =
+      toStringByReflex(this)
+
+}

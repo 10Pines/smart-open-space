@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.MockMvc
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class BaseControllerTest {
+abstract class BaseControllerTest {
     @Autowired
     protected lateinit var mockMvc: MockMvc
 }

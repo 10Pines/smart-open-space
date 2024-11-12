@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box } from 'grommet';
+import {Box, Button, Text} from 'grommet';
 
 import { activateQueue, deleteOS, finishQueue, useGetOpenSpace } from '#api/os-client';
 import { useQueue } from '#api/sockets-client';
@@ -63,27 +63,38 @@ const OpenSpace = () => {
 
   return (
     <>
-      <Box>
+      { amTheOrganizer && <Box>
         <MainHeader>
           <MainHeader.Title label={`Tablero de control: ${data.name}`} />
         </MainHeader>
         <ControlButtons controlButtons={controlButtons} size={size} withIcons />
-      </Box>
+      </Box> }
 
-      <Box>
-        <MainHeader>
-          <MainHeader.Title label={data.name} />
-          <MainHeader.Description description={data.description} />
-          {data.dates && (
-            <MainHeader.Button
+      <Text as={'h1'}>{data.name}</Text>
+      <Text as={'h2'}>{data.description}</Text>
+      <Box direction={'row-responsive'} gap={'medium'}>
+        {data.dates && (
+          <Button
+            margin={{ top: 'medium' }}
+            color="accent-1"
+            icon={<ScheduleIcon />}
+            label="Agenda"
+            onClick={pushHandlers.pushToSchedule}
+          />
+        )}
+        { user && !amTheOrganizer &&
+          <Button
               margin={{ top: 'medium' }}
               color="accent-1"
-              icon={<ScheduleIcon />}
-              label="Agenda"
-              onClick={pushHandlers.pushToSchedule}
+              label="Mis charlas"
             />
-          )}
-        </MainHeader>
+        }
+        { !user &&
+          <Box direction={'row'} gap={'medium'} style={{marginLeft: '5rem'}}>
+            <Text>Es tu momento para agregar una charla!</Text>
+            <Button label={"Participar"}/>
+          </Box>
+        }
       </Box>
 
       <Box>

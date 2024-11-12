@@ -96,14 +96,14 @@ const Header = () => {
   const pushToRoot = usePushToRoot();
   const pushToLogin = usePushToLogin();
   const user = useUser();
-  const inRegister = useInRegister();
+
   return (
     <RowBetween as="header" fill>
       <HomeButton onClick={pushToRoot} />
       {user ? (
         <MyMenu user={user} />
       ) : (
-        inRegister && <Button label="Ingresar" onClick={pushToLogin} />
+        <Button label="Ingresar" onClick={pushToLogin} />
       )}
     </RowBetween>
   );

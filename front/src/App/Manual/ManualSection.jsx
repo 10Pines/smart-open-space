@@ -20,11 +20,19 @@ const ManualSection = ({title, id, children}) => {
 
     return (
         <>
-            <Box direction={'row'}>
-                <Text as={"h2"} size="xlarge" id={id}>{title}</Text>
-                    <Button icon={<LinkIcon />} onClick={ copyToClipboard } />
+            <Box direction={'row'} align={'center'} id={id}>
+              <Text as={"h2"} size="xlarge">{title}</Text>
+              <Button icon={<LinkIcon />} onClick={ copyToClipboard } />
+              { showTooltip &&
+                <Text
+                  color="white"
+                  size="small"
+                  style={{ backgroundColor: "#5cb85c", padding: '4px', borderRadius: '2px' }}
+                >
+                  Copiado!
+                </Text> }
             </Box>
-            <Text size="medium" style={{paddingBottom: '20px'}}>
+            <Text size="medium" style={{paddingBottom: '50px'}}>
                 { children }
             </Text>
         </>

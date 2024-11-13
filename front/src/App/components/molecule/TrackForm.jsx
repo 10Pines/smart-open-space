@@ -19,9 +19,6 @@ const TrackForm = ({
   onChange = (newTrack) => {},
 }) => {
   const { color, name, description } = track;
-  // const [color, setColor] = useState(undefined);
-  // const [name, setName] = useState('');
-  // const [description, setDescription] = useState('');
 
   const setColor = (newColor) => {
     onChange({

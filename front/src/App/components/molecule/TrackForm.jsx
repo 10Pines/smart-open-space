@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import { Box, Card as GrommetCard, Text } from 'grommet';
 import Input from '../atom/Input';
-import customTheme from '#app/theme.js';
 import ColorPicker from '../atom/ColorPicker';
 
 const generateUniqueId = (length = 8, prefix = '') =>
@@ -58,9 +56,21 @@ const TrackForm = ({
       ></Box>
       <Box
         direction={'column'}
-        gap={'12px'}
+        gap={'14px'}
         style={{ padding: '10px 10px 10px 10px', borderRadius: '10px' }}
       >
+        <Input
+          label={'Nombre del Track'}
+          placeholder={'Ingrese el nombre del track'}
+          value={name}
+          onChange={setName}
+        />
+        <Input
+          label={'Descripción'}
+          placeholder={'Describa el track'}
+          value={description}
+          onChange={setDescription}
+        />
         <Box direction="row" gap="medium" align="center">
           <Text
             size="small"
@@ -76,18 +86,6 @@ const TrackForm = ({
             onChange={setColor}
           />
         </Box>
-        <Input
-          label={'Nombre del Track'}
-          placeholder={'Ingrese el nombre del track'}
-          value={name}
-          onChange={setName}
-        />
-        <Input
-          label={'Descripción'}
-          placeholder={'Describa el track'}
-          value={description}
-          onChange={setDescription}
-        />
       </Box>
     </GrommetCard>
   );

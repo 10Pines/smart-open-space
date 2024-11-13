@@ -4,7 +4,7 @@ import IconButton from '../atom/IconButton';
 import { AddIcon } from '#shared/icons';
 import PropTypes from 'prop-types';
 
-const AddElementBox = ({ onClick, size = '200px' }) => {
+const AddElementBox = ({ onClick, size = '200px', ...props }) => {
   const [isHovering, setIsHovering] = React.useState(false);
 
   return (
@@ -20,6 +20,7 @@ const AddElementBox = ({ onClick, size = '200px' }) => {
       onMouseLeave={() => setIsHovering(false)}
       onClick={onClick}
       focusIndicator={false}
+      {...props}
     >
       <IconButton size="small" icon={<AddIcon size="1rem" />} logicHover={isHovering} />
     </Box>

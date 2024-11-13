@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import MainHeader from '#shared/MainHeader';
 import { CalendarIcon, ClockIcon, HomeIcon, TracksIcon } from '#shared/icons';
 import MyForm from '#shared/MyForm';
@@ -17,6 +17,8 @@ import AddElementBox from '../components/molecule/AddElementBox';
 import Button from '../components/atom/Button';
 import useSize from '#helpers/useSize';
 import TrackForm from '../components/molecule/TrackForm';
+import RoomPickerForm from '../components/molecule/RoomPickerForm';
+import DateTimeForm from '../components/molecule/DateTimeForm';
 
 const OTHER_SLOT = 'OtherSlot';
 
@@ -117,6 +119,47 @@ InputSlot.propTypes = {
   type: PropTypes.string.isRequired,
 };
 
+// ------------------------ Carousel --------------------------
+// TODO: Extraer
+
+const Carousel = forwardRef(({ children }, ref) => {
+  const containerRef = useRef();
+
+  useImperativeHandle(ref, () => ({
+    scrollToEnd: () => {
+      if (containerRef.current) {
+        setTimeout(() => {
+          containerRef.current.scrollTo({
+            left: containerRef.current.scrollWidth,
+            behavior: 'smooth',
+          });
+        });
+      }
+    },
+  }));
+
+  return (
+    <Box
+      ref={containerRef}
+      direction="row"
+      gap="medium"
+      overflow={{
+        horizontal: 'auto',
+      }}
+      pad={{
+        vertical: 'xxsmall',
+      }}
+      style={{
+        scrollbarWidth: 'none',
+      }}
+    >
+      {children}
+    </Box>
+  );
+});
+
+// ------------------------ OpenSpaceForm --------------------------
+
 const emptyOpenSpace = {
   name: '',
   description: '',
@@ -127,8 +170,13 @@ const emptyOpenSpace = {
       color: undefined,
     },
   ],
-  rooms: [],
-  dates: [],
+  rooms: [
+    {
+      name: '',
+      link: '',
+    },
+  ],
+  dates: [new Date()],
   slots: [],
 };
 
@@ -139,6 +187,9 @@ export const OpenSpaceForm = ({
   initialValues = emptyOpenSpace,
 }) => {
   const [openSpace, setOpenSpace] = useState(initialValues);
+  const tracks = useRef();
+  const rooms = useRef();
+  const fechas = useRef();
 
   const [showInputSlot, setShowInputSlot] = useState(null);
   const [availableDates, setAvailableDates] = useState(
@@ -180,12 +231,43 @@ export const OpenSpaceForm = ({
     setOpenSpace({ ...openSpace, tracks: newTracks });
   };
 
+  const changeRoom = (room, index) => {
+    const newRooms = [...openSpace.rooms];
+    newRooms[index] = room;
+    setOpenSpace({ ...openSpace, rooms: newRooms });
+  };
+
+  const changeDate = (date, index) => {
+    const newDates = [...openSpace.dates];
+    newDates[index] = date;
+    setOpenSpace({ ...openSpace, dates: newDates });
+  };
+
   const addTrack = () => {
     const newTracks = [
       ...openSpace.tracks,
       { name: '', description: '', color: undefined },
     ];
     setOpenSpace({ ...openSpace, tracks: newTracks });
+    tracks.current.scrollToEnd();
+  };
+
+  const addRoom = () => {
+    const newRooms = [...openSpace.rooms, { name: '', link: '' }];
+    setOpenSpace({ ...openSpace, rooms: newRooms });
+    rooms.current.scrollToEnd();
+  };
+
+  const addDate = () => {
+    const newDates = [...openSpace.dates, new Date()];
+    setOpenSpace({ ...openSpace, dates: newDates });
+    fechas.current.scrollToEnd();
+  };
+
+  const cardsAnimation = {
+    type: 'fadeIn',
+    delay: 1,
+    duration: 800,
   };
 
   if (initialValues === undefined) return <Spinner />;
@@ -212,37 +294,88 @@ export const OpenSpaceForm = ({
         />
         <Box gap="medium">
           <Text>Tracks</Text>
-          <Box direction="row" gap="medium">
+          <Carousel ref={tracks}>
             {openSpace.tracks &&
               openSpace.tracks.map((track, index) => (
                 <TrackForm
+                  key={index}
                   track={track}
                   onChange={(trackChanged) => changeTrack(trackChanged, index)}
+                  width={{
+                    min: '300px',
+                  }}
+                  animation={cardsAnimation}
                 />
               ))}
             <AddElementBox
               size={{
-                height: 'auto',
+                height: openSpace.tracks.length > 0 ? 'auto' : '200px',
                 width: '300px',
               }}
               onClick={addTrack}
+              width={{
+                min: '300px',
+              }}
             />
-          </Box>
+          </Carousel>
         </Box>
 
         <Box gap="medium">
           <Text>Salas</Text>
-          <Box direction="row" gap="small">
-            {/* // TODO: RoomsBox */}
-            <AddElementBox />
-          </Box>
+          <Carousel ref={rooms}>
+            {openSpace.rooms &&
+              openSpace.rooms.map((room, index) => (
+                <RoomPickerForm
+                  key={index}
+                  room={room}
+                  onChange={(roomChanged) => changeRoom(roomChanged, index)}
+                  width={{
+                    min: '300px',
+                  }}
+                  animation={cardsAnimation}
+                />
+              ))}
+            <AddElementBox
+              onClick={addRoom}
+              size={{
+                height: openSpace.rooms.length > 0 ? 'auto' : '200px',
+                width: '300px',
+              }}
+              width={{
+                min: '300px',
+              }}
+            />
+          </Carousel>
         </Box>
 
         <Box gap="medium">
-          <Text>Fecha</Text>
+          <Text>Fecha/s</Text>
           <Box direction="row" gap="small">
             {/* // TODO: DateTimeBox */}
-            <AddElementBox />
+            <Carousel ref={fechas}>
+              {openSpace.dates &&
+                openSpace.dates.map((date, index) => (
+                  <DateTimeForm
+                    key={index}
+                    title={`Día ${index + 1}`}
+                    value={date}
+                    onChange={(dateChanged) => changeDate(dateChanged, index)}
+                    animation={cardsAnimation}
+                    width={{
+                      min: '390px',
+                    }}
+                  />
+                ))}
+              <AddElementBox
+                onClick={addDate}
+                size={{
+                  height: openSpace.rooms.length > 0 ? 'auto' : '200px',
+                }}
+                width={{
+                  min: '390px',
+                }}
+              />
+            </Carousel>
           </Box>
         </Box>
 

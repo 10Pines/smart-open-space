@@ -15,6 +15,7 @@ const TrackForm = ({
     description: '',
   },
   onChange = (newTrack) => {},
+  ...props
 }) => {
   const { color, name, description } = track;
 
@@ -46,6 +47,7 @@ const TrackForm = ({
         width: 'fit-content',
         min: '250px',
       }}
+      {...props}
     >
       <Box
         width={'40px'}

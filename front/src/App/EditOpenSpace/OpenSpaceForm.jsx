@@ -16,6 +16,7 @@ import Input from '../components/atom/Input';
 import AddElementBox from '../components/molecule/AddElementBox';
 import Button from '../components/atom/Button';
 import useSize from '#helpers/useSize';
+import TrackForm from '../components/molecule/TrackForm';
 
 const OTHER_SLOT = 'OtherSlot';
 
@@ -119,10 +120,16 @@ InputSlot.propTypes = {
 const emptyOpenSpace = {
   name: '',
   description: '',
-  dates: [],
+  tracks: [
+    {
+      name: '',
+      description: '',
+      color: undefined,
+    },
+  ],
   rooms: [],
+  dates: [],
   slots: [],
-  tracks: [],
 };
 
 export const OpenSpaceForm = ({
@@ -131,7 +138,7 @@ export const OpenSpaceForm = ({
   title,
   initialValues = emptyOpenSpace,
 }) => {
-  const [name, setName] = useState(initialValues.name);
+  const [openSpace, setOpenSpace] = useState(initialValues);
 
   const [showInputSlot, setShowInputSlot] = useState(null);
   const [availableDates, setAvailableDates] = useState(
@@ -167,6 +174,20 @@ export const OpenSpaceForm = ({
       />
     );
 
+  const changeTrack = (track, index) => {
+    const newTracks = [...openSpace.tracks];
+    newTracks[index] = track;
+    setOpenSpace({ ...openSpace, tracks: newTracks });
+  };
+
+  const addTrack = () => {
+    const newTracks = [
+      ...openSpace.tracks,
+      { name: '', description: '', color: undefined },
+    ];
+    setOpenSpace({ ...openSpace, tracks: newTracks });
+  };
+
   if (initialValues === undefined) return <Spinner />;
 
   return (
@@ -178,20 +199,34 @@ export const OpenSpaceForm = ({
         <Input
           label="Nombre"
           placeholder="¿Cómo se va a llamar?"
-          value={name}
-          onChange={setName}
+          value={openSpace.name}
+          onChange={(name) => setOpenSpace({ ...openSpace, name })}
         />
         <Input
           label="Descripción"
           placeholder="Añade una descripción..."
           multiline
           rows={7}
+          value={openSpace.description}
+          onChange={(description) => setOpenSpace({ ...openSpace, description })}
         />
         <Box gap="medium">
           <Text>Tracks</Text>
-          <Box direction="row" gap="small">
-            {/* // TODO: Tracks Box */}
-            <AddElementBox />
+          <Box direction="row" gap="medium">
+            {openSpace.tracks &&
+              openSpace.tracks.map((track, index) => (
+                <TrackForm
+                  track={track}
+                  onChange={(trackChanged) => changeTrack(trackChanged, index)}
+                />
+              ))}
+            <AddElementBox
+              size={{
+                height: 'auto',
+                width: '300px',
+              }}
+              onClick={addTrack}
+            />
           </Box>
         </Box>
 

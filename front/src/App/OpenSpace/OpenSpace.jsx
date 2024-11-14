@@ -13,7 +13,7 @@ import {
   usePushToRoot,
   usePushToLoginFromOpenSpace,
 } from '#helpers/routes';
-import {ChatIcon, ScheduleIcon} from '#shared/icons';
+import {ChatIcon, EditIcon, ScheduleIcon} from '#shared/icons';
 import MainHeader from '#shared/MainHeader';
 import Spinner from '#shared/Spinner';
 import { QueryForm } from './QueryForm';
@@ -63,15 +63,26 @@ const OpenSpace = () => {
 
   return (
     <>
-      { amTheOrganizer && <Box>
+      { amTheOrganizer && <Box margin={{bottom: "large"}}>
         <MainHeader>
           <MainHeader.Title label={`Tablero de control: ${data.name}`} />
         </MainHeader>
-        <ControlButtons controlButtons={controlButtons} size={size} withIcons />
+        <ControlButtons pushHandlers={pushHandlers} size={size} data={data} apiHandlers={apiHandlers} setData={setData} setShowQuery={setShowQuery}/>
       </Box> }
 
-      <MainHeader.Title label={data.name}/>
+      <MainHeader.Title label={data.name}>
+        {amTheOrganizer && <MainHeader.Button
+          size={"medium"}
+          margin={{ left: 'medium' }}
+          color="accent-5"
+          icon={<EditIcon />}
+          label="Editar"
+          onClick={pushHandlers.pushToEditOS}
+        />}
+      </MainHeader.Title>
+
       {data.description && <MainHeader.Description description={data.description}/>}
+
       <Box direction={'row-responsive'} gap={'medium'} justify={!user ? "between" : undefined} margin={{top: "small", bottom: "small"}}>
         { data.dates && (
           <MainHeader.Button

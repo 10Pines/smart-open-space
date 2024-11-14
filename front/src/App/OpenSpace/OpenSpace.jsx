@@ -48,19 +48,6 @@ const OpenSpace = () => {
     handleActivateQueue: () => activateQueue(data.id).then(setData),
   };
 
-  const controlButtons = getControlButtons({
-    amTheOrganizer,
-    user,
-    queue,
-    setShowQuery,
-    id: data.id,
-    setData,
-    setShowDeleteModal,
-    ...pushHandlers,
-    ...apiHandlers,
-    ...data,
-  });
-
   return (
     <>
       { amTheOrganizer && <Box margin={{bottom: "large"}}>

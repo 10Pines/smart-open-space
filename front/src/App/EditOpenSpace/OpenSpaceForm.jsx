@@ -19,6 +19,7 @@ import useSize from '#helpers/useSize';
 import TrackForm from '../components/molecule/TrackForm';
 import RoomPickerForm from '../components/molecule/RoomPickerForm';
 import DateTimeForm from '../components/molecule/DateTimeForm';
+import Carousel from '../components/molecule/Carousel';
 
 const OTHER_SLOT = 'OtherSlot';
 
@@ -122,41 +123,78 @@ InputSlot.propTypes = {
 // ------------------------ Carousel --------------------------
 // TODO: Extraer
 
-const Carousel = forwardRef(({ children }, ref) => {
-  const containerRef = useRef();
+// const Carousel = forwardRef(({ children }, ref) => {
+//   const containerRef = useRef();
 
-  useImperativeHandle(ref, () => ({
-    scrollToEnd: () => {
-      if (containerRef.current) {
-        setTimeout(() => {
-          containerRef.current.scrollTo({
-            left: containerRef.current.scrollWidth,
-            behavior: 'smooth',
-          });
-        });
-      }
-    },
-  }));
+//   useImperativeHandle(ref, () => ({
+//     scrollToEnd: () => {
+//       if (containerRef.current) {
+//         setTimeout(() => {
+//           containerRef.current.scrollTo({
+//             left: containerRef.current.scrollWidth,
+//             behavior: 'smooth',
+//           });
+//         });
+//       }
+//     },
+//   }));
 
-  return (
-    <Box
-      ref={containerRef}
-      direction="row"
-      gap="medium"
-      overflow={{
-        horizontal: 'auto',
-      }}
-      pad={{
-        vertical: 'xxsmall',
-      }}
-      style={{
-        scrollbarWidth: 'none',
-      }}
-    >
-      {children}
-    </Box>
-  );
-});
+//   // Definir los estilos actualizados para la barra de desplazamiento
+//   const scrollBarStyles = `
+//     .carousel {
+//       scrollbar-width: thin;
+//       scrollbar-color: transparent transparent;
+//     }
+
+//     .carousel::-webkit-scrollbar {
+//       background-color: transparent;
+//       height: 6px; /* Barra más fina */
+//     }
+
+//     .carousel::-webkit-scrollbar-thumb {
+//       background-color: transparent;
+//     }
+
+//     .carousel::-webkit-scrollbar-track {
+//       background: transparent;
+//     }
+
+//     .carousel:hover {
+//       scrollbar-color: rgba(0, 0, 0, 0.1) transparent; /* Gris más claro */
+//     }
+
+//     .carousel:hover::-webkit-scrollbar-thumb {
+//       background-color: rgba(0, 0, 0, 0.1);
+
+//       background-color: #babac0;
+//       border-radius: 16px;
+//     }
+
+//     /* Ocultar las flechitas de desplazamiento */
+//     .carousel::-webkit-scrollbar-button {
+//       display: none;
+//       width: 0;
+//       height: 0;
+//     }
+//   `;
+
+//   return (
+//     <>
+//       {/* Inyectar los estilos directamente en el componente */}
+//       <style>{scrollBarStyles}</style>
+//       <Box
+//         className="carousel"
+//         ref={containerRef}
+//         direction="row"
+//         gap="medium"
+//         overflow={{ horizontal: 'auto' }}
+//         pad={{ vertical: 'xsmall' }}
+//       >
+//         {children}
+//       </Box>
+//     </>
+//   );
+// });
 
 // ------------------------ OpenSpaceForm --------------------------
 
@@ -370,6 +408,7 @@ export const OpenSpaceForm = ({
                 onClick={addDate}
                 size={{
                   height: openSpace.rooms.length > 0 ? 'auto' : '200px',
+                  width: '390px',
                 }}
                 width={{
                   min: '390px',

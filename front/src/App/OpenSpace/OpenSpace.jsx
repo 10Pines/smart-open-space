@@ -13,7 +13,7 @@ import {
   usePushToRoot,
   usePushToLoginFromOpenSpace,
 } from '#helpers/routes';
-import { ScheduleIcon } from '#shared/icons';
+import {ChatIcon, ScheduleIcon} from '#shared/icons';
 import MainHeader from '#shared/MainHeader';
 import Spinner from '#shared/Spinner';
 import { QueryForm } from './QueryForm';
@@ -70,11 +70,11 @@ const OpenSpace = () => {
         <ControlButtons controlButtons={controlButtons} size={size} withIcons />
       </Box> }
 
-      <Text as={'h1'}>{data.name}</Text>
-      <Text as={'h2'}>{data.description}</Text>
-      <Box direction={'row-responsive'} gap={'medium'}>
-        {data.dates && (
-          <Button
+      <MainHeader.Title label={data.name}/>
+      {data.description && <MainHeader.Description description={data.description}/>}
+      <Box direction={'row-responsive'} gap={'medium'} justify={!user ? "between" : undefined} margin={{top: "small", bottom: "small"}}>
+        { data.dates && (
+          <MainHeader.Button
             margin={{ top: 'medium' }}
             color="accent-1"
             icon={<ScheduleIcon />}
@@ -83,16 +83,24 @@ const OpenSpace = () => {
           />
         )}
         { user && !amTheOrganizer &&
-          <Button
-              margin={{ top: 'medium' }}
-              color="accent-1"
-              label="Mis charlas"
-            />
+          <MainHeader.Button
+            margin={{ top: 'medium' }}
+            color="accent-5"
+            icon={<ChatIcon />}
+            label="Mis charlas"
+            onClick={pushHandlers.pushToMyTalks}
+            style={{borderColor:"#7D4CDBFF"}}
+          />
         }
         { !user &&
-          <Box direction={'row'} gap={'medium'} style={{marginLeft: '5rem'}}>
-            <Text>Es tu momento para agregar una charla!</Text>
-            <Button label={"Participar"}/>
+          <Box gap={"xxsmall"} align={'center'}>
+            <Text weight={"bold"}>Es tu oportunidad para hablar de ese tema</Text>
+            <MainHeader.Button
+              color="accent-3"
+              icon={<ChatIcon />}
+              label="Proponé una charla!"
+              onClick={pushHandlers.pushToLogin}
+            />
           </Box>
         }
       </Box>

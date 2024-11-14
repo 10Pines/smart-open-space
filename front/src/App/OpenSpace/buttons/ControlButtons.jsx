@@ -1,6 +1,7 @@
-import React from 'react';
-import { Grid, Box } from 'grommet';
+import React, {useState} from 'react';
+import {Grid, Box, Text} from 'grommet';
 import Button from './Button';
+import Switch from "react-switch";
 
 const ControlButtons = ({ controlButtons, size, withIcons = false }) => {
   const buttonCategories = controlButtons.reduce((acc, button) => {
@@ -24,6 +25,8 @@ const ControlButtons = ({ controlButtons, size, withIcons = false }) => {
     alignItems: 'center',
     justifyContent: 'flex-start',
   };
+  const [handleBiscuitChange, setHandleBiscuitChange] = useState(false);
+  const changeHandleBiscuit = () => {setHandleBiscuitChange(!handleBiscuitChange);};
 
   return (
     <Grid
@@ -34,7 +37,23 @@ const ControlButtons = ({ controlButtons, size, withIcons = false }) => {
       gap="1rem"
       responsive
     >
-      {filteredButtonCategoriesArray.map(({ category, buttons }) => (
+      <Button label={"Gestionar charlas"}/>
+      <Button label={"Gestionar Participantes"}/>
+      <Box direction={"row"} gap="xsmall">
+        <Switch onChange={changeHandleBiscuit} checked={handleBiscuitChange} />
+        <Text>Abrir convocatoria</Text>
+      </Box>
+      <Box direction={"row"} gap="xsmall">
+        <Switch onChange={changeHandleBiscuit} checked={handleBiscuitChange} />
+        <Text>Abrir convocatoria</Text>
+      </Box>
+      <Box direction={"row"} gap="xsmall">
+        <Switch onChange={changeHandleBiscuit} checked={handleBiscuitChange} />
+        <Text>Abrir convocatoria</Text>
+      </Box>
+
+
+      {/*{filteredButtonCategoriesArray.map(({ category, buttons }) => (
         <Box key={category} gap="1rem">
           {buttons.map(({ label, onClick, icon }) => (
             <Button
@@ -46,7 +65,7 @@ const ControlButtons = ({ controlButtons, size, withIcons = false }) => {
             />
           ))}
         </Box>
-      ))}
+      ))}*/}
     </Grid>
   );
 };

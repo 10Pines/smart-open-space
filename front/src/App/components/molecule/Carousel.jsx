@@ -12,7 +12,7 @@ const StyledCarousel = styled(Box)`
   }
 `;
 
-const Carousel = forwardRef(({ children }, ref) => {
+const Carousel = forwardRef(({ children, ...props }, ref) => {
   const containerRef = useRef();
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
@@ -78,7 +78,7 @@ const Carousel = forwardRef(({ children }, ref) => {
   };
 
   return (
-    <Box style={{ position: 'relative' }}>
+    <Box style={{ position: 'relative' }} {...props}>
       <StyledCarousel
         className="carousel"
         ref={containerRef}
@@ -103,6 +103,7 @@ const Carousel = forwardRef(({ children }, ref) => {
           }}
           secondary
           blackAndWhite
+          plain
         />
       )}
       {showRightArrow && (
@@ -118,6 +119,7 @@ const Carousel = forwardRef(({ children }, ref) => {
           }}
           secondary
           blackAndWhite
+          plain
         />
       )}
     </Box>

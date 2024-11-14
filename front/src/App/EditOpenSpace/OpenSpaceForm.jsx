@@ -1,6 +1,13 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import MainHeader from '#shared/MainHeader';
-import { CalendarIcon, ClockIcon, HomeIcon, TracksIcon } from '#shared/icons';
+import {
+  CalendarIcon,
+  ClockIcon,
+  CloseIcon,
+  HomeIcon,
+  TracksIcon,
+  TrashIcon,
+} from '#shared/icons';
 import MyForm from '#shared/MyForm';
 import Tracks from './Tracks';
 import Rooms from './Rooms';
@@ -20,6 +27,7 @@ import TrackForm from '../components/molecule/TrackForm';
 import RoomPickerForm from '../components/molecule/RoomPickerForm';
 import DateTimeForm from '../components/molecule/DateTimeForm';
 import Carousel from '../components/molecule/Carousel';
+import Badge from '../components/molecule/Badge';
 
 const OTHER_SLOT = 'OtherSlot';
 
@@ -224,10 +232,39 @@ export const OpenSpaceForm = ({
     fechas.current.scrollToEnd();
   };
 
+  const removeTrack = (index) => {
+    setOpenSpace({
+      ...openSpace,
+      tracks: openSpace.tracks.filter((_, i) => i !== index),
+    });
+  };
+
+  const removeRoom = (index) => {
+    setOpenSpace({
+      ...openSpace,
+      rooms: openSpace.rooms.filter((_, i) => i !== index),
+    });
+  };
+
+  const removeDate = (index) => {
+    setOpenSpace({
+      ...openSpace,
+      dates: openSpace.dates.filter((_, i) => i !== index),
+    });
+  };
+
   const cardsAnimation = {
     type: 'fadeIn',
     delay: 1,
     duration: 800,
+  };
+
+  const badgeProps = {
+    icon: <CloseIcon size="small" />,
+    position: 'top-right',
+    buttonProps: {
+      size: 'xxsmall',
+    },
   };
 
   if (initialValues === undefined) return <Spinner />;
@@ -257,15 +294,19 @@ export const OpenSpaceForm = ({
           <Carousel ref={tracks}>
             {openSpace.tracks &&
               openSpace.tracks.map((track, index) => (
-                <TrackForm
-                  key={index}
-                  track={track}
-                  onChange={(trackChanged) => changeTrack(trackChanged, index)}
-                  width={{
-                    min: '300px',
-                  }}
+                <Box
+                  style={{ minWidth: '300px', paddingTop: '0.5rem' }}
                   animation={cardsAnimation}
-                />
+                >
+                  <Badge key={index} onClick={() => removeTrack(index)} {...badgeProps}>
+                    <TrackForm
+                      track={track}
+                      onChange={(trackChanged) => changeTrack(trackChanged, index)}
+                      width={{ min: '300px' }}
+                      animation={cardsAnimation}
+                    />
+                  </Badge>
+                </Box>
               ))}
             <AddElementBox
               size={{
@@ -273,9 +314,7 @@ export const OpenSpaceForm = ({
                 width: '300px',
               }}
               onClick={addTrack}
-              width={{
-                min: '300px',
-              }}
+              width={{ min: '300px' }}
             />
           </Carousel>
         </Box>
@@ -285,15 +324,19 @@ export const OpenSpaceForm = ({
           <Carousel ref={rooms}>
             {openSpace.rooms &&
               openSpace.rooms.map((room, index) => (
-                <RoomPickerForm
-                  key={index}
-                  room={room}
-                  onChange={(roomChanged) => changeRoom(roomChanged, index)}
-                  width={{
-                    min: '300px',
-                  }}
+                <Box
+                  style={{ minWidth: '300px', paddingTop: '0.5rem' }}
                   animation={cardsAnimation}
-                />
+                >
+                  <Badge key={index} onClick={() => removeRoom(index)} {...badgeProps}>
+                    <RoomPickerForm
+                      room={room}
+                      onChange={(roomChanged) => changeRoom(roomChanged, index)}
+                      width={{ min: '300px' }}
+                      animation={cardsAnimation}
+                    />
+                  </Badge>
+                </Box>
               ))}
             <AddElementBox
               onClick={addRoom}
@@ -301,9 +344,7 @@ export const OpenSpaceForm = ({
                 height: openSpace.rooms.length > 0 ? 'auto' : '200px',
                 width: '300px',
               }}
-              width={{
-                min: '300px',
-              }}
+              width={{ min: '300px' }}
             />
           </Carousel>
         </Box>
@@ -311,30 +352,29 @@ export const OpenSpaceForm = ({
         <Box gap="medium">
           <Text>Fecha/s</Text>
           <Box direction="row" gap="small">
-            {/* // TODO: DateTimeBox */}
             <Carousel ref={fechas}>
               {openSpace.dates &&
                 openSpace.dates.map((date, index) => (
-                  <DateTimeForm
-                    key={index}
-                    title={`Día ${index + 1}`}
-                    value={date}
-                    onChange={(dateChanged) => changeDate(dateChanged, index)}
+                  <Box
+                    style={{ minWidth: '390px', paddingTop: '0.5rem' }}
                     animation={cardsAnimation}
-                    width={{
-                      min: '390px',
-                    }}
-                  />
+                  >
+                    <Badge key={index} onClick={() => removeDate(index)} {...badgeProps}>
+                      <DateTimeForm
+                        title={`Día ${index + 1}`}
+                        value={date}
+                        onChange={(dateChanged) => changeDate(dateChanged, index)}
+                      />
+                    </Badge>
+                  </Box>
                 ))}
               <AddElementBox
                 onClick={addDate}
                 size={{
-                  height: openSpace.rooms.length > 0 ? 'auto' : '200px',
+                  height: openSpace.dates.length > 0 ? 'auto' : '200px',
                   width: '390px',
                 }}
-                width={{
-                  min: '390px',
-                }}
+                width={{ min: '390px' }}
               />
             </Carousel>
           </Box>

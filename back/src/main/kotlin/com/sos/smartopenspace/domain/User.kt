@@ -1,6 +1,7 @@
 package com.sos.smartopenspace.domain
 
 import com.google.common.hash.Hashing
+import com.sos.smartopenspace.util.toStringByReflex
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -13,55 +14,58 @@ import jakarta.validation.constraints.NotEmpty
 
 @Entity(name = "Users")
 class User(
-  @field:NotEmpty(message = "Ingrese un email")
-  @field:Email
-  @Column(unique = true)
-  val email: String,
+    @field:NotEmpty(message = "Ingrese un email")
+    @field:Email
+    @Column(unique = true)
+    val email: String,
 
-  @field:NotEmpty(message = "Ingrese un nombre")
-  @field:NotBlank(message = "Nombre no puede ser vacío")
-  val name: String,
+    @field:NotEmpty(message = "Ingrese un nombre")
+    @field:NotBlank(message = "Nombre no puede ser vacío")
+    val name: String,
 
-  @field:NotEmpty(message = "Ingrese una contraseña")
-  @field:NotBlank(message = "Contraseña no puede ser vacía")
-  var password: String = "",
+    @field:NotEmpty(message = "Ingrese una contraseña")
+    @field:NotBlank(message = "Contraseña no puede ser vacía")
+    var password: String = "",
 
-  var resetToken: String? = null,
+    var resetToken: String? = null,
 
-  var resetTokenLifetime: Long? = null,
+    var resetTokenLifetime: Long? = null,
 
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-  var id: Long = 0
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0
 ) {
 
-  fun addOpenSpace(openSpace: OpenSpace): User {
-    openSpace.organizer = this
-    return this
-  }
+    override fun toString(): String =
+        toStringByReflex(this, mask = listOf("password", "resetToken", "resetTokenLifetime"))
 
-  fun checkOwnershipOf(openSpace: OpenSpace) {
-    if (this != openSpace.organizer)
-      throw UserNotOwnerOfOpenSpaceException()
-  }
+    fun addOpenSpace(openSpace: OpenSpace): User {
+        openSpace.organizer = this
+        return this
+    }
 
-  fun checkOwnershipOf(talk: Talk) {
-    if (!isOwnerOf(talk))
-      throw UserNotOwnerOfTalkException()
-  }
+    fun checkOwnershipOf(openSpace: OpenSpace) {
+        if (this != openSpace.organizer)
+            throw UserNotOwnerOfOpenSpaceException()
+    }
 
-  fun isOwnerOf(talk: Talk) = this.id == talk.speaker.id
+    fun checkOwnershipOf(talk: Talk) {
+        if (!isOwnerOf(talk))
+            throw UserNotOwnerOfTalkException()
+    }
 
-  fun secureResetToken(resetToken: String, lifetime: Long) {
-    this.resetToken = secureField(resetToken)
-    this.resetTokenLifetime = System.currentTimeMillis() + lifetime
-  }
+    fun isOwnerOf(talk: Talk) = this.id == talk.speaker.id
 
-  fun cleanResetToken() {
-    this.resetToken = null
-    this.resetTokenLifetime = null
-  }
+    fun secureResetToken(resetToken: String, lifetime: Long) {
+        this.resetToken = secureField(resetToken)
+        this.resetTokenLifetime = System.currentTimeMillis() + lifetime
+    }
 
-  private fun secureField(field: String) = Hashing.sha256()
-    .hashString(field, StandardCharsets.UTF_8)
-    .toString()
+    fun cleanResetToken() {
+        this.resetToken = null
+        this.resetTokenLifetime = null
+    }
+
+    private fun secureField(field: String) = Hashing.sha256()
+        .hashString(field, StandardCharsets.UTF_8)
+        .toString()
 }

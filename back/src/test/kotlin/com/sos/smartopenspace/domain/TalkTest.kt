@@ -2,7 +2,8 @@ package com.sos.smartopenspace.domain
 
 import com.sos.smartopenspace.aUser
 import com.sos.smartopenspace.anOpenSpace
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -18,7 +19,7 @@ class TalkTest {
     val aTrack = Track("a track name", color = "#FFFFFF")
 
 
-    assertThrows< NotValidTrackForOpenSpaceException > {
+    assertThrows<NotValidTrackForOpenSpaceException> {
       aTalk.update(name = aTalk.name, description = aTalk.description, track = aTrack, openSpace = anOpenSpace)
     }
   }
@@ -31,7 +32,17 @@ class TalkTest {
     anOpenSpace.toggleCallForPapers(aUser)
     val aMarketplaceTalk = Talk("Una charla", speaker = aUser, isMarketplaceTalk=true, speakerName = "Braulio")
 
-    Assertions.assertEquals("Braulio", aMarketplaceTalk.speakerName)
-    Assertions.assertNotNull(aMarketplaceTalk.isMarketplaceTalk)
+    assertEquals("Braulio", aMarketplaceTalk.speakerName)
+    assertNotNull(aMarketplaceTalk.isMarketplaceTalk)
+  }
+
+  @Test
+  fun `test toString`() {
+    val aUser = aUser()
+    val aTalk = Talk("Una charla", speaker = aUser)
+    val expectedRes = "Talk(description=, documents=[], id=0, isMarketplaceTalk=false, meetingLink=null, " +
+            "name=Una charla, reviews=[], speaker=User(email=apprentices@sos.sos, id=0, name=apprentices, " +
+            "password=***, resetToken=***, resetTokenLifetime=***), speakerName=null, track=null, votingUsers=[])"
+    assertEquals(expectedRes, aTalk.toString())
   }
 }

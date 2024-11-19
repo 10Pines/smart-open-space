@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Box, Button, Text} from 'grommet';
+import {Box, Button, Text, Tip} from 'grommet';
 
 import { activateQueue, deleteOS, finishQueue, useGetOpenSpace } from '#api/os-client';
 import { useQueue } from '#api/sockets-client';
@@ -13,13 +13,12 @@ import {
   usePushToRoot,
   usePushToLoginFromOpenSpace,
 } from '#helpers/routes';
-import {ChatIcon, EditIcon, ScheduleIcon} from '#shared/icons';
+import {ChatIcon, DeleteIcon, EditIcon, ScheduleIcon} from '#shared/icons';
 import MainHeader from '#shared/MainHeader';
 import Spinner from '#shared/Spinner';
 import { QueryForm } from './QueryForm';
 import { DisplayTalks } from './DisplayTalks';
 import useSize from '#helpers/useSize';
-import { getControlButtons } from '#helpers/getControlButtons';
 import ControlButtons from './buttons/ControlButtons';
 import ConfirmationDialog from '#shared/ConfirmationDialog';
 
@@ -52,20 +51,34 @@ const OpenSpace = () => {
     <>
       { amTheOrganizer && <Box margin={{bottom: "large"}}>
         <MainHeader>
-          <MainHeader.Title label={`Tablero de control: ${data.name}`} />
+          <MainHeader.Title label={"Tablero de control"} />
         </MainHeader>
         <ControlButtons pushHandlers={pushHandlers} size={size} data={data} apiHandlers={apiHandlers} setData={setData} setShowQuery={setShowQuery}/>
       </Box> }
 
       <MainHeader.Title label={data.name}>
-        {amTheOrganizer && <MainHeader.Button
-          size={"medium"}
-          margin={{ left: 'medium' }}
-          color="accent-5"
-          icon={<EditIcon />}
-          label="Editar"
-          onClick={pushHandlers.pushToEditOS}
-        />}
+        {amTheOrganizer &&
+          <Box direction={"row"}>
+            <Tip content={"Editar"}>
+              <Button
+                size={"medium"}
+                margin={{ left: 'medium' }}
+                color="accent-5"
+                icon={<EditIcon />}
+                onClick={pushHandlers.pushToEditOS}
+                />
+            </Tip>
+            <Tip content={"Eliminar"}>
+              <Button
+                size={"medium"}
+                margin={{ left: 'medium' }}
+                color="accent-5"
+                icon={<DeleteIcon />}
+                onClick={() => setShowDeleteModal(true)}
+              />
+            </Tip>
+          </Box>
+        }
       </MainHeader.Title>
 
       {data.description && <MainHeader.Description description={data.description}/>}
@@ -105,7 +118,6 @@ const OpenSpace = () => {
 
       <Box>
         <MainHeader.Tracks tracks={data.tracks} />
-        {data.finishedQueue && <MainHeader.SubTitle label="Marketplace finalizado" />}
       </Box>
 
       <Box margin={{ bottom: 'medium' }}>
@@ -132,6 +144,8 @@ const OpenSpace = () => {
         message="¿Estás seguro de que deseas eliminar la convocatoria?"
         onConfirm={() => deleteOS(data.id).then(() => pushHandlers.pushToRoot())}
         onCancel={() => setShowDeleteModal(false)}
+        buttonLabels = {{ confirm: 'Eliminar', cancel: 'Cancelar' }}
+        confirmationButtonProps={{backgroundColor: "#c84b4b", border: "solid 1px #D32F2F", color: "white"}}
       />
     </>
   );

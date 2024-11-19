@@ -49,11 +49,9 @@ const OpenSpace = () => {
 
   return (
     <>
-      { amTheOrganizer && <Box margin={{bottom: "large"}}>
-        <MainHeader>
-          <MainHeader.Title label={"Tablero de control"} />
-        </MainHeader>
-        <ControlButtons pushHandlers={pushHandlers} size={size} data={data} apiHandlers={apiHandlers} setData={setData} setShowQuery={setShowQuery}/>
+      { amTheOrganizer && <Box margin={{bottom: "large", top: "medium"}}>
+        <MainHeader.Title label={"Tablero de control"} />
+        <ControlButtons pushHandlers={pushHandlers} size={size} data={data} apiHandlers={apiHandlers} setData={setData} setShowQuery={setShowQuery} margin={{top: "medium"}}/>
       </Box> }
 
       <MainHeader.Title label={data.name}>

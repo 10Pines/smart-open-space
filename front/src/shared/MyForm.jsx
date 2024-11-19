@@ -171,7 +171,6 @@ const MyForm = ({
           primary
           type="submit"
         />
-        <Button disabled={loading} label={"Eliminar"} onClick={()=>{}} />
       </Footer>
     </Form>
   );

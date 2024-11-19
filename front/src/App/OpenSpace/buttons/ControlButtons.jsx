@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {Grid, Box, Text, Button as GrommetButton, Notification} from 'grommet';
-import Button from './Button';
+import {Grid, Box, Text, Notification, Tip, Button as GrommetButton} from 'grommet';
+import Button from '../../components/atom/Button.jsx';
 import Switch from "react-switch";
 import {startCallForPapers, toggleShowSpeakerName, toggleVoting} from "#api/os-client.js";
 import {TalkIcon, VideoIcon} from "#shared/icons.jsx";
@@ -47,7 +47,7 @@ const ControlButtons = ({ pushHandlers, apiHandlers, data, setData, size, setSho
         <Switch onChange={() => toggleVoting(data.id).then(newData => {
             setData(newData)
             setVisible(true)
-            setNotificationMessage(newData.isActiveVoting ? "Se abrio la votación de charlas" : "Se cerró la votación de charlas")
+            setNotificationMessage(newData.isActiveVoting ? "Se abrió la votación de charlas" : "Se cerró la votación de charlas")
           }
         )} checked={data.isActiveVoting}/>
         <Text>{'Abrir votación'}</Text>
@@ -57,48 +57,52 @@ const ControlButtons = ({ pushHandlers, apiHandlers, data, setData, size, setSho
         <Switch onChange={() => toggleShowSpeakerName(data.id).then(newData => {
           setData(newData)
           setVisible(true)
-          setNotificationMessage(newData.showSpeakerName ? "Se muestra el nombre de los speakers en las charlas" : "No se muestra el nombre de los speakers en las charlas")
+          setNotificationMessage(newData.showSpeakerName ? "Se muestra el nombre de los speakers en las charlas" : "Se ocultó el nombre de los speakers en las charlas")
         })} checked={data.showSpeakerName} />
         <Text>{'Mostrar Speaker'}</Text>
       </Box>
 
-      <Button onClick={pushHandlers.pushToMyTalks} label={"Gestionar charlas"} icon={<TalkIcon/>}/>
+      <Button onClick={pushHandlers.pushToMyTalks} label={"Gestionar charlas"} icon={<TalkIcon/>} style={{width:'20rem'}}/>
 
       <Box direction={"row"} gap="xsmall">
         <Switch onChange={() => {
           startCallForPapers(data.id).then(newData => {
             setData(newData)
             setVisible(true)
-            setNotificationMessage(newData.isActiveCallForPapers ? "Convocatoria abierta" : "Convocatoria cerrada")
+            setNotificationMessage(newData.isActiveCallForPapers ? "Convocatoria abierta para agregar charlas" : "Convocatoria cerrada: no se pueden agregar charlas")
             }
           )
         }} checked={data.isActiveCallForPapers} />
         <Text>Abrir convocatoria</Text>
       </Box>
 
-      <Box direction={"row"} gap="xsmall">
-        <Switch onChange={() =>
-          handleMarketplaceQueueState({
-            pendingQueue: data.pendingQueue,
-            activeQueue: data.activeQueue ,
-            queue: data.queue,
-            setShowQuery,
-            doFinishQueue: apiHandlers.doFinishQueue,
-            handleActivateQueue: apiHandlers.handleActivateQueue,
-          }).then(() =>
-            {
-              setVisible(true)
-              setNotificationMessage(data.activeQueue ? "Se cerró el marketplace" : "Se inició el marketplace" )
-            }
-          )} checked={data.activeQueue} disabled={!data.pendingQueue && !data.activeQueue}/>
-        <Text>{(!data.pendingQueue && !data.activeQueue) ? "Marketplace finalizado" : "Abrir marketplace"}</Text>
-        {data.activeQueue && <GrommetButton onClick={pushHandlers.pushToProjector} size={'small'} label={"Proyector"} icon={<VideoIcon />} margin={{left: 'small'}}/>}
+      <Box direction={"row"} gap="xsmall" align={"center"}>
+        <Tip content={data.finishedQueue ? "El marketplace se puede iniciar una única vez" : ""}>
+          <Box>
+            <Switch onChange={() =>
+              handleMarketplaceQueueState({
+                pendingQueue: data.pendingQueue,
+                activeQueue: data.activeQueue ,
+                queue: data.queue,
+                setShowQuery,
+                doFinishQueue: apiHandlers.doFinishQueue,
+                handleActivateQueue: apiHandlers.handleActivateQueue,
+              }).then(() =>
+                {
+                  setVisible(true)
+                  setNotificationMessage(data.activeQueue ? "Se cerró el marketplace" : "Se inició el marketplace" )
+                }
+              )} checked={data.activeQueue} disabled={data.finishedQueue}/>
+            </Box>
+        </Tip>
+        <Text>{(data.finishedQueue) ? "Marketplace finalizado" : "Abrir marketplace"}</Text>
+        {data.activeQueue && <GrommetButton onClick={pushHandlers.pushToProjector} size={'small'} label={"Proyector"} icon={<VideoIcon />} margin={{left: 'small'}} style={{backgroundColor: "#ffebb4", border: "solid 1px #ffebb4"}}/>}
       </Box>
       {visible && (
         <Notification
           toast
+          time={3000}
           title={notificationMessage}
-          message="descripción"
           onClose={() => setVisible(false)}
         />
       )}

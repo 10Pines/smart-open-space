@@ -56,9 +56,11 @@ export function DisplayTalks({
 
   return (
     <>
-      <Heading color="gray" size="sm">
-        Sin track
-      </Heading>
+      { talks.length > 0 &&
+        <Heading color="gray" size="sm">
+          Sin track
+        </Heading>
+      }
       <TalksGrid
         talks={talks}
         reloadTalks={reloadTalks}

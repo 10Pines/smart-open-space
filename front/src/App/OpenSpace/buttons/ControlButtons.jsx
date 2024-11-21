@@ -50,7 +50,7 @@ const ControlButtons = ({ pushHandlers, apiHandlers, data, setData, setShowQuery
           }
           )}
           checked={data.isActiveVoting}
-          text={'Abrir votación'}
+          text={'Votación abierta'}
         />
 
         <ControlSwitch
@@ -60,7 +60,7 @@ const ControlButtons = ({ pushHandlers, apiHandlers, data, setData, setShowQuery
             setNotificationMessage(newData.showSpeakerName ? "Se muestra el nombre de los speakers en las charlas" : "Se ocultó el nombre de los speakers en las charlas")
           })}
           checked={data.showSpeakerName}
-          text={'Mostrar Speaker'}
+          text={'Se muestran speakers'}
           />
       </Box>
 
@@ -70,12 +70,12 @@ const ControlButtons = ({ pushHandlers, apiHandlers, data, setData, setShowQuery
             startCallForPapers(data.id).then(newData => {
                 setData(newData)
                 setVisible(true)
-                setNotificationMessage(newData.isActiveCallForPapers ? "Convocatoria abierta para agregar charlas" : "Convocatoria cerrada: no se pueden agregar charlas")
+                setNotificationMessage(newData.isActiveCallForPapers ? "Convocatoria abierta para proponer charlas" : "Convocatoria cerrada: no se pueden proponer charlas")
               }
             )
           }}
           checked={data.isActiveCallForPapers}
-          text={"Abrir convocatoria"}
+          text={"Convocatoria de charlas abierta"}
         />
 
         <MarketPlaceSwitch

@@ -12,7 +12,7 @@ const MarketPlaceSwitch = ({ onChange, checked, disabled, activeQueue, finishedQ
           <Switch onChange={onChange} checked={checked} disabled={disabled}/>
         </Box>
       </Tip>
-      <Text>{"Abrir marketplace"}</Text>
+      <Text>{"Marketplace abierto"}</Text>
       <Tip content={"Proyector"}>
         {activeQueue && <GrommetButton onClick={pushToProjector} size={"2rem"} icon={<VideoIcon size={"1.5rem"}/>} margin={{left: 'small'}} style={{
           backgroundColor: "#ffebb4",

@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import Title from '#shared/Title';
 import Detail from '#shared/Detail';
 import Spinner from '#shared/Spinner';
-import { compareAsc } from 'date-fns';
+import { compareAsc, set } from 'date-fns';
 import Input from '../components/atom/Input';
 import AddElementBox from '../components/molecule/AddElementBox';
 import Button from '../components/atom/Button';
@@ -77,6 +77,7 @@ InputTime.propTypes = {
 const timeRegex = /^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$/;
 const validateTime = (time) => !timeRegex.test(time) && 'Hora inválida';
 const newHour = (time) => new Date().setHours(...time.split(':'));
+const datePlusOneDay = (date) => new Date(date.getTime() + 24 * 60 * 60 * 1000);
 
 const InputSlot = ({ onExit, onSubmit, type, start }) => {
   const [startTime, setStartTime] = useState();
@@ -160,10 +161,13 @@ export const OpenSpaceForm = ({
   const fechas = useRef();
 
   const [showInputSlot, setShowInputSlot] = useState(null);
-  const [availableDates, setAvailableDates] = useState(
-    (initialValues.dates || []).sort(compareAsc)
-  );
-  const [deletedDate, setDeletedDate] = useState();
+  // const [availableDates, setAvailableDates] = useState(
+  //   (initialValues.dates || []).sort(compareAsc)
+  // );
+  const [deletedDate, setDeletedDate] = useState({
+    date: null,
+    index: -1,
+  });
   const isSmall = useSize() === 'small';
 
   const isRepeatedTrack = (tracks, track) =>
@@ -172,11 +176,15 @@ export const OpenSpaceForm = ({
   const hasTracksWithRepeatedName = (tracks) =>
     tracks.some((eachTrack) => isRepeatedTrack(tracks, eachTrack));
 
-  const checkSubmit = (value) => {
-    if (value.dates.length > 0 && value.slots.length == 0) {
-      alert('Si agregaste una fecha, tenés que agregar slots');
+  const validate = () => {
+    return true;
+  };
+
+  const checkSubmit = () => {
+    if (!validate()) {
+      alert('Hay errores en el formulario');
     } else {
-      onSubmit({ value });
+      onSubmit({ value: openSpace });
     }
   };
 
@@ -184,6 +192,7 @@ export const OpenSpaceForm = ({
     mustShow !== null && (
       <InputSlot
         onExit={() => setShowInputSlot(null)}
+        mustShow
         onSubmit={(data) => {
           showInputSlot.onSubmitSlot(data);
           setShowInputSlot(null);
@@ -208,6 +217,11 @@ export const OpenSpaceForm = ({
   const changeDate = (date, index) => {
     const newDates = [...openSpace.dates];
     newDates[index] = date;
+    for (let i = index + 1; i < newDates.length; i++) {
+      if (compareAsc(newDates[i], newDates[i - 1]) <= 0) {
+        newDates[i] = datePlusOneDay(new Date(newDates[i - 1].getTime()));
+      }
+    }
     setOpenSpace({ ...openSpace, dates: newDates });
   };
 
@@ -227,7 +241,14 @@ export const OpenSpaceForm = ({
   };
 
   const addDate = () => {
-    const newDates = [...openSpace.dates, new Date()];
+    const newDate =
+      openSpace.dates.length > 0
+        ? new Date(
+            openSpace.dates[openSpace.dates.length - 1].getTime() + 24 * 60 * 60 * 1000
+          )
+        : new Date();
+
+    const newDates = [...openSpace.dates, newDate];
     setOpenSpace({ ...openSpace, dates: newDates });
     fechas.current.scrollToEnd();
   };
@@ -247,6 +268,7 @@ export const OpenSpaceForm = ({
   };
 
   const removeDate = (index) => {
+    setDeletedDate({ date: openSpace.dates[index], index });
     setOpenSpace({
       ...openSpace,
       dates: openSpace.dates.filter((_, i) => i !== index),
@@ -310,7 +332,7 @@ export const OpenSpaceForm = ({
               ))}
             <AddElementBox
               size={{
-                height: openSpace.tracks.length > 0 ? 'auto' : '200px',
+                height: openSpace.tracks.length > 0 ? 'auto' : '167px',
                 width: '300px',
               }}
               onClick={addTrack}
@@ -341,7 +363,7 @@ export const OpenSpaceForm = ({
             <AddElementBox
               onClick={addRoom}
               size={{
-                height: openSpace.rooms.length > 0 ? 'auto' : '200px',
+                height: openSpace.rooms.length > 0 ? 'auto' : '146px',
                 width: '300px',
               }}
               width={{ min: '300px' }}
@@ -364,6 +386,9 @@ export const OpenSpaceForm = ({
                         title={`Día ${index + 1}`}
                         value={date}
                         onChange={(dateChanged) => changeDate(dateChanged, index)}
+                        minDate={
+                          index !== 0 ? datePlusOneDay(openSpace.dates[index - 1]) : null
+                        }
                       />
                     </Badge>
                   </Box>
@@ -371,7 +396,7 @@ export const OpenSpaceForm = ({
               <AddElementBox
                 onClick={addDate}
                 size={{
-                  height: openSpace.dates.length > 0 ? 'auto' : '200px',
+                  height: openSpace.dates.length > 0 ? 'auto' : '138px',
                   width: '390px',
                 }}
                 width={{ min: '390px' }}
@@ -383,7 +408,17 @@ export const OpenSpaceForm = ({
         <Box gap="medium">
           <Text>Grilla Horaria</Text>
           {/* // TODO: Add grilla horaria */}
-          Aca iria la grilla horaria
+          <TimeSelector
+            value={openSpace.slots}
+            onChange={({ value: slots }) => {
+              setOpenSpace({ ...openSpace, slots });
+            }}
+            onNewSlot={(type, start, onSubmitSlot) => {
+              setShowInputSlot({ onSubmitSlot, start, type });
+            }}
+            dates={openSpace.dates}
+            deletedDate={deletedDate}
+          />
         </Box>
 
         <Box
@@ -397,8 +432,12 @@ export const OpenSpaceForm = ({
             top: 'medium',
           }}
         >
-          <Button primary>Aceptar</Button>
-          <Button secondary>Cancelar</Button>
+          <Button primary onClick={checkSubmit}>
+            Aceptar
+          </Button>
+          <Button secondary onClick={history.goBack}>
+            Cancelar
+          </Button>
         </Box>
       </Box>
       {renderSlotInput(showInputSlot)}

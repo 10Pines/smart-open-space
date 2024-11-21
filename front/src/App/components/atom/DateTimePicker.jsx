@@ -6,13 +6,21 @@ import customTheme from "#app/theme.js";
 
 const getNextYear = () => new Date(new Date().setFullYear(new Date().getFullYear() + 1));
 
-const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, label = "Fecha", ...props }) => {
+const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, label = "Fecha", minDate = null, maxDate = null, ...props }) => {
     const [open, setOpen] = useState(false);
 
     const onSelect = (nextDate) => {
+        const selectedDate = new Date(nextDate);
+        if (
+            (minDate && selectedDate < new Date(minDate)) ||
+            (maxDate && selectedDate > new Date(maxDate))
+        ) {
+            return;
+        }
         onChange(nextDate);
         setOpen(false);
     };
+
     const primaryColor = customTheme.global.colors.primary.light;
 
     return (
@@ -44,7 +52,10 @@ const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, l
             <DropButton
                 dropContent={
                     <Calendar
-                        bounds={[new Date().toISOString(), getNextYear().toISOString()]}
+                        bounds={[
+                            minDate ? new Date(minDate).toISOString() : new Date().toISOString(),
+                            maxDate ? new Date(maxDate).toISOString() : getNextYear().toISOString()
+                        ]}
                         date={value}
                         daysOfWeek
                         onSelect={onSelect}
@@ -82,10 +93,13 @@ const DateTimePicker = ({ onChange, value, primary = true, calendarProps = {}, l
         </Box>
     );
 };
+
 DateTimePicker.propTypes = {
     onChange: PropTypes.func.isRequired,
     value: PropTypes.string.isRequired,
-    primary: PropTypes.bool
+    primary: PropTypes.bool,
+    minDate: PropTypes.string,
+    maxDate: PropTypes.string
 };
 
 export default DateTimePicker;

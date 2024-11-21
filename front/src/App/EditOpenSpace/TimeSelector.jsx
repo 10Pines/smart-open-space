@@ -17,7 +17,7 @@ const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
             startTime: lastEnd || startTime,
             endTime,
             description,
-            date: [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()],
+            date: new Date(date),
           },
         ],
       });
@@ -37,10 +37,22 @@ const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
   };
 
   useEffect(() => {
+    const { index, date } = deletedDate;
+
+    if (index == activeDateIndex)
+      setActiveDateIndex(activeDateIndex === 0 ? 1 : activeDateIndex - 1);
+    if (activeDateIndex >= dates.length) setActiveDateIndex(dates.length - 1);
+
     onChange({
-      value: value.filter((slot) => !byDate(deletedDate)(slot)),
+      value: value.filter((slot) => !byDate(date)(slot)),
     });
   }, [deletedDate]);
+
+  useEffect(() => {
+    if (dates.length == 1) {
+      setActiveDateIndex(0);
+    }
+  }, dates);
 
   return canShowOrElse(
     <Box>

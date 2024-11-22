@@ -2,10 +2,12 @@ import {Anchor, Box, Button, Heading, Text} from "grommet";
 import ManualSection from "#app/Manual/ManualSection.jsx";
 import {ManualIcon} from "#shared/icons.jsx";
 import {useEffect, useState} from "react";
+import useSize from "#helpers/useSize.jsx";
 
 
 const Manual = () => {
   const [activeSection, setActiveSection] = useState(null);
+  const size = useSize();
   const subSections = {
     "ejes-tematicos": "Ejes temáticos",
     "salas": "Salas",
@@ -50,13 +52,14 @@ const Manual = () => {
         </Box>
 
         <Box direction={"row"} gap={'small'}>
-          <Box
-            width="30%"
-            pad="small"
-            background="light-2"
-            border={{ side: 'right', color: 'light-4' }}
-            style={{ borderRadius: '10px', position: 'sticky', height: '80vh', top: '20px' }}
-          >
+          {size !== "small" &&
+            <Box
+              width="30%"
+              pad="small"
+              background="light-2"
+              border={{ side: 'right', color: 'light-4' }}
+              style={{ borderRadius: '10px', position: 'sticky', height: '80vh', top: '20px', minWidth: '10rem' }}
+            >
             <Heading level={3}>Índice</Heading>
             <Box direction="column" gap="small">
               { Object.entries(subSections).map(([section, label]) => (
@@ -67,8 +70,7 @@ const Manual = () => {
                 />
               ))}
             </Box>
-          </Box>
-
+          </Box>}
           <Box direction={'column'} justify={'center'} alignItems={'center'}>
             <ManualSection title={"Ejes temáticos"} id={"ejes-tematicos"}>
                 Los ejes temáticos son una excelente forma de organizar charlas en un evento, especialmente en conferencias donde

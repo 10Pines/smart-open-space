@@ -67,28 +67,36 @@ const Talk = () => {
           />
         </MainHeader.Buttons>
       </MainHeader>
-      <MainHeader.Title label={'Documentos'} level="3" margin={{ top: 'medium' }} />
-      <ul>
-        {documents.map((document) => (
-          <li>
-            <Anchor
-              color="dark-1"
-              href={document.link}
-              label={document.name}
-              target="_blank"
-            />
-          </li>
-        ))}
-      </ul>
-      <MainHeader.Title label={'Feedback'} level="3" margin={{ top: 'medium' }} />
-      <ReviewForm
-        onSubmit={(value) =>
-          createReview(id, {
-            comment: value.comment,
-            grade: value.grade,
-          }).then((talk) => setViewReviews(talk.reviews))
-        }
-      />
+      {documents.length > 0 && (
+          <>
+              <MainHeader.Title label={'Documentos'} level="3" margin={{ top: 'medium' }} />
+              <ul>
+                {documents.map((document) => (
+                  <li>
+                    <Anchor
+                      color="dark-1"
+                      href={document.link}
+                      label={document.name}
+                      target="_blank"
+                    />
+                  </li>
+                ))}
+              </ul>
+          </>
+      )}
+      {user && (
+          <>
+              <MainHeader.Title label={'Feedback'} level="3" margin={{ top: 'medium' }} />
+              <ReviewForm
+                onSubmit={(value) =>
+                  createReview(id, {
+                    comment: value.comment,
+                    grade: value.grade,
+                  }).then((talk) => setViewReviews(talk.reviews))
+                }
+              />
+          </>
+       )}    
       {viewReviews &&
         viewReviews.map((review, index) => (
           <Card key={index} background="light-1">

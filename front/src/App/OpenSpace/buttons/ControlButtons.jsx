@@ -1,53 +1,117 @@
-import React from 'react';
-import { Grid, Box } from 'grommet';
-import Button from './Button';
+import React, {useState} from 'react';
+import { Box, Notification } from 'grommet';
+import Button from '../../components/atom/Button.jsx';
+import {startCallForPapers, toggleShowSpeakerName, toggleVoting} from "#api/os-client.js";
+import {TalkIcon} from "#shared/icons.jsx";
+import ControlSwitch from "#app/OpenSpace/buttons/ControlSwitch.jsx";
+import MarketPlaceSwitch from "#app/OpenSpace/buttons/MarketPlaceSwitch.jsx";
 
-const ControlButtons = ({ controlButtons, size, withIcons = false }) => {
-  const buttonCategories = controlButtons.reduce((acc, button) => {
-    if (!acc[button.category]) {
-      acc[button.category] = [];
+const ControlButtons = ({ pushHandlers, apiHandlers, data, setData, setShowQuery, ...props }) => {
+  const [visible, setVisible] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+
+  const handleMarketplaceQueueState = async ({
+     pendingQueue,
+     activeQueue,
+     queue,
+     setShowQuery,
+     doFinishQueue,
+     handleActivateQueue,
+   }) => {
+    if (pendingQueue) {
+      return handleActivateQueue();
     }
-    acc[button.category].push(button);
-    return acc;
-  }, {});
 
-  // Filtrar categorías que no tienen ningún botón
-  const filteredButtonCategoriesArray = Object.entries(buttonCategories)
-    .filter(([, buttons]) => buttons.length > 0)
-    .map(([category, buttons]) => ({ category, buttons }));
+    if (activeQueue) {
+      return await determineQueueAction({ queue, setShowQuery, doFinishQueue });
+    }
+  };
 
-  const buttonStyle = {
-    minWidth: '150px',
-    width: '100%',
-    height: 'auto',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+  const determineQueueAction = async ({ queue, setShowQuery, doFinishQueue }) => {
+    if (queue && queue.length > 0) {
+      setShowQuery(true);
+      return Promise.resolve();
+    }
+    return doFinishQueue();
   };
 
   return (
-    <Grid
-      columns={{
-        count: size === 'small' ? 1 : filteredButtonCategoriesArray.length,
-        size: size === 'small' ? 'auto' : '1/' + filteredButtonCategoriesArray.length,
-      }}
-      gap="1rem"
-      responsive
+    <Box
+      direction={"row-responsive"}
+      gap={"10rem"}
+      {...props}
     >
-      {filteredButtonCategoriesArray.map(({ category, buttons }) => (
-        <Box key={category} gap="1rem">
-          {buttons.map(({ label, onClick, icon }) => (
-            <Button
-              key={label}
-              label={label}
-              onClick={onClick}
-              style={buttonStyle}
-              icon={withIcons ? icon : undefined}
-            />
-          ))}
-        </Box>
-      ))}
-    </Grid>
+      <Box direction={"column"} gap={"medium"} margin={{bottom: "medium"}}>
+        <ControlSwitch
+          onChange={() => toggleVoting(data.id).then(newData => {
+            setData(newData)
+            setVisible(true)
+            setNotificationMessage(newData.isActiveVoting ? "Se abrió la votación de charlas" : "Se cerró la votación de charlas")
+          }
+          )}
+          checked={data.isActiveVoting}
+          text={'Votación abierta'}
+        />
+
+        <ControlSwitch
+          onChange={() => toggleShowSpeakerName(data.id).then(newData => {
+            setData(newData)
+            setVisible(true)
+            setNotificationMessage(newData.showSpeakerName ? "Se muestra el nombre de los speakers en las charlas" : "Se ocultó el nombre de los speakers en las charlas")
+          })}
+          checked={data.showSpeakerName}
+          text={'Se muestran speakers'}
+          />
+      </Box>
+
+      <Box direction={"column"} gap={"medium"} margin={{bottom: "medium"}}>
+        <ControlSwitch
+          onChange={() => {
+            startCallForPapers(data.id).then(newData => {
+                setData(newData)
+                setVisible(true)
+                setNotificationMessage(newData.isActiveCallForPapers ? "Convocatoria abierta para proponer charlas" : "Convocatoria cerrada: no se pueden proponer charlas")
+              }
+            )
+          }}
+          checked={data.isActiveCallForPapers}
+          text={"Convocatoria de charlas abierta"}
+        />
+
+        <MarketPlaceSwitch
+          onChange={() =>
+            handleMarketplaceQueueState({
+              pendingQueue: data.pendingQueue,
+              activeQueue: data.activeQueue ,
+              queue: data.queue,
+              setShowQuery,
+              doFinishQueue: apiHandlers.doFinishQueue,
+              handleActivateQueue: apiHandlers.handleActivateQueue,
+            }).then(() =>
+              {
+                setVisible(true)
+                setNotificationMessage(data.activeQueue ? "Se cerró el marketplace" : "Se inició el marketplace" )
+              }
+            )}
+          checked={data.activeQueue}
+          disabled={data.finishedQueue}
+          finishedQueue={data.finishedQueue}
+          activeQueue={data.activeQueue}
+          pushToProjector={pushHandlers.pushToProjector}
+        />
+      </Box>
+
+      <Button onClick={pushHandlers.pushToMyTalks} label={"Gestionar charlas"} icon={<TalkIcon/>} margin={{bottom: "medium"}} style={{height: "3rem", width:'18rem', maxWidth: "80%"}}/>
+
+      {visible && (
+        <Notification
+          toast
+          time={3000}
+          title={notificationMessage}
+          onClose={() => setVisible(false)}
+        />
+      )}
+    </Box>
   );
 };
 

@@ -8,16 +8,18 @@ const ConfirmationDialog = ({
   onCancel = () => {},
   isOpen = false,
   buttonLabels = { confirm: 'Sí', cancel: 'No' },
+  confirmationButtonProps = {},
+  cancelButtonProps = {}
 }) => {
   if (!isOpen) return null;
 
   return (
-    <Layer onEsc={onCancel} onClickOutside={onCancel}>
+    <Layer onEsc={onCancel} onClickOutside={onCancel} style={{borderRadius: "6px"}}>
       <Box pad="medium" gap="medium">
         <Text>{message}</Text>
         <Box justify="around" direction="row" pad="small">
-          <Button label={buttonLabels.confirm} onClick={onConfirm} />
-          <Button label={buttonLabels.cancel} onClick={onCancel} />
+          <Button label={buttonLabels.confirm} onClick={onConfirm} style={confirmationButtonProps} />
+          <Button label={buttonLabels.cancel} onClick={onCancel} style={cancelButtonProps} />
         </Box>
       </Box>
     </Layer>

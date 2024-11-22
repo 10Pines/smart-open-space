@@ -11,7 +11,9 @@ const DateTimeForm = ({ title, value, onChange, ...props }) => {
              {...props}
         >
             <Text color={"white"} weight={'bold'} style={{padding: '10px 10px 10px 17px'}}>{title}</Text>
-            <DateTimePicker onChange={(date)=>{onChange(date)}} value={value} primary={true} alignSelf={"center"}/>
+            <Box alignSelf={'center'} margin={{top: 'xsmall'}}>
+                <DateTimePicker onChange={(date)=>{onChange(date)}} value={value} primary={true} alignSelf={"center"}/>
+            </Box>
         </Box>
     );
 };

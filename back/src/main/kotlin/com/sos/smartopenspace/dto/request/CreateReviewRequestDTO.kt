@@ -1,7 +1,7 @@
 package com.sos.smartopenspace.dto.request
 import jakarta.validation.constraints.*
 
-class CreateReviewRequestDTO(
+data class CreateReviewRequestDTO(
   @field:NotNull
   @field:Max(5)
   @field:Min(1)

@@ -2,6 +2,7 @@ package com.sos.smartopenspace.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.sos.smartopenspace.util.toStringByReflex
 import java.time.LocalDate
 import jakarta.persistence.*
 import jakarta.transaction.Transactional
@@ -71,6 +72,9 @@ class OpenSpace(
   var isActiveVoting: Boolean = false
 
   var showSpeakerName: Boolean = true
+
+  override fun toString() =
+    toStringByReflex(this)
 
   fun isPendingQueue() = queueState == QueueState.PENDING
   fun isActiveQueue() = queueState == QueueState.ACTIVE

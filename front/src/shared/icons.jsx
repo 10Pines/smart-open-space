@@ -43,6 +43,7 @@ import {
   Google,
   Halt,
   Notes,
+  Chat,
 } from 'grommet-icons';
 
 export {
@@ -91,4 +92,5 @@ export {
   Google as GoogleIcon,
   Halt as HaltIcon,
   Notes as NotesIcon,
+  Chat as ChatIcon,
 };

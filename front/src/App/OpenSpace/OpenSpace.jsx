@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box } from 'grommet';
+import {Box, Button, Text, Tip} from 'grommet';
 
 import { activateQueue, deleteOS, finishQueue, useGetOpenSpace } from '#api/os-client';
 import { useQueue } from '#api/sockets-client';
@@ -13,13 +13,12 @@ import {
   usePushToRoot,
   usePushToLoginFromOpenSpace,
 } from '#helpers/routes';
-import { ScheduleIcon } from '#shared/icons';
+import {ChatIcon, DeleteIcon, EditIcon, ScheduleIcon} from '#shared/icons';
 import MainHeader from '#shared/MainHeader';
 import Spinner from '#shared/Spinner';
 import { QueryForm } from './QueryForm';
 import { DisplayTalks } from './DisplayTalks';
 import useSize from '#helpers/useSize';
-import { getControlButtons } from '#helpers/getControlButtons';
 import ControlButtons from './buttons/ControlButtons';
 import ConfirmationDialog from '#shared/ConfirmationDialog';
 
@@ -48,47 +47,75 @@ const OpenSpace = () => {
     handleActivateQueue: () => activateQueue(data.id).then(setData),
   };
 
-  const controlButtons = getControlButtons({
-    amTheOrganizer,
-    user,
-    queue,
-    setShowQuery,
-    id: data.id,
-    setData,
-    setShowDeleteModal,
-    ...pushHandlers,
-    ...apiHandlers,
-    ...data,
-  });
-
   return (
     <>
-      <Box>
-        <MainHeader>
-          <MainHeader.Title label={`Tablero de control: ${data.name}`} />
-        </MainHeader>
-        <ControlButtons controlButtons={controlButtons} size={size} withIcons />
-      </Box>
+      { amTheOrganizer && <Box margin={{bottom: "large", top: "medium"}}>
+        <MainHeader.Title label={"Tablero de control"} />
+        <ControlButtons pushHandlers={pushHandlers} size={size} data={data} apiHandlers={apiHandlers} setData={setData} setShowQuery={setShowQuery} margin={{top: "medium"}}/>
+      </Box> }
 
-      <Box>
-        <MainHeader>
-          <MainHeader.Title label={data.name} />
-          <MainHeader.Description description={data.description} />
-          {data.dates && (
+      <MainHeader.Title label={data.name}>
+        {amTheOrganizer &&
+          <Box direction={"row"}>
+            <Tip content={"Editar"}>
+              <Button
+                size={"medium"}
+                margin={{ left: 'medium' }}
+                color="accent-5"
+                icon={<EditIcon />}
+                onClick={pushHandlers.pushToEditOS}
+                />
+            </Tip>
+            <Tip content={"Eliminar"}>
+              <Button
+                size={"medium"}
+                margin={{ left: 'medium' }}
+                color="accent-5"
+                icon={<DeleteIcon />}
+                onClick={() => setShowDeleteModal(true)}
+              />
+            </Tip>
+          </Box>
+        }
+      </MainHeader.Title>
+
+      {data.description && <MainHeader.Description description={data.description}/>}
+
+      <Box direction={'row-responsive'} gap={'medium'} justify={!user ? "between" : undefined} margin={{top: "small", bottom: "small"}}>
+        { data.dates && (
+          <MainHeader.Button
+            margin={{ top: 'medium' }}
+            color="accent-1"
+            icon={<ScheduleIcon />}
+            label="Agenda"
+            onClick={pushHandlers.pushToSchedule}
+          />
+        )}
+        { user && !amTheOrganizer &&
+          <MainHeader.Button
+            margin={{ top: 'medium' }}
+            color="accent-5"
+            icon={<ChatIcon />}
+            label="Mis charlas"
+            onClick={pushHandlers.pushToMyTalks}
+            style={{borderColor:"#7D4CDBFF"}}
+          />
+        }
+        { !user &&
+          <Box gap={"xxsmall"} align={'center'}>
+            <Text weight={"bold"}>Es tu oportunidad para hablar de ese tema</Text>
             <MainHeader.Button
-              margin={{ top: 'medium' }}
-              color="accent-1"
-              icon={<ScheduleIcon />}
-              label="Agenda"
-              onClick={pushHandlers.pushToSchedule}
+              color="accent-3"
+              icon={<ChatIcon />}
+              label="Proponé una charla!"
+              onClick={pushHandlers.pushToLogin}
             />
-          )}
-        </MainHeader>
+          </Box>
+        }
       </Box>
 
       <Box>
         <MainHeader.Tracks tracks={data.tracks} />
-        {data.finishedQueue && <MainHeader.SubTitle label="Marketplace finalizado" />}
       </Box>
 
       <Box margin={{ bottom: 'medium' }}>
@@ -115,6 +142,8 @@ const OpenSpace = () => {
         message="¿Estás seguro de que deseas eliminar la convocatoria?"
         onConfirm={() => deleteOS(data.id).then(() => pushHandlers.pushToRoot())}
         onCancel={() => setShowDeleteModal(false)}
+        buttonLabels = {{ confirm: 'Eliminar', cancel: 'Cancelar' }}
+        confirmationButtonProps={{backgroundColor: "#c84b4b", border: "solid 1px #D32F2F", color: "white"}}
       />
     </>
   );

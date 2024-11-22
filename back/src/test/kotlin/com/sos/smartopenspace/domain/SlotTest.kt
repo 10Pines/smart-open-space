@@ -188,6 +188,30 @@ class SlotTest {
     }
   }
 
+  @Test
+  fun `TalkSlot toString`() {
+    val talkSlot = TalkSlot(
+      startTime = LocalTime.parse("09:00"),
+      endTime = LocalTime.parse("09:30"),
+      date = LocalDate.now()
+    )
+
+    val expectedRes = "TalkSlot(date=${talkSlot.date}, endTime=09:30, id=0, startTime=09:00)"
+    assertEquals(expectedRes, talkSlot.toString())
+  }
+
+  @Test
+  fun `OtherSlot toString`() {
+    val otherSlot = OtherSlot(
+      startTime = LocalTime.parse("09:00"),
+      endTime = LocalTime.parse("09:30"),
+      description = "A description",
+      date = LocalDate.now()
+    )
+    val expectedRes = "OtherSlot(date=${otherSlot.date}, description=A description, endTime=09:30, id=0, startTime=09:00)"
+    assertEquals(expectedRes, otherSlot.toString())
+  }
+
   private fun slotStartTimes(freeSlots: List<Pair<Room, List<Slot>>>) =
     freeSlots[0].second.map { it.startTime }
 

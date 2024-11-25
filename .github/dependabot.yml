@@ -5,7 +5,15 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/front" # Location of package manifests
+  - package-ecosystem: "npm"
+    directory: "/front"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+  - package-ecosystem: "gradle"
+    directory: "/back"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"

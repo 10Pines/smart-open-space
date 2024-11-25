@@ -11,6 +11,7 @@ import { VotesColumn } from './components/VotesColumn';
 import { ActionsColumn } from './components/ActionsColumn/ActionsColumn';
 import { DeleteModal } from '../components/DeleteModal';
 import { useUser } from '#helpers/useAuth';
+import {formatDateString} from "#helpers/time.js";
 
 const TalkTable = ({
   activeQueue,
@@ -89,7 +90,11 @@ const TalkTable = ({
             ),
             primary: true,
             size: 'xlarge',
-            render: (datum) => <TitleColumn datum={datum} />,
+            render: (datum) =>
+              <TitleColumn
+                datum={datum}
+                onClick={() => { setSelectedToEditTalkId(datum.id);}}
+            />,
           },
           {
             property: 'track',
@@ -117,54 +122,29 @@ const TalkTable = ({
             property: 'schedule',
             header: (
               <Text weight="bold" size="medium" color="black">
-                Agendar
+                Agenda
               </Text>
             ),
-            size: 'small',
-            align: 'center',
-            render: (datum) => <ScheduleColumn datum={datum} />,
-          },
-          {
-            property: 'actions',
-            header: (
-              <Text weight="bold" size="medium" color="black">
-                Acciones
-              </Text>
-            ),
-            sortable: false,
             size: 'medium',
+            plain: true,
             align: 'center',
-            render: (datum) => {
-              return (
-                <ActionsColumn
-                  datum={datum}
-                  activeQueue={activeQueue}
-                  onClickScheduleButton={() => {
-                    setSelectedToScheduleTalkInfo({
-                      talkId: datum.id,
-                      talkName: datum.name,
-                    });
-                    setShowModals({ ...showModals, scheduleModal: true });
-                  }}
-                  onClickRescheduleButton={() => {
-                    setSelectedToRescheduleTalkInfo({
-                      talkId: datum.id,
-                      talkName: datum.name,
-                    });
-                    setShowModals({ ...showModals, exchangeModal: true });
-                  }}
-                  onClickDeleteButton={() => {
-                    setSelectedToDeleteTalkId(datum.id);
-                    setShowModals({ ...showModals, deleteModal: true });
-                  }}
-                  onClickInQueueButton={() => {}}
-                  onClickQueueButton={() => enqueueTalk(datum.id).then(reloadTalks)}
-                  onClickEditButton={() => {
-                    setSelectedToEditTalkId(datum.id);
-                  }}
-                />
-              );
-            },
+            render: (datum) => <ScheduleColumn
+              datum={datum}
+              onClickScheduleButton={() => {
+                setSelectedToScheduleTalkInfo({
+                  talkId: datum.id,
+                  talkName: datum.name,
+                });
+                setShowModals({ ...showModals, scheduleModal: true });
+              }}
+              onClickRescheduleButton={() => {
+                setSelectedToRescheduleTalkInfo({
+                  talkId: datum.id,
+                  talkName: datum.name,
+                });
+                setShowModals({ ...showModals, exchangeModal: true });
+              }}
+            />,
           },
         ]}
         data={talks.map((talk) => {
@@ -182,7 +162,7 @@ const TalkTable = ({
             trackColor: talk.track?.color,
             votes: talk.votes,
             state: talkSchedule ? 'Agendada' : 'Presentada',
-            talkDate: talkSchedule?.date,
+            talkDate: talkSchedule?.date && formatDateString(talkSchedule?.date),
             talkStartTime: talkSchedule?.startTime,
             room: talkSchedule?.room,
             openSpaceId: talk.openSpace.id,
@@ -190,8 +170,8 @@ const TalkTable = ({
         })}
         border
         background={{
-          header: '#a4bcaf',
-          body: ['white', 'light-2'],
+          header: '#cce6db',
+          body: ['white', 'light-1'],
         }}
         sortable
       />

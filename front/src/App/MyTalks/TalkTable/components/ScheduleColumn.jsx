@@ -1,39 +1,43 @@
 import { Box, Text } from 'grommet';
 import React from 'react';
-import {CalendarIcon, ClockIcon, HomeIcon, ScheduleIcon, TransactionIcon} from '#shared/icons';
+import {CalendarIcon, ClockIcon, EditIcon, HomeIcon, ScheduleIcon, TransactionIcon} from '#shared/icons';
 import {ActionButton} from "#app/MyTalks/TalkTable/components/ActionsColumn/ActionButton.jsx";
+import {Edit} from "grommet-icons";
+import {format} from "date-fns";
 
 export function ScheduleColumn(props) {
   return (
-    <Box direction="row">
+    <Box direction="row-reverse" gap={"xlarge"} alignSelf={"center"}>
       {props.datum.state === 'Presentada' ? (
         <ActionButton
-          onClick={()=>{}}
-          tooltipText="Agendar"
-          icon={<ScheduleIcon />}
+          onClick={props.onClickScheduleButton}
+          label={"Agendar"}
+          icon={<ScheduleIcon size={"medium"} color={"#56248c"}/>}
         />
       ) : (
         <ActionButton
-          onClick={()=>{}}
-          tooltipText="Reagendar"
-          icon={<TransactionIcon />}
+          onClick={props.onClickRescheduleButton}
+          tooltipText="Editar"
+          icon={<EditIcon size={"medium"} color={"#56248c"}/>}
         />
       )}
       {props.datum.talkDate && (
-        <Box direction="column">
-          <Box direction="row-responsive" gap="xsmall" align="center" justify="center">
-            <CalendarIcon size="small" />
-            <Text weight="bold" size="xsmall">
-              {props.datum.talkDate}
-            </Text>
-          </Box>
-          <Box direction="row-responsive" gap="xsmall" align="center" justify="center">
-            <ClockIcon size="small" />
-            <Text weight="bold" size="xsmall">
-              {props.datum.talkStartTime}hs
-            </Text>
-            <HomeIcon size="small" />
-            <Text weight="bold" size="small" truncate>
+        <Box direction="column" align={"start"} style={{minHeight: "fit-content"}}>
+            <Box direction="row-responsive" gap="xsmall" align="center" justify="center">
+              <CalendarIcon size="15px" color={"rgb(125, 76, 219)"}/>
+              <Text size="medium">
+                {props.datum.talkDate}
+              </Text>
+            </Box>
+            <Box direction="row-responsive" gap="xsmall" align="center" justify="center">
+              <ClockIcon size="15px" color={"rgb(125, 76, 219)"}/>
+              <Text size="medium">
+                {props.datum.talkStartTime}hs
+              </Text>
+            </Box>
+          <Box direction={"row"} gap="xsmall" align="center" justify="center">
+            <HomeIcon size="15px" color={"rgb(125, 76, 219)"}/>
+            <Text size="medium" truncate>
               {props.datum.room}
             </Text>
           </Box>

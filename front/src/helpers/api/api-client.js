@@ -1,9 +1,16 @@
 import { toast } from 'react-toastify';
+import {  getSessionStorage, setSessionStorage } from '#helpers/browserStorage.js';
+import { API_CONST } from '#statics/apiConstants.js';
+
+const {INTERNAL_SESSION_ID_KEY, INTERNAL_SESSION_ID_HEADER} = API_CONST;
 
 const doFetch = (method) => async (endpoint, body) => {
   const config = {
     method,
-    headers: { 'content-type': 'application/json' },
+    headers: { 
+      'content-type': 'application/json',
+      [INTERNAL_SESSION_ID_HEADER]: getRequestSessionId(),
+    },
     body: JSON.stringify(body),
   };
   try {
@@ -19,6 +26,16 @@ const doFetch = (method) => async (endpoint, body) => {
     toast.error(e.message, { position: toast.POSITION.TOP_CENTER });
     throw new Error(e.message);
   }
+};
+
+const getRequestSessionId = () => {
+    const value = getSessionStorage(INTERNAL_SESSION_ID_KEY);
+    if (!value) {
+        const generatedValue = crypto.randomUUID();
+        setSessionStorage(INTERNAL_SESSION_ID_KEY, generatedValue);
+        return generatedValue;
+    }
+    return value;
 };
 
 const get = doFetch('GET');

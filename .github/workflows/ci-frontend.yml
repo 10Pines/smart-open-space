@@ -1,6 +1,6 @@
 name: Frontend CI
 
-on: [push, pull_request]
+on: push
 
 jobs:
   build:
@@ -14,6 +14,8 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     - name: Use Node ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
@@ -24,3 +26,9 @@ jobs:
         npm test
       env:
         CI: true
+#    - if: matrix.node-version == '20.x'
+#      name: Run static code analysis
+#      uses: sonarsource/sonarqube-scan-action@v3
+#      env:
+#        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

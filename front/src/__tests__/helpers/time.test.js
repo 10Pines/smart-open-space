@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { wrapTestCaseLogError } from '../../helpers/testUtils';
+import { wrapTestCaseLogError } from '#helpers/testUtils';
 import {
   numberToTwoDigitNumber,
   numbersToTime,
@@ -11,7 +11,7 @@ import {
   isEqualsDateTime,
   isSameDate,
   getLastEndFromCollectionOfSlots, formatDateString,
-} from '../../helpers/time';
+} from '#helpers/time';
 
 describe('GIVEN numberToTwoDigitNumber func', () => {
   test('WHEN receives a number with more than two digits THEN return the same number', () => {

@@ -1,24 +1,22 @@
 import { Box, Text } from 'grommet';
 import React from 'react';
-import {CalendarIcon, ClockIcon, EditIcon, HomeIcon, ScheduleIcon, TransactionIcon} from '#shared/icons';
-import {ActionButton} from "#app/MyTalks/TalkTable/components/ActionsColumn/ActionButton.jsx";
-import {Edit} from "grommet-icons";
-import {format} from "date-fns";
+import {CalendarIcon, ClockIcon, HomeIcon, ScheduleIcon, TransactionIcon} from '#shared/icons';
+import {ScheduleButton} from "#app/MyTalks/TalkTable/components/ScheduleButton.jsx";
 
 export function ScheduleColumn(props) {
   return (
     <Box direction="row-reverse" gap={"xlarge"} alignSelf={"center"}>
       {props.datum.state === 'Presentada' ? (
-        <ActionButton
+        <ScheduleButton
           onClick={props.onClickScheduleButton}
           label={"Agendar"}
           icon={<ScheduleIcon size={"medium"} color={"#56248c"}/>}
         />
       ) : (
-        <ActionButton
+        <ScheduleButton
           onClick={props.onClickRescheduleButton}
-          tooltipText="Editar"
-          icon={<EditIcon size={"medium"} color={"#56248c"}/>}
+          tooltipText="Reagendar"
+          icon={<TransactionIcon size={"medium"} color={"#56248c"}/>}
         />
       )}
       {props.datum.talkDate && (

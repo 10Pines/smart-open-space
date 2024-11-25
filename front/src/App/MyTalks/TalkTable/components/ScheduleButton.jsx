@@ -1,8 +1,7 @@
-import ButtonLoading from '#shared/ButtonLoading';
-import { ScheduleIcon } from '#shared/icons';
+import ButtonLoading from '#shared/ButtonLoading.jsx';
 import React from 'react';
 
-export function ActionButton({ onClick, tooltipText, icon, label }) {
+export function ScheduleButton({ onClick, tooltipText, icon, label }) {
   return (
     <ButtonLoading
       icon={icon}

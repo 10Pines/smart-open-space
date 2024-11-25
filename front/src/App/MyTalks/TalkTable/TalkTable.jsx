@@ -1,6 +1,6 @@
 import { DataTable, Text } from 'grommet';
 import React, { useEffect, useState } from 'react';
-import { usePushToOpenSpace, usePushToSchedule, usePushToTalk } from '#helpers/routes';
+import { usePushToTalk } from '#helpers/routes';
 import { useParams } from 'react-router-dom';
 import { deleteTalk, enqueueTalk, exchangeTalk, scheduleTalk } from '#api/os-client';
 import SelectSlot from '../Talk/SelectSlot';
@@ -8,7 +8,6 @@ import { ScheduleColumn } from './components/ScheduleColumn.jsx';
 import { TitleColumn } from './components/TitleColumn';
 import { TrackColumn } from './components/TrackColumn.jsx';
 import { VotesColumn } from './components/VotesColumn';
-import { ActionsColumn } from './components/ActionsColumn/ActionsColumn';
 import { DeleteModal } from '../components/DeleteModal';
 import { useUser } from '#helpers/useAuth';
 import {formatDateString} from "#helpers/time.js";
@@ -39,18 +38,15 @@ const TalkTable = ({
     scheduleModal: false,
     exchangeModal: false,
   });
-
-  const pushToSchedule = usePushToSchedule();
-  const pushToOpenSpace = usePushToOpenSpace();
   const pushToTalk = usePushToTalk(useParams().id, selectedToEditTalkId);
 
   const onSubmitSchedule = ({ slot, room }) =>
     scheduleTalk(selectedToScheduleTalkInfo.talkId, user.id, slot.id, room.id).then(
-      pushToSchedule
+      reloadTalks
     );
   const onSubmitExchange = ({ slot, room }) =>
     exchangeTalk(selectedToRescheduleTalkInfo.talkId, slot.id, room.id).then(
-      pushToOpenSpace
+      reloadTalks
     );
 
   const assignedTalks = talks
@@ -93,7 +89,9 @@ const TalkTable = ({
             render: (datum) =>
               <TitleColumn
                 datum={datum}
+                activeQueue={activeQueue}
                 onClick={() => { setSelectedToEditTalkId(datum.id);}}
+                onClickQueueButton={() => enqueueTalk(datum.id).then(reloadTalks)}
             />,
           },
           {

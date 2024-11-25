@@ -29,7 +29,7 @@ export function TitleColumn({ datum, activeQueue, onClick, onClickQueueButton })
           size={"small"}
           margin={{right: "1rem"}}
           style={{padding: "8px", height: "fit-content", cursor: "pointer"}}
-          icon={<QueueIcon size={"20px"}/>}
+          icon={<QueueIcon size={"1rem"}/>}
           onClick={onClickQueueButton}
         />}
       {datum.isInQueue && activeQueue &&
@@ -38,9 +38,8 @@ export function TitleColumn({ datum, activeQueue, onClick, onClickQueueButton })
           label={"Charla encolada"}
           size={"small"}
           margin={{right: "1rem"}}
-          style={{padding: "8px", height: "fit-content"}}
-          icon={<ClockIcon size={"20px"}/>}
-          disabled={true}
+          style={{padding: "8px", height: "fit-content", cursor: "default"}}
+          icon={<ClockIcon size={"1rem"}/>}
           onClick={()=>{}}
         />}
     </Box>

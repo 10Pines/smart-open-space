@@ -62,7 +62,7 @@ const Talk = () => {
           <Button
             color="accent-1"
             icon={<Return />}
-            label="Principal"
+            label="Volver"
             onClick={() => history.goBack()}
           />
         </MainHeader.Buttons>

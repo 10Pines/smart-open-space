@@ -22,7 +22,7 @@ export const TalkForm = ({
   initialValues = emptyTalk,
 }) => {
   const history = useHistory();
-  const nullTrackOption = { id: null, name: 'Sin track' }; // Customize the name as needed
+  const nullTrackOption = { id: null, name: 'Sin track' };
   const trackOptionsWithNull = [nullTrackOption, ...(openSpace?.tracks || [])];
 
   return (
@@ -50,6 +50,7 @@ export const TalkForm = ({
         <MyForm.Select
           label="Track"
           name="track"
+          defaultValue={nullTrackOption}
           options={trackOptionsWithNull}
           labelKey="name"
           valueKey="id"

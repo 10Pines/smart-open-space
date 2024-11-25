@@ -4,9 +4,9 @@ import { usePushToOpenSpace, usePushToSchedule, usePushToTalk } from '#helpers/r
 import { useParams } from 'react-router-dom';
 import { deleteTalk, enqueueTalk, exchangeTalk, scheduleTalk } from '#api/os-client';
 import SelectSlot from '../Talk/SelectSlot';
-import { StateColumn } from './components/StateColumn';
+import { ScheduleColumn } from './components/ScheduleColumn.jsx';
 import { TitleColumn } from './components/TitleColumn';
-import { AuthorColumn } from './components/AuthorColumn';
+import { TrackColumn } from './components/TrackColumn.jsx';
 import { VotesColumn } from './components/VotesColumn';
 import { ActionsColumn } from './components/ActionsColumn/ActionsColumn';
 import { DeleteModal } from '../components/DeleteModal';
@@ -92,15 +92,15 @@ const TalkTable = ({
             render: (datum) => <TitleColumn datum={datum} />,
           },
           {
-            property: 'author',
+            property: 'track',
             header: (
               <Text weight="bold" size="medium" color="black">
-                Autor/a
+                Eje temático
               </Text>
             ),
             size: 'medium',
             align: 'center',
-            render: (datum) => <AuthorColumn datum={datum} />,
+            render: (datum) => <TrackColumn datum={datum} />,
           },
           {
             property: 'votes',
@@ -114,15 +114,15 @@ const TalkTable = ({
             render: (datum) => <VotesColumn datum={datum} />,
           },
           {
-            property: 'state',
+            property: 'schedule',
             header: (
               <Text weight="bold" size="medium" color="black">
-                Estado
+                Agendar
               </Text>
             ),
             size: 'small',
             align: 'center',
-            render: (datum) => <StateColumn datum={datum} />,
+            render: (datum) => <ScheduleColumn datum={datum} />,
           },
           {
             property: 'actions',

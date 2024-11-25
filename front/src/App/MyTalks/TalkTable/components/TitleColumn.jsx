@@ -7,15 +7,9 @@ export function TitleColumn({ datum }) {
       <Text weight="bold" color="dark-2">
         {datum.title}
       </Text>
-      {datum.trackName ? (
-        <Text weight="normal" color={datum.trackColor}>
-          {datum.trackName}
-        </Text>
-      ) : (
-        <Text weight="normal" color="gray">
-          Sin track
-        </Text>
-      )}
+      <Text weight="normal" color="gray">
+        {datum.authorName}
+      </Text>
     </Box>
   );
 }

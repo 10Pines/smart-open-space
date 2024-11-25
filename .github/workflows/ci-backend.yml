@@ -1,6 +1,6 @@
 name: Backend CI
 
-on: [push, pull_request]
+on: push
 
 jobs:
   build:
@@ -16,6 +16,8 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     - name: Use Java ${{ matrix.java-version }}, dist ${{ matrix.distribution }} and arch ${{ matrix.architecture }}
       uses: actions/setup-java@v4
       with:
@@ -24,7 +26,24 @@ jobs:
         architecture: ${{ matrix.architecture }}
     - name: Make Gradle executable
       run: chmod +x ./gradlew
+    - name: Cache SonarQube packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-gradle
     - name: Build and run tests
       run: ./gradlew test -i
       env:
         CI: true
+    - name: Run static code analysis
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      run: ./gradlew build sonar --info

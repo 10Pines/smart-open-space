@@ -79,6 +79,8 @@ export const isSameDate = (date1, date2) =>
   date1.getMonth() === date2.getMonth() &&
   date1.getDate() === date2.getDate();
 
+export const datePlusOneDay = (date) => new Date(date.getTime() + 24 * 60 * 60 * 1000);
+
 const isStringInput = (input) => typeof input === 'string' || input instanceof String;
 
 const isDateInput = (input) => input instanceof Date;
@@ -91,3 +93,4 @@ const getDateFromString = (dateStr) =>
 const getTimeArray = (t) => (isStringInput(t) ? t.split(':') : t);
 
 const getIntNumber = (d) => (isStringInput(d) ? parseInt(d, 10) : d);
+

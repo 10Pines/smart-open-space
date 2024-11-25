@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Smart Open Space [FRONT/BACK]" type="CompoundRunConfigurationType">
+    <toRun name="SmartOpenSpace [APP]" type="GradleRunConfiguration" />
+    <toRun name="SmartOpenSpace [APP]" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>

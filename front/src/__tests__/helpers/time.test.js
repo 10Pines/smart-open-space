@@ -10,7 +10,7 @@ import {
   byDate,
   isEqualsDateTime,
   isSameDate,
-  getLastEndFromCollectionOfSlots,
+  getLastEndFromCollectionOfSlots, formatDateString,
 } from '../../helpers/time';
 
 describe('GIVEN numberToTwoDigitNumber func', () => {
@@ -381,5 +381,15 @@ describe('GIVEN isSameDate func', () => {
         expect(isSameDate(t.date2, t.date1)).toBeFalsy();
       }, `Failed at case ${index + 1} with date1: ${t.date1} and date2 :${t.date2}`);
     });
+  });
+});
+
+describe('GIVEN formatDateString func', () => {
+  test('WHEN given a yyyy-mm-dd date string it returns a dd-mm-yyyy string date', () => {
+    const test1 = "2024-11-04";
+    const test2 = "2020-03-01";
+
+    expect(formatDateString(test1)).toBe("04-11-2024");
+    expect(formatDateString(test2)).toBe("01-03-2020");
   });
 });

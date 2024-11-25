@@ -2,37 +2,11 @@ import { useCallback } from 'react';
 import { compareAsc } from 'date-fns';
 
 // Custom hook to manage OpenSpace state updates
-export const useOpenSpaceForm = (openSpace, setOpenSpace) => {
-  const updateOpenSpace = useCallback(
-    (key, value) => {
-      setOpenSpace((prev) => ({ ...prev, [key]: value }));
-    },
-    [setOpenSpace]
-  );
-
-  const addItem = useCallback(
-    (key, item, ref) => {
-      setOpenSpace((prev) => ({ ...prev, [key]: [...prev[key], item] }));
-      if (ref && ref.current) {
-        ref.current.scrollToEnd();
-      }
-    },
-    [setOpenSpace]
-  );
-
-  const removeItem = useCallback(
-    (key, index) => {
-      const updatedItems = removeItemAtIndex(openSpace[key], index);
-      setOpenSpace((prev) => ({ ...prev, [key]: updatedItems }));
-    },
-    [openSpace, setOpenSpace]
-  );
-
+export const useOpenSpaceForm = (openSpace, setOpenSpace, refs) => {
   const validate = useCallback(() => {
     const hasEmptyName = openSpace.name.trim() === '';
-    const hasRepeatedTracks = openSpace.tracks.some(
-      (track, index, self) => self.findIndex((t) => t.name === track.name) !== index
-    );
+    const hasRepeatedTracks = hasTracksWithRepeatedName(openSpace.tracks);
+
     return !hasEmptyName && !hasRepeatedTracks;
   }, [openSpace]);
 
@@ -80,47 +54,38 @@ export const useOpenSpaceForm = (openSpace, setOpenSpace) => {
     [openSpace, setOpenSpace]
   );
 
-  const addTrack = useCallback(
-    (tracksRef) => {
-      const newTracks = [
-        ...openSpace.tracks,
-        { name: '', description: '', color: '#3F8880' },
-      ];
-      setOpenSpace({ ...openSpace, tracks: newTracks });
-      if (tracksRef.current) {
-        tracksRef.current.scrollToEnd();
-      }
-    },
-    [openSpace, setOpenSpace]
-  );
+  const addTrack = useCallback(() => {
+    const newTracks = [
+      ...openSpace.tracks,
+      { name: '', description: '', color: '#3F8880' },
+    ];
+    setOpenSpace({ ...openSpace, tracks: newTracks });
+    if (refs.tracksRef.current) {
+      refs.tracksRef.current.scrollToEnd();
+    }
+  }, [openSpace, setOpenSpace]);
 
-  const addRoom = useCallback(
-    (roomsRef) => {
-      const newRooms = [...openSpace.rooms, { name: '', link: '' }];
-      setOpenSpace({ ...openSpace, rooms: newRooms });
-      if (roomsRef.current) {
-        roomsRef.current.scrollToEnd();
-      }
-    },
-    [openSpace, setOpenSpace]
-  );
+  const addRoom = useCallback(() => {
+    const newRooms = [...openSpace.rooms, { name: '', link: '' }];
+    setOpenSpace({ ...openSpace, rooms: newRooms });
+    if (refs.roomsRef.current) {
+      refs.roomsRef.current.scrollToEnd();
+    }
+  }, [openSpace, setOpenSpace]);
 
-  const addDate = useCallback(
-    (datesRef) => {
-      const newDates =
-        openSpace.dates.length > 0
-          ? [
-              ...openSpace.dates,
-              datePlusOneDay(openSpace.dates[openSpace.dates.length - 1]),
-            ]
-          : [new Date()];
-      setOpenSpace({ ...openSpace, dates: newDates });
-      if (datesRef.current) {
-        datesRef.current.scrollToEnd();
-      }
-    },
-    [openSpace, setOpenSpace]
-  );
+  const addDate = useCallback(() => {
+    const newDates =
+      openSpace.dates.length > 0
+        ? [
+            ...openSpace.dates,
+            datePlusOneDay(openSpace.dates[openSpace.dates.length - 1]),
+          ]
+        : [new Date()];
+    setOpenSpace({ ...openSpace, dates: newDates });
+    if (refs.datesRef.current) {
+      refs.datesRef.current.scrollToEnd();
+    }
+  }, [openSpace, setOpenSpace]);
 
   const removeTrack = useCallback(
     (index) => {
@@ -151,8 +116,6 @@ export const useOpenSpaceForm = (openSpace, setOpenSpace) => {
   }, []);
 
   return {
-    addItem,
-    removeItem,
     validate,
     changeTrack,
     changeRoom,

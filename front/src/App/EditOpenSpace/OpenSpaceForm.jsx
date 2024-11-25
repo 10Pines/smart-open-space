@@ -50,6 +50,7 @@ export const OpenSpaceForm = ({
   const tracks = useRef();
   const rooms = useRef();
   const fechas = useRef();
+  const refs = { tracksRef: tracks, roomsRef: rooms, datesRef: fechas };
   const {
     addTrack,
     addRoom,
@@ -61,7 +62,7 @@ export const OpenSpaceForm = ({
     changeRoom,
     changeDate,
     validate,
-  } = useOpenSpaceForm(openSpace, setOpenSpace);
+  } = useOpenSpaceForm(openSpace, setOpenSpace, refs);
 
   const [showInputSlot, setShowInputSlot] = useState(null);
   const [deletedDate, setDeletedDate] = useState({

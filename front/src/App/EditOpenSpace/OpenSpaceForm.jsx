@@ -210,7 +210,14 @@ export const OpenSpaceForm = ({
                     style={{ minWidth: '390px', paddingTop: '0.5rem' }}
                     animation={cardsAnimation}
                   >
-                    <Badge key={index} onClick={() => removeDate(index)} {...badgeProps}>
+                    <Badge
+                      key={index}
+                      onClick={() => {
+                        setDeletedDate({ date, index });
+                        removeDate(index);
+                      }}
+                      {...badgeProps}
+                    >
                       <DateTimeForm
                         title={`Día ${index + 1}`}
                         value={date}

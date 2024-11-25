@@ -107,10 +107,13 @@ export const useOpenSpaceForm = (openSpace, setOpenSpace) => {
 
   const addDate = useCallback(
     (datesRef) => {
-      const newDates = [
-        ...openSpace.dates,
-        datePlusOneDay(openSpace.dates[openSpace.dates.length - 1]),
-      ];
+      const newDates =
+        openSpace.dates.length > 0
+          ? [
+              ...openSpace.dates,
+              datePlusOneDay(openSpace.dates[openSpace.dates.length - 1]),
+            ]
+          : [new Date()];
       setOpenSpace({ ...openSpace, dates: newDates });
       if (datesRef.current) {
         datesRef.current.scrollToEnd();
@@ -148,12 +151,9 @@ export const useOpenSpaceForm = (openSpace, setOpenSpace) => {
   }, []);
 
   return {
-    // updateOpenSpace,
     addItem,
     removeItem,
     validate,
-    // isRepeatedTrack,
-    // hasTracksWithRepeatedName,
     changeTrack,
     changeRoom,
     changeDate,
@@ -163,7 +163,6 @@ export const useOpenSpaceForm = (openSpace, setOpenSpace) => {
     removeTrack,
     removeRoom,
     removeDate,
-    // removeItemAtIndex,
   };
 };
 

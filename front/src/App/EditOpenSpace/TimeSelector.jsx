@@ -37,10 +37,13 @@ const TimeSelector = ({ onChange, onNewSlot, value, dates, deletedDate }) => {
   };
 
   useEffect(() => {
+    setActiveDateIndex(0);
+  }, []);
+
+  useEffect(() => {
     const { index, date } = deletedDate;
 
-    if (index == activeDateIndex)
-      setActiveDateIndex(activeDateIndex === 0 ? 1 : activeDateIndex - 1);
+    if (index == activeDateIndex) setActiveDateIndex(Math.max(activeDateIndex - 1, 0));
     if (activeDateIndex >= dates.length) setActiveDateIndex(dates.length - 1);
 
     onChange({

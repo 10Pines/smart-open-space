@@ -29,6 +29,7 @@ export default ({ mode }) => {
         '#app': root + '/App',
         '#model': root + '/App/model',
         '#components': root + '/App/components',
+        '#statics': root + '/statics',
       },
     },
     plugins: [htmlPlugin, react()],

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import useLocalStorage from './useLocalStorage.jsx';
+import useBrowserStorage from './useBrowserStorage.jsx';
 import * as userClient from './api/user-client';
 import LogRocket from 'logrocket';
 
@@ -8,7 +8,7 @@ const localStorageKey = '__smartopenspace_user__';
 const AuthContext = React.createContext();
 
 const AuthProvider = (props) => {
-  const [user, setUser] = useLocalStorage(localStorageKey, null);
+  const [user, setUser] = useBrowserStorage(localStorageKey, null);
 
   useEffect(() => {
     const { email = '', id = '-1', name = '' } = user || {};

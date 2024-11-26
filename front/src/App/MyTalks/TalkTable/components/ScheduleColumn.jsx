@@ -21,7 +21,7 @@ export function ScheduleColumn(props) {
         />
       )}
       {props.datum.talkDate && (
-        <Box direction="column" align={"start"} style={{minHeight: "fit-content"}}>
+        <Box direction="column" align={"start"} style={{minHeight: "4.5rem"}}>
           <ScheduleItem Icon={CalendarIcon}>
             {props.datum.talkDate}
           </ScheduleItem>

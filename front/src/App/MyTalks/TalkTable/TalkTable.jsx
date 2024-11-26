@@ -154,7 +154,7 @@ const TalkTable = ({
             id: talk.id,
             isInQueue: talk.isInqueue(),
             canBeQueued: talk.canBeQueued(),
-            authorName: talk.speaker.name,
+            authorName: talk.speakerName ? talk.speakerName : talk.speaker.name,
             authorEmail: talk.speaker.email,
             trackName: talk.track?.name,
             trackColor: talk.track?.color,

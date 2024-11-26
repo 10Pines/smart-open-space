@@ -1,16 +1,16 @@
 import { DataTable, Text } from 'grommet';
 import React, { useEffect, useState } from 'react';
-import { usePushToOpenSpace, usePushToSchedule, usePushToTalk } from '#helpers/routes';
+import { usePushToTalk } from '#helpers/routes';
 import { useParams } from 'react-router-dom';
 import { deleteTalk, enqueueTalk, exchangeTalk, scheduleTalk } from '#api/os-client';
 import SelectSlot from '../Talk/SelectSlot';
-import { StateColumn } from './components/StateColumn';
+import { ScheduleColumn } from './components/ScheduleColumn.jsx';
 import { TitleColumn } from './components/TitleColumn';
-import { AuthorColumn } from './components/AuthorColumn';
+import { TrackColumn } from './components/TrackColumn.jsx';
 import { VotesColumn } from './components/VotesColumn';
-import { ActionsColumn } from './components/ActionsColumn/ActionsColumn';
 import { DeleteModal } from '../components/DeleteModal';
 import { useUser } from '#helpers/useAuth';
+import {formatDateString} from "#helpers/time.js";
 
 const TalkTable = ({
   activeQueue,
@@ -38,18 +38,15 @@ const TalkTable = ({
     scheduleModal: false,
     exchangeModal: false,
   });
-
-  const pushToSchedule = usePushToSchedule();
-  const pushToOpenSpace = usePushToOpenSpace();
   const pushToTalk = usePushToTalk(useParams().id, selectedToEditTalkId);
 
   const onSubmitSchedule = ({ slot, room }) =>
     scheduleTalk(selectedToScheduleTalkInfo.talkId, user.id, slot.id, room.id).then(
-      pushToSchedule
+      reloadTalks
     );
   const onSubmitExchange = ({ slot, room }) =>
     exchangeTalk(selectedToRescheduleTalkInfo.talkId, slot.id, room.id).then(
-      pushToOpenSpace
+      reloadTalks
     );
 
   const assignedTalks = talks
@@ -89,18 +86,24 @@ const TalkTable = ({
             ),
             primary: true,
             size: 'xlarge',
-            render: (datum) => <TitleColumn datum={datum} />,
+            render: (datum) =>
+              <TitleColumn
+                datum={datum}
+                activeQueue={activeQueue}
+                onClick={() => { setSelectedToEditTalkId(datum.id);}}
+                onClickQueueButton={() => enqueueTalk(datum.id).then(reloadTalks)}
+            />,
           },
           {
-            property: 'author',
+            property: 'track',
             header: (
               <Text weight="bold" size="medium" color="black">
-                Autor/a
+                Eje temático
               </Text>
             ),
             size: 'medium',
             align: 'center',
-            render: (datum) => <AuthorColumn datum={datum} />,
+            render: (datum) => <TrackColumn datum={datum} />,
           },
           {
             property: 'votes',
@@ -114,57 +117,32 @@ const TalkTable = ({
             render: (datum) => <VotesColumn datum={datum} />,
           },
           {
-            property: 'state',
+            property: 'schedule',
             header: (
               <Text weight="bold" size="medium" color="black">
-                Estado
+                Agenda
               </Text>
             ),
-            size: 'small',
-            align: 'center',
-            render: (datum) => <StateColumn datum={datum} />,
-          },
-          {
-            property: 'actions',
-            header: (
-              <Text weight="bold" size="medium" color="black">
-                Acciones
-              </Text>
-            ),
-            sortable: false,
             size: 'medium',
+            plain: true,
             align: 'center',
-            render: (datum) => {
-              return (
-                <ActionsColumn
-                  datum={datum}
-                  activeQueue={activeQueue}
-                  onClickScheduleButton={() => {
-                    setSelectedToScheduleTalkInfo({
-                      talkId: datum.id,
-                      talkName: datum.name,
-                    });
-                    setShowModals({ ...showModals, scheduleModal: true });
-                  }}
-                  onClickRescheduleButton={() => {
-                    setSelectedToRescheduleTalkInfo({
-                      talkId: datum.id,
-                      talkName: datum.name,
-                    });
-                    setShowModals({ ...showModals, exchangeModal: true });
-                  }}
-                  onClickDeleteButton={() => {
-                    setSelectedToDeleteTalkId(datum.id);
-                    setShowModals({ ...showModals, deleteModal: true });
-                  }}
-                  onClickInQueueButton={() => {}}
-                  onClickQueueButton={() => enqueueTalk(datum.id).then(reloadTalks)}
-                  onClickEditButton={() => {
-                    setSelectedToEditTalkId(datum.id);
-                  }}
-                />
-              );
-            },
+            render: (datum) => <ScheduleColumn
+              datum={datum}
+              onClickScheduleButton={() => {
+                setSelectedToScheduleTalkInfo({
+                  talkId: datum.id,
+                  talkName: datum.name,
+                });
+                setShowModals({ ...showModals, scheduleModal: true });
+              }}
+              onClickRescheduleButton={() => {
+                setSelectedToRescheduleTalkInfo({
+                  talkId: datum.id,
+                  talkName: datum.name,
+                });
+                setShowModals({ ...showModals, exchangeModal: true });
+              }}
+            />,
           },
         ]}
         data={talks.map((talk) => {
@@ -176,13 +154,13 @@ const TalkTable = ({
             id: talk.id,
             isInQueue: talk.isInqueue(),
             canBeQueued: talk.canBeQueued(),
-            authorName: talk.speaker.name,
+            authorName: talk.speakerName ? talk.speakerName : talk.speaker.name,
             authorEmail: talk.speaker.email,
             trackName: talk.track?.name,
             trackColor: talk.track?.color,
             votes: talk.votes,
             state: talkSchedule ? 'Agendada' : 'Presentada',
-            talkDate: talkSchedule?.date,
+            talkDate: talkSchedule?.date && formatDateString(talkSchedule?.date),
             talkStartTime: talkSchedule?.startTime,
             room: talkSchedule?.room,
             openSpaceId: talk.openSpace.id,
@@ -190,8 +168,8 @@ const TalkTable = ({
         })}
         border
         background={{
-          header: '#a4bcaf',
-          body: ['white', 'light-2'],
+          header: '#cce6db',
+          body: ['white', 'light-1'],
         }}
         sortable
       />

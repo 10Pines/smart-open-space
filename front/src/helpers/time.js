@@ -79,6 +79,12 @@ export const isSameDate = (date1, date2) =>
   date1.getMonth() === date2.getMonth() &&
   date1.getDate() === date2.getDate();
 
+export const formatDateString = (date) => {
+  const parts = date.split("-");
+
+  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+}
+
 const isStringInput = (input) => typeof input === 'string' || input instanceof String;
 
 const isDateInput = (input) => input instanceof Date;

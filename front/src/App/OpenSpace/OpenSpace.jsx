@@ -89,6 +89,7 @@ const OpenSpace = () => {
             icon={<ScheduleIcon />}
             label="Agenda"
             onClick={pushHandlers.pushToSchedule}
+            style={{width:'10rem'}}
           />
         )}
         { user && !amTheOrganizer &&
@@ -114,7 +115,8 @@ const OpenSpace = () => {
         }
       </Box>
 
-      <Box>
+      <Box direction={"column"} margin={{top: "medium"}} gap={"medium"}>
+        <Text>Tracks</Text>
         <MainHeader.Tracks tracks={data.tracks} />
       </Box>
 

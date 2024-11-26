@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { Box, Text, Button, Paragraph, List, Markdown } from 'grommet';
+import { Box, Text, Paragraph, List, Markdown } from 'grommet';
 
 import MyProps from '#helpers/MyProps';
 import useSize from '#helpers/useSize';
@@ -10,6 +10,7 @@ import ButtonLoading from './ButtonLoading';
 import Row from './Row';
 import RowBetween from './RowBetween';
 import Title from './Title';
+import Button from "#components/atom/Button.jsx";
 
 const useTextAlign = () => (useSize() === 'small' ? 'center' : 'start');
 
@@ -58,16 +59,15 @@ const Description = ({ children, description, ...props }) => (
 );
 
 const Tracks = ({ children, tracks, ...props }) => {
-  return tracks.map((track, index) => (
-    <Box key={index} margin={{ bottom: '10px' }}>
-      <Box background={track.color} pad="10px" margin="10px 0">
-        <Text size="large">{track.name}</Text>
-      </Box>
-      <Text color="#808080" size="medium">
-        {track.description}
-      </Text>
+  return (
+    <Box direction={"row-responsive"} gap={"medium"}>
+      {tracks.map((track, index) => (
+        <Button index={index} color={track.color} style={{width: "fit-content"}}>
+          {track.name}
+        </Button>
+      ))}
     </Box>
-  ));
+  );
 };
 
 Description.propTypes = {

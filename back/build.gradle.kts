@@ -6,7 +6,7 @@ plugins {
   val kotlinVersion = "1.9.22"
   id("org.springframework.boot") version "3.2.7"
   id("io.spring.dependency-management") version "1.1.6"
-  id("org.flywaydb.flyway") version "10.15.2"
+  id("org.flywaydb.flyway") version "11.0.0"
   id("de.undercouch.download") version "5.3.0"
   id("org.sonarqube") version "5.1.0.4882"
   kotlin("jvm") version kotlinVersion

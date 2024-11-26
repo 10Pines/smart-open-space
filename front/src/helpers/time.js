@@ -81,6 +81,12 @@ export const isSameDate = (date1, date2) =>
 
 export const datePlusOneDay = (date) => new Date(date.getTime() + 24 * 60 * 60 * 1000);
 
+export const formatDateString = (date) => {
+  const parts = date.split("-");
+
+  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+}
+
 const isStringInput = (input) => typeof input === 'string' || input instanceof String;
 
 const isDateInput = (input) => input instanceof Date;

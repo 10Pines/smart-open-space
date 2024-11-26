@@ -142,7 +142,7 @@ export const OpenSpaceForm = ({
           onChange={(description) => setOpenSpace({ ...openSpace, description })}
         />
         <Box>
-          <FormTitle icon={<TalkIcon />}>Tracks</FormTitle>
+          <FormTitle icon={<TalkIcon />}>Ejes temáticos</FormTitle>
           <Carousel ref={tracks}>
             {openSpace.tracks &&
               openSpace.tracks.map((track, index) => (
@@ -202,7 +202,7 @@ export const OpenSpaceForm = ({
         </Box>
 
         <Box>
-          <FormTitle icon={<ClockIcon />}>Fecha/s</FormTitle>
+          <FormTitle icon={<ClockIcon />}>Día/s del evento</FormTitle>
           <Box direction="row" gap="small">
             <Carousel ref={fechas}>
               {openSpace.dates &&

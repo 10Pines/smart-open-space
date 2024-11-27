@@ -11,6 +11,7 @@ import Row from './Row';
 import RowBetween from './RowBetween';
 import Title from './Title';
 import Button from "#components/atom/Button.jsx";
+import {scrollToSection} from "#helpers/scrollUtils.js";
 
 const useTextAlign = () => (useSize() === 'small' ? 'center' : 'start');
 
@@ -62,7 +63,7 @@ const Tracks = ({ children, tracks, ...props }) => {
   return (
     <Box direction={"row-responsive"} gap={"medium"}>
       {tracks.map((track, index) => (
-        <Button index={index} color={track.color} style={{width: "fit-content"}}>
+        <Button index={index} color={track.color} style={{width: "fit-content"}} onClick={(e) => scrollToSection(e, track.name)}>
           {track.name}
         </Button>
       ))}

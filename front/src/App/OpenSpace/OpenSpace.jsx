@@ -115,8 +115,7 @@ const OpenSpace = () => {
         }
       </Box>
 
-      <Box direction={"column"} margin={{top: "medium"}} gap={"medium"}>
-        <Text>Tracks</Text>
+      <Box margin={{top: "medium"}}>
         <MainHeader.Tracks tracks={data.tracks} />
       </Box>
 

@@ -1,11 +1,12 @@
 import { RedirectToRoot, usePushToNewTalk } from '#helpers/routes';
 import EmptyTalk from '../MyTalks/EmptyTalk';
-import { Heading } from 'grommet';
+import {Box, Button, Heading, Text} from 'grommet';
 import { TrackWithTalks } from './TrackWithTalks';
 import TalksGrid from './TalksGrid';
-import React from 'react';
+import React, {useState} from 'react';
 import { useGetTalks } from '#api/os-client';
 import Spinner from '#shared/Spinner';
+import {FormDown, FormUp} from "grommet-icons";
 
 export function DisplayTalks({
   amountOfTalks,
@@ -14,6 +15,7 @@ export function DisplayTalks({
   activeVoting,
   showSpeakerName,
 }) {
+  const [openTalksWithouTrack, setOpenTalksWithouTrack] = useState(false);
   const { data: talks, isPending, isRejected, reload: reloadTalks } = useGetTalks();
   const pushToNewTalk = usePushToNewTalk();
   const shouldDisplayEmptyTalk = amountOfTalks === 0 && activeCallForPapers;
@@ -40,16 +42,38 @@ export function DisplayTalks({
           />
         ))}
         {talksWithoutTrack.length > 0 && (
-          <Heading color="gray" size="sm">
-            Sin track
-          </Heading>
+          <Box direction={"column"}>
+            <Box direction={"row"}
+                 align={"center"}
+                 justify={"between"}
+                 margin={{top: "medium"}}
+                 gap={"large"}
+                 onClick={() => setOpenTalksWithouTrack((prevState) => !prevState)}
+                 style={{
+                   outline: "none",
+                   backgroundColor: "#F4F4F4",
+                   borderTopRightRadius: "5px",
+                   borderTopLeftRadius: "5px"
+                 }}>
+              <Heading color={"dark-3"} size={"1.5rem"} margin={{bottom: "xxsmall", top: "xxsmall", left: "small"}}> Charlas sin track </Heading>
+              <Button icon={openTalksWithouTrack ? <FormUp size={"medium"}/> : <FormDown size={"medium"}/>}/>
+            </Box>
+            <Box width="100%"
+                 height="8px"
+                 background={"gray"}
+                 style={{
+                   borderBottomRightRadius: "5px",
+                   borderBottomLeftRadius: "5px"
+                 }}/>
+            {openTalksWithouTrack &&
+              <TalksGrid
+                talks={talksWithoutTrack}
+                reloadTalks={reloadTalks}
+                activeVoting={activeVoting}
+                showSpeakerName={showSpeakerName}
+              />}
+          </Box>
         )}
-        <TalksGrid
-          talks={talksWithoutTrack}
-          reloadTalks={reloadTalks}
-          activeVoting={activeVoting}
-          showSpeakerName={showSpeakerName}
-        />
       </>
     );
   }
@@ -57,16 +81,38 @@ export function DisplayTalks({
   return (
     <>
       { talks.length > 0 &&
-        <Heading color="gray" size="sm">
-          Sin track
-        </Heading>
+      <Box direction={"column"}>
+        <Box direction={"row"}
+             align={"center"}
+             justify={"between"}
+             margin={{top: "medium"}}
+             gap={"large"}
+             onClick={() => setOpenTalksWithouTrack((prevState) => !prevState)}
+             style={{
+               outline: "none",
+               backgroundColor: "#F4F4F4",
+               borderTopRightRadius: "5px",
+               borderTopLeftRadius: "5px"
+             }}>
+          <Heading color={"dark-3"} size={"1.5rem"} margin={{bottom: "xxsmall", top: "xxsmall", left: "small"}}> Charlas sin track </Heading>
+          <Button icon={openTalksWithouTrack ? <FormUp size={"medium"}/> : <FormDown size={"medium"}/>}/>
+        </Box>
+        <Box width="100%"
+             height="8px"
+             background={"gray"}
+             style={{
+               borderBottomRightRadius: "5px",
+               borderBottomLeftRadius: "5px"
+             }}/>
+        {openTalksWithouTrack &&
+          <TalksGrid
+            talks={talksWithoutTrack}
+            reloadTalks={reloadTalks}
+            activeVoting={activeVoting}
+            showSpeakerName={showSpeakerName}
+          />}
+      </Box>
       }
-      <TalksGrid
-        talks={talks}
-        reloadTalks={reloadTalks}
-        activeVoting={activeVoting}
-        showSpeakerName={showSpeakerName}
-      />
     </>
   );
 }

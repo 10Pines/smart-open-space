@@ -2,7 +2,14 @@ import {Box, Button, Heading} from "grommet";
 import {FormDown, FormUp} from "grommet-icons";
 import React from "react";
 
-const TrackDropdown = ({ openTalks, title, color, id, toggleDropdown, children }) => {
+const TrackDropdown = ({ openTalks, title, color, toggleDropdown, selectedTrack, setSelectedTrack, children }) => {
+  if (selectedTrack === title) {
+    setSelectedTrack(null);
+    if (!openTalks) {
+      toggleDropdown();
+    }
+  }
+
   return (
     <Box direction={"column"}>
       <Box id={title}

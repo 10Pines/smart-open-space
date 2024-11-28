@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {Box, Button, Text, Tip} from 'grommet';
 
 import {activateQueue, deleteOS, finishQueue, useGetOpenSpace, useGetTalks} from '#api/os-client';
@@ -27,6 +27,8 @@ const OpenSpace = () => {
   const size = useSize();
   const [showQuery, setShowQuery] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState(null);
+
   const { data = {}, isPending, isRejected, setData } = useGetOpenSpace();
   const { data: talks } = useGetTalks();
   const queue = useQueue();
@@ -117,7 +119,7 @@ const OpenSpace = () => {
       </Box>
 
       <Box margin={{top: "medium"}}>
-        <MainHeader.Tracks tracks={data.tracks} talks={talks} />
+        <MainHeader.Tracks tracks={data.tracks} talks={talks} setSelectedTrack={setSelectedTrack} />
       </Box>
 
       <Box margin={{ bottom: 'medium' }}>
@@ -127,6 +129,8 @@ const OpenSpace = () => {
           tracks={data.tracks}
           activeVoting={data.isActiveVoting}
           showSpeakerName={data.showSpeakerName}
+          selectedTrack={selectedTrack}
+          setSelectedTrack={setSelectedTrack}
         />
       </Box>
 

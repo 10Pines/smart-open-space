@@ -1,13 +1,12 @@
 import { RedirectToRoot, usePushToNewTalk } from '#helpers/routes';
 import EmptyTalk from '../MyTalks/EmptyTalk';
-import {Box, Button, Heading, Text} from 'grommet';
 import { TrackWithTalks } from './TrackWithTalks';
 import TalksGrid from './TalksGrid';
 import React, {useState} from 'react';
 import { useGetTalks } from '#api/os-client';
 import Spinner from '#shared/Spinner';
-import {FormDown, FormUp} from "grommet-icons";
 import TrackDropdown from "#app/OpenSpace/TrackDropdown.jsx";
+import {TALKS_WITHOUT_TRACKS_TITLE} from "#shared/constants.js";
 
 export function DisplayTalks({
   amountOfTalks,
@@ -15,6 +14,8 @@ export function DisplayTalks({
   tracks,
   activeVoting,
   showSpeakerName,
+  selectedTrack,
+  setSelectedTrack,
 }) {
   const [openTalksWithouTrack, setOpenTalksWithouTrack] = useState(true);
   const { data: talks, isPending, isRejected, reload: reloadTalks } = useGetTalks();
@@ -38,10 +39,19 @@ export function DisplayTalks({
           track={track}
           activeVoting={activeVoting}
           showSpeakerName={showSpeakerName}
+          selectedTrack={selectedTrack}
+          setSelectedTrack={setSelectedTrack}
         />
       ))}
       {talksWithoutTrack.length > 0 && (
-        <TrackDropdown color={"dark-3"} title={"Charlas sin track"} openTalks={openTalksWithouTrack} toggleDropdown={() => setOpenTalksWithouTrack((prevState) => !prevState)}>
+        <TrackDropdown
+          color={"dark-3"}
+          title={TALKS_WITHOUT_TRACKS_TITLE}
+          openTalks={openTalksWithouTrack}
+          toggleDropdown={() => setOpenTalksWithouTrack((prevState) => !prevState)}
+          selectedTrack={selectedTrack}
+          setSelectedTrack={setSelectedTrack}
+        >
           <TalksGrid
             talks={talksWithoutTrack}
             reloadTalks={reloadTalks}

@@ -12,6 +12,7 @@ import RowBetween from './RowBetween';
 import Title from './Title';
 import {scrollToSection} from "#helpers/scrollUtils.js";
 import Button from "#components/atom/Button.jsx";
+import {TALKS_WITHOUT_TRACKS_TITLE} from "#shared/constants.js";
 
 const useTextAlign = () => (useSize() === 'small' ? 'center' : 'start');
 
@@ -59,19 +60,25 @@ const Description = ({ children, description, ...props }) => (
   </Box>
 );
 
-const Tracks = ({ children, tracks, talks, ...props }) => {
+const Tracks = ({ children, tracks, talks, setSelectedTrack, ...props }) => {
   const talksWithoutTrack = talks && talks.filter((talk) => !talk.track);
 
   return (
     <Box direction={"row-responsive"} gap={"medium"}>
       {tracks.map((track, index) => (
-        <Button key={index} color={track.color} style={{width: "fit-content"}} onClick={(e) => scrollToSection(e, track.name)}>
+        <Button key={index} color={track.color} style={{width: "fit-content"}} onClick={(e) => {
+          scrollToSection(e, track.name)
+          setSelectedTrack(track.name)
+        }}>
           {track.name}
         </Button>
       ))}
       {talks && talksWithoutTrack.length > 0 &&
-        <Button color={"dark-3"} style={{width: "fit-content"}} onClick={(e) => scrollToSection(e, "Charlas sin track")}>
-          {"Charlas sin track"}
+        <Button color={"dark-3"} style={{width: "fit-content"}} onClick={(e) => {
+          scrollToSection(e, TALKS_WITHOUT_TRACKS_TITLE)
+          setSelectedTrack(TALKS_WITHOUT_TRACKS_TITLE)
+        }}>
+          {TALKS_WITHOUT_TRACKS_TITLE}
         </Button>
       }
     </Box>

@@ -10,6 +10,8 @@ export function TrackWithTalks({
   track,
   activeVoting,
   showSpeakerName,
+  selectedTrack,
+  setSelectedTrack,
 }) {
   let byTrack = (talk) => talk.track?.id === track.id;
   const talksFromTrack = talks.filter(byTrack);
@@ -19,7 +21,13 @@ export function TrackWithTalks({
   return (
     <>
       {talksFromTrack.length > 0 && (
-        <TrackDropdown title={track.name} color={track.color} openTalks={openTrackInfo} toggleDropdown={() => setOpenTrackInfo((prevState) => !prevState)}>
+        <TrackDropdown
+          title={track.name}
+          color={track.color}
+          openTalks={openTrackInfo} toggleDropdown={() => setOpenTrackInfo((prevState) => !prevState)}
+          selectedTrack={selectedTrack}
+          setSelectedTrack={setSelectedTrack}
+        >
             <Box direction={"column"}>
               <Text margin={{left: "small", right: "small", top:"xsmall"}} color={"dark-2"}>{track.description}</Text>
               <TalksGrid

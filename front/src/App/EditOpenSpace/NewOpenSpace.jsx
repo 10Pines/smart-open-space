@@ -5,7 +5,7 @@ import { createOS } from '#api/os-client';
 import { useUser } from '#helpers/useAuth';
 import { RedirectToRoot, usePushToRoot } from '#helpers/routes';
 import { OpenSpaceForm } from './OpenSpaceForm';
-import { splitTime } from '../components/atom/InputTime';
+import { splitTime } from '#helpers/time';
 
 const NewOpenSpace = () => {
   const history = useHistory();

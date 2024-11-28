@@ -22,7 +22,7 @@ export function TrackWithTalks({
       {talksFromTrack.length > 0 && (
         <TrackDropdown title={track.name} color={track.color} openTalks={openTrackInfo} toggleDropdown={() => setOpenTrackInfo((prevState) => !prevState)}>
             <Box direction={"column"}>
-              <Text margin={{left: "small", right: "small", top:"xsmall"}}>{track.description}</Text>
+              <Text margin={{left: "small", right: "small", top:"xsmall"}} color={"dark-2"}>{track.description}</Text>
               <TalksGrid
                 talks={talksFromTrack}
                 reloadTalks={reloadTalks}

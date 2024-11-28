@@ -26,7 +26,7 @@ repositories {
 
 dependencyManagement {
   dependencies {
-    dependency("com.h2database:h2:2.1.214")
+    dependency("com.h2database:h2:2.3.232")
   }
 }
 

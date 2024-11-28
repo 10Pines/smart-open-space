@@ -5,12 +5,10 @@ import PropTypes from 'prop-types';
 import Title from '#shared/Title';
 import Detail from '#shared/Detail';
 import MyForm from '#shared/MyForm';
-import InputTime, { validateTime } from '../atom/InputTime';
+import InputTime from '../atom/InputTime';
+import { newHour, validateTime } from '#helpers/time';
 
 const OTHER_SLOT = 'OtherSlot';
-
-const newHour = (time) => new Date().setHours(...time.split(':'));
-const datePlusOneDay = (date) => new Date(date.getTime() + 24 * 60 * 60 * 1000);
 
 const InputSlot = ({ onExit, onSubmit, type, start }) => {
   const [startTime, setStartTime] = useState();

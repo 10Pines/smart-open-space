@@ -87,6 +87,16 @@ export const formatDateString = (date) => {
   return `${parts[2]}-${parts[1]}-${parts[0]}`;
 }
 
+export const newHour = (time) => new Date().setHours(...time.split(':'));
+
+export const splitTime = (time) =>
+  time === undefined ? [0, -1] : time.split(':').map((t) => Number(t));
+
+export const validateTime = (time) => {
+  const timeRegex = /^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$/;
+  return !timeRegex.test(time) && 'Hora inválida';
+};
+
 const isStringInput = (input) => typeof input === 'string' || input instanceof String;
 
 const isDateInput = (input) => input instanceof Date;

@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { compareAsc } from 'date-fns';
+import { datePlusOneDay } from '#helpers/time';
 
 // Custom hook to manage OpenSpace state updates
 export const useOpenSpaceForm = (openSpace, setOpenSpace, refs) => {
@@ -130,5 +131,3 @@ export const useOpenSpaceForm = (openSpace, setOpenSpace, refs) => {
 };
 
 export default useOpenSpaceForm;
-
-const datePlusOneDay = (date) => new Date(date.getTime() + 24 * 60 * 60 * 1000);

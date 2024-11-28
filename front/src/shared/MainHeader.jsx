@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { Box, Text, Paragraph, List, Markdown } from 'grommet';
+import { Box, Text, Paragraph, Markdown } from 'grommet';
 
 import MyProps from '#helpers/MyProps';
 import useSize from '#helpers/useSize';
@@ -59,7 +59,9 @@ const Description = ({ children, description, ...props }) => (
   </Box>
 );
 
-const Tracks = ({ children, tracks, ...props }) => {
+const Tracks = ({ children, tracks, talks, ...props }) => {
+  const talksWithoutTrack = talks && talks.filter((talk) => !talk.track);
+
   return (
     <Box direction={"row-responsive"} gap={"medium"}>
       {tracks.map((track, index) => (
@@ -67,6 +69,11 @@ const Tracks = ({ children, tracks, ...props }) => {
           {track.name}
         </Button>
       ))}
+      {talks && talksWithoutTrack.length > 0 &&
+        <Button color={"dark-3"} style={{width: "fit-content"}} onClick={(e) => scrollToSection(e, "Charlas sin track")}>
+          {"Charlas sin track"}
+        </Button>
+      }
     </Box>
   );
 };

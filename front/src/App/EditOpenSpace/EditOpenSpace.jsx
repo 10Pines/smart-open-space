@@ -40,7 +40,7 @@ const EditOpenSpace = () => {
       history={history}
       title={'Editar Open Space'}
       onSubmit={onSubmit}
-      initialValues={openSpace}
+      initialValues={{ ...openSpace, dates: openSpace.dates ?? [] }}
       isNewOpenSpace={false}
     />
   );

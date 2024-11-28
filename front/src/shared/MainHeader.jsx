@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { Box, Text, Paragraph, Markdown } from 'grommet';
+import { Box, Text, Paragraph, Button as GrommetButton, Markdown } from 'grommet';
 
 import MyProps from '#helpers/MyProps';
 import useSize from '#helpers/useSize';
@@ -10,8 +10,8 @@ import ButtonLoading from './ButtonLoading';
 import Row from './Row';
 import RowBetween from './RowBetween';
 import Title from './Title';
-import Button from "#components/atom/Button.jsx";
 import {scrollToSection} from "#helpers/scrollUtils.js";
+import Button from "#components/atom/Button.jsx";
 
 const useTextAlign = () => (useSize() === 'small' ? 'center' : 'start');
 
@@ -32,7 +32,7 @@ MyTitle.propTypes = {
 
 const MyTitleLink = (props) => (
   <MyTitle style={{ textDecoration: 'underline' }}>
-    <Button hoverIndicator plain {...props} />
+    <GrommetButton hoverIndicator plain {...props} />
   </MyTitle>
 );
 
@@ -65,7 +65,7 @@ const Tracks = ({ children, tracks, talks, ...props }) => {
   return (
     <Box direction={"row-responsive"} gap={"medium"}>
       {tracks.map((track, index) => (
-        <Button index={index} color={track.color} style={{width: "fit-content"}} onClick={(e) => scrollToSection(e, track.name)}>
+        <Button key={index} color={track.color} style={{width: "fit-content"}} onClick={(e) => scrollToSection(e, track.name)}>
           {track.name}
         </Button>
       ))}
@@ -83,7 +83,7 @@ Description.propTypes = {
   description: PropTypes.string,
 };
 
-const MyButton = (props) => <Button primary {...props} />;
+const MyButton = (props) => <GrommetButton primary {...props} />;
 
 const getByType = (childs, type) => childs.find((c) => c.type === type);
 const getAllByTypes = (childs, ...types) =>

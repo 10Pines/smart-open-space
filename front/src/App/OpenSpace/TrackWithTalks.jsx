@@ -1,8 +1,7 @@
-import {Box, Button, Heading, Text} from 'grommet';
+import {Box, Text} from 'grommet';
 import TalksGrid from './TalksGrid';
 import React, {useState} from 'react';
 import * as PropTypes from 'prop-types';
-import {Bold, FormDown, FormUp} from "grommet-icons";
 import TrackDropdown from "#app/OpenSpace/TrackDropdown.jsx";
 
 export function TrackWithTalks({

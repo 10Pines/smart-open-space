@@ -60,6 +60,9 @@ const useGetTalk = () => useAsync({ promiseFn: getTalk, talkId: useParams().talk
 const getTalks = ({ osId }) => get(`openSpace/talks/${osId}`).then((talks) => talks);
 const useGetTalks = () => useAsync({ promiseFn: getTalks, osId: useParams().id });
 
+const getAssignedSlots = ({ osId }) => get(`openSpace/assignedSlots/${osId}`);
+const useGetAssignedSlots = () => useAsync({ promiseFn: getAssignedSlots, osId: useParams().id });
+
 const scheduleTalk = (talkID, userID, slotId, roomID) =>
   put(`talk/schedule/${userID}/${talkID}/${slotId}/${roomID}`);
 
@@ -89,12 +92,15 @@ const nextTalk = (osId) => withUser(({ id }) => put(`talk/nextTalk/${id}/${osId}
 const getCurrentUserTalks = ({ osId: openSpaceId }) =>
   withUser(({ id }) => {
     const os = getOpenSpace({ osId: openSpaceId });
-    const assignedSlots = get(`openSpace/assignedSlots/${openSpaceId}`);
+    const assignedSlots = getAssignedSlots(({ osId: openSpaceId }));
     const currentUserTalks = get(`openSpace/talks/${id}/${openSpaceId}`).then(
       (talks) => talks
     );
     return Promise.all([os, assignedSlots, currentUserTalks]);
   });
+
+
+
 const useGetCurrentUserTalks = () =>
   useAsync({ promiseFn: getCurrentUserTalks, osId: useParams().id });
 
@@ -109,6 +115,7 @@ export {
   finishQueue,
   nextTalk,
   useGetAllOpenSpaces,
+  useGetAssignedSlots,
   useGetOpenSpace,
   useGetTalks,
   useGetCurrentUserTalks,

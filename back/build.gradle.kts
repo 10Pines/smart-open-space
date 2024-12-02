@@ -50,7 +50,7 @@ dependencies {
   implementation("net.sargue:mailgun:1.10.0")
   implementation("org.glassfish.jersey.inject:jersey-hk2")
   runtimeOnly("com.h2database:h2")
-  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.15.0")
+  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.16.0")
   testImplementation("org.springframework.boot:spring-boot-starter-test"){
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }

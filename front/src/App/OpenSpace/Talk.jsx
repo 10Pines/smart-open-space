@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Button } from 'grommet';
+import {Box, Button, Text} from 'grommet';
 import PropTypes from 'prop-types';
 
 import Card from '#shared/Card';
@@ -46,16 +46,21 @@ const Talk = ({
 
   const color = track ? track.color : 'gray';
   const talkLink = meetingLink || room?.link;
+  console.log("Track", track)
   return (
     <>
-      <Card key={id} borderColor={color} margin="xsmall" gap="small">
+      <Card key={id} borderColor={color} margin="xsmall" gap="small" backgroundColor={color} style={{width: "288px", height: "330px"}}>
         {children}
+        {track && <Text>{track.name}</Text>}
         <Title>{name}</Title>
         <Box gap="medium">
           {showSpeakerName && <Detail icon={UserIcon} text={realSpeakerName} />}
           {room && <Detail icon={HomeIcon} text={room.name} />}
-          <ButtonMoreInfo onClick={() => pushToTalk()} />
+          {/*<ButtonMoreInfo onClick={() => pushToTalk()} />*/}
           {talkLink && <ButtonGoToLink onClick={() => window.open(talkLink, '_blank')} />}
+          <Box direction={"row"}>
+
+          </Box>
         </Box>
       </Card>
     </>

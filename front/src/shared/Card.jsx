@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 
 import MyProps from '#helpers/MyProps';
 
-const Card = ({ borderColor, borderSide = 'top', children, ...props }) => (
+const Card = ({ borderColor, borderSide = 'top', children, backgroundColor, ...props }) => (
   <Box
-    background="light-1"
+    background={backgroundColor ? backgroundColor : "light-1"}
     border={{ color: borderColor, size: 'medium', side: borderSide, style: 'outset' }}
     elevation="small"
     pad="medium"

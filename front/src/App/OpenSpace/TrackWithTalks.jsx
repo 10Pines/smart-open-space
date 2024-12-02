@@ -20,7 +20,6 @@ export function TrackWithTalks({
 
   return (
     <>
-      {talksFromTrack.length > 0 && (
         <TrackDropdown
           title={track.name}
           color={track.color}
@@ -30,15 +29,18 @@ export function TrackWithTalks({
         >
             <Box direction={"column"}>
               <Text margin={{left: "small", right: "small", top:"xsmall"}} color={"dark-2"}>{track.description}</Text>
-              <TalksGrid
-                talks={talksFromTrack}
-                reloadTalks={reloadTalks}
-                activeVoting={activeVoting}
-                showSpeakerName={showSpeakerName}
-              />
+              {talksFromTrack.length > 0 ?
+                <TalksGrid
+                  talks={talksFromTrack}
+                  reloadTalks={reloadTalks}
+                  activeVoting={activeVoting}
+                  showSpeakerName={showSpeakerName}
+              /> :
+              <Text margin={{left: "small", right: "small", top:"xsmall"}} color={"dark-3"} size={"1rem"}>Todavía no hay charlas de este eje temático</Text>
+              }
             </Box>
         </TrackDropdown>
-      )}
+
     </>
   );
 }

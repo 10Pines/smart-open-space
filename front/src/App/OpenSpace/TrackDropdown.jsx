@@ -25,7 +25,7 @@ const TrackDropdown = ({ openTalks, title, color, toggleDropdown, selectedTrack,
              borderTopRightRadius: "5px",
              borderTopLeftRadius: "5px"
            }}>
-        <Heading color={color} size={"1.5rem"} margin={{bottom: "xxsmall", top: "xxsmall", left: "small"}}>{title}</Heading>
+        <Heading color={"dark-2"} size={"1.5rem"} margin={{bottom: "xxsmall", top: "xxsmall", left: "small"}}>{title}</Heading>
         <Button icon={openTalks ? <FormUp size={"medium"}/> : <FormDown size={"medium"}/>}/>
       </Box>
       <Box width="100%"

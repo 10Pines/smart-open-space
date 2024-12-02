@@ -8,7 +8,7 @@ plugins {
   id("io.spring.dependency-management") version "1.1.6"
   id("org.flywaydb.flyway") version "11.0.0"
   id("de.undercouch.download") version "5.3.0"
-  id("org.sonarqube") version "5.1.0.4882"
+  id("org.sonarqube") version "6.0.1.5171"
   kotlin("jvm") version kotlinVersion
   kotlin("plugin.spring") version kotlinVersion
   kotlin("plugin.jpa") version kotlinVersion

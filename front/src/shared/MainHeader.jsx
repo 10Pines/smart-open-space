@@ -64,7 +64,7 @@ const Tracks = ({ children, tracks, talks, setSelectedTrack, ...props }) => {
   const talksWithoutTrack = talks && talks.filter((talk) => !talk.track);
 
   return (
-    <Box gap={"medium"} direction={"row"} wrap>
+    <Box gap={"medium"} direction={"row-responsive"} wrap>
       {tracks.map((track, index) => (
         <Button key={index} color={track.color} textColor={"dark-2"} style={{width: "fit-content", marginTop: "10px"}} onClick={(e) => {
           scrollToSection(e, track.name)

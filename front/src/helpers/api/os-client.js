@@ -49,7 +49,6 @@ const useGetAllOpenSpaces = () => useAsync({ promiseFn: getAllOpenSpaces });
 
 const getOpenSpace = ({ osId: openSpaceId }) =>
   get(`openSpace/${openSpaceId}`).then((openSpaceDTO) => {
-    console_log_debug('openSpaceDTO', openSpaceDTO);
     return new OpenSpace(openSpaceDTO);
   });
 const useGetOpenSpace = () => useAsync({ promiseFn: getOpenSpace, osId: useParams().id });

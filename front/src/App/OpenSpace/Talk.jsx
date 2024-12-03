@@ -14,7 +14,7 @@ const ButtonMoreInfo = ({ onClick }) => (
   <Button
     alignSelf="center"
     color="accent-3"
-    label="Mas Info"
+    label="Más Info"
     onClick={onClick}
     primary
   />

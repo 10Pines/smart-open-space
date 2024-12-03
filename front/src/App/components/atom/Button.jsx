@@ -6,12 +6,14 @@ const Button = ({
   children = 'Boton',
   secondary = false,
   blackAndWhite = false,
+  textColor,
   variant = 'normal', // normal, circular, square
   autoWidth = false,
   icon,
   onClick = () => {},
   loading = false,
   logicHover = false,
+  wrap = false,
   style,
   ...props
 }) => {
@@ -50,9 +52,9 @@ const Button = ({
   const renderTextLabel = () => (
     <Text
       data-testid="so-button-label-text"
-      color={secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white'}
+      color={textColor ? textColor : (secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white')}
       style={{
-        textWrap: 'nowrap',
+        textWrap: wrap ? 'wrap' : 'nowrap',
       }}
     >
       {children}
@@ -79,7 +81,7 @@ const Button = ({
       data-testid="so-button"
       primary={!secondary}
       secondary={secondary}
-      label={renderLabel()}
+      label={renderLabel(wrap)}
       onClick={onClick}
       color={!blackAndWhite ? 'primary' : blackAndWhiteColor}
       icon={!loading && variant !== 'circular' && styledIcon}

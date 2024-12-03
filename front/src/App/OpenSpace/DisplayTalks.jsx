@@ -1,12 +1,12 @@
 import { RedirectToRoot, usePushToNewTalk } from '#helpers/routes';
 import EmptyTalk from '../MyTalks/EmptyTalk';
-import { Heading } from 'grommet';
 import { TrackWithTalks } from './TrackWithTalks';
 import TalksGrid from './TalksGrid';
-import React from 'react';
-import {useGetAssignedSlots, useGetTalks} from '#api/os-client';
+import React, {useState} from 'react';
+import { useGetTalks } from '#api/os-client';
 import Spinner from '#shared/Spinner';
-import {getAssignedTalks} from "#helpers/talkUtils.js";
+import TrackDropdown from "#app/OpenSpace/TrackDropdown.jsx";
+import {TALKS_WITHOUT_TRACKS_TITLE} from "#shared/constants.js";
 
 export function DisplayTalks({
   amountOfTalks,
@@ -14,68 +14,51 @@ export function DisplayTalks({
   tracks,
   activeVoting,
   showSpeakerName,
+  selectedTrack,
+  setSelectedTrack,
 }) {
+  const [openTalksWithouTrack, setOpenTalksWithouTrack] = useState(true);
   const { data: talks, isPending, isRejected, reload: reloadTalks } = useGetTalks();
-  const  {
-    data: assignedSlots,
-    isPending: areAssignedSlotsPending,
-    isRejected: assignedSlotsRejected,
-  } = useGetAssignedSlots();
   const pushToNewTalk = usePushToNewTalk();
   const shouldDisplayEmptyTalk = amountOfTalks === 0 && activeCallForPapers;
-  const shouldDisplayTrackWithTalks = tracks.length > 0 && amountOfTalks > 0;
-  let talksWithoutTrack = [];
-  if (isPending || areAssignedSlotsPending) return <Spinner />;
-  if (isRejected || assignedSlotsRejected) return <RedirectToRoot />;
+  if (isPending) return <Spinner />;
+  if (isRejected) return <RedirectToRoot />;
   if (shouldDisplayEmptyTalk) {
     return <EmptyTalk onClick={pushToNewTalk} />;
   }
-  const assignedTalks = getAssignedTalks(talks, assignedSlots);
-
-  if (shouldDisplayTrackWithTalks) {
-    talksWithoutTrack = talks.filter((talk) => !talk.track);
-    return (
-      <>
-        {tracks.map((track, index) => (
-          <TrackWithTalks
-            key={index}
-            talks={talks}
-            reloadTalks={reloadTalks}
-            track={track}
-            activeVoting={activeVoting}
-            assignedTalks={assignedTalks}
-            showSpeakerName={showSpeakerName}
-          />
-        ))}
-        {talksWithoutTrack.length > 0 && (
-          <Heading color="gray" size="sm">
-            Sin track
-          </Heading>
-        )}
-        <TalksGrid
-          talks={talksWithoutTrack}
-          reloadTalks={reloadTalks}
-          activeVoting={activeVoting}
-          assignedTalks={assignedTalks}
-          showSpeakerName={showSpeakerName}
-        />
-      </>
-    );
-  }
+  const talksWithoutTrack = talks.filter((talk) => !talk.track);
 
   return (
     <>
-      { talks.length > 0 &&
-        <Heading color="gray" size="sm">
-          Sin track
-        </Heading>
-      }
-      <TalksGrid
-        talks={talks}
-        reloadTalks={reloadTalks}
-        activeVoting={activeVoting}
-        showSpeakerName={showSpeakerName}
-      />
+      {tracks.map((track, index) => (
+        <TrackWithTalks
+          key={index}
+          talks={talks}
+          reloadTalks={reloadTalks}
+          track={track}
+          activeVoting={activeVoting}
+          showSpeakerName={showSpeakerName}
+          selectedTrack={selectedTrack}
+          setSelectedTrack={setSelectedTrack}
+        />
+      ))}
+      {talksWithoutTrack.length > 0 && (
+        <TrackDropdown
+          color={"dark-3"}
+          title={TALKS_WITHOUT_TRACKS_TITLE}
+          openTalks={openTalksWithouTrack}
+          toggleDropdown={() => setOpenTalksWithouTrack((prevState) => !prevState)}
+          selectedTrack={selectedTrack}
+          setSelectedTrack={setSelectedTrack}
+        >
+          <TalksGrid
+            talks={talksWithoutTrack}
+            reloadTalks={reloadTalks}
+            activeVoting={activeVoting}
+            showSpeakerName={showSpeakerName}
+          />
+        </TrackDropdown>
+      )}
     </>
   );
 }

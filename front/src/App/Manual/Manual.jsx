@@ -3,6 +3,7 @@ import ManualSection from "#app/Manual/ManualSection.jsx";
 import {ManualIcon} from "#shared/icons.jsx";
 import {useEffect, useState} from "react";
 import useSize from "#helpers/useSize.jsx";
+import {scrollToSection} from "#helpers/scrollUtils.js";
 
 
 const Manual = () => {
@@ -32,17 +33,6 @@ const Manual = () => {
 
     return () => observer.disconnect();
   }, []);
-
-  const scrollToSection = (event, sectionId) => {
-    event.preventDefault();
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  };
 
   return (
       <Box direction={'column'} justify={'center'} alignItems={'center'}>

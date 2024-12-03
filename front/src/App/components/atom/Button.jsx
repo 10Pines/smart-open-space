@@ -6,6 +6,7 @@ const Button = ({
   children = 'Boton',
   secondary = false,
   blackAndWhite = false,
+  textColor,
   variant = 'normal', // normal, circular, square
   autoWidth = false,
   icon,
@@ -50,7 +51,7 @@ const Button = ({
   const renderTextLabel = () => (
     <Text
       data-testid="so-button-label-text"
-      color={secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white'}
+      color={textColor ? textColor : (secondary ? (!blackAndWhite ? 'primary' : blackAndWhiteColor) : 'white')}
       style={{
         textWrap: 'nowrap',
       }}

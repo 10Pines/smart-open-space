@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { Box, Text, Button, Paragraph, List, Markdown } from 'grommet';
+import { Box, Text, Paragraph, Button as GrommetButton, Markdown } from 'grommet';
 
 import MyProps from '#helpers/MyProps';
 import useSize from '#helpers/useSize';
@@ -10,6 +10,9 @@ import ButtonLoading from './ButtonLoading';
 import Row from './Row';
 import RowBetween from './RowBetween';
 import Title from './Title';
+import {scrollToSection} from "#helpers/scrollUtils.js";
+import Button from "#components/atom/Button.jsx";
+import {TALKS_WITHOUT_TRACKS_TITLE} from "#shared/constants.js";
 
 const useTextAlign = () => (useSize() === 'small' ? 'center' : 'start');
 
@@ -30,7 +33,7 @@ MyTitle.propTypes = {
 
 const MyTitleLink = (props) => (
   <MyTitle style={{ textDecoration: 'underline' }}>
-    <Button hoverIndicator plain {...props} />
+    <GrommetButton hoverIndicator plain {...props} />
   </MyTitle>
 );
 
@@ -57,17 +60,29 @@ const Description = ({ children, description, ...props }) => (
   </Box>
 );
 
-const Tracks = ({ children, tracks, ...props }) => {
-  return tracks.map((track, index) => (
-    <Box key={index} margin={{ bottom: '10px' }}>
-      <Box background={track.color} pad="10px" margin="10px 0">
-        <Text size="large">{track.name}</Text>
-      </Box>
-      <Text color="#808080" size="medium">
-        {track.description}
-      </Text>
+const Tracks = ({ children, tracks, talks, setSelectedTrack, ...props }) => {
+  const talksWithoutTrack = talks && talks.filter((talk) => !talk.track);
+
+  return (
+    <Box direction={"row-responsive"} gap={"medium"}>
+      {tracks.map((track, index) => (
+        <Button key={index} color={track.color} textColor={"dark-2"} style={{width: "fit-content"}} onClick={(e) => {
+          scrollToSection(e, track.name)
+          setSelectedTrack(track.name)
+        }}>
+          {track.name}
+        </Button>
+      ))}
+      {talks && talksWithoutTrack.length > 0 &&
+        <Button color={"#e4e4e4"} textColor={"dark-2"} style={{width: "fit-content"}} onClick={(e) => {
+          scrollToSection(e, TALKS_WITHOUT_TRACKS_TITLE)
+          setSelectedTrack(TALKS_WITHOUT_TRACKS_TITLE)
+        }}>
+          {TALKS_WITHOUT_TRACKS_TITLE}
+        </Button>
+      }
     </Box>
-  ));
+  );
 };
 
 Description.propTypes = {
@@ -75,7 +90,7 @@ Description.propTypes = {
   description: PropTypes.string,
 };
 
-const MyButton = (props) => <Button primary {...props} />;
+const MyButton = (props) => <GrommetButton primary {...props} />;
 
 const getByType = (childs, type) => childs.find((c) => c.type === type);
 const getAllByTypes = (childs, ...types) =>

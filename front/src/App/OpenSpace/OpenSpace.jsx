@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {Box, Button, Text, Tip} from 'grommet';
 
-import { activateQueue, deleteOS, finishQueue, useGetOpenSpace } from '#api/os-client';
+import {activateQueue, deleteOS, finishQueue, useGetOpenSpace, useGetTalks} from '#api/os-client';
 import { useQueue } from '#api/sockets-client';
 import { useUser } from '#helpers/useAuth';
 import {
@@ -27,7 +27,10 @@ const OpenSpace = () => {
   const size = useSize();
   const [showQuery, setShowQuery] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState(null);
+
   const { data = {}, isPending, isRejected, setData } = useGetOpenSpace();
+  const { data: talks } = useGetTalks();
   const queue = useQueue();
   const pushHandlers = {
     pushToSchedule: usePushToSchedule(data.id),
@@ -89,6 +92,7 @@ const OpenSpace = () => {
             icon={<ScheduleIcon />}
             label="Agenda"
             onClick={pushHandlers.pushToSchedule}
+            style={{width:'10rem'}}
           />
         )}
         { user && !amTheOrganizer &&
@@ -114,8 +118,8 @@ const OpenSpace = () => {
         }
       </Box>
 
-      <Box>
-        <MainHeader.Tracks tracks={data.tracks} />
+      <Box margin={{top: "medium"}}>
+        <MainHeader.Tracks tracks={data.tracks} talks={talks} setSelectedTrack={setSelectedTrack} />
       </Box>
 
       <Box margin={{ bottom: 'medium' }}>
@@ -125,6 +129,8 @@ const OpenSpace = () => {
           tracks={data.tracks}
           activeVoting={data.isActiveVoting}
           showSpeakerName={data.showSpeakerName}
+          selectedTrack={selectedTrack}
+          setSelectedTrack={setSelectedTrack}
         />
       </Box>
 

@@ -1,11 +1,11 @@
 import React from 'react';
 
-import {Avatar, Box, Button, Text} from 'grommet';
+import {Avatar, Box, Button, Text, Tip} from 'grommet';
 import PropTypes from 'prop-types';
-
+import HeadphonesIcon from "../../assets/headphones.png"
 import Card from '#shared/Card';
 import Detail from '#shared/Detail';
-import { HomeIcon, UserIcon } from '#shared/icons';
+import { HomeIcon } from '#shared/icons';
 import Title from '#shared/Title';
 import { usePushToTalk } from '#helpers/routes';
 import { useParams } from 'react-router-dom';
@@ -20,16 +20,6 @@ const ButtonMoreInfo = ({ onClick }) => (
   />
 );
 ButtonMoreInfo.propTypes = { onClick: PropTypes.func.isRequired };
-
-const ButtonGoToLink = ({ onClick }) => (
-  <Button
-    alignSelf="center"
-    color="accent-4"
-    label="Ir a reunion"
-    onClick={onClick}
-    primary
-  />
-);
 
 const Talk = ({
   talk: { id, name, speaker, meetingLink, track, speakerName },
@@ -74,8 +64,12 @@ const Talk = ({
               </Box>
             }
           </Box>
-          <Box direction={"row"} gap={"small"}>
-            {talkLink && <Button onClick={() => window.open(talkLink, '_blank')}/>}
+          <Box direction={"row"} gap={"medium"} width={"100%"} justify={"end"}>
+            <Tip content={"Ir a la reunión"}>
+              <Box>
+                {talkLink && <Avatar size={"25px"} src={HeadphonesIcon} onClick={() => window.open(talkLink, '_blank')}/>}
+              </Box>
+            </Tip>
             {children}
           </Box>
         </Box>

@@ -9,7 +9,7 @@ export function TrackWithTalks({
   reloadTalks,
   track,
   activeVoting,
-                                 assignedTalks,
+  assignedTalks,
   showSpeakerName,
   selectedTrack,
   setSelectedTrack,
@@ -17,7 +17,6 @@ export function TrackWithTalks({
   let byTrack = (talk) => talk.track?.id === track.id;
   const talksFromTrack = talks.filter(byTrack);
   const [openTrackInfo, setOpenTrackInfo] = useState(true);
-
 
   return (
     <>

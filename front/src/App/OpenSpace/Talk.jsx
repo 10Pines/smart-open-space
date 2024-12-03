@@ -34,7 +34,7 @@ const Talk = ({
     showSpeakerName ? realSpeakerName : null
   );
 
-  const color = track ? track.color : 'gray';
+  const color = track ? track.color : '#e4e4e4';
   const talkLink = meetingLink || room?.link;
 
   console.log("ROOM:", room)

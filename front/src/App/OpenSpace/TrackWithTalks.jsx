@@ -8,6 +8,7 @@ export function TrackWithTalks({
   reloadTalks,
   track,
   activeVoting,
+  assignedSlots,
   showSpeakerName,
 }) {
   let byTrack = (talk) => talk.track?.id === track.id;
@@ -21,6 +22,7 @@ export function TrackWithTalks({
             talks={talksFromTrack}
             reloadTalks={reloadTalks}
             activeVoting={activeVoting}
+            assignedSlots={assignedSlots}
             showSpeakerName={showSpeakerName}
           />
         </>

@@ -46,21 +46,18 @@ const Talk = ({
 
   const color = track ? track.color : 'gray';
   const talkLink = meetingLink || room?.link;
-  console.log("Track", track)
+
   return (
     <>
-      <Card key={id} borderColor={color} margin="xsmall" gap="small" backgroundColor={color} style={{width: "288px", height: "330px"}}>
-        {children}
+      <Card key={id} borderColor={color} margin="xsmall" gap={"xsmall"} justify={false} backgroundColor={color} align={"center"} style={{width: "288px", height: "330px", borderRadius: "5px"}}>
         {track && <Text>{track.name}</Text>}
-        <Title>{name}</Title>
+        <Title style={{fontSize: "1.8rem", padding: 0, margin: 0}}>{name}</Title>
         <Box gap="medium">
           {showSpeakerName && <Detail icon={UserIcon} text={realSpeakerName} />}
           {room && <Detail icon={HomeIcon} text={room.name} />}
           {/*<ButtonMoreInfo onClick={() => pushToTalk()} />*/}
           {talkLink && <ButtonGoToLink onClick={() => window.open(talkLink, '_blank')} />}
-          <Box direction={"row"}>
-
-          </Box>
+          {children}
         </Box>
       </Card>
     </>

@@ -4,7 +4,7 @@ import { Heading } from 'grommet';
 import { TrackWithTalks } from './TrackWithTalks';
 import TalksGrid from './TalksGrid';
 import React from 'react';
-import { useGetTalks } from '#api/os-client';
+import {useGetAssignedSlots, useGetTalks} from '#api/os-client';
 import Spinner from '#shared/Spinner';
 
 export function DisplayTalks({
@@ -15,15 +15,21 @@ export function DisplayTalks({
   showSpeakerName,
 }) {
   const { data: talks, isPending, isRejected, reload: reloadTalks } = useGetTalks();
+  const  {
+    data: assignedSlots,
+    isPending: areAssignedSlotsPending,
+    isRejected: assignedSlotsRejected,
+  } = useGetAssignedSlots();
   const pushToNewTalk = usePushToNewTalk();
   const shouldDisplayEmptyTalk = amountOfTalks === 0 && activeCallForPapers;
   const shouldDisplayTrackWithTalks = tracks.length > 0 && amountOfTalks > 0;
   let talksWithoutTrack = [];
-  if (isPending) return <Spinner />;
-  if (isRejected) return <RedirectToRoot />;
+  if (isPending || areAssignedSlotsPending) return <Spinner />;
+  if (isRejected || assignedSlotsRejected) return <RedirectToRoot />;
   if (shouldDisplayEmptyTalk) {
     return <EmptyTalk onClick={pushToNewTalk} />;
   }
+  console.log("SLOTS:", assignedSlots)
 
   if (shouldDisplayTrackWithTalks) {
     talksWithoutTrack = talks.filter((talk) => !talk.track);
@@ -36,6 +42,7 @@ export function DisplayTalks({
             reloadTalks={reloadTalks}
             track={track}
             activeVoting={activeVoting}
+            assignedSlots={assignedSlots}
             showSpeakerName={showSpeakerName}
           />
         ))}
@@ -48,6 +55,7 @@ export function DisplayTalks({
           talks={talksWithoutTrack}
           reloadTalks={reloadTalks}
           activeVoting={activeVoting}
+          assignedSlots={assignedSlots}
           showSpeakerName={showSpeakerName}
         />
       </>

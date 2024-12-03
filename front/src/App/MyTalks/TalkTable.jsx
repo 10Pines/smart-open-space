@@ -246,7 +246,6 @@ const TalkTable = ({
           const talkSchedule = assignedTalks.find(
             (assignedTalk) => assignedTalk.id === talk.id
           );
-          console.log('talksh: ', talkSchedule);
           return {
             title: talk.name,
             id: talk.id,

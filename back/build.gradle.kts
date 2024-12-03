@@ -8,7 +8,7 @@ plugins {
   id("io.spring.dependency-management") version "1.1.6"
   id("org.flywaydb.flyway") version "11.0.0"
   id("de.undercouch.download") version "5.3.0"
-  id("org.sonarqube") version "5.1.0.4882"
+  id("org.sonarqube") version "6.0.1.5171"
   kotlin("jvm") version kotlinVersion
   kotlin("plugin.spring") version kotlinVersion
   kotlin("plugin.jpa") version kotlinVersion
@@ -47,10 +47,10 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("io.micrometer:micrometer-registry-prometheus")
   implementation("com.google.guava:guava:32.0.0-android")
-  implementation("net.sargue:mailgun:1.10.0")
+  implementation("net.sargue:mailgun:2.0.0")
   implementation("org.glassfish.jersey.inject:jersey-hk2")
   runtimeOnly("com.h2database:h2")
-  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.15.0")
+  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.16.0")
   testImplementation("org.springframework.boot:spring-boot-starter-test"){
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }

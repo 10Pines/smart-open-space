@@ -79,11 +79,23 @@ export const isSameDate = (date1, date2) =>
   date1.getMonth() === date2.getMonth() &&
   date1.getDate() === date2.getDate();
 
+export const datePlusOneDay = (date) => new Date(date.getTime() + 24 * 60 * 60 * 1000);
+
 export const formatDateString = (date) => {
   const parts = date.split("-");
 
   return `${parts[2]}-${parts[1]}-${parts[0]}`;
 }
+
+export const newHour = (time) => new Date().setHours(...time.split(':'));
+
+export const splitTime = (time) =>
+  time === undefined ? [0, -1] : time.split(':').map((t) => Number(t));
+
+export const validateTime = (time) => {
+  const timeRegex = /^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$/;
+  return !timeRegex.test(time) && 'Hora inválida';
+};
 
 const isStringInput = (input) => typeof input === 'string' || input instanceof String;
 
@@ -97,3 +109,4 @@ const getDateFromString = (dateStr) =>
 const getTimeArray = (t) => (isStringInput(t) ? t.split(':') : t);
 
 const getIntNumber = (d) => (isStringInput(d) ? parseInt(d, 10) : d);
+

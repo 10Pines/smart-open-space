@@ -91,6 +91,7 @@ const Button = ({
 };
 
 const circularSize = {
+  xxsmall: '1.5rem',
   xsmall: '2rem',
   small: '2.5rem',
   medium: '3rem',

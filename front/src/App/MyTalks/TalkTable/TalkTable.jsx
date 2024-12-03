@@ -12,6 +12,7 @@ import { DeleteModal } from '../components/DeleteModal';
 import { useUser } from '#helpers/useAuth';
 import {formatDateString} from "#helpers/time.js";
 import Spinner from "#shared/Spinner.jsx";
+import {getAssignedTalks} from "#helpers/talkUtils.js";
 
 const TalkTable = ({
   activeQueue,
@@ -70,16 +71,7 @@ const TalkTable = ({
 
   if (areAssignedSlotsPending) return <Spinner />;
 
-  const assignedTalks = talks
-    ? assignedSlots?.map((slot) => {
-      return {
-        id: slot.talk.id,
-        startTime: slot.slot.startTime,
-        date: slot.slot.date,
-        room: slot.room.name,
-      };
-    })
-    : [];
+  const assignedTalks = getAssignedTalks(talks, assignedSlots);
 
   return (
     <>
@@ -170,7 +162,7 @@ const TalkTable = ({
             state: talkSchedule ? 'Agendada' : 'Presentada',
             talkDate: talkSchedule?.date && formatDateString(talkSchedule?.date),
             talkStartTime: talkSchedule?.startTime,
-            room: talkSchedule?.room,
+            room: talkSchedule?.name,
             openSpaceId: talk.openSpace.id,
           };
         })}

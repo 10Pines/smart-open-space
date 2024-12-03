@@ -6,6 +6,7 @@ import TalksGrid from './TalksGrid';
 import React from 'react';
 import {useGetAssignedSlots, useGetTalks} from '#api/os-client';
 import Spinner from '#shared/Spinner';
+import {getAssignedTalks} from "#helpers/talkUtils.js";
 
 export function DisplayTalks({
   amountOfTalks,
@@ -29,7 +30,7 @@ export function DisplayTalks({
   if (shouldDisplayEmptyTalk) {
     return <EmptyTalk onClick={pushToNewTalk} />;
   }
-  console.log("SLOTS:", assignedSlots)
+  const assignedTalks = getAssignedTalks(talks, assignedSlots);
 
   if (shouldDisplayTrackWithTalks) {
     talksWithoutTrack = talks.filter((talk) => !talk.track);
@@ -42,7 +43,7 @@ export function DisplayTalks({
             reloadTalks={reloadTalks}
             track={track}
             activeVoting={activeVoting}
-            assignedSlots={assignedSlots}
+            assignedTalks={assignedTalks}
             showSpeakerName={showSpeakerName}
           />
         ))}
@@ -55,7 +56,7 @@ export function DisplayTalks({
           talks={talksWithoutTrack}
           reloadTalks={reloadTalks}
           activeVoting={activeVoting}
-          assignedSlots={assignedSlots}
+          assignedTalks={assignedTalks}
           showSpeakerName={showSpeakerName}
         />
       </>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Box, Button, Text} from 'grommet';
+import {Avatar, Box, Button, Text} from 'grommet';
 import PropTypes from 'prop-types';
 
 import Card from '#shared/Card';
@@ -47,17 +47,37 @@ const Talk = ({
   const color = track ? track.color : 'gray';
   const talkLink = meetingLink || room?.link;
 
+  console.log("ROOM:", room)
   return (
     <>
-      <Card key={id} borderColor={color} margin="xsmall" gap={"xsmall"} justify={false} backgroundColor={color} align={"center"} style={{width: "288px", height: "330px", borderRadius: "5px"}}>
-        {track && <Text>{track.name}</Text>}
-        <Title style={{fontSize: "1.8rem", padding: 0, margin: 0}}>{name}</Title>
-        <Box gap="medium">
-          {showSpeakerName && <Detail icon={UserIcon} text={realSpeakerName} />}
-          {room && <Detail icon={HomeIcon} text={room.name} />}
-          {/*<ButtonMoreInfo onClick={() => pushToTalk()} />*/}
-          {talkLink && <ButtonGoToLink onClick={() => window.open(talkLink, '_blank')} />}
-          {children}
+      <Card pad={{top: "medium", left: 'medium', right: "medium", bottom: 0}} key={id} borderColor={color} margin="xsmall" gap={"xsmall"} justify={false} backgroundColor={color} style={{width: "288px", height: "330px", borderRadius: "5px"}}>
+        <Box align={"center"} height={"25px"}>
+          {track && <Text>{track.name}</Text>}
+        </Box>
+        <Title style={{fontSize: "1.5rem", padding: 0, margin: 0, height: "100px", cursor: 'pointer', transition: 'text-decoration 0.2s ease',}}
+               onClick={pushToTalk}
+               onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+               onMouseLeave={(e) => e.target.style.textDecoration = 'none'}>
+          {name}
+        </Title>
+        <Box gap={"small"} direction="column" width={"100%"} align={"center"} margin={{top: "medium"}}>
+          <Box align={"center"} width={"100%"} height={"30px"}>
+            {room && <Detail icon={HomeIcon} text={room.name} color={"dark-2"}/>}
+          </Box>
+          <Box align={"start"} width={"100%"} height={"30px"} margin={{bottom: "small"}}>
+            {showSpeakerName &&
+              <Box direction={"row"} gap={"small"} margin={{top: "medium"}}>
+                <Avatar size="25px" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" />
+                <Text color={"dark-2"} size={"1.1rem"}>
+                  {realSpeakerName}
+                </Text>
+              </Box>
+            }
+          </Box>
+          <Box direction={"row"} gap={"small"}>
+            {talkLink && <Button onClick={() => window.open(talkLink, '_blank')}/>}
+            {children}
+          </Box>
         </Box>
       </Card>
     </>

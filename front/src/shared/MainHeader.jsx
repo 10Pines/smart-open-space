@@ -64,9 +64,9 @@ const Tracks = ({ children, tracks, talks, setSelectedTrack, ...props }) => {
   const talksWithoutTrack = talks && talks.filter((talk) => !talk.track);
 
   return (
-    <Box direction={"row-responsive"} gap={"medium"}>
+    <Box gap={"medium"} direction={"row"} wrap>
       {tracks.map((track, index) => (
-        <Button key={index} color={track.color} textColor={"dark-2"} style={{width: "fit-content"}} onClick={(e) => {
+        <Button key={index} color={track.color} textColor={"dark-2"} style={{width: "fit-content", marginTop: "10px"}} onClick={(e) => {
           scrollToSection(e, track.name)
           setSelectedTrack(track.name)
         }}>
@@ -74,7 +74,7 @@ const Tracks = ({ children, tracks, talks, setSelectedTrack, ...props }) => {
         </Button>
       ))}
       {talks && talksWithoutTrack.length > 0 &&
-        <Button color={"#e4e4e4"} textColor={"dark-2"} style={{width: "fit-content"}} onClick={(e) => {
+        <Button color={"#e4e4e4"} textColor={"dark-2"} style={{width: "fit-content", marginTop: "10px"}} onClick={(e) => {
           scrollToSection(e, TALKS_WITHOUT_TRACKS_TITLE)
           setSelectedTrack(TALKS_WITHOUT_TRACKS_TITLE)
         }}>

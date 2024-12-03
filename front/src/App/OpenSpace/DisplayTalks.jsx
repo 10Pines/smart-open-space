@@ -21,7 +21,6 @@ export function DisplayTalks({
   const { data: talks, isPending, isRejected, reload: reloadTalks } = useGetTalks();
   const pushToNewTalk = usePushToNewTalk();
   const shouldDisplayEmptyTalk = amountOfTalks === 0 && activeCallForPapers;
-  const shouldDisplayTrackWithTalks = tracks.length > 0 && amountOfTalks > 0;
   if (isPending) return <Spinner />;
   if (isRejected) return <RedirectToRoot />;
   if (shouldDisplayEmptyTalk) {
@@ -31,7 +30,7 @@ export function DisplayTalks({
 
   return (
     <>
-      {shouldDisplayTrackWithTalks && tracks.map((track, index) => (
+      {tracks.map((track, index) => (
         <TrackWithTalks
           key={index}
           talks={talks}

@@ -37,7 +37,6 @@ const Talk = ({
   const color = track ? track.color : '#e4e4e4';
   const talkLink = meetingLink || room?.link;
 
-  console.log("ROOM:", room)
   return (
     <>
       <Card pad={{top: "medium", left: 'medium', right: "medium", bottom: 0}} key={id} borderColor={color} margin="xsmall" gap={"xsmall"} justify={false} backgroundColor={color} style={{width: "288px", height: "330px", borderRadius: "5px"}}>

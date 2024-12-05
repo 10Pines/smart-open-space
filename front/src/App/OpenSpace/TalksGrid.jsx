@@ -1,8 +1,7 @@
 import React from 'react';
 import MyGrid from '#shared/MyGrid';
-import Talk from './Talk';
+import Talk from './Talk/Talk.jsx';
 import { Vote } from './Vote';
-import {Box} from "grommet";
 
 const TalksGrid = ({ talks, reloadTalks, activeVoting, assignedTalks, showSpeakerName }) => {
   return (

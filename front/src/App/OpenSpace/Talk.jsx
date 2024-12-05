@@ -39,7 +39,7 @@ const Talk = ({
 
   return (
     <>
-      <Card pad={{top: "small", left: 'medium', right: "medium", bottom: 0}} key={id} borderColor={color} margin="xsmall" gap={"xsmall"} justify={false} backgroundColor={color} style={{width: "288px", height: "330px", borderRadius: "5px"}}>
+      <Card pad={{top: "small", left: 'medium', right: "medium", bottom: 0}} key={id} borderColor={color} gap={"xsmall"} justify={false} backgroundColor={color} style={{width: "288px", height: "330px", borderRadius: "5px"}}>
         <Box align={"center"} height={"35px"} width={"100%"}>
           {track && <Text textAlign={"center"} style={{ fontStyle: 'italic', lineHeight: "1rem", fontSize: "16px" }}>{track.name}</Text>}
         </Box>

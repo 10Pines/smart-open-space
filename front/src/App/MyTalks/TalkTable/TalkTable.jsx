@@ -1,6 +1,6 @@
 import { DataTable, Text } from 'grommet';
 import React, {useEffect, useState} from 'react';
-import { usePushToTalk } from '#helpers/routes';
+import {RedirectToRoot, usePushToTalk} from '#helpers/routes';
 import { useParams } from 'react-router-dom';
 import {deleteTalk, enqueueTalk, exchangeTalk, scheduleTalk, useGetAssignedSlots} from '#api/os-client';
 import SelectSlot from '../Talk/SelectSlot';
@@ -27,6 +27,7 @@ const TalkTable = ({
   const  {
     data: assignedSlots,
     isPending: areAssignedSlotsPending,
+    isRejected: areAssignedSlotsRejected
   } = useGetAssignedSlots();
 
   const [selectedToEditTalkId, setSelectedToEditTalkId] = useState(null);
@@ -70,6 +71,7 @@ const TalkTable = ({
   }, [confirmDeleteSelectedTalkId, openSpaceId, reloadTalks, selectedToDeleteTalkId]);
 
   if (areAssignedSlotsPending) return <Spinner />;
+  if (areAssignedSlotsRejected) return <RedirectToRoot/>;
 
   const assignedTalks = getAssignedTalks(talks, assignedSlots);
 

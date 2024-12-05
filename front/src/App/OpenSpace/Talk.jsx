@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import HeadphonesIcon from "../../assets/headphones.png"
 import Card from '#shared/Card';
 import Detail from '#shared/Detail';
-import { HomeIcon } from '#shared/icons';
+import {HomeIcon} from '#shared/icons';
 import Title from '#shared/Title';
 import { usePushToTalk } from '#helpers/routes';
 import { useParams } from 'react-router-dom';
@@ -39,34 +39,37 @@ const Talk = ({
 
   return (
     <>
-      <Card pad={{top: "medium", left: 'medium', right: "medium", bottom: 0}} key={id} borderColor={color} margin="xsmall" gap={"xsmall"} justify={false} backgroundColor={color} style={{width: "288px", height: "330px", borderRadius: "5px"}}>
-        <Box align={"center"} height={"25px"}>
-          {track && <Text>{track.name}</Text>}
+      <Card pad={{top: "small", left: 'medium', right: "medium", bottom: 0}} key={id} borderColor={color} margin="xsmall" gap={"xsmall"} justify={false} backgroundColor={color} style={{width: "288px", height: "330px", borderRadius: "5px"}}>
+        <Box align={"center"} height={"35px"} width={"100%"}>
+          {track && <Text textAlign={"center"} style={{ fontStyle: 'italic', lineHeight: "1rem", fontSize: "16px" }}>{track.name}</Text>}
         </Box>
-        <Title style={{fontSize: "1.5rem", padding: 0, margin: 0, height: "100px", cursor: 'pointer', transition: 'text-decoration 0.2s ease',}}
+        <Title style={{fontSize: "1.3rem", padding: 0, margin: 0, maxHeight: "120px", height: "120px", cursor: 'pointer', transition: 'text-decoration 0.2s ease', textWrap: "wrap"}}
+               truncate
                onClick={pushToTalk}
                onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
                onMouseLeave={(e) => e.target.style.textDecoration = 'none'}>
           {name}
         </Title>
-        <Box gap={"small"} direction="column" width={"100%"} align={"center"} margin={{top: "medium"}}>
-          <Box align={"center"} width={"100%"} height={"30px"}>
-            {room && <Detail icon={HomeIcon} text={room.name} color={"dark-2"}/>}
+        <Box gap={"small"} direction="column" width={"100%"} align={"center"} margin={{top: "10px"}}>
+          <Box direction={"column"} gap={"15px"} align={"center"} width={"100%"} height={"25px"}>
+            {room &&
+              <Detail icon={HomeIcon} text={room.name} color={"dark-2"}/>
+            }
           </Box>
-          <Box align={"start"} width={"100%"} height={"30px"} margin={{bottom: "small"}}>
+          <Box align={"start"} width={"100%"} height={"35px"} margin={{top: "5px"}}>
             {showSpeakerName &&
-              <Box direction={"row"} gap={"small"} margin={{top: "medium"}}>
-                <Avatar size="25px" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" />
+              <Box direction={"row"} gap={"small"}>
+                <Avatar size="25px" src="https://cdn-icons-png.flaticon.com/512/149/149071.png"/>
                 <Text color={"dark-2"} size={"1.1rem"}>
                   {realSpeakerName}
                 </Text>
               </Box>
             }
           </Box>
-          <Box direction={"row"} gap={"medium"} width={"100%"} justify={"end"}>
+          <Box direction={"row"} gap={"medium"} width={"100%"} justify={"end"} margin={{top: "10px"}}>
             <Tip content={"Ir a la reunión"}>
               <Box>
-                {talkLink && <Avatar size={"25px"} src={HeadphonesIcon} onClick={() => window.open(talkLink, '_blank')}/>}
+                {talkLink && <Avatar style={{border: "solid 1px gray", padding: "3px"}} size={"30px"} src={HeadphonesIcon} onClick={() => window.open(talkLink, '_blank')}/>}
               </Box>
             </Tip>
             {children}

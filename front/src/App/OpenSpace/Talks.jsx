@@ -10,24 +10,28 @@ const sliderSettings = {
   arrows: true,
   dots: false,
   speed: 500,
-  slidesToShow: 3,
+  slidesToShow: 4,
   slidesToScroll: 1,
   nextArrow: <NextIcon />,
   prevArrow: <PreviousIcon />,
   responsive: [
     {
-      breakpoint: 960,
+      breakpoint: 1550,
+      settings: { slidesToShow: 3, slidesToScroll: 2 },
+    },
+    {
+      breakpoint: 1220,
       settings: { slidesToShow: 2, slidesToScroll: 2 },
     },
     {
-      breakpoint: 600,
+      breakpoint: 920,
       settings: { slidesToShow: 1, slidesToScroll: 1 },
     },
   ],
 };
 
 const Talks = ({ children }) => (
-  <Slider {...sliderSettings} infinite={false}>
+  <Slider {...sliderSettings} infinite={false} >
     {children}
   </Slider>
 );

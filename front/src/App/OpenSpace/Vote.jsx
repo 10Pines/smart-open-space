@@ -17,6 +17,7 @@ export const Vote = ({ talk: { id, votingUsers, votes }, reloadTalks, activeVoti
 
   return (
     <RowBetween alignSelf="end">
+      <Detail color={"dark-2"}>{pluralize('voto', votes, true)}</Detail>
       {activeVoting && canVote && (
         <Button
           plain={true}
@@ -31,7 +32,6 @@ export const Vote = ({ talk: { id, votingUsers, votes }, reloadTalks, activeVoti
           onClick={() => unvoteTalk(id).then(() => reloadTalks())}
         />
       )}
-      <Detail>{pluralize('voto', votes, true)}</Detail>
     </RowBetween>
   );
 };

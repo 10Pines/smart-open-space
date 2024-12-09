@@ -1,9 +1,10 @@
 import { useHistory } from 'react-router-dom';
 import MainHeader from '#shared/MainHeader';
 import { TalkIcon, TextAreaIcon } from '#shared/icons';
-import MyForm from '#shared/MyForm';
+import NewMyForm from '#shared/NewMyForm';
 import React from 'react';
 import Documents from './Documents';
+import {isUrl, validateUrl} from "#helpers/validateUrl.js";
 
 const emptyTalk = {
   name: '',
@@ -25,46 +26,57 @@ export const TalkForm = ({
   const nullTrackOption = { id: null, name: 'Sin track' }; // Customize the name as needed
   const trackOptionsWithNull = [nullTrackOption, ...(openSpace?.tracks || [])];
 
-  return (
+  const validateDocuments = (documents, _valueObj) => {
+    const isValid = !documents.some(doc => doc.name.trim() === "" || !isUrl(doc.link));
+
+    if (!isValid) {
+      return "Verifique que los nombres y URL de los documentos sean válidas";
+    }
+  }
+
+    return (
     <>
       <MainHeader>
         <MainHeader.Title icon={TalkIcon} label={title} />
         <MainHeader.SubTitle>{subtitle}</MainHeader.SubTitle>
       </MainHeader>
-      <MyForm
+      <NewMyForm
         onSecondary={history.goBack}
         onSubmit={onSubmit}
         initialValue={initialValues}
       >
-        <MyForm.Text
+        <NewMyForm.Text
           id="talk-title-id"
           label="Título"
           formValueName="name"
-          placeholder="¿Como querés nombrar tu charla?"
+          initialValue={initialValues.name}
+          placeholder="¿Cómo querés nombrar tu charla?"
         />
-        <MyForm.TextArea
-          style={{ fontFamily: 'monospace' }}
+        <NewMyForm.TextArea
+          label={"Descripción"}
+          initialValue={initialValues.description}
           placeholder="Describí tu charla con mas detalle. Podés usar Markdown"
         />
-        <MyForm.Link label="Link" placeholder="Link a la reunión virtual (meet/zoom)" />
-        <MyForm.Select
+        <NewMyForm.Link placeholder="Link a la reunión virtual (meet/zoom)" />
+        <NewMyForm.Select
           label="Track"
           name="track"
           options={trackOptionsWithNull}
           labelKey="name"
           valueKey="id"
         />
-        <MyForm.Field
+        <NewMyForm.Field
           component={Documents}
           icon={<TextAreaIcon />}
           label="Documentos"
           name="documents"
           labelKey="name"
           valueKey="id"
+          validate={validateDocuments}
           required={false}
         />
         {amTheOrganizer && (
-          <MyForm.Text
+          <NewMyForm.Text
             id="talk-speaker-name"
             label="Nombre del Orador"
             name="speakerName"
@@ -72,7 +84,7 @@ export const TalkForm = ({
             required={false}
           />
         )}
-      </MyForm>
+      </NewMyForm>
     </>
   );
 };

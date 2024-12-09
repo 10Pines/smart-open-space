@@ -20,15 +20,16 @@ const NewTalk = () => {
   if (!user || isRejected) return <RedirectToRoot />;
   if (openSpace && !amTheOrganizer && openSpace.finishedQueue) return <RedirectToRoot />;
 
-  const onSubmit = ({ name, description, meetingLink, track, documents, speakerName }) =>
-    createTalk(openSpace.id, {
-      name,
-      description,
-      meetingLink,
-      documents,
-      trackId: track && track.id,
-      speakerName: speakerName,
-    }).then(pushToMyTalks);
+  const onSubmit = ({ name, description, meetingLink, track, documents, speakerName }) => {
+      createTalk(openSpace.id, {
+          name,
+          description,
+          meetingLink,
+          documents,
+          trackId: track && track.id,
+          speakerName: speakerName,
+      }).then(pushToMyTalks);
+  }
 
   return (
     <TalkForm

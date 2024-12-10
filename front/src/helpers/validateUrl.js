@@ -1,4 +1,4 @@
-const isUrl = (aUrl) => {
+export const isUrl = (aUrl) => {
   try {
     new URL(aUrl);
     return true;

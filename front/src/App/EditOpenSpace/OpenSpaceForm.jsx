@@ -9,7 +9,7 @@ import AddElementBox from '../components/molecule/AddElementBox';
 import Button from '../components/atom/Button';
 import useSize from '#helpers/useSize';
 import TrackForm from '../components/molecule/TrackForm';
-import RoomPickerForm from '../components/molecule/RoomPickerForm';
+import LinkForm from '#components/molecule/LinkForm.jsx';
 import DateTimeForm from '../components/molecule/DateTimeForm';
 import Carousel from '../components/molecule/Carousel';
 import Badge from '../components/molecule/Badge';
@@ -181,8 +181,8 @@ export const OpenSpaceForm = ({
                   animation={cardsAnimation}
                 >
                   <Badge key={index} onClick={() => removeRoom(index)} {...badgeProps}>
-                    <RoomPickerForm
-                      room={room}
+                    <LinkForm
+                      item={room}
                       onChange={(roomChanged) => changeRoom(roomChanged, index)}
                       width={{ min: '300px' }}
                       animation={cardsAnimation}

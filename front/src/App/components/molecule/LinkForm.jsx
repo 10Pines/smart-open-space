@@ -1,19 +1,23 @@
-import {Box, Text, Card as GrommetCard,} from "grommet";
+import { Card as GrommetCard,} from "grommet";
 import Input from "../atom/Input.jsx";
 import customTheme from "#app/theme.js";
 
-const RoomPickerForm = ({
-  room = {
+const LinkForm = ({
+  item = {
     name: '',
     link: '',
   },
   onChange,
+  nameLabel = 'Nombre de la sala',
+  namePlaceholder = 'Ingrese el nombre de la sala',
+  linkLabel = "Link sala virtual",
+  linkPlaceholder = 'Ingrese link a la sala virtual',
   ...props
 }) => {
-  const { name, link } = room;
+  const { name, link } = item;
 
-  const onChangeName = (name) => onChange({ ...room, name: name });
-  const onChangeLink = (link) => onChange({ ...room, link: link });
+  const onChangeName = (name) => onChange({ ...item, name: name });
+  const onChangeLink = (link) => onChange({ ...item, link: link });
 
   return (
     <GrommetCard
@@ -26,15 +30,15 @@ const RoomPickerForm = ({
     >
       <Input
         primary={false}
-        label={'Nombre de la sala'}
-        placeholder={'Ingrese el nombre de la sala'}
+        label={nameLabel}
+        placeholder={namePlaceholder}
         value={name}
         onChange={onChangeName}
       />
       <Input
         primary={false}
-        label={'Link sala virtual'}
-        placeholder={'Ingrese link a la sala virtual'}
+        label={linkLabel}
+        placeholder={linkPlaceholder}
         value={link}
         onChange={onChangeLink}
       />
@@ -42,4 +46,4 @@ const RoomPickerForm = ({
   );
 };
 
-export default RoomPickerForm;
+export default LinkForm;

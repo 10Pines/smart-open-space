@@ -1,9 +1,12 @@
 import { useHistory } from 'react-router-dom';
 import MainHeader from '#shared/MainHeader';
-import { TalkIcon, TextAreaIcon } from '#shared/icons';
-import MyForm from '#shared/MyForm';
+import { TextAreaIcon } from '#shared/icons';
+import NewMyForm from '#shared/NewMyForm';
 import React from 'react';
 import Documents from './Documents';
+import {isUrl} from "#helpers/validateUrl.js";
+import {Box, Text} from "grommet";
+import customTheme from "#app/theme.js";
 
 const emptyTalk = {
   name: '',
@@ -16,7 +19,6 @@ const emptyTalk = {
 export const TalkForm = ({
   onSubmit,
   openSpace,
-  subtitle,
   title,
   amTheOrganizer,
   initialValues = emptyTalk,
@@ -25,54 +27,71 @@ export const TalkForm = ({
   const nullTrackOption = { id: null, name: 'Sin track' }; // Customize the name as needed
   const trackOptionsWithNull = [nullTrackOption, ...(openSpace?.tracks || [])];
 
-  return (
-    <>
-      <MainHeader>
-        <MainHeader.Title icon={TalkIcon} label={title} />
-        <MainHeader.SubTitle>{subtitle}</MainHeader.SubTitle>
-      </MainHeader>
-      <MyForm
-        onSecondary={history.goBack}
-        onSubmit={onSubmit}
-        initialValue={initialValues}
-      >
-        <MyForm.Text
-          id="talk-title-id"
-          label="Título"
-          formValueName="name"
-          placeholder="¿Como querés nombrar tu charla?"
-        />
-        <MyForm.TextArea
-          style={{ fontFamily: 'monospace' }}
-          placeholder="Describí tu charla con mas detalle. Podés usar Markdown"
-        />
-        <MyForm.Link label="Link" placeholder="Link a la reunión virtual (meet/zoom)" />
-        <MyForm.Select
-          label="Track"
-          name="track"
-          options={trackOptionsWithNull}
-          labelKey="name"
-          valueKey="id"
-        />
-        <MyForm.Field
-          component={Documents}
-          icon={<TextAreaIcon />}
-          label="Documentos"
-          name="documents"
-          labelKey="name"
-          valueKey="id"
-          required={false}
-        />
-        {amTheOrganizer && (
-          <MyForm.Text
-            id="talk-speaker-name"
-            label="Nombre del Orador"
-            name="speakerName"
-            placeholder="En caso de ser un orador que pitcheó en el marketplace, ingresa el nombre completo"
-            required={false}
-          />
-        )}
-      </MyForm>
+  const validateDocuments = (documents, _valueObj) => {
+    const isValid = !documents.some(doc => doc.name.trim() === "" || !isUrl(doc.link));
+
+    if (!isValid) {
+      return "Verifique que los nombres y URL de los documentos sean válidos";
+    }
+  }
+
+    return (
+        <>
+        <MainHeader.Title margin={{bottom: "32px"}}>{openSpace.name}</MainHeader.Title>
+        <Box width={"70%"} pad={{right: "40px", left: "40px", bottom: "20px", top: "20px"}} alignSelf={"center"} style={{border: `1px solid ${customTheme.global.colors.primary.light}`, borderRadius: "5px"}}>
+          <NewMyForm
+              onSecondary={history.goBack}
+              onSubmit={onSubmit}
+              initialValue={initialValues}
+              primaryLabel={"Crear"}
+          >
+          <Box direction={'row'} align={'center'} justify={'between'} style={{alignItems: "start"}}>
+            <Box direction={'column'} align={'center'}>
+              <Text size={"1.5rem"}>{title}</Text>
+            </Box>
+            <NewMyForm.Select
+                label="Track"
+                name="track"
+                options={trackOptionsWithNull}
+                labelKey="name"
+                valueKey="id"
+                defaultMessage={"Seleccionar eje temático"}
+                style={{color: customTheme.global.colors.background.light}}
+            />
+          </Box>
+            <NewMyForm.Text
+              id="talk-title-id"
+              label="Título"
+              formValueName="name"
+              initialValue={initialValues.name}
+              placeholder="¿Cómo querés nombrar tu charla?"
+            />
+            <NewMyForm.TextArea
+              label={"Descripción"}
+              initialValue={initialValues.description}
+              placeholder="Describí tu charla con mas detalle. Podés usar Markdown"
+            />
+            <NewMyForm.Link placeholder="Link a la reunión virtual (meet/zoom)" />
+            <NewMyForm.Field
+              component={Documents}
+              icon={<TextAreaIcon />}
+              name="documents"
+              labelKey="name"
+              valueKey="id"
+              validate={validateDocuments}
+              required={false}
+            />
+            {amTheOrganizer && (
+              <NewMyForm.Text
+                id="talk-speaker-name"
+                label="Nombre del Orador"
+                name="speakerName"
+                placeholder="En caso de ser un orador que pitcheó en el marketplace, ingresa el nombre completo"
+                required={false}
+              />
+            )}
+          </NewMyForm>
+        </Box>
     </>
   );
 };

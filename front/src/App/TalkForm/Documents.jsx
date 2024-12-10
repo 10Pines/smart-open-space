@@ -1,10 +1,9 @@
 import { Box, Text } from 'grommet';
 import {CloseIcon} from '#shared/icons';
 import React, {useState} from 'react';
-import { validateUrl } from '#helpers/validateUrl';
 import Carousel from "#components/molecule/Carousel.jsx";
 import Badge from "#components/molecule/Badge.jsx";
-import RoomPickerForm from "#components/molecule/RoomPickerForm.jsx";
+import LinkForm from "#components/molecule/LinkForm.jsx";
 import AddElementBox from "#components/molecule/AddElementBox.jsx";
 
 const Documents = ({ value, onChange }) => {
@@ -40,12 +39,16 @@ const Documents = ({ value, onChange }) => {
                   value.splice(index, 1);
                   onChange({value: [...value]});
                 }} icon={<CloseIcon/>} {...badgeProps}>
-                  <RoomPickerForm
-                      room={document}
+                  <LinkForm
+                      item={document}
                       onChange={(updatedDocument) => {
                         value[index] = updatedDocument;
                         onChange({value: [...value]})
                       }}
+                      nameLabel={"Nombre"}
+                      namePlaceholder={"Ingrese el nombre del documento"}
+                      linkLabel={"Link al documento"}
+                      linkPlaceholder={"Ingrese el link al documento"}
                       width={{ min: '300px' }}
                       animation={cardsAnimation}
                   />

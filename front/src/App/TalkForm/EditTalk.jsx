@@ -32,6 +32,7 @@ const EditTalk = () => {
       initialValues={talk}
       onSubmit={onSubmit}
       openSpace={openSpace}
+      title={"Editar charla"}
     />
   );
 };

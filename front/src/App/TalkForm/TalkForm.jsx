@@ -19,6 +19,7 @@ const emptyTalk = {
 export const TalkForm = ({
   onSubmit,
   openSpace,
+  title,
   amTheOrganizer,
   initialValues = emptyTalk,
 }) => {

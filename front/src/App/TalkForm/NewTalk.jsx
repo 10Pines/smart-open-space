@@ -33,6 +33,7 @@ const NewTalk = () => {
   return (
     <TalkForm
       onSubmit={onSubmit}
+      title={"Nueva charla"}
       openSpace={openSpace}
       amTheOrganizer={amTheOrganizer}
     />

@@ -5,11 +5,12 @@ import globalStyles from '#shared/styles/styles.js';
 
 const Input = ({
   label,
-               inputLabel,
+  inputLabel,
   placeholder = 'Input...',
   value,
   onChange,
   icon,
+    formField = false,
   multiline,
   resize = 'vertical',
   primary = true,
@@ -62,7 +63,7 @@ const Input = ({
       <InputComponent
         placeholder={!isFocused && newLabel ? '' : placeholder}
         value={value}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) => onChange(formField ? event : event.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         fill

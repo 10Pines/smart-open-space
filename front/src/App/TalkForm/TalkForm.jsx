@@ -5,6 +5,8 @@ import NewMyForm from '#shared/NewMyForm';
 import React from 'react';
 import Documents from './Documents';
 import {isUrl, validateUrl} from "#helpers/validateUrl.js";
+import {Box, Text} from "grommet";
+import customTheme from "#app/theme.js";
 
 const emptyTalk = {
   name: '',
@@ -35,16 +37,26 @@ export const TalkForm = ({
   }
 
     return (
-    <>
-      <MainHeader>
-        <MainHeader.Title icon={TalkIcon} label={title} />
-        <MainHeader.SubTitle>{subtitle}</MainHeader.SubTitle>
-      </MainHeader>
+    <Box width={"70%"} pad={{right: "40px", left: "40px", bottom: "20px", top: "20px"}} style={{border: `1px solid ${customTheme.global.colors.primary.light}`, borderRadius: "5px"}}>
       <NewMyForm
-        onSecondary={history.goBack}
-        onSubmit={onSubmit}
-        initialValue={initialValues}
+          onSecondary={history.goBack}
+          onSubmit={onSubmit}
+          initialValue={initialValues}
       >
+      <Box direction={'row'} align={'center'} justify={'between'} style={{alignItems: "start"}}>
+        <Box direction={'column'} align={'center'}>
+          <Text size={"1.5rem"}>{title}</Text>
+        </Box>
+        <NewMyForm.Select
+            label="Track"
+            name="track"
+            options={trackOptionsWithNull}
+            labelKey="name"
+            valueKey="id"
+            defaultMessage={"Seleccionar eje temático"}
+            style={{color: customTheme.global.colors.background.light}}
+        />
+      </Box>
         <NewMyForm.Text
           id="talk-title-id"
           label="Título"
@@ -58,17 +70,9 @@ export const TalkForm = ({
           placeholder="Describí tu charla con mas detalle. Podés usar Markdown"
         />
         <NewMyForm.Link placeholder="Link a la reunión virtual (meet/zoom)" />
-        <NewMyForm.Select
-          label="Track"
-          name="track"
-          options={trackOptionsWithNull}
-          labelKey="name"
-          valueKey="id"
-        />
         <NewMyForm.Field
           component={Documents}
           icon={<TextAreaIcon />}
-          label="Documentos"
           name="documents"
           labelKey="name"
           valueKey="id"
@@ -85,6 +89,6 @@ export const TalkForm = ({
           />
         )}
       </NewMyForm>
-    </>
+    </Box>
   );
 };

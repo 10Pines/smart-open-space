@@ -45,7 +45,7 @@ MyFieldText.propTypes = {
 const LinkField = (props) => (
   <MyField
     name="meetingLink"
-    component={(props)=><Input inputLabel={"Link"} {...props} />}
+    component={(props)=><Input inputLabel={"Link"} formField {...props} />}
     validate={validateUrl}
     required={false}
     {...props}
@@ -57,7 +57,7 @@ const MyFieldTextArea = ({ label = "Descripción", initialValue, ...props}) => {
       <MyField
           name="description"
           required={false}
-          component={(props)=><Input inputLabel={label} multiline {...props} />}
+          component={(props)=><Input inputLabel={label} formField multiline {...props} />}
           {...props}
       />
   )
@@ -99,14 +99,16 @@ const MyFieldConfirmPassword = (props) => (
   />
 );
 
-const MyFieldSelect = ({ icon, label, name, ...props }) => (
-  <FormField
-    name={name}
-    required
-  >
-    <SelectDropdown name={name} {...props} />
-  </FormField>
-);
+const MyFieldSelect = ({ icon, label, name, ...props }) => {
+  return (
+      <FormField
+          name={name}
+          required
+      >
+        <SelectDropdown name={name} {...props} />
+      </FormField>
+  )
+};
 MyFieldSelect.propTypes = {
   icon: PropTypes.node,
   label: PropTypes.string,

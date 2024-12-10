@@ -6,7 +6,7 @@ import { Down } from "grommet-icons";
 const SelectDropdown = ({
                    defaultMessage = 'Ordenar por',
                     value,
-                   onChange = () =>{},
+                   onChange = (e) =>{},
                    options = [],
                    icon,
                     ...props

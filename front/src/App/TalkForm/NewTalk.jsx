@@ -2,7 +2,7 @@ import React from 'react';
 
 import { createTalk, useGetOpenSpace } from '#api/os-client';
 import { useUser } from '#helpers/useAuth';
-import Spinner, { TinySpinner } from '#shared/Spinner';
+import Spinner from '#shared/Spinner';
 import { RedirectToRoot, usePushToMyTalks } from '#helpers/routes';
 import { TalkForm } from './TalkForm';
 
@@ -14,7 +14,6 @@ const NewTalk = () => {
   if (isPending) return <Spinner />;
   if (isRejected) return <RedirectToRoot />;
 
-  const subtitle = isPending ? <TinySpinner /> : openSpace.name;
   const amTheOrganizer = user && openSpace.organizer.id === user.id;
 
   if (!user || isRejected) return <RedirectToRoot />;
@@ -35,8 +34,6 @@ const NewTalk = () => {
     <TalkForm
       onSubmit={onSubmit}
       openSpace={openSpace}
-      subtitle={subtitle}
-      title={'Nueva charla'}
       amTheOrganizer={amTheOrganizer}
     />
   );

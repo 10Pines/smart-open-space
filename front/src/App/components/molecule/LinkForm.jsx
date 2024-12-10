@@ -1,4 +1,4 @@
-import {Box, Text, Card as GrommetCard,} from "grommet";
+import { Card as GrommetCard,} from "grommet";
 import Input from "../atom/Input.jsx";
 import customTheme from "#app/theme.js";
 

@@ -1,10 +1,10 @@
 import { useHistory } from 'react-router-dom';
 import MainHeader from '#shared/MainHeader';
-import { TalkIcon, TextAreaIcon } from '#shared/icons';
+import { TextAreaIcon } from '#shared/icons';
 import NewMyForm from '#shared/NewMyForm';
 import React from 'react';
 import Documents from './Documents';
-import {isUrl, validateUrl} from "#helpers/validateUrl.js";
+import {isUrl} from "#helpers/validateUrl.js";
 import {Box, Text} from "grommet";
 import customTheme from "#app/theme.js";
 
@@ -19,8 +19,6 @@ const emptyTalk = {
 export const TalkForm = ({
   onSubmit,
   openSpace,
-  subtitle,
-  title,
   amTheOrganizer,
   initialValues = emptyTalk,
 }) => {

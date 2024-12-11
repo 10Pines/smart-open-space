@@ -1,8 +1,8 @@
 import { DataTable, Text } from 'grommet';
-import React, { useEffect, useState } from 'react';
-import { usePushToTalk } from '#helpers/routes';
+import React, {useEffect, useState} from 'react';
+import {RedirectToRoot, usePushToTalk} from '#helpers/routes';
 import { useParams } from 'react-router-dom';
-import { deleteTalk, enqueueTalk, exchangeTalk, scheduleTalk } from '#api/os-client';
+import {deleteTalk, enqueueTalk, exchangeTalk, scheduleTalk, useGetAssignedSlots} from '#api/os-client';
 import SelectSlot from '../Talk/SelectSlot';
 import { ScheduleColumn } from './components/ScheduleColumn.jsx';
 import { TitleColumn } from './components/TitleColumn';
@@ -11,6 +11,8 @@ import { VotesColumn } from './components/VotesColumn';
 import { DeleteModal } from '../components/DeleteModal';
 import { useUser } from '#helpers/useAuth';
 import {formatDateString} from "#helpers/time.js";
+import Spinner from "#shared/Spinner.jsx";
+import {getAssignedTalks} from "#helpers/talkUtils.js";
 
 const TalkTable = ({
   activeQueue,
@@ -22,6 +24,12 @@ const TalkTable = ({
   roomsWithAssignableSlots,
 }) => {
   const user = useUser();
+  const  {
+    data: assignedSlots,
+    isPending: areAssignedSlotsPending,
+    isRejected: areAssignedSlotsRejected
+  } = useGetAssignedSlots();
+
   const [selectedToEditTalkId, setSelectedToEditTalkId] = useState(null);
   const [selectedToDeleteTalkId, setSelectedToDeleteTalkId] = useState(null);
   const [confirmDeleteSelectedTalkId, setConfirmDeleteSelectedTalkId] = useState(false);
@@ -49,17 +57,6 @@ const TalkTable = ({
       reloadTalks
     );
 
-  const assignedTalks = talks
-    ? talks[0].slots.map((slot) => {
-        return {
-          id: slot.talk.id,
-          startTime: slot.slot.startTime,
-          date: slot.slot.date,
-          room: slot.room.name,
-        };
-      })
-    : [];
-
   useEffect(() => {
     if (selectedToEditTalkId) {
       pushToTalk();
@@ -72,6 +69,11 @@ const TalkTable = ({
       setConfirmDeleteSelectedTalkId(false);
     }
   }, [confirmDeleteSelectedTalkId, openSpaceId, reloadTalks, selectedToDeleteTalkId]);
+
+  if (areAssignedSlotsPending) return <Spinner />;
+  if (areAssignedSlotsRejected) return <RedirectToRoot/>;
+
+  const assignedTalks = getAssignedTalks(talks, assignedSlots);
 
   return (
     <>
@@ -162,7 +164,7 @@ const TalkTable = ({
             state: talkSchedule ? 'Agendada' : 'Presentada',
             talkDate: talkSchedule?.date && formatDateString(talkSchedule?.date),
             talkStartTime: talkSchedule?.startTime,
-            room: talkSchedule?.room,
+            room: talkSchedule?.name,
             openSpaceId: talk.openSpace.id,
           };
         })}

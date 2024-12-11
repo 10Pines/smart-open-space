@@ -64,7 +64,7 @@ const customTheme = {
   },
   formField: {
     border: {
-      color: 'white',
+      color: 'transparent',
     },
   }
 };

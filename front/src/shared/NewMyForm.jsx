@@ -43,7 +43,7 @@ MyFieldText.propTypes = {
 const LinkField = (props) => (
   <MyField
     name="meetingLink"
-    component={(props)=><Input inputLabel={"Link"} formField {...props} />}
+    component={(props)=><Input formLabel={"Link"} {...props} />}
     validate={validateUrl}
     required={false}
     {...props}
@@ -55,7 +55,7 @@ const MyFieldTextArea = ({ label = "Descripción", initialValue, ...props}) => {
       <MyField
           name="description"
           required={false}
-          component={(props)=><Input inputLabel={label} formField multiline {...props} />}
+          component={(props)=><Input formLabel={label} multiline {...props} />}
           {...props}
       />
   )

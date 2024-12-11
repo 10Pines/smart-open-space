@@ -46,7 +46,7 @@ const Input = ({
             backgroundColor:
               isFocused || value
                 ? primary
-                  ? 'white'
+                  ? customTheme.global.colors.background.light
                   : customTheme.global.colors.primary.light
                 : 'transparent',
             padding: isFocused || value ? '0 4px' : '0',

@@ -46,7 +46,7 @@ export const TalkForm = ({
               initialValue={initialValues}
               primaryLabel={"Crear"}
           >
-          <Box direction={'row-responsive'} align={'center'} justify={'between'} style={{alignItems: "start"}}>
+          <Box direction={'row-responsive'} align={'center'} justify={'between'} gap={"medium"} style={{alignItems: "start"}}>
             <Box direction={'column'} align={'center'}>
               <Text size={"1.5rem"}>{title}</Text>
             </Box>
@@ -60,38 +60,42 @@ export const TalkForm = ({
                 style={{color: customTheme.global.colors.background.light}}
             />
           </Box>
+          <NewMyForm.Text
+            id="talk-title-id"
+            label="Título"
+            formValueName="name"
+            initialValue={initialValues.name}
+            placeholder="¿Cómo querés nombrar tu charla?"
+            margin={{top: "15px"}}
+          />
+          <NewMyForm.TextArea
+            label={"Descripción"}
+            initialValue={initialValues.description}
+            placeholder="Describí tu charla con mas detalle. Podés usar Markdown"
+            margin={{top: "20px"}}
+          />
+          <NewMyForm.Link placeholder="Link a la reunión virtual (meet/zoom)" margin={{top: "10px"}}/>
+          <NewMyForm.Field
+            component={Documents}
+            icon={<TextAreaIcon />}
+            name="documents"
+            labelKey="name"
+            valueKey="id"
+            validate={validateDocuments}
+            required={false}
+            margin={{top: "15px"}}
+          />
+          {amTheOrganizer && (
             <NewMyForm.Text
-              id="talk-title-id"
-              label="Título"
-              formValueName="name"
-              initialValue={initialValues.name}
-              placeholder="¿Cómo querés nombrar tu charla?"
-            />
-            <NewMyForm.TextArea
-              label={"Descripción"}
-              initialValue={initialValues.description}
-              placeholder="Describí tu charla con mas detalle. Podés usar Markdown"
-            />
-            <NewMyForm.Link placeholder="Link a la reunión virtual (meet/zoom)" />
-            <NewMyForm.Field
-              component={Documents}
-              icon={<TextAreaIcon />}
-              name="documents"
-              labelKey="name"
-              valueKey="id"
-              validate={validateDocuments}
+              id="talk-speaker-name"
+              label="Nombre del Orador"
+              name="speakerName"
+              placeholder="En caso de ser un orador que pitcheó en el marketplace, ingresa el nombre completo"
               required={false}
+              margin={{top: "10px"}}
             />
-            {amTheOrganizer && (
-              <NewMyForm.Text
-                id="talk-speaker-name"
-                label="Nombre del Orador"
-                name="speakerName"
-                placeholder="En caso de ser un orador que pitcheó en el marketplace, ingresa el nombre completo"
-                required={false}
-              />
-            )}
-          </NewMyForm>
+          )}
+        </NewMyForm>
         </Box>
     </>
   );

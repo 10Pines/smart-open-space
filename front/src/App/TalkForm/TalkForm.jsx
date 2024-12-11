@@ -1,6 +1,6 @@
 import { useHistory } from 'react-router-dom';
 import MainHeader from '#shared/MainHeader';
-import { TextAreaIcon } from '#shared/icons';
+import {CircleIcon, TextAreaIcon} from '#shared/icons';
 import NewMyForm from '#shared/NewMyForm';
 import React from 'react';
 import Documents from './Documents';
@@ -25,7 +25,7 @@ export const TalkForm = ({
   initialValues = emptyTalk,
 }) => {
   const history = useHistory();
-  const nullTrackOption = { id: null, name: 'Sin track' }; // Customize the name as needed
+  const nullTrackOption = { id: null, name: 'Sin eje temático' }; // Customize the name as needed
   const trackOptionsWithNull = [nullTrackOption, ...(openSpace?.tracks || [])];
 
   const validateDocuments = (documents, _valueObj) => {
@@ -56,6 +56,12 @@ export const TalkForm = ({
                 options={trackOptionsWithNull}
                 labelKey="name"
                 valueKey="id"
+                valueLabel={(option)=>
+                    <Box direction={'row'} align={'center'} gap={"small"} margin={{left: "10px"}} style={{width: "20rem", minHeight: "41.5px"}}>
+                      <CircleIcon color={option.color} style={{border: `1px solid ${"#575757"}`, backgroundColor: "white", borderRadius: "50%", padding: 0}} size={"20px"} />
+                      <Text color={customTheme.global.colors.background.light} weight={"bold"}>{option.name}</Text>
+                    </Box>
+                }
                 defaultMessage={"Seleccionar eje temático"}
                 style={{color: customTheme.global.colors.background.light}}
             />

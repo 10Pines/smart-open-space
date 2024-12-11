@@ -98,7 +98,7 @@ const TalkTable = ({
                   </Text>
                 ) : (
                   <Text weight="normal" color={'gray'}>
-                    Sin track
+                    Sin eje temático
                   </Text>
                 )}
               </Box>

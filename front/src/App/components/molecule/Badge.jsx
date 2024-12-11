@@ -2,17 +2,18 @@ import React from 'react';
 import { Box } from 'grommet';
 import IconButton from '../atom/IconButton';
 import PropTypes from 'prop-types';
+import {CloseIcon} from "#shared/icons.jsx";
 
 const Badge = ({
-  icon,
-  position,
+  icon = <CloseIcon size="small" />,
+  position = 'top-right',
   onClick,
   children,
   className,
   style,
   color,
   buttonProps = {
-    size: 'xsmall',
+    size: 'xxsmall',
   },
   ...props
 }) => {

@@ -28,7 +28,7 @@ export const TalkForm = ({
   const trackOptionsWithNull = [nullTrackOption, ...(openSpace?.tracks || [])];
 
   const validateDocuments = (documents, _valueObj) => {
-    const isValid = !documents.some(doc => doc.name.trim() === "" || !isUrl(doc.link));
+    const isValid = !documents.some(doc => (doc.name.trim() === "" || !isUrl(doc.link)) && !(doc.name.trim() === "" && doc.link.trim() === ""));
 
     if (!isValid) {
       return "Verifique que los nombres y URL de los documentos sean válidos";

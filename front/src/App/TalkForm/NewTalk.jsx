@@ -20,11 +20,13 @@ const NewTalk = () => {
   if (openSpace && !amTheOrganizer && openSpace.finishedQueue) return <RedirectToRoot />;
 
   const onSubmit = ({ name, description, meetingLink, track, documents, speakerName }) => {
+      const filteredDocuments = documents.filter((document) => document.name.trim() !== "" && document.link.trim() !== "");
+
       createTalk(openSpace.id, {
           name,
           description,
           meetingLink,
-          documents,
+          documents: filteredDocuments,
           trackId: track && track.id,
           speakerName: speakerName,
       }).then(pushToMyTalks);
@@ -33,8 +35,8 @@ const NewTalk = () => {
   return (
     <TalkForm
       onSubmit={onSubmit}
-      title={"Nueva charla"}
       openSpace={openSpace}
+      title={'Nueva charla'}
       amTheOrganizer={amTheOrganizer}
     />
   );

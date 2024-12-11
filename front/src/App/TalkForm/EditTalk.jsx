@@ -16,15 +16,18 @@ const EditTalk = () => {
   const pushToMyTalks = usePushToMyTalks();
 
   if (isTalkPending) return <Spinner />;
+  if (isPending) return <Spinner />;
   if (!user || isRejected || isTalkRejected) return <RedirectToRoot />;
 
   const onSubmit = ({ name, description, meetingLink, track, documents }) => {
+    const filteredDocuments = documents.filter((document) => document.name.trim() !== "" && document.link.trim() !== "");
+
     editTalk(openSpace.id, talk.id, {
       name,
       description,
       meetingLink,
       trackId: track && track.id,
-      documents,
+      documents: filteredDocuments,
     }).then(pushToMyTalks);
   };
   return (
@@ -32,7 +35,7 @@ const EditTalk = () => {
       initialValues={talk}
       onSubmit={onSubmit}
       openSpace={openSpace}
-      title={"Editar charla"}
+      title={'Editar charla'}
     />
   );
 };

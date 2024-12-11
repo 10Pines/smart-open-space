@@ -6,6 +6,7 @@ import React from 'react';
 import Documents from './Documents';
 import {isUrl} from "#helpers/validateUrl.js";
 import {Box, Text} from "grommet";
+import useSize from '#helpers/useSize';
 import customTheme from "#app/theme.js";
 
 const emptyTalk = {
@@ -38,14 +39,14 @@ export const TalkForm = ({
     return (
         <>
         <MainHeader.Title margin={{bottom: "32px"}}>{openSpace.name}</MainHeader.Title>
-        <Box width={"70%"} pad={{right: "40px", left: "40px", bottom: "20px", top: "20px"}} alignSelf={"center"} style={{border: `1px solid ${customTheme.global.colors.primary.light}`, borderRadius: "5px"}}>
+        <Box width={useSize() === "small" ? "100%" : "70%"} pad={{right: "40px", left: "40px", bottom: "20px", top: "20px"}} alignSelf={"center"} style={{border: `1px solid ${customTheme.global.colors.primary.light}`, borderRadius: "5px"}}>
           <NewMyForm
               onSecondary={history.goBack}
               onSubmit={onSubmit}
               initialValue={initialValues}
               primaryLabel={"Crear"}
           >
-          <Box direction={'row'} align={'center'} justify={'between'} style={{alignItems: "start"}}>
+          <Box direction={'row-responsive'} align={'center'} justify={'between'} style={{alignItems: "start"}}>
             <Box direction={'column'} align={'center'}>
               <Text size={"1.5rem"}>{title}</Text>
             </Box>

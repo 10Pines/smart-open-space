@@ -6,10 +6,10 @@ import PropTypes from 'prop-types';
 import MyProps from '#helpers/MyProps';
 import Row from './Row';
 
-const Detail = ({ children, icon: Icon, text, ...props }) => (
+const Detail = ({ children, icon: Icon, text, color, ...props }) => (
   <Row gap="xsmall" justify="center">
-    {Icon && <Icon color="dark-5" />}
-    <Text color="dark-5" {...props}>
+    {Icon && <Icon color={color || "dark-5"} />}
+    <Text color={color || "dark-5"} {...props}>
       {text}
       {children}
     </Text>

@@ -9,6 +9,7 @@ export function TrackWithTalks({
   reloadTalks,
   track,
   activeVoting,
+  assignedTalks,
   showSpeakerName,
   selectedTrack,
   setSelectedTrack,
@@ -16,7 +17,6 @@ export function TrackWithTalks({
   let byTrack = (talk) => talk.track?.id === track.id;
   const talksFromTrack = talks.filter(byTrack);
   const [openTrackInfo, setOpenTrackInfo] = useState(true);
-
 
   return (
     <>
@@ -34,6 +34,7 @@ export function TrackWithTalks({
                   talks={talksFromTrack}
                   reloadTalks={reloadTalks}
                   activeVoting={activeVoting}
+                  assignedTalks={assignedTalks}
                   showSpeakerName={showSpeakerName}
               /> :
               <Text margin={{left: "small", right: "small", top:"xsmall"}} color={"dark-3"} size={"1rem"}>Todavía no hay charlas de este eje temático</Text>

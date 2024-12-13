@@ -31,13 +31,13 @@ const Card = ({
       height="fit-content"
       width={width}
       round={props.round ?? 'xsmall'}
+      {...props}
     >
       <CardHeader>
         <Text as="h2" size="large" weight="normal" margin="0" color="black">
           {title}
         </Text>
       </CardHeader>
-      {description && (
         <CardBody>
           <Text
             style={{
@@ -53,7 +53,6 @@ const Card = ({
             {description}
           </Text>
         </CardBody>
-      )}
       <CardFooter direction="row" justify="between">
         <Box direction="row" align="center" gap="0.5rem">
           <Avatar
@@ -63,7 +62,7 @@ const Card = ({
             }
           />
           <Text size="small" color="black">
-            {author?.username ?? 'Autor del evento'}
+            {author?.name ?? 'Autor del evento'}
           </Text>
         </Box>
         {showVotes && (

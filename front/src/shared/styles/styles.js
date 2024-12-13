@@ -14,6 +14,11 @@ const globalStyles = {
     fontWeight: 400,
     fontStyle: 'normal',
   },
+  cardsAnimation: {
+    type: 'fadeIn',
+    delay: 1,
+    duration: 800,
+  }
 };
 
 export default globalStyles;

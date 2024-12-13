@@ -1,4 +1,4 @@
-import { Anchor, Box, Text } from 'grommet';
+import { Text } from 'grommet';
 import React from 'react';
 
 export function TrackColumn(props) {
@@ -10,7 +10,7 @@ export function TrackColumn(props) {
         </Text>
       ) : (
         <Text weight="normal" color="gray">
-          Sin track
+          Sin eje temático
         </Text>
       )}
     </>

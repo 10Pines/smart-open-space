@@ -9,7 +9,7 @@ import AddElementBox from '../components/molecule/AddElementBox';
 import Button from '../components/atom/Button';
 import useSize from '#helpers/useSize';
 import TrackForm from '../components/molecule/TrackForm';
-import RoomPickerForm from '../components/molecule/RoomPickerForm';
+import LinkForm from '#components/molecule/LinkForm.jsx';
 import DateTimeForm from '../components/molecule/DateTimeForm';
 import Carousel from '../components/molecule/Carousel';
 import Badge from '../components/molecule/Badge';
@@ -17,6 +17,7 @@ import InputSlot from '../components/molecule/InputSlot';
 import FormTitle from '../components/atom/FormTitle';
 import useOpenSpaceForm from '#helpers/hooks/useOpenSpaceForm';
 import { datePlusOneDay } from '#helpers/time';
+import globalStyles from "#shared/styles/styles.js";
 
 const emptyOpenSpace = {
   name: '',
@@ -105,20 +106,6 @@ export const OpenSpaceForm = ({
       />
     );
 
-  const cardsAnimation = {
-    type: 'fadeIn',
-    delay: 1,
-    duration: 800,
-  };
-
-  const badgeProps = {
-    icon: <CloseIcon size="small" />,
-    position: 'top-right',
-    buttonProps: {
-      size: 'xxsmall',
-    },
-  };
-
   if (initialValues === undefined) return <Spinner />;
 
   return (
@@ -148,14 +135,14 @@ export const OpenSpaceForm = ({
               openSpace.tracks.map((track, index) => (
                 <Box
                   style={{ minWidth: '300px', paddingTop: '0.5rem' }}
-                  animation={cardsAnimation}
+                  animation={globalStyles.cardsAnimation}
                 >
-                  <Badge key={index} onClick={() => removeTrack(index)} {...badgeProps}>
+                  <Badge key={index} onClick={() => removeTrack(index)}>
                     <TrackForm
                       track={track}
                       onChange={(trackChanged) => changeTrack(trackChanged, index)}
                       width={{ min: '300px' }}
-                      animation={cardsAnimation}
+                      animation={globalStyles.cardsAnimation}
                     />
                   </Badge>
                 </Box>
@@ -178,14 +165,14 @@ export const OpenSpaceForm = ({
               openSpace.rooms.map((room, index) => (
                 <Box
                   style={{ minWidth: '300px', paddingTop: '0.5rem' }}
-                  animation={cardsAnimation}
+                  animation={globalStyles.cardsAnimation}
                 >
-                  <Badge key={index} onClick={() => removeRoom(index)} {...badgeProps}>
-                    <RoomPickerForm
-                      room={room}
+                  <Badge key={index} onClick={() => removeRoom(index)}>
+                    <LinkForm
+                      item={room}
                       onChange={(roomChanged) => changeRoom(roomChanged, index)}
                       width={{ min: '300px' }}
-                      animation={cardsAnimation}
+                      animation={globalStyles.cardsAnimation}
                     />
                   </Badge>
                 </Box>
@@ -209,7 +196,7 @@ export const OpenSpaceForm = ({
                 openSpace.dates.map((date, index) => (
                   <Box
                     style={{ minWidth: '390px', paddingTop: '0.5rem' }}
-                    animation={cardsAnimation}
+                    animation={globalStyles.cardsAnimation}
                   >
                     <Badge
                       key={index}
@@ -217,7 +204,6 @@ export const OpenSpaceForm = ({
                         setDeletedDate({ date, index });
                         removeDate(index);
                       }}
-                      {...badgeProps}
                     >
                       <DateTimeForm
                         title={`Día ${index + 1}`}

@@ -37,6 +37,9 @@ const customTheme = {
       outline: {
         size: '1px',
         color: "#3F8880"
+      },
+      border: {
+        color: 'transparent',
       }
     },
     layout: {
@@ -59,6 +62,11 @@ const customTheme = {
       },
     }
   },
+  formField: {
+    border: {
+      color: 'transparent',
+    },
+  }
 };
 
 export default customTheme;

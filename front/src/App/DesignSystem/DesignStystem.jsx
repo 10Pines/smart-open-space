@@ -24,7 +24,7 @@ import DateTimePicker from '../components/atom/DateTimePicker.jsx';
 import Card from '../components/molecule/Card.jsx';
 import TimeCard from '../components/molecule/TimeCard.jsx';
 import DateTimeForm from '../components/molecule/DateTimeForm.jsx';
-import RoomPickerForm from '../components/molecule/RoomPickerForm.jsx';
+import LinkForm from '#components/molecule/LinkForm.jsx';
 import customTheme from '#app/theme.js';
 import TrackForm from '../components/molecule/TrackForm.jsx';
 
@@ -316,7 +316,7 @@ const DesignSystem = () => {
         />
 
         <Text>Add room editor:</Text>
-        <RoomPickerForm
+        <LinkForm
           name={roomName}
           onChangeName={(newName) => setRoomName(newName)}
           link={link}

@@ -1,6 +1,6 @@
 import { Box } from 'grommet';
 import Talks from '../Talks';
-import Talk from '../Talk';
+import Talk from '../Talk/Talk.jsx';
 import React from 'react';
 import PropTypes from 'prop-types';
 

@@ -6,7 +6,7 @@ import { Down } from "grommet-icons";
 const SelectDropdown = ({
                    defaultMessage = 'Ordenar por',
                     value,
-                   onChangeValue,
+                   onChange = (e) =>{},
                    options = [],
                    icon,
                     ...props
@@ -21,7 +21,7 @@ const SelectDropdown = ({
             <Select
                 options={options}
                 value={value}
-                onChange={({ option }) => onChangeValue(option)}
+                onChange={({ option }) => onChange(option)}
                 placeholder={<Text color={customTheme.global.colors.background.light}
                                    size={customTheme.global.font.size}
                                    weight={600}

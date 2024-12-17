@@ -5,6 +5,7 @@ import globalStyles from '#shared/styles/styles.js';
 
 const Input = ({
   label,
+  formLabel,
   placeholder = 'Input...',
   value,
   onChange,
@@ -17,6 +18,7 @@ const Input = ({
   const [isFocused, setIsFocused] = useState(false);
 
   const InputComponent = multiline ? TextArea : TextInput;
+  const inputLabel = label || formLabel;
 
   return (
     <Box
@@ -26,7 +28,7 @@ const Input = ({
         display: 'inline-block',
       }}
     >
-      {label && (
+      {inputLabel && (
         <label
           style={{
             position: 'absolute',
@@ -44,7 +46,7 @@ const Input = ({
             backgroundColor:
               isFocused || value
                 ? primary
-                  ? 'white'
+                  ? customTheme.global.colors.background.light
                   : customTheme.global.colors.primary.light
                 : 'transparent',
             padding: isFocused || value ? '0 4px' : '0',
@@ -54,13 +56,13 @@ const Input = ({
             zIndex: 1,
           }}
         >
-          {label}
+          {inputLabel}
         </label>
       )}
       <InputComponent
-        placeholder={!isFocused && label ? '' : placeholder}
+        placeholder={!isFocused && inputLabel ? '' : placeholder}
         value={value}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) => onChange(formLabel ? event : event.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         fill

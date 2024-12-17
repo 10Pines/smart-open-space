@@ -9,9 +9,9 @@ import Spinner from '#shared/Spinner';
 import { RedirectToLogin, usePushToNewOS } from '#helpers/routes';
 
 import EmptyOpenSpaces from './EmptyOpenSpaces';
-import OpenSpace from './OpenSpace';
 import { deleteOS } from '#api/os-client';
 import TimeCard from "#components/molecule/TimeCard.jsx";
+import markdownToTxt from "markdown-to-txt";
 
 const Home = () => {
   const pushToNewOS = usePushToNewOS();
@@ -24,10 +24,6 @@ const Home = () => {
   const reload = useCallback(() => {
     reloadOpenSpaces();
   }, [reloadOpenSpaces]);
-
-  if (openSpaces && openSpaces.length > 0) {
-    console.log("OS:", openSpaces[1]);
-  }
 
   return (
     <>
@@ -44,7 +40,7 @@ const Home = () => {
       ) : openSpaces.length === 0 ? (
         <EmptyOpenSpaces onClick={pushToNewOS} />
       ) : (
-        <MyGrid>
+        <MyGrid columns="580px">
           {openSpaces.map((os) => (
               <>
             {/*<OpenSpace deleteOS={() => deleteOpenSpace(os.id)} key={os.id} {...os} />*/}
@@ -56,14 +52,10 @@ const Home = () => {
           }}
             dates={os.dates}
           title={os.name}
-          description={os.description}
+          description={markdownToTxt(os.description)}
             author={os.organizer}
           footerDescription={{
             items: [
-              {
-                icon: <UserIcon />,
-                text: "3 oradores",
-              },
               {
                 icon: <ChatIcon />,
                 text: `${os.amountOfTalks} ${os.amountOfTalks === 1 ? "charla postulada" : "charlas postuladas"}`,

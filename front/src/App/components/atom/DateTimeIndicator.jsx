@@ -6,7 +6,7 @@ import {capitalize} from "#helpers/textUtils.js";
 const DateTimeIndicator = ({ dates=[], width, ...props }) => {
   const days = new Map();
 
-  dates.forEach((date, i) => {
+  dates.forEach((date) => {
     const month = date.toLocaleString('es-ES', { month: 'long' });
     if (!days.has(month)) {
       days.set(month, [date.getDate().toString().padStart(2, '0')]);
@@ -20,7 +20,6 @@ const DateTimeIndicator = ({ dates=[], width, ...props }) => {
   ];
   const sortedDays = Array.from(days)
       .sort(([keyA], [keyB]) => monthsOrder.indexOf(keyA) - monthsOrder.indexOf(keyB));
-
 
   return (
     <Box

@@ -15,7 +15,7 @@ import markdownToTxt from "markdown-to-txt";
 const Home = () => {
   const pushToNewOS = usePushToNewOS();
 
-  const { data: openSpaces, isPending, reload: reloadOpenSpaces } = useGetAllOpenSpaces();
+  const { data: openSpaces, isPending } = useGetAllOpenSpaces();
   return (
     <>
       <MainHeader>
@@ -34,21 +34,21 @@ const Home = () => {
         <MyGrid columns="580px">
           {openSpaces.map((os) => (
               <>
-            <OpenSpace
-                id={os.id}
-            dates={os.dates}
-          title={os.name}
-          description={markdownToTxt(os.description)}
-            author={os.organizer}
-          footerDescription={{
-            items: [
-              {
-                icon: <ChatIcon />,
-                text: `${os.amountOfTalks} ${os.amountOfTalks === 1 ? "charla postulada" : "charlas postuladas"}`,
-              },
-            ],
-          }}
-        />
+                <OpenSpace
+                  id={os.id}
+                  dates={os.dates}
+                  title={os.name}
+                  description={markdownToTxt(os.description)}
+                  author={os.organizer}
+                  footerDescription={{
+                    items: [
+                      {
+                        icon: <ChatIcon />,
+                        text: `${os.amountOfTalks === 0 ? "Sin" : os.amountOfTalks} ${os.amountOfTalks === 1 ? "charla postulada" : "charlas postuladas"}`,
+                      },
+                    ],
+                  }}
+                />
               </>
           ))}
         </MyGrid>

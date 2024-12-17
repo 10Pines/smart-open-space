@@ -38,14 +38,14 @@ const OpenSpace = ({ dates, id, author, ...props }) => {
         {dates && <DateTimeIndicator
           dates={dates}
           round={{
-              size: '5px',
+            size: '5px',
           }}
           width={"80%"}
         />}
       </Box>
       <Card
         {...props}
-          height={"300px"}
+        height={"300px"}
         width={size === "small" ? "70%" : "491px"}
         round={{
           size: '5px',

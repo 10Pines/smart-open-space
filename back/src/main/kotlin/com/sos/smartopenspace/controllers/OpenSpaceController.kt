@@ -5,8 +5,8 @@ import com.sos.smartopenspace.aspect.LoggingInputExecution
 import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
 import com.sos.smartopenspace.dto.request.OpenSpaceRequestDTO
 import com.sos.smartopenspace.services.OpenSpaceService
-import com.sos.smartopenspace.translators.response.OpenSpaceResTranslator
-import com.sos.smartopenspace.translators.response.TalkResTranslator
+import com.sos.smartopenspace.translators.OpenSpaceTranslator
+import com.sos.smartopenspace.translators.TalkTranslator
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
@@ -16,12 +16,12 @@ class OpenSpaceController(private val openSpaceService: OpenSpaceService) {
   @PostMapping("/{userID}")
   @LoggingExecution
   fun create(@PathVariable userID: Long, @Valid @RequestBody openSpace: OpenSpaceRequestDTO) =
-      OpenSpaceResTranslator.translateFrom(openSpaceService.create(userID, openSpace))
+      OpenSpaceTranslator.translateFrom(openSpaceService.create(userID, openSpace))
 
   @PutMapping("/{openSpaceID}/user/{userID}")
   @LoggingInputExecution
   fun updateOpenSpace(@PathVariable openSpaceID: Long, @PathVariable userID: Long, @Valid @RequestBody openSpace: OpenSpaceRequestDTO) =
-      OpenSpaceResTranslator.translateFrom(openSpaceService.update(userID, openSpaceID, openSpace))
+      OpenSpaceTranslator.translateFrom(openSpaceService.update(userID, openSpaceID, openSpace))
 
   @DeleteMapping("/{openSpaceID}/user/{userID}")
   @LoggingExecution
@@ -31,32 +31,32 @@ class OpenSpaceController(private val openSpaceService: OpenSpaceService) {
   @PostMapping("/talk/{userID}/{osID}")
   @LoggingExecution
   fun createTalk(@PathVariable userID: Long, @PathVariable osID: Long, @Valid @RequestBody createTalkRequestDTO: CreateTalkRequestDTO) =
-      TalkResTranslator.translateFrom(openSpaceService.createTalk(userID, osID, createTalkRequestDTO))
+      TalkTranslator.translateFrom(openSpaceService.createTalk(userID, osID, createTalkRequestDTO))
 
   @DeleteMapping("/{openSpaceID}/talk/{talkID}/user/{userID}")
   @LoggingExecution
   fun deleteTalk(@PathVariable userID: Long, @PathVariable openSpaceID: Long, @PathVariable talkID: Long) =
-      TalkResTranslator.translateFrom(openSpaceService.deleteTalk(talkID, openSpaceID, userID))
+      TalkTranslator.translateFrom(openSpaceService.deleteTalk(talkID, openSpaceID, userID))
 
   @GetMapping("/user/{userID}")
   @LoggingInputExecution
   fun findAllByUser(@PathVariable userID: Long) =
-      OpenSpaceResTranslator.translateAllFrom(openSpaceService.findAllByUser(userID))
+      openSpaceService.findAllByUser(userID).map { OpenSpaceTranslator.translateFrom(it) }
 
   @GetMapping("/{id}")
   @LoggingInputExecution
   fun findById(@PathVariable id: Long) =
-      OpenSpaceResTranslator.translateFrom(openSpaceService.findById(id))
+      OpenSpaceTranslator.translateFrom(openSpaceService.findById(id))
 
   @GetMapping("/talks/{userID}/{osID}")
   @LoggingInputExecution
   fun findTalksByUser(@PathVariable userID: Long, @PathVariable osID: Long) =
-      TalkResTranslator.translateAllFrom(openSpaceService.findTalksOfUserInOpenSpace(userID, osID))
+      openSpaceService.findTalksOfUserInOpenSpace(userID, osID).map { TalkTranslator.translateFrom(it) }
 
   @GetMapping("/talks/{id}")
   @LoggingInputExecution
   fun findTalks(@PathVariable id: Long) =
-      TalkResTranslator.translateAllFrom(openSpaceService.findTalks(id))
+      openSpaceService.findTalks(id).map { TalkTranslator.translateFrom(it) }
 
   @GetMapping("/assignedSlots/{id}")
   @LoggingInputExecution
@@ -65,30 +65,30 @@ class OpenSpaceController(private val openSpaceService: OpenSpaceService) {
   @PutMapping("/activateQueue/{userID}/{osID}")
   @LoggingInputExecution
   fun activateQueue(@PathVariable userID: Long, @PathVariable osID: Long) =
-      OpenSpaceResTranslator.translateFrom(openSpaceService.activateQueue(userID, osID))
+      OpenSpaceTranslator.translateFrom(openSpaceService.activateQueue(userID, osID))
 
   @PutMapping("/finishQueue/{userID}/{osID}")
   @LoggingInputExecution
   fun finishQueue(@PathVariable userID: Long, @PathVariable osID: Long) =
-      OpenSpaceResTranslator.translateFrom(openSpaceService.finishQueue(userID, osID))
+      OpenSpaceTranslator.translateFrom(openSpaceService.finishQueue(userID, osID))
 
   @PutMapping("/enqueueTalk/{userID}/{talkID}")
   @LoggingInputExecution
   fun enqueueTalk(@PathVariable userID: Long, @PathVariable talkID: Long) =
-      OpenSpaceResTranslator.translateFrom(openSpaceService.enqueueTalk(userID, talkID))
+      OpenSpaceTranslator.translateFrom(openSpaceService.enqueueTalk(userID, talkID))
 
   @PutMapping("/{openSpaceId}/user/{userID}/callForPapers")
   @LoggingInputExecution
   fun callForPapers(@PathVariable userID: Long, @PathVariable openSpaceId: Long) =
-      OpenSpaceResTranslator.translateFrom(openSpaceService.toggleCallForPapers(openSpaceId, userID))
+      OpenSpaceTranslator.translateFrom(openSpaceService.toggleCallForPapers(openSpaceId, userID))
 
   @PutMapping("/{openSpaceId}/user/{userID}/voting")
   @LoggingInputExecution
   fun voting(@PathVariable userID: Long, @PathVariable openSpaceId: Long) =
-      OpenSpaceResTranslator.translateFrom(openSpaceService.toggleVoting(openSpaceId, userID))
+      OpenSpaceTranslator.translateFrom(openSpaceService.toggleVoting(openSpaceId, userID))
 
   @PutMapping("/{openSpaceId}/user/{userID}/showSpeakerName")
   @LoggingInputExecution
   fun showSpeaker(@PathVariable userID: Long, @PathVariable openSpaceId: Long) =
-      OpenSpaceResTranslator.translateFrom(openSpaceService.toggleShowSpeakerName(openSpaceId, userID))
+      OpenSpaceTranslator.translateFrom(openSpaceService.toggleShowSpeakerName(openSpaceId, userID))
 }

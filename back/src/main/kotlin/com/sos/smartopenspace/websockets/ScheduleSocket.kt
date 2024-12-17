@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.sos.smartopenspace.domain.OpenSpace
 import com.sos.smartopenspace.dto.response.AssignedSlotResponseDTO
 import com.sos.smartopenspace.services.OpenSpaceService
-import com.sos.smartopenspace.translators.response.AssignedSlotResTranslator
+import com.sos.smartopenspace.translators.AssignedSlotTranslator
 import org.springframework.stereotype.Component
 
 @Component
@@ -13,6 +13,6 @@ class ScheduleSocket(
     objectMapper: ObjectMapper
 ) : AbstractSocket<List<AssignedSlotResponseDTO>>(objectMapper) {
     override fun getData(id: Long) = openSpaceService.findAssignedSlotsById(id)
-    override fun getData(os: OpenSpace) = AssignedSlotResTranslator.translateAllFrom(os.assignedSlots.toList())
+    override fun getData(os: OpenSpace) = os.assignedSlots.map { AssignedSlotTranslator.translateFrom(it) }
 
 }

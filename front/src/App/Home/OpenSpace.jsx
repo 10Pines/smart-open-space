@@ -1,107 +1,65 @@
-import React, { useState } from 'react';
-import { Box, Button, Image, Layer, Grid, Text } from 'grommet';
+import Card from '#components/molecule/Card.jsx';
+import { Box } from 'grommet';
 import PropTypes from 'prop-types';
+import {useState} from "react";
+import {usePushToOpenSpace} from "#helpers/routes.jsx";
+import {useUser} from "#helpers/useAuth.jsx";
+import DateTimeIndicator from "#components/atom/DateTimeIndicator.jsx";
+import useSize from "#helpers/useSize.jsx";
 
-import { numbersToTime } from '#helpers/time';
-import Card from '#shared/Card';
-import Detail from '#shared/Detail';
-import { CalendarIcon, ClockIcon } from '#shared/icons';
-import Title from '#shared/Title';
-import { usePushToOpenSpace } from '#helpers/routes';
-import { DeleteIcon } from '#shared/icons';
-import ButtonLoading from '#shared/ButtonLoading';
-
-const ButtonAction = (props) => (
-  <ButtonLoading alignSelf="center" margin={{ top: 'small' }} {...props} />
-);
-
-const OpenSpace = ({ deleteOS, startDate, endTime, id, name, startTime, urlImage }) => {
+const OpenSpace = ({ dates, id, author, ...props }) => {
   const [hover, setHover] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const PushToOpenSpace = usePushToOpenSpace(id);
+  const user = useUser();
+  const size = useSize();
+  const isOrganizer = author?.id === user?.id;
 
   return (
-    <Box
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      fill
-      plain
+    <Box direction="row" width={"580px"} height={"300px"} onClick={() => {PushToOpenSpace()}}
+         borderColor={hover ? 'accent-1' : 'brand'}
+         elevation={hover ? 'xlarge' : 'small'}
+         onMouseEnter={() => setHover(true)}
+         onMouseLeave={() => setHover(false)}
+         round={{size: '5px'}}
     >
-      <Card
-        borderColor={hover ? 'accent-1' : 'brand'}
-        elevation={hover ? 'xlarge' : 'small'}
-        fill
-        justify="start"
-        gap="small"
+      <Box
+        round={{
+          size: '5px',
+          corner: 'left',
+        }}
+        style={{
+          backgroundColor: '#3F8880',
+          boxShadow: '-4px 0px 4px rgba(0, 0, 0, 0.2), 0px 2px 4px rgba(0, 0, 0, 0.2)',
+            alignItems: "center"
+        }}
+        height={"100%"}
+        width={size === "small" ? "30%" : "100px"}
       >
-        <Grid gap={'xsmall'}>
-          <Button fill onClick={PushToOpenSpace} plain>
-            <Box height="xsmall" round={{ corner: 'top' }}>
-              <Image
-                src={urlImage}
-                fit="cover"
-                style={{
-                  borderTopLeftRadius: 20,
-                  borderTopRightRadius: 20,
-                }}
-              />
-            </Box>
-            <Box pad="small" justify="start" gap="small">
-              <Title level="3">{name}</Title>
-              <Detail
-                icon={CalendarIcon}
-                text={
-                  startDate
-                    ? new Date(startDate).toLocaleDateString('es')
-                    : 'Sin fecha aún'
-                }
-              />
-              <Detail
-                icon={ClockIcon}
-                text={
-                  startTime && endTime
-                    ? `${numbersToTime(startTime)} a ${numbersToTime(endTime)} hs`
-                    : ''
-                }
-              />
-            </Box>
-          </Button>
-          {showDeleteModal && (
-            <Layer
-              onEsc={() => setShowDeleteModal(false)}
-              onClickOutside={() => setShowDeleteModal(false)}
-            >
-              <Box pad="medium" gap="medium">
-                <Text>¿Estás seguro que querés eliminar esta conferencia?</Text>
-                <Box justify="around" direction="row" pad="small">
-                  <Button
-                    label="Si"
-                    onClick={() => {
-                      deleteOS();
-                      setShowDeleteModal(false);
-                    }}
-                  />
-                  <Button label="No" onClick={() => setShowDeleteModal(false)} />
-                </Box>
-              </Box>
-            </Layer>
-          )}
-        </Grid>
-      </Card>
+        {dates && <DateTimeIndicator
+          dates={dates}
+          round={{
+              size: '5px',
+          }}
+          width={"80%"}
+        />}
+      </Box>
+      <Card
+        {...props}
+          height={"300px"}
+        width={size === "small" ? "70%" : "491px"}
+        round={{
+          size: '5px',
+          corner: 'right',
+        }}
+        isOrganizer={isOrganizer}
+        color="white"
+      />
     </Box>
   );
 };
+
 OpenSpace.propTypes = {
-  startDate: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.arrayOf(PropTypes.number),
-    PropTypes.instanceOf(Date),
-  ]),
-  endTime: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.number)]),
-  startTime: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.number)]),
-  id: PropTypes.number.isRequired,
-  name: PropTypes.string.isRequired,
-  urlImage: PropTypes.string.isRequired,
+  props: PropTypes.object,
 };
 
 export default OpenSpace;

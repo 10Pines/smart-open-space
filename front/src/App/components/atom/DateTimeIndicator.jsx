@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Box, Text } from 'grommet';
 import {capitalize} from "#helpers/textUtils.js";
 
-const DateTimeIndicator = ({ date, dates, width, ...props }) => {
+const DateTimeIndicator = ({ dates=[], width, ...props }) => {
   const days = new Map();
 
   dates.forEach((date, i) => {
@@ -50,10 +50,6 @@ const DateTimeIndicator = ({ date, dates, width, ...props }) => {
 };
 
 DateTimeIndicator.propTypes = {
-  date: PropTypes.shape({
-    start: PropTypes.instanceOf(Date).isRequired,
-    end: PropTypes.instanceOf(Date).isRequired,
-  }).isRequired,
   width: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.shape({ width: PropTypes.string }),

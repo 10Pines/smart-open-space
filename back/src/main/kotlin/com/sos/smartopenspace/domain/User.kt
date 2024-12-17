@@ -35,7 +35,11 @@ class User(
 ) {
 
     override fun toString(): String =
-        toStringByReflex(this, mask = listOf("password", "resetToken", "resetTokenLifetime"))
+        toStringByReflex(
+            this,
+            mask = listOf("password", "resetToken", "resetTokenLifetime"),
+            exclude = listOf("authSessions")
+        )
 
     fun addOpenSpace(openSpace: OpenSpace): User {
         openSpace.organizer = this

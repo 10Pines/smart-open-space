@@ -29,6 +29,7 @@ class UserService(
         }
     }
 
+    @Transactional(readOnly = true)
     fun findUserAndMatchPassword(email: String, password: String): User {
         val user = findByEmail(email)
         if (!passwordEncoderService.matchesPassword(password, user.password)) {

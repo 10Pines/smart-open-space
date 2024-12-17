@@ -11,11 +11,13 @@ import {
 } from 'grommet';
 import IconButton from '../atom/IconButton';
 import PropTypes from 'prop-types';
+import {Key} from "grommet-icons";
 
 const Card = ({
   title,
   description,
   buttons,
+  isOrganizer,
   color = 'card-blue',
   showVotes = false,
   width = '300px',
@@ -38,16 +40,16 @@ const Card = ({
           {title}
         </Text>
       </CardHeader>
-        <CardBody>
+        <CardBody style={{ overflow: 'hidden'}}>
           <Text
             style={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               display: '-webkit-box',
-              WebkitLineClamp: 6,
-              lineHeight: '2rem',
+              WebkitLineClamp: 5,
               WebkitBoxOrient: 'vertical',
-              minHeight: '12rem',
+              maxHeight: '10rem',
+              whiteSpace: 'pre-wrap'
             }}
           >
             {description}
@@ -55,14 +57,17 @@ const Card = ({
         </CardBody>
       <CardFooter direction="row" justify="between">
         <Box direction="row" align="center" gap="0.5rem">
-          <Avatar
-            size="30px"
-            src={
-              author?.avatar ?? 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
-            }
-          />
+            {isOrganizer ?
+                <Key size={"18px"}/>
+                :
+                <Avatar
+                size="30px"
+                src={
+                    author?.avatar ?? 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+                }
+            />}
           <Text size="small" color="black">
-            {author?.name ?? 'Autor del evento'}
+            {isOrganizer ? "Sos administrador" : (author?.name ?? 'Autor del evento')}
           </Text>
         </Box>
         {showVotes && (

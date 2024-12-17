@@ -22,7 +22,7 @@ import AddElementBox from '../components/molecule/AddElementBox.jsx';
 import DateTimeIndicator from '../components/atom/DateTimeIndicator.jsx';
 import DateTimePicker from '../components/atom/DateTimePicker.jsx';
 import Card from '../components/molecule/Card.jsx';
-import TimeCard from '../components/molecule/TimeCard.jsx';
+import OpenSpace from '../Home/OpenSpace.jsx';
 import DateTimeForm from '../components/molecule/DateTimeForm.jsx';
 import RoomPickerForm from '../components/molecule/RoomPickerForm.jsx';
 import customTheme from '#app/theme.js';
@@ -191,16 +191,15 @@ const DesignSystem = () => {
         <Text>Date Time Indicator:</Text>
         <Box direction="row" gap="medium">
           <DateTimeIndicator
-            date={{
-              start: new Date(new Date().setHours(10, 0, 0, 0)),
-              end: new Date(new Date().setHours(15, 0, 0, 0)),
-            }}
+            dates={[
+              new Date(new Date().setHours(10, 0, 0, 0))
+            ]}
           />
           <DateTimeIndicator
-            date={{
-              start: new Date(2024, 3, 19, 16, 30, 0, 0),
-              end: new Date(2024, 3, 19, 20, 0, 0, 0),
-            }}
+            dates={[
+              new Date(2024, 3, 14, 16, 30, 0, 0),
+              new Date(2024, 3, 19, 20, 0, 0, 0),
+            ]}
             width="150px"
             background="primary"
           />
@@ -250,20 +249,16 @@ const DesignSystem = () => {
           />
         </Box>
         <Divider horizontal />
-        <Box direction="row" gap="medium" wrap>
-          <TimeCard
-            time={{
-              start: new Date(new Date().setHours(10, 0, 0, 0)),
-              end: new Date(new Date().setHours(16, 0, 0, 0)),
-            }}
+        <Box direction="column" gap="medium" wrap>
+          <OpenSpace
             title="Título de la Card"
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            dates={[
+                new Date(new Date().setHours(18, 0, 0, 0)),
+                new Date(new Date().setHours(21, 0, 0, 0)),
+            ]}
             footerDescription={{
               items: [
-                {
-                  icon: <UserIcon />,
-                  text: '25 invitados',
-                },
                 {
                   icon: <ChatIcon />,
                   text: '21 charlas postuladas',
@@ -271,14 +266,17 @@ const DesignSystem = () => {
               ],
             }}
           />
-          <TimeCard
-            time={{
-              start: new Date(new Date().setHours(18, 0, 0, 0)),
-              end: new Date(new Date().setHours(21, 0, 0, 0)),
-            }}
+          <OpenSpace
+            dates={[
+              new Date(new Date().setHours(18, 0, 0, 0)),
+              new Date(new Date().setHours(21, 0, 0, 0)),
+            ]}
             title="Título de la Card"
             showVotes
           />
+          <OpenSpace
+            title="Título de la Card"
+        />
         </Box>
 
         <Text>Date Time Picker:</Text>

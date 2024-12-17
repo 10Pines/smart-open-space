@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Text } from 'grommet';
-import { isSameDate } from '#helpers/time';
+import {capitalize} from "#helpers/textUtils.js";
 
 const DateTimeIndicator = ({ date, dates, width, ...props }) => {
   const days = new Map();
@@ -14,6 +14,13 @@ const DateTimeIndicator = ({ date, dates, width, ...props }) => {
       days.get(month).push(date.getDate().toString().padStart(2, '0'));
     }
   })
+  const monthsOrder = [
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+  ];
+  const sortedDays = Array.from(days)
+      .sort(([keyA], [keyB]) => monthsOrder.indexOf(keyA) - monthsOrder.indexOf(keyB));
+
 
   return (
     <Box
@@ -30,12 +37,12 @@ const DateTimeIndicator = ({ date, dates, width, ...props }) => {
       style={{minHeight: "100px"}}
       {...props}
     >
-      {Array.from(days).map(([key, value], index) => (
+      {sortedDays.map(([key, value], index) => (
           <>
             <Text key={index} weight="bold" size="small">
               {value.join(", ")}
             </Text>
-            <Text size="small">{key}</Text>
+            <Text size="small">{capitalize(key)}</Text>
           </>
       ))}
     </Box>

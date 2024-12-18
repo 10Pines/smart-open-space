@@ -61,6 +61,7 @@
     "grommet": "^2.39.0",
     "grommet-icons": "^4.4.0",
     "logrocket": "^3.0.1",
+    "markdown-to-txt": "^2.0.1",
     "pluralize": "^8.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

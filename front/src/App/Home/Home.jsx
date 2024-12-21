@@ -1,29 +1,21 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { useGetAllOpenSpaces } from '#api/os-client';
 import { useUser } from '#helpers/useAuth';
-import { OpenSpaceIcon } from '#shared/icons';
+import {ChatIcon, OpenSpaceIcon} from '#shared/icons';
 import MainHeader from '#shared/MainHeader';
 import MyGrid from '#shared/MyGrid';
 import Spinner from '#shared/Spinner';
 import { RedirectToLogin, usePushToNewOS } from '#helpers/routes';
 
 import EmptyOpenSpaces from './EmptyOpenSpaces';
-import OpenSpace from './OpenSpace';
-import { deleteOS } from '#api/os-client';
+import OpenSpace from "#app/Home/OpenSpace.jsx";
+import markdownToTxt from "markdown-to-txt";
 
 const Home = () => {
   const pushToNewOS = usePushToNewOS();
-  const deleteOpenSpace = (osID) =>
-    deleteOS(osID).then(() => {
-      reload();
-    });
 
-  const { data: openSpaces, isPending, reload: reloadOpenSpaces } = useGetAllOpenSpaces();
-  const reload = useCallback(() => {
-    reloadOpenSpaces();
-  }, [reloadOpenSpaces]);
-
+  const { data: openSpaces, isPending } = useGetAllOpenSpaces();
   return (
     <>
       <MainHeader>
@@ -39,9 +31,25 @@ const Home = () => {
       ) : openSpaces.length === 0 ? (
         <EmptyOpenSpaces onClick={pushToNewOS} />
       ) : (
-        <MyGrid>
+        <MyGrid columns="580px">
           {openSpaces.map((os) => (
-            <OpenSpace deleteOS={() => deleteOpenSpace(os.id)} key={os.id} {...os} />
+              <>
+                <OpenSpace
+                  id={os.id}
+                  dates={os.dates}
+                  title={os.name}
+                  description={markdownToTxt(os.description)}
+                  author={os.organizer}
+                  footerDescription={{
+                    items: [
+                      {
+                        icon: <ChatIcon />,
+                        text: `${os.amountOfTalks === 0 ? "Sin" : os.amountOfTalks} ${os.amountOfTalks === 1 ? "charla postulada" : "charlas postuladas"}`,
+                      },
+                    ],
+                  }}
+                />
+              </>
           ))}
         </MyGrid>
       )}

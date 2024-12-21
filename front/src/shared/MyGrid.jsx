@@ -3,8 +3,8 @@ import React from 'react';
 import { Grid } from 'grommet';
 import MyProps from '#helpers/MyProps';
 
-const MyGrid = ({ children }) => (
-  <Grid columns="250px" gap="medium" margin={{ vertical: 'medium' }}>
+const MyGrid = ({ children, columns="250px" }) => (
+  <Grid columns={columns} gap="medium" margin={{ vertical: 'medium' }}>
     {children}
   </Grid>
 );

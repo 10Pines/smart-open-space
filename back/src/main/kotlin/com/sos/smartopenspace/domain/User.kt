@@ -2,11 +2,7 @@ package com.sos.smartopenspace.domain
 
 import com.google.common.hash.Hashing
 import com.sos.smartopenspace.util.toStringByReflex
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.Id
-import jakarta.persistence.GenerationType
+import jakarta.persistence.*
 import java.nio.charset.StandardCharsets
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -31,12 +27,19 @@ class User(
 
     var resetTokenLifetime: Long? = null,
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    val authSessions: List<AuthSession> = listOf(),
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
 ) {
 
     override fun toString(): String =
-        toStringByReflex(this, mask = listOf("password", "resetToken", "resetTokenLifetime"))
+        toStringByReflex(
+            this,
+            mask = listOf("password", "resetToken", "resetTokenLifetime"),
+            exclude = listOf("authSessions")
+        )
 
     fun addOpenSpace(openSpace: OpenSpace): User {
         openSpace.organizer = this

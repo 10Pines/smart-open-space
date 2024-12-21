@@ -24,42 +24,42 @@ class ExceptionHandler {
     fun badRequestHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
         val httpStatus = HttpStatus.BAD_REQUEST
         handleLogError(httpStatus, ex, false)
-        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus.name), httpStatus)
+        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus), httpStatus)
     }
 
     @ExceptionHandler(UnprocessableEntityException::class)
     fun unprocessableEntityHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
         val httpStatus = HttpStatus.UNPROCESSABLE_ENTITY
         handleLogError(httpStatus, ex, false)
-        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus.name), httpStatus)
+        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus), httpStatus)
     }
 
     @ExceptionHandler(NotFoundException::class)
     fun notFoundHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
         val httpStatus = HttpStatus.NOT_FOUND
         handleLogError(httpStatus, ex, false)
-        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus.name), httpStatus)
+        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus), httpStatus)
     }
 
     @ExceptionHandler(UnauthorizedException::class)
     fun notAuthHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
         val httpStatus = HttpStatus.UNAUTHORIZED
         handleLogError(httpStatus, ex)
-        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus.name), httpStatus)
+        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus), httpStatus)
     }
 
     @ExceptionHandler(NoResourceFoundException::class)
     fun endpointNotFoundHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
         val httpStatus = HttpStatus.NOT_FOUND
         handleLogError(httpStatus, ex)
-        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus.name), httpStatus)
+        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus), httpStatus)
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
     fun methodNotAllowedHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
         val httpStatus = HttpStatus.METHOD_NOT_ALLOWED
         handleLogError(httpStatus, ex)
-        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus.name), httpStatus)
+        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus), httpStatus)
     }
 
     @ExceptionHandler(Exception::class)

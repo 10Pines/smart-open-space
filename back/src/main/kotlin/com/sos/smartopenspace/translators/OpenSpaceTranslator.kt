@@ -1,11 +1,10 @@
-package com.sos.smartopenspace.translators.response
+package com.sos.smartopenspace.translators
 
 import com.sos.smartopenspace.domain.OpenSpace
 import com.sos.smartopenspace.dto.response.OpenSpaceResponseDTO
-import com.sos.smartopenspace.translators.TranslatorFrom
 
-object OpenSpaceResTranslator : TranslatorFrom<OpenSpace, OpenSpaceResponseDTO> {
-    override fun translateFrom(domain: OpenSpace) = OpenSpaceResponseDTO(
+object OpenSpaceTranslator {
+    fun translateFrom(domain: OpenSpace) = OpenSpaceResponseDTO(
         id = domain.id,
         name = domain.name,
         description = domain.description,
@@ -21,16 +20,16 @@ object OpenSpaceResTranslator : TranslatorFrom<OpenSpace, OpenSpaceResponseDTO> 
         finishedQueue = domain.isFinishedQueue(),
         amountOfTalks = domain.amountOfTalks(),
         dates = domain.dates(),
-        organizer = UserResTranslator.translateFrom(domain.organizer),
-        rooms = RoomResTranslator.translateAllFrom(domain.rooms.toList()),
-        slots = SlotResTranslator.translateAllFrom(domain.slots.toList()),
-        tracks = TrackResTranslator.translateAllFrom(domain.tracks.toList()),
-        toSchedule = TalkResTranslator.translateAllFrom(domain.toSchedule.toList()),
+        organizer = UserTranslator.translateToUserResponse(domain.organizer),
+        rooms = domain.rooms.map { RoomTranslator.translateFrom(it) },
+        slots = domain.slots.map { SlotTranslator.translateFrom(it) },
+        tracks = domain.tracks.map { TrackTranslator.translateFrom(it) },
+        toSchedule = domain.toSchedule.map { TalkTranslator.translateFrom(it) },
         freeSlots = domain.freeSlots().map { (room, slots) ->
-            RoomResTranslator.translateFrom(room) to SlotResTranslator.translateAllFrom(slots.toList())
+            RoomTranslator.translateFrom(room) to slots.map { SlotTranslator.translateFrom(it) }
         },
         assignableSlots = domain.assignableSlots().map { (room, slots) ->
-            RoomResTranslator.translateFrom(room) to SlotResTranslator.translateAllFrom(slots.toList())
+            RoomTranslator.translateFrom(room) to slots.map { SlotTranslator.translateFrom(it) }
         },
         isActiveVoting = domain.isActiveVoting,
         showSpeakerName = domain.showSpeakerName,

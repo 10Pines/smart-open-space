@@ -30,7 +30,7 @@ class UserService(
     }
 
     @Transactional(readOnly = true)
-    fun auth(email: String, password: String): User {
+    fun findUserAndMatchPassword(email: String, password: String): User {
         val user = findByEmail(email)
         if (!passwordEncoderService.matchesPassword(password, user.password)) {
             throw UserUnauthorizedException()

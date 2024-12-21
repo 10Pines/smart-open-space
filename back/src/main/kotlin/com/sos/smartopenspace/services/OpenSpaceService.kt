@@ -1,11 +1,10 @@
 package com.sos.smartopenspace.services
 
-import com.sos.smartopenspace.aspect.LoggingExecution
 import com.sos.smartopenspace.domain.*
 import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
 import com.sos.smartopenspace.dto.request.OpenSpaceRequestDTO
 import com.sos.smartopenspace.persistence.*
-import com.sos.smartopenspace.translators.response.AssignedSlotResTranslator
+import com.sos.smartopenspace.translators.AssignedSlotTranslator
 import com.sos.smartopenspace.websockets.QueueSocket
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
@@ -36,19 +35,34 @@ class OpenSpaceService(
         return openSpaceRepository.save(openSpace)
     }
 
-    fun update(userID: Long, openSpaceID: Long, openSpaceRequestDTO: OpenSpaceRequestDTO): OpenSpace {
+    fun update(
+        userID: Long,
+        openSpaceID: Long,
+        openSpaceRequestDTO: OpenSpaceRequestDTO
+    ): OpenSpace {
         val openSpace = findById(openSpaceID)
         val user = findUser(userID)
-        val deletedTracks = updatableItemCollectionService.getDeletedItems(openSpaceRequestDTO.tracks, openSpace.tracks)
-        val talksWithoutTrack = talkRepository.findByOpenSpaceIdAndTrackIds(openSpaceID, deletedTracks.map { it.id }) ?: emptyList()
+        val deletedTracks = updatableItemCollectionService.getDeletedItems(
+            openSpaceRequestDTO.tracks,
+            openSpace.tracks
+        )
+        val talksWithoutTrack =
+            talkRepository.findByOpenSpaceIdAndTrackIds(openSpaceID, deletedTracks.map { it.id })
+                ?: emptyList()
 
         openSpace.updateRooms(
             updatableItemCollectionService.getNewItems(openSpaceRequestDTO.rooms),
-            updatableItemCollectionService.getDeletedItems(openSpaceRequestDTO.rooms, openSpace.rooms)
+            updatableItemCollectionService.getDeletedItems(
+                openSpaceRequestDTO.rooms,
+                openSpace.rooms
+            )
         )
         openSpace.updateSlots(
             updatableItemCollectionService.getNewItems(openSpaceRequestDTO.slots),
-            updatableItemCollectionService.getDeletedItems(openSpaceRequestDTO.slots, openSpace.slots)
+            updatableItemCollectionService.getDeletedItems(
+                openSpaceRequestDTO.slots,
+                openSpace.slots
+            )
         )
         openSpace.updateTracksAndAssociatedTalks(
             updatableItemCollectionService.getNewItems(openSpaceRequestDTO.tracks),
@@ -81,16 +95,20 @@ class OpenSpaceService(
     fun findAllByUser(userID: Long) = openSpaceRepository.findAllByOrganizerId(userID)
 
     @Transactional(readOnly = true)
-    fun findById(id: Long): OpenSpace = openSpaceRepository.findById(id).orElseThrow { OpenSpaceNotFoundException() }
+    fun findById(id: Long): OpenSpace =
+        openSpaceRepository.findById(id).orElseThrow { OpenSpaceNotFoundException() }
 
     @Transactional(readOnly = true)
-    fun findTrackById(id: Long) = trackRepository.findByIdOrNull(id) ?: throw TrackNotFoundException()
+    fun findTrackById(id: Long) =
+        trackRepository.findByIdOrNull(id) ?: throw TrackNotFoundException()
 
     private fun findByTalk(talkID: Long) = openSpaceRepository.findFirstOpenSpaceByTalkId(talkID)
-    private fun findTalk(id: Long) = talkRepository.findByIdOrNull(id) ?: throw TalkNotFoundException()
+    private fun findTalk(id: Long) =
+        talkRepository.findByIdOrNull(id) ?: throw TalkNotFoundException()
 
     @Transactional(readOnly = true)
-    fun findTalks(id: Long) = talkRepository.findAllByOpenSpaceIdOrderedByVotes(id).mapNotNull { it }
+    fun findTalks(id: Long) =
+        talkRepository.findAllByOpenSpaceIdOrderedByVotes(id).mapNotNull { it }
 
     fun createTalk(userID: Long, osID: Long, createTalkRequestDTO: CreateTalkRequestDTO): Talk {
         val user = findUser(userID)
@@ -107,7 +125,9 @@ class OpenSpaceService(
     }
 
     @Transactional(readOnly = true)
-    fun findAssignedSlotsById(id: Long) = AssignedSlotResTranslator.translateAllFrom(findById(id).assignedSlots.toList())
+    fun findAssignedSlotsById(id: Long) = findById(id).assignedSlots.map {
+        AssignedSlotTranslator.translateFrom(it)
+    }
 
     fun activateQueue(userID: Long, osID: Long) =
         findById(osID).activeQueue(findUser(userID))
@@ -129,7 +149,10 @@ class OpenSpaceService(
         userID: Long,
         openSpace: OpenSpace
     ) {
-        (!userIsSpeakerOf(talk, userID) && userIsOrganizerOf(openSpace, userID)) && throw TalkNotFoundException()
+        (!userIsSpeakerOf(talk, userID) && userIsOrganizerOf(
+            openSpace,
+            userID
+        )) && throw TalkNotFoundException()
     }
 
     private fun userIsOrganizerOf(openSpace: OpenSpace, userID: Long) =

@@ -1,6 +1,5 @@
-package com.sos.smartopenspace.service
+package com.sos.smartopenspace.services
 
-import com.sos.smartopenspace.services.PasswordEncoderService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

@@ -12,7 +12,7 @@ class AuthSession(
     val token: String,
     val createdOn: Instant,
     val expiresOn: Instant,
-    var revoked: Boolean,
+    var revoked: Boolean = false,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User,

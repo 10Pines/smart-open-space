@@ -3,10 +3,10 @@ package com.sos.smartopenspace.domain
 import com.google.common.hash.Hashing
 import com.sos.smartopenspace.util.toStringByReflex
 import jakarta.persistence.*
-import java.nio.charset.StandardCharsets
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
+import java.nio.charset.StandardCharsets
 
 @Entity(name = "Users")
 class User(
@@ -27,7 +27,7 @@ class User(
 
     var resetTokenLifetime: Long? = null,
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     val authSessions: List<AuthSession> = listOf(),
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

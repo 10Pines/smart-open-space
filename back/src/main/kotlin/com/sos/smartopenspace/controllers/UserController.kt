@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("user")
 class UserController(private val userService: UserService, private val emailService: EmailService) {
+
+  @Deprecated("Use '/v1/auth/register' endpoint", level = DeprecationLevel.WARNING)
   @PostMapping
   @LoggingInputExecution
   fun create(@Valid @RequestBody user: User) =
     UserTranslator.translateToUserResponse(userService.create(user))
 
-  @Deprecated("Use '/auth/login' endpoint")
+  @Deprecated("Use '/v1/auth/login' endpoint", level = DeprecationLevel.WARNING)
   @PostMapping("/auth")
   @LoggingInputExecution
   fun auth(@Valid @RequestBody user: UserLoginRequestDTO) =

@@ -1,6 +1,5 @@
-package com.sos.smartopenspace.service
+package com.sos.smartopenspace.services
 
-import com.sos.smartopenspace.services.UserService
 import com.sos.smartopenspace.sampler.UserSampler
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

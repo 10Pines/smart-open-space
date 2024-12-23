@@ -1,4 +1,4 @@
-package com.sos.smartopenspace.service
+package com.sos.smartopenspace.services
 
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles

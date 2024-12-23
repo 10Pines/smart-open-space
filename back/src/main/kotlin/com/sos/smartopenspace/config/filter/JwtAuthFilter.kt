@@ -50,18 +50,18 @@ class JwtAuthFilter(
 
         val jwtToken = jwtTokenHeader.substring(TOKEN_PREFIX.length)
         if (!jwtService.isValidToken(jwtToken)) {
-            LOGGER.error("Token is invalid")
-            handlingAuthErrorWithMessage(response, "JWT token is invalid")
+            handlingAuthErrorWithMessage(response, "Jwt token is invalid or expired")
             return
         }
 
+        //TODO: Review is this required to validate if the token is revoked every request or in each auth request???
         val userId = jwtService.extractUserId(jwtToken)
         authSessionRepository.findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
             jwtToken,
             userId,
             now
         ) ?: run {
-            LOGGER.error("Token was expired or revoked userId $userId, date_now $now and token $jwtToken")
+            LOGGER.error("Current jwt token was expired or revoked userId $userId and date_now $now")
             handlingAuthErrorWithMessage(response, "Token was expired or revoked")
             return
         }

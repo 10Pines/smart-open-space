@@ -58,9 +58,25 @@ class AuthService(
     }
 
     override fun validateToken(tokenHeader: String, userId: Long): Boolean {
+        val now = getNowUTC()
         val token = jwtService.extractToken(tokenHeader)
-        return jwtService.isValidTokenWithUser(token, userId)
+        val expiredTokenResWithLoggerFn = { tokenUserId: Long ->
+            LOGGER.error("Current jwt token was expired or revoked with userId $userId, tokenUserId $tokenUserId and date_now $now")
+            false
+        }
+        return jwtService.isValidToken(token) && jwtService.extractUserId(token)
+            .let { tokenUserId ->
+                if (tokenUserId != userId) {
+                    return expiredTokenResWithLoggerFn(tokenUserId)
+                }
+                return authSessionRepository
+                    .findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(token, tokenUserId, now)
+                    ?.let {
+                        true
+                    } ?: expiredTokenResWithLoggerFn(tokenUserId)
+            }
     }
+
 
     private fun createAuthSession(user: User): AuthSession {
         val now = Instant.now(Clock.systemUTC())
@@ -77,4 +93,7 @@ class AuthService(
         return authSessionRepository.save(authSession)
     }
 
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(this::class.java)
+    }
 }

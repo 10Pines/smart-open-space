@@ -20,14 +20,38 @@ class JwtService(
     private val secretKey: String,
 ) {
 
+    /**
+     * @return the token without the Bearer prefix and trimmed.
+     * @throws InvalidTokenException if not contains 'Bearer ' prefix.
+     */
+    fun extractToken(tokenHeader: String): String {
+        val tokenHeaderTrimmed = tokenHeader.trim()
+        if (tokenHeaderTrimmed.isBlank() || !tokenHeaderTrimmed.startsWith(TOKEN_PREFIX)) {
+            throw InvalidTokenException()
+        }
+        return tokenHeaderTrimmed.substring(TOKEN_PREFIX.length)
+    }
+
+    /**
+     * @return a JWT token with issuedAt, expirationAt and user email as subject.
+     *  Also includes user_id, user_email and user_name payload fields.
+     *  @throws IllegalArgumentException if user id is not greater than 0.
+     *  @throws IllegalArgumentException if issuedAt is after expirationAt.
+     */
     fun createToken(issuedAt: Instant, expirationAt: Instant, user: User): String {
-        val userPayload = listOf(
+        if (user.id <= 0) {
+            LOGGER.error("$ERROR_INVALID_USER_ID [user_id=${user.id}]")
+            throw IllegalArgumentException(ERROR_INVALID_USER_ID)
+        }
+        if (issuedAt.isAfter(expirationAt)) {
+            LOGGER.error("$ERROR_INVALID_DATES [issued_at=${issuedAt}] [expiration_at=${expirationAt}]")
+            throw IllegalArgumentException(ERROR_INVALID_DATES)
+        }
+        val userPayload = mapOf(
             USER_ID_FIELD to user.id,
             USER_EMAIL_FIELD to user.email,
             USER_NAME_FIELD to user.name,
-        ).associate { (k, v) ->
-            buildUserField(k) to "$v"
-        }
+        )
         return Jwts.builder()
             .claims(userPayload)
             .subject(user.email)
@@ -37,46 +61,41 @@ class JwtService(
             .compact()
     }
 
-    fun isValidTokenWithUser(token: String, userId: Long): Boolean =
-        runCatching {
-            val claims = getClaims(token)
-            claims[buildUserField(USER_ID_FIELD)] == userId.toString()
-                    && claims.expiration.toInstant().isAfter(getNowUTC())
-        }.onFailure { ex ->
-            LOGGER.error("Error validating userId $userId and token $token", ex)
-        }.getOrDefault(false)
-
+    /**
+     * @return TRUE if the token is not expired and contains user_id field with a valid id long value.
+     *  Otherwise, returns FALSE.
+     */
     fun isValidToken(token: String): Boolean =
         runCatching {
             val claims = getClaims(token)
-            claims[buildUserField(USER_ID_FIELD)].toString().toLong() > 0
+            extractUserIdFromClaims(claims) > 0
                     && claims.expiration.toInstant().isAfter(getNowUTC())
         }.onFailure { ex ->
-            LOGGER.error("Error validating token $token", ex)
+            LOGGER.error("Error validating token", ex)
         }.getOrDefault(false)
 
 
-    fun extractToken(tokenHeader: String): String {
-        if (tokenHeader.isBlank() || !tokenHeader.startsWith(TOKEN_PREFIX)) {
-            throw InvalidTokenException()
-        }
-        return tokenHeader.substring(TOKEN_PREFIX.length)
-    }
-
-    fun extractUserField(token: String, field: String): String =
-        extractField(token, buildUserField(field))
-
+    /**
+     * @return user_id field from the token claims.
+     * @throws InvalidTokenException if jwt token is not valid.
+     * */
     fun extractUserId(token: String): Long =
-        extractUserField(token, USER_ID_FIELD).toLong()
+        runCatching { extractUserIdFromClaims(getClaims(token)) }
+            .getOrElse { ex ->
+                LOGGER.error("Error extracting user id from token", ex)
+                throw InvalidTokenException()
+            }
 
-    fun extractField(token: String, field: String): String {
-        return getClaims(token)[field].toString()
-    }
-
-    private fun getSignKey() =
-        Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey))
-
-    private fun buildUserField(field: String) = "$USER_PAYLOAD_PREFIX$field"
+    /**
+     * @return a Map<String, Any> with the claims of the token (defaults and payload added in creation).
+     * @throws InvalidTokenException if jwt token is not valid.
+     * */
+    fun getClaimsMap(token: String): Map<String, Any?> =
+        runCatching { getClaims(token) }
+            .getOrElse { ex ->
+                LOGGER.error("Error get claims from token", ex)
+                throw InvalidTokenException()
+            }
 
     private fun getClaims(token: String): Claims =
         Jwts.parser()
@@ -85,13 +104,30 @@ class JwtService(
             .parseSignedClaims(token)
             .payload
 
+    private fun extractUserIdFromClaims(claims: Map<String, Any?>): Long =
+        when (val userId = claims[USER_ID_FIELD]) {
+            is Number -> userId.toLong()
+            else -> throw IllegalArgumentException("not Number $USER_ID_FIELD value type")
+        }
+
+    private fun getSignKey() =
+        Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey))
+
     companion object {
         const val TOKEN_PREFIX = "Bearer "
-        const val USER_ID_FIELD = "id"
-        const val USER_EMAIL_FIELD = "email"
-        const val USER_NAME_FIELD = "name"
 
+        const val ISSUED_AT_FIELD = "iat"
+        const val EXPIRATION_AT_FIELD = "exp"
+        const val SUBJECT_FIELD = "sub"
         private const val USER_PAYLOAD_PREFIX = "user_"
+        const val USER_ID_FIELD = "${USER_PAYLOAD_PREFIX}id"
+        const val USER_EMAIL_FIELD = "${USER_PAYLOAD_PREFIX}email"
+        const val USER_NAME_FIELD = "${USER_PAYLOAD_PREFIX}name"
+
+
+        const val ERROR_INVALID_USER_ID = "User id must be greater than 0"
+        const val ERROR_INVALID_DATES = "IssuedAt date must be before expirationAt date"
+
         private val ALGORITHM = Jwts.SIG.HS256
         private val LOGGER = LoggerFactory.getLogger(this::class.java)
     }

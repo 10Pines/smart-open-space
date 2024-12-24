@@ -43,7 +43,7 @@ class AuthService(
         authSession?.let {
             authSession.revoke()
             authSessionRepository.save(authSession)
-        } ?: throw InvalidTokenException()
+        }
     }
 
     override fun logoutAllSessions(tokenHeader: String) {
@@ -51,8 +51,10 @@ class AuthService(
         val userId = jwtService.extractUserId(token)
         val authSessions = authSessionRepository
             .findAllByUserIdAndNotRevokedAndNotExpiredFrom(userId, getNowUTC())
-        authSessions.forEach { it.revoke() }
-        authSessionRepository.saveAll(authSessions)
+        if (authSessions.isNotEmpty()) {
+            authSessions.forEach { it.revoke() }
+            authSessionRepository.saveAll(authSessions)
+        }
     }
 
     override fun validateToken(tokenHeader: String, userId: Long): Boolean {

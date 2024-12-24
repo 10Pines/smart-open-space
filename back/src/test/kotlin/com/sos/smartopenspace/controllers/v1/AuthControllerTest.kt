@@ -2,6 +2,7 @@ package com.sos.smartopenspace.controllers.v1
 
 import com.sos.smartopenspace.controllers.BaseControllerTest
 import com.sos.smartopenspace.domain.AuthSession
+import com.sos.smartopenspace.domain.InvalidTokenException
 import com.sos.smartopenspace.domain.User
 import com.sos.smartopenspace.domain.UserUnauthorizedException
 import com.sos.smartopenspace.persistence.AuthSessionRepository
@@ -231,7 +232,7 @@ class AuthControllerTest : BaseControllerTest() {
 
     @Test
     fun `test logout with valid token successful should return http ok and revoke current token`() {
-        val email = "pepe23@gmail.com"
+        val email = "pepe43223@gmail.com"
         val password = "xd123"
         createUserWithEmailAndPassword(email, password)
         val authSessionSaved1 = loginAndGetAuthSession(email, password)
@@ -259,6 +260,52 @@ class AuthControllerTest : BaseControllerTest() {
         assertFalse(postAnotherAuthSessionSaved.revoked)
     }
 
+    @ParameterizedTest
+    @CsvSource(
+        "invalid_token.txt",
+        "valid_and_not_match_sign_key.txt",
+        "valid_with_invalid_user_id.txt",
+    )
+    fun `test logout with invalid token should return http 401`(filename: String) {
+        // WHEN
+        val token = ReadMocksHelper.readJwtTokenMocksFile(filename)
+        val tokenWithBearer = "$TOKEN_PREFIX${token}"
+        val httpResponse = mockMvc.perform(
+            MockMvcRequestBuilders.post(LOGOUT_ENDPOINT)
+                .header(HttpHeaders.AUTHORIZATION, tokenWithBearer)
+        )
+        // THEN
+        val responseBodyStr =
+            httpResponse.andExpect(status().isUnauthorized).andReturn()
+                .response.getContentAsString(StandardCharsets.UTF_8)
+        assertNotNull(responseBodyStr)
+        val responseErrMsg = extractJsonApiErrorMessage<String>(responseBodyStr)
+            ?: fail("Response error message not found")
+        assertEquals(InvalidTokenException().message, responseErrMsg)
+    }
+
+    @Test
+    fun `test logout with invalid token Bearer prefix should return http 401`() {
+        val email = "pepe23@gmail.com"
+        val password = "xd123"
+        createUserWithEmailAndPassword(email, password)
+        val authSessionSaved = loginAndGetAuthSession(email, password)
+        // WHEN
+        val tokenWithBearer = authSessionSaved.token
+        val httpResponse = mockMvc.perform(
+            MockMvcRequestBuilders.post(LOGOUT_ENDPOINT)
+                .header(HttpHeaders.AUTHORIZATION, tokenWithBearer)
+        )
+        // THEN
+        val responseBodyStr =
+            httpResponse.andExpect(status().isUnauthorized).andReturn()
+                .response.getContentAsString(StandardCharsets.UTF_8)
+        assertNotNull(responseBodyStr)
+        val responseErrMsg = extractJsonApiErrorMessage<String>(responseBodyStr)
+            ?: fail("Response error message not found")
+        assertEquals(InvalidTokenException().message, responseErrMsg)
+    }
+
     @Test
     fun `test logout all with valid token successful should return http ok and revoke all user tokens`() {
         val email = "pepe@gmail.com"
@@ -284,6 +331,52 @@ class AuthControllerTest : BaseControllerTest() {
         userAuthSessions.forEach {
             assertFalse(authService.validateToken("$TOKEN_PREFIX${it.token}", authSessionSaved1.user.id))
         }
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "invalid_token.txt",
+        "valid_and_not_match_sign_key.txt",
+        "valid_with_invalid_user_id.txt",
+    )
+    fun `test logout all with invalid token should return http 401`(filename: String) {
+        // WHEN
+        val token = ReadMocksHelper.readJwtTokenMocksFile(filename)
+        val tokenWithBearer = "$TOKEN_PREFIX${token}"
+        val httpResponse = mockMvc.perform(
+            MockMvcRequestBuilders.post(LOGOUT_ALL_SESSIONS_ENDPOINT)
+                .header(HttpHeaders.AUTHORIZATION, tokenWithBearer)
+        )
+        // THEN
+        val responseBodyStr =
+            httpResponse.andExpect(status().isUnauthorized).andReturn()
+                .response.getContentAsString(StandardCharsets.UTF_8)
+        assertNotNull(responseBodyStr)
+        val responseErrMsg = extractJsonApiErrorMessage<String>(responseBodyStr)
+            ?: fail("Response error message not found")
+        assertEquals(InvalidTokenException().message, responseErrMsg)
+    }
+
+    @Test
+    fun `test logout all with invalid token Bearer prefix should return http 401`() {
+        val email = "pepe12323@gmail.com"
+        val password = "xd123"
+        createUserWithEmailAndPassword(email, password)
+        val authSessionSaved = loginAndGetAuthSession(email, password)
+        // WHEN
+        val tokenWithBearer = authSessionSaved.token
+        val httpResponse = mockMvc.perform(
+            MockMvcRequestBuilders.post(LOGOUT_ALL_SESSIONS_ENDPOINT)
+                .header(HttpHeaders.AUTHORIZATION, tokenWithBearer)
+        )
+        // THEN
+        val responseBodyStr =
+            httpResponse.andExpect(status().isUnauthorized).andReturn()
+                .response.getContentAsString(StandardCharsets.UTF_8)
+        assertNotNull(responseBodyStr)
+        val responseErrMsg = extractJsonApiErrorMessage<String>(responseBodyStr)
+            ?: fail("Response error message not found")
+        assertEquals(InvalidTokenException().message, responseErrMsg)
     }
 
     private fun createUserWithEmailAndPassword(email: String, password: String) {

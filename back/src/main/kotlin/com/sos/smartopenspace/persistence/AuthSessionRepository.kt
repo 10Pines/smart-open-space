@@ -12,4 +12,6 @@ interface AuthSessionRepository: JpaRepository<AuthSession, String> {
 
     @Query("SELECT a FROM AuthSession a WHERE a.user.id = :userId AND a.revoked = false AND a.expiresOn > :expiredFrom")
     fun findAllByUserIdAndNotRevokedAndNotExpiredFrom(userId: Long, expiredFrom: Instant): List<AuthSession>
+
+    fun findAllByUserId(userId: Long): List<AuthSession>
 }

@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Clock
-import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 @Service
@@ -79,7 +77,7 @@ class AuthService(
 
 
     private fun createAuthSession(user: User): AuthSession {
-        val now = Instant.now(Clock.systemUTC())
+        val now = getNowUTC()
         val expirationAt = now.plus(expirationInMin, ChronoUnit.MINUTES)
 
         val authSession = AuthSession(

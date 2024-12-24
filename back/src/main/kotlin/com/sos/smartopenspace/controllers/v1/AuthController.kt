@@ -1,7 +1,7 @@
 package com.sos.smartopenspace.controllers.v1
 
 import com.sos.smartopenspace.aspect.LoggingInputExecution
-import com.sos.smartopenspace.dto.request.auth.AuthResponseDTO
+import com.sos.smartopenspace.dto.response.auth.AuthResponseDTO
 import com.sos.smartopenspace.dto.request.auth.LoginRequestDTO
 import com.sos.smartopenspace.dto.request.auth.RegisterRequestDTO
 import com.sos.smartopenspace.services.AuthServiceI

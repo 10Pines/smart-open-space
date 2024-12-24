@@ -15,7 +15,6 @@ class AuthControllerTest: BaseControllerTest() {
     @Autowired
     lateinit var authSessionRepo: AuthSessionRepository
 
-    //TODO: Check if mock jwtService is needed (or use real)
     @MockBean
     lateinit var jwtService: JwtService
 

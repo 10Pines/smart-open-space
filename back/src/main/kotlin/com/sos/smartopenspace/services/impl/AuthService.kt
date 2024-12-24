@@ -83,7 +83,6 @@ class AuthService(
         val expirationAt = now.plus(expirationInMin, ChronoUnit.MINUTES)
 
         val authSession = AuthSession(
-            id = user.id.toString(),
             token = jwtService.createToken(now, expirationAt, user),
             createdOn = now,
             expiresOn = expirationAt,

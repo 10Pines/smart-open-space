@@ -7,7 +7,7 @@ import java.time.Instant
 class AuthSession(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: String = "",
+    var id: String = "",
     @Column(unique = true)
     val token: String,
     val createdOn: Instant,

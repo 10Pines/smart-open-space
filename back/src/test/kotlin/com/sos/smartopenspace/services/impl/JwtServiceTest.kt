@@ -157,7 +157,7 @@ class JwtServiceTest : BaseServiceTest() {
         "valid jwt token with invalid userID,valid_with_invalid_user_id.txt",
     )
     fun `test isValidToken should return falsy`(testName: String, tokenFile: String) {
-        val token = ReadMocksHelper.readMockJwtTokensFile(tokenFile)
+        val token = ReadMocksHelper.readJwtTokenMocksFile(tokenFile)
         val result = jwtService.isValidToken(token)
         assertFalse(result)
     }
@@ -182,7 +182,7 @@ class JwtServiceTest : BaseServiceTest() {
         testName: String,
         tokenFile: String
     ) {
-        val token = ReadMocksHelper.readMockJwtTokensFile(tokenFile)
+        val token = ReadMocksHelper.readJwtTokenMocksFile(tokenFile)
         assertThrows(InvalidTokenException::class.java) {
             jwtService.extractUserId(token)
         }
@@ -229,7 +229,7 @@ class JwtServiceTest : BaseServiceTest() {
         testName: String,
         tokenFile: String
     ) {
-        val token = ReadMocksHelper.readMockJwtTokensFile(tokenFile)
+        val token = ReadMocksHelper.readJwtTokenMocksFile(tokenFile)
         assertThrows(InvalidTokenException::class.java) {
             jwtService.getClaimsMap(token)
         }

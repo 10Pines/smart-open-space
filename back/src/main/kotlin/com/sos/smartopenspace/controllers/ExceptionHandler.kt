@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.HttpRequestMethodNotSupportedException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.resource.NoResourceFoundException
@@ -17,6 +18,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException
 class ExceptionHandler {
 
     companion object {
+        private const val DEFAULT_VALIDATION_ERROR = "Hay un campo invalido"
+
         private val LOGGER = LoggerFactory.getLogger(this::class.java)
     }
 
@@ -25,6 +28,15 @@ class ExceptionHandler {
         val httpStatus = HttpStatus.BAD_REQUEST
         handleLogError(httpStatus, ex, false)
         return ResponseEntity(DefaultErrorDto(ex.message, httpStatus), httpStatus)
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun badRequestValidations(ex: MethodArgumentNotValidException): ResponseEntity<DefaultErrorDto> {
+        val httpStatus = HttpStatus.BAD_REQUEST
+        handleLogError(httpStatus, ex, false)
+        val errors = ex.bindingResult.allErrors.mapNotNull { it.defaultMessage }
+        val errorMsg = errors.getOrNull(0) ?: DEFAULT_VALIDATION_ERROR
+        return ResponseEntity(DefaultErrorDto(errorMsg, httpStatus), httpStatus)
     }
 
     @ExceptionHandler(UnprocessableEntityException::class)
@@ -64,8 +76,7 @@ class ExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     fun fallbackExceptionHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
-        val httpStatus = HttpStatus.INTERNAL_SERVER_ERROR
-        handleLogError(httpStatus, ex)
+        LOGGER.error("Handling fallback uncaught exception ${ex.javaClass} and [message=${ex.message}].")
         //TODO: Add custom metrics
         throw ex
     }

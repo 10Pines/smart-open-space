@@ -30,7 +30,9 @@ dependencyManagement {
   }
 }
 
+
 dependencies {
+  val jwtVersion = "0.12.6"
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
   implementation("org.flywaydb:flyway-core")
@@ -48,6 +50,9 @@ dependencies {
   implementation("io.micrometer:micrometer-registry-prometheus")
   implementation("com.google.guava:guava:32.0.0-android")
   implementation("net.sargue:mailgun:2.0.0")
+  implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
+  implementation("io.jsonwebtoken:jjwt-impl:$jwtVersion")
+  implementation("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
   implementation("org.glassfish.jersey.inject:jersey-hk2")
   runtimeOnly("com.h2database:h2")
   runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.16.0")
@@ -56,6 +61,7 @@ dependencies {
   }
   testImplementation("org.junit.jupiter:junit-jupiter-api")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+  testImplementation("io.mockk:mockk:1.13.13")
 }
 
 allOpen {

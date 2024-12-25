@@ -1,11 +1,16 @@
 package com.sos.smartopenspace.controllers.v1
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.sos.smartopenspace.controllers.BaseControllerTest
+import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATED_ON_FROM_NAME
+import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATED_ON_TO_NAME
+import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATION_ON_MAX
+import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATION_ON_MIN
 import com.sos.smartopenspace.domain.AuthSession
 import com.sos.smartopenspace.domain.InvalidTokenException
 import com.sos.smartopenspace.domain.User
 import com.sos.smartopenspace.domain.UserUnauthorizedException
-import com.sos.smartopenspace.persistence.AuthSessionRepository
+import com.sos.smartopenspace.dto.response.purge.DeletedSessionsResponseDTO
 import com.sos.smartopenspace.sampler.AuthSessionSampler
 import com.sos.smartopenspace.sampler.UserSampler
 import com.sos.smartopenspace.services.UserService
@@ -13,11 +18,13 @@ import com.sos.smartopenspace.services.impl.AuthService
 import com.sos.smartopenspace.services.impl.JwtService
 import com.sos.smartopenspace.services.impl.JwtService.Companion.TOKEN_PREFIX
 import com.sos.smartopenspace.testUtil.ReadMocksHelper
+import com.sos.smartopenspace.testUtil.addQueryParamsIfNotNull
 import com.sos.smartopenspace.testUtil.extractJsonApiErrorMessage
 import com.sos.smartopenspace.testUtil.extractJsonPathValue
 import com.sos.smartopenspace.util.getNowUTC
 import jakarta.ws.rs.core.HttpHeaders
 import jakarta.ws.rs.core.MediaType
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -26,21 +33,27 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.StandardCharsets
+import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 class AuthControllerTest : BaseControllerTest() {
 
     @Autowired
-    lateinit var userService: UserService
+    lateinit var objectMapper: ObjectMapper
 
     @Autowired
-    lateinit var authSessionRepo: AuthSessionRepository
+    lateinit var userService: UserService
 
     @Autowired
     lateinit var authService: AuthService
 
     @Autowired
     lateinit var jwtService: JwtService
+
+    @AfterEach
+    fun tearDown() {
+        clearAllEntities()
+    }
 
     @Test
     fun `register with register request dto should be http ok and return AuthResponseDto`() {
@@ -254,9 +267,15 @@ class AuthControllerTest : BaseControllerTest() {
         assertTrue(postAuthSession1.revoked)
         assertFalse(authService.validateToken(tokenWithBearer, authSessionSaved1.user.id))
 
-        val postAnotherAuthSessionSaved = allUserAuthSessions.first { it.id == anotherAuhSessionSaved.id }
+        val postAnotherAuthSessionSaved =
+            allUserAuthSessions.first { it.id == anotherAuhSessionSaved.id }
         val anotherAuhSessionSavedTokenWithHeader = "$TOKEN_PREFIX${anotherAuhSessionSaved.token}"
-        assertTrue(authService.validateToken(anotherAuhSessionSavedTokenWithHeader, authSessionSaved1.user.id))
+        assertTrue(
+            authService.validateToken(
+                anotherAuhSessionSavedTokenWithHeader,
+                authSessionSaved1.user.id
+            )
+        )
         assertFalse(postAnotherAuthSessionSaved.revoked)
     }
 
@@ -329,7 +348,12 @@ class AuthControllerTest : BaseControllerTest() {
         assertTrue(userAuthSessions.any { it.id == authSessionSaved1.id })
         assertTrue(userAuthSessions.any { it.id == anotherAuhSessionSaved.id })
         userAuthSessions.forEach {
-            assertFalse(authService.validateToken("$TOKEN_PREFIX${it.token}", authSessionSaved1.user.id))
+            assertFalse(
+                authService.validateToken(
+                    "$TOKEN_PREFIX${it.token}",
+                    authSessionSaved1.user.id
+                )
+            )
         }
     }
 
@@ -379,24 +403,231 @@ class AuthControllerTest : BaseControllerTest() {
         assertEquals(InvalidTokenException().message, responseErrMsg)
     }
 
-    private fun createUserWithEmailAndPassword(email: String, password: String) {
+
+    @ParameterizedTest
+    @CsvSource(
+        value = [
+            "'',null,Invalid time date format - use '2000-01-01T23:59:59Z'",
+            "null,'',Invalid time date format - use '2000-01-01T23:59:59Z'",
+            "6024-01-01T00:00:00Z,2024-06-01T00:00:00Z,created_on_to should be after created_on_from",
+            "2025-06-01T00:00:00Z,2025-06-01T00:00:00Z,created_on_to should be after created_on_from",
+        ],
+        nullValues = ["null"],
+        emptyValue = "''"
+    )
+    fun `test purge invalid sessions with invalid query params should be return bad request with error message`(
+        createdOnFrom: String?,
+        createdOnTo: String?,
+        expectedErrMsg: String
+    ) {
+        val queryParams = mapOf(
+            FILTER_CREATED_ON_FROM_NAME to createdOnFrom,
+            FILTER_CREATED_ON_TO_NAME to createdOnTo
+        )
+        val request = addQueryParamsIfNotNull(
+            MockMvcRequestBuilders.delete(PURGE_INVALID_SESSIONS_ENDPOINT),
+            queryParams
+        )
+        val httpResponse = mockMvc.perform(request)
+        // THEN
+        val responseBodyStr =
+            httpResponse.andExpect(status().isBadRequest).andReturn()
+                .response.getContentAsString(StandardCharsets.UTF_8)
+        assertNotNull(responseBodyStr)
+        val responseErrMsg = extractJsonApiErrorMessage<String>(responseBodyStr)
+            ?: fail("Response error message not found")
+        assertEquals(expectedErrMsg, responseErrMsg)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        value = [
+            "null, null",
+            "2023-01-01T00:00:00Z,null",
+            "null,6024-01-01T00:00:00Z",
+            "2023-01-01T00:00:00Z,6024-01-01T00:00:00Z",
+        ],
+        nullValues = ["null"],
+    )
+    fun `test purge invalid sessions should be return ok and count all deleted sessions`(
+        createdOnFrom: String?,
+        createdOnTo: String?
+    ) {
+        val issuedAtOld = Instant.parse("2024-06-01T00:00:00Z")
+        val expiredOnOld = issuedAtOld.plus(1, ChronoUnit.DAYS)
+
+        val user1 = createUserWithEmailAndPassword("pepe_1000@gmail.com", "xd123")
+        val user2 = createUserWithEmailAndPassword("sarasa_1000@gmail.com", "pass123")
+
+        // auth sessions
+        val user1AuthSessionSavedValid = createNewAuthSessionWith(
+            user = user1,
+            issuedAt = getNowUTC().minus(1, ChronoUnit.DAYS),
+        )
+        val user1AuthSessionSavedRevoked = createNewAuthSessionWith(
+            user = user1,
+            issuedAt = getNowUTC().minus(3, ChronoUnit.DAYS),
+            revoked = true,
+        )
+        val user1AuthSessionSavedExpired = createNewAuthSessionWith(
+            user = user1,
+            issuedAt = issuedAtOld.minus(4, ChronoUnit.DAYS),
+            expiredOn = expiredOnOld,
+            revoked = false
+        )
+
+
+        val user2AuthSessionSavedValid = createNewAuthSessionWith(
+            user = user2,
+            issuedAt = getNowUTC().minus(2, ChronoUnit.DAYS)
+        )
+        val user2AuthSessionSavedRevoked = createNewAuthSessionWith(
+            user = user2,
+            issuedAt = issuedAtOld.minus(5, ChronoUnit.DAYS),
+            revoked = true)
+        val user2AuthSessionSavedExpired = createNewAuthSessionWith(
+            user = user2,
+            issuedAt = issuedAtOld.minus(6, ChronoUnit.DAYS),
+            expiredOn = expiredOnOld,
+            revoked = false
+        )
+
+        // WHEN
+        val queryParams = mapOf(
+            FILTER_CREATED_ON_FROM_NAME to createdOnFrom,
+            FILTER_CREATED_ON_TO_NAME to createdOnTo
+        )
+        val request = addQueryParamsIfNotNull(
+            MockMvcRequestBuilders.delete(PURGE_INVALID_SESSIONS_ENDPOINT),
+            queryParams
+        )
+        val httpResponse = mockMvc.perform(request)
+        // THEN
+        val responseBodyStr =
+            httpResponse.andExpect(status().isOk).andReturn()
+                .response.getContentAsString(StandardCharsets.UTF_8)
+        assertNotNull(responseBodyStr)
+
+        val deletedSessionsResponseDTO =
+            objectMapper.readValue(responseBodyStr, DeletedSessionsResponseDTO::class.java)
+
+        assertEquals(4, deletedSessionsResponseDTO.deletedSessions)
+        val expectedCreatedOnFromRes = createdOnFrom?:FILTER_CREATION_ON_MIN
+        val expectedCreatedOnToRes = createdOnTo?:FILTER_CREATION_ON_MAX
+
+        assertEquals(Instant.parse(expectedCreatedOnFromRes), deletedSessionsResponseDTO.creationDateFrom)
+        assertEquals(Instant.parse(expectedCreatedOnToRes), deletedSessionsResponseDTO.creationDateTo)
+
+        listOf(
+            user1AuthSessionSavedValid,
+            user2AuthSessionSavedValid,
+        ).forEach { assertTrue(authSessionRepo.existsById(it.id)) }
+
+        listOf(
+            user1AuthSessionSavedRevoked,
+            user2AuthSessionSavedRevoked,
+            user1AuthSessionSavedExpired,
+            user2AuthSessionSavedExpired
+        ).forEach { assertFalse(authSessionRepo.existsById(it.id)) }
+    }
+
+    @Test
+    fun `test purge invalid sessions should be return ok and not match any session`() {
+        val issuedAtOld = Instant.parse("2024-06-01T00:00:00Z")
+        val expiredOnOld = issuedAtOld.plus(1, ChronoUnit.DAYS)
+
+        val user1 = createUserWithEmailAndPassword("pepe_1000@gmail.com", "xd123")
+        val user2 = createUserWithEmailAndPassword("sarasa_1000@gmail.com", "pass123")
+
+        // auth sessions
+        val user1AuthSessionSavedValid = createNewAuthSessionWith(
+            user = user1,
+            issuedAt = getNowUTC().minus(1, ChronoUnit.DAYS),
+        )
+        val user1AuthSessionSavedRevoked = createNewAuthSessionWith(
+            user = user1,
+            issuedAt = getNowUTC().minus(3, ChronoUnit.DAYS),
+            revoked = true,
+        )
+        val user1AuthSessionSavedExpired = createNewAuthSessionWith(
+            user = user1,
+            issuedAt = issuedAtOld.minus(4, ChronoUnit.DAYS),
+            expiredOn = expiredOnOld,
+            revoked = false
+        )
+
+
+        val user2AuthSessionSavedValid = createNewAuthSessionWith(
+            user = user2,
+            issuedAt = getNowUTC().minus(2, ChronoUnit.DAYS)
+        )
+        val user2AuthSessionSavedRevoked = createNewAuthSessionWith(
+            user = user2,
+            issuedAt = issuedAtOld.minus(5, ChronoUnit.DAYS),
+            revoked = true)
+        val user2AuthSessionSavedExpired = createNewAuthSessionWith(
+            user = user2,
+            issuedAt = issuedAtOld.minus(6, ChronoUnit.DAYS),
+            expiredOn = expiredOnOld,
+            revoked = false
+        )
+
+        val createdOnFrom = "2001-01-20T20:00:00Z"
+        val createdOnTo = "2002-12-20T20:00:00Z"
+        // WHEN
+        val queryParams = mapOf(
+            FILTER_CREATED_ON_FROM_NAME to createdOnFrom,
+            FILTER_CREATED_ON_TO_NAME to createdOnTo
+        )
+        val request = addQueryParamsIfNotNull(
+            MockMvcRequestBuilders.delete(PURGE_INVALID_SESSIONS_ENDPOINT),
+            queryParams
+        )
+        val httpResponse = mockMvc.perform(request)
+        // THEN
+        val responseBodyStr =
+            httpResponse.andExpect(status().isOk).andReturn()
+                .response.getContentAsString(StandardCharsets.UTF_8)
+        assertNotNull(responseBodyStr)
+
+        val deletedSessionsResponseDTO =
+            objectMapper.readValue(responseBodyStr, DeletedSessionsResponseDTO::class.java)
+
+        assertEquals(0, deletedSessionsResponseDTO.deletedSessions)
+        assertEquals(Instant.parse(createdOnFrom), deletedSessionsResponseDTO.creationDateFrom)
+        assertEquals(Instant.parse(createdOnTo), deletedSessionsResponseDTO.creationDateTo)
+
+        listOf(
+            user1AuthSessionSavedValid,
+            user2AuthSessionSavedValid,
+            user1AuthSessionSavedRevoked,
+            user2AuthSessionSavedRevoked,
+            user1AuthSessionSavedExpired,
+            user2AuthSessionSavedExpired,
+        ).forEach { assertTrue(authSessionRepo.existsById(it.id)) }
+    }
+
+    private fun createUserWithEmailAndPassword(email: String, password: String): User {
         val newUser = UserSampler.getWith(id = 0, email = email, password = password)
-        userService.create(newUser)
+        return userService.create(newUser)
     }
 
     private fun loginAndGetAuthSession(email: String, password: String): AuthSession {
         return authService.login(email, password)
     }
 
-    private fun createNewAuthSessionWith(user: User): AuthSession {
-        val issuedAt = getNowUTC()
-        val expiredOn = issuedAt.plus(300, ChronoUnit.DAYS)
+    private fun createNewAuthSessionWith(
+        user: User,
+        issuedAt: Instant = getNowUTC(),
+        expiredOn: Instant = getNowUTC().plus(300, ChronoUnit.DAYS),
+        revoked: Boolean = false,
+    ): AuthSession {
         val newJwtToken = jwtService.createToken(issuedAt, expiredOn, user)
         val newAuthSession = AuthSessionSampler.getWith(
             id = "",
             user = user,
             token = newJwtToken,
-            revoked = false,
+            revoked = revoked,
             createdOn = issuedAt,
             expiresOn = expiredOn,
         )
@@ -412,5 +643,6 @@ class AuthControllerTest : BaseControllerTest() {
         private const val LOGIN_ENDPOINT = "$AUTH_ENDPOINT/login"
         private const val LOGOUT_ENDPOINT = "$AUTH_ENDPOINT/logout"
         private const val LOGOUT_ALL_SESSIONS_ENDPOINT = "$AUTH_ENDPOINT/logout/all"
+        private const val PURGE_INVALID_SESSIONS_ENDPOINT = "$AUTH_ENDPOINT/purge/invalid-sessions"
     }
 }

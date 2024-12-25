@@ -2,7 +2,6 @@ package com.sos.smartopenspace.services.impl
 
 
 import com.sos.smartopenspace.domain.AuthSession
-import com.sos.smartopenspace.domain.InvalidTokenException
 import com.sos.smartopenspace.domain.User
 import com.sos.smartopenspace.persistence.AuthSessionRepository
 import com.sos.smartopenspace.services.AuthServiceI
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 @Service
@@ -75,6 +75,12 @@ class AuthService(
                         true
                     } ?: expiredTokenResWithLoggerFn(tokenUserId)
             }
+    }
+
+    @Transactional
+    override fun purgeInvalidSessions(creationDateFrom: Instant, creationDateTo: Instant): Int {
+        val now = getNowUTC()
+        return authSessionRepository.deleteAllSessionsExpiresOnBeforeAndBetweenCreationOn(now, creationDateFrom, creationDateTo)
     }
 
 

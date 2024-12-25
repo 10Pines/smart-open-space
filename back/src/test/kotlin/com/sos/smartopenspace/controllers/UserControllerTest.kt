@@ -2,7 +2,6 @@ package com.sos.smartopenspace.controllers
 
 import com.jayway.jsonpath.JsonPath
 import com.sos.smartopenspace.domain.User
-import com.sos.smartopenspace.persistence.UserRepository
 import com.sos.smartopenspace.services.UserService
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -15,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional
 
 @Transactional
 class UserControllerTest: BaseControllerTest() {
-  @Autowired
-  lateinit var repoUser: UserRepository
 
   @Autowired
   lateinit var userService: UserService
@@ -36,7 +33,7 @@ class UserControllerTest: BaseControllerTest() {
      .andReturn().response
 
     val id = JsonPath.read<Int>(response.contentAsString, "$.id").toLong()
-    assertNotNull(repoUser.findByIdOrNull(id))
+    assertNotNull(userRepo.findByIdOrNull(id))
   }
 
   @Test

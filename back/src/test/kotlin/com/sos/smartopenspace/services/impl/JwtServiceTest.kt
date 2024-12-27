@@ -20,6 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.Instant
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 class JwtServiceTest : BaseServiceTest() {
@@ -190,9 +191,8 @@ class JwtServiceTest : BaseServiceTest() {
 
     @Test
     fun `test getClaimsMap should return ok user id long value`() {
-        val issuedAtStr = "2024-12-25T15:40:10Z"
-        val issuedAt = Instant.parse(issuedAtStr)
-        val expTimeDays = 1L
+        val issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS)
+        val expTimeDays = 2L
         val expTimeChronoUnit = ChronoUnit.DAYS
         val expirationAt = issuedAt.plus(expTimeDays, expTimeChronoUnit)
         val userId = 123L
@@ -202,7 +202,7 @@ class JwtServiceTest : BaseServiceTest() {
             userId = userId,
             userEmail = userEmail,
             userName = userName,
-            issuedAtStr = issuedAtStr,
+            issuedAt = issuedAt,
             expirationPlusTime = expTimeDays,
             expirationChronoUnit = expTimeChronoUnit,
         )
@@ -250,14 +250,13 @@ class JwtServiceTest : BaseServiceTest() {
 
 
     private fun buildValidJwtTokenWith(
-        issuedAtStr: String = "2024-12-25T15:40:10Z",
+        issuedAt: Instant = Instant.now().truncatedTo(ChronoUnit.SECONDS),
         expirationPlusTime: Long = 15,
         expirationChronoUnit: ChronoUnit = ChronoUnit.DAYS,
         userId: Long = 123456,
         userEmail: String = "pepe_grillo@mail.com",
         userName: String = "Pepe Grillo",
     ): String {
-        val issuedAt = Instant.parse(issuedAtStr)
         val expirationAt = issuedAt.plus(expirationPlusTime, expirationChronoUnit)
         val user = User(
             id = userId,

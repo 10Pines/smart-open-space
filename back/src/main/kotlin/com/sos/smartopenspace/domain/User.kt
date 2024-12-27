@@ -28,7 +28,7 @@ class User(
     var resetTokenLifetime: Long? = null,
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
-    val authSessions: List<AuthSession> = listOf(),
+    private val authSessions: List<AuthSession> = listOf(),
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0

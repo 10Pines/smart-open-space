@@ -60,21 +60,23 @@ class AuthService(
     override fun validateToken(tokenHeader: String, userId: Long): Boolean {
         val now = getNowUTC()
         val token = jwtService.extractToken(tokenHeader)
-        val expiredTokenResWithLoggerFn = { tokenUserId: Long ->
-            LOGGER.error("Current jwt token was expired or revoked with userId $userId, tokenUserId $tokenUserId and date_now $now")
-            false
+        val isValidToken = jwtService.isValidToken(token)
+        if (!isValidToken) {
+            LOGGER.error("Current jwt token is invalid with userId $userId and date_now $now")
+            return false
         }
-        return jwtService.isValidToken(token) && jwtService.extractUserId(token)
-            .let { tokenUserId ->
-                if (tokenUserId != userId) {
-                    return expiredTokenResWithLoggerFn(tokenUserId)
-                }
-                return authSessionRepository
-                    .findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(token, tokenUserId, now)
-                    ?.let {
-                        true
-                    } ?: expiredTokenResWithLoggerFn(tokenUserId)
-            }
+        val userIdFromToken = jwtService.extractUserId(token)
+        if (userIdFromToken != userId) {
+            LOGGER.error("Jwt token user not match with userId $userId, tokenUserId $userIdFromToken and date_now $now")
+            return false
+        }
+        val existValidTokenSaved = authSessionRepository
+            .findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(token, userIdFromToken, now).let { it != null }
+        if (!existValidTokenSaved) {
+            LOGGER.error("Current jwt token was expired or revoked with userId $userId, tokenUserId $userIdFromToken and date_now $now")
+            return false
+        }
+        return true
     }
 
     @Transactional

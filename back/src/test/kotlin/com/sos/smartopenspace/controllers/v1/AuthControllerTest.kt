@@ -6,10 +6,13 @@ import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CRE
 import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATED_ON_TO_NAME
 import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATION_ON_MAX
 import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATION_ON_MIN
+import com.sos.smartopenspace.controllers.v1.AuthController.Companion.SUCCESS_LOGOUT_ALL_MESSAGE
+import com.sos.smartopenspace.controllers.v1.AuthController.Companion.SUCCESS_LOGOUT_MESSAGE
 import com.sos.smartopenspace.domain.AuthSession
 import com.sos.smartopenspace.domain.InvalidTokenException
 import com.sos.smartopenspace.domain.User
 import com.sos.smartopenspace.domain.UserUnauthorizedException
+import com.sos.smartopenspace.dto.response.auth.LogoutResponseDTO
 import com.sos.smartopenspace.dto.response.purge.DeletedSessionsResponseDTO
 import com.sos.smartopenspace.sampler.AuthSessionSampler
 import com.sos.smartopenspace.sampler.UserSampler
@@ -258,7 +261,10 @@ class AuthControllerTest : BaseControllerTest() {
                 .header(HttpHeaders.AUTHORIZATION, tokenWithBearer)
         )
         // THEN
-        httpResponse.andExpect(status().is2xxSuccessful)
+        val bodyRes = httpResponse.andExpect(status().is2xxSuccessful)
+            .andReturn().response.getContentAsString(StandardCharsets.UTF_8)
+        val logoutRes = objectMapper.readValue(bodyRes, LogoutResponseDTO::class.java)
+        assertEquals(SUCCESS_LOGOUT_MESSAGE, logoutRes.message)
 
         val allUserAuthSessions = authSessionRepo.findAllByUserId(authSessionSaved1.user.id)
         val postAuthSession1 = allUserAuthSessions.first { it.id == authSessionSaved1.id }
@@ -340,7 +346,11 @@ class AuthControllerTest : BaseControllerTest() {
                 .header(HttpHeaders.AUTHORIZATION, tokenWithBearer)
         )
         // THEN
-        httpResponse.andExpect(status().is2xxSuccessful)
+        val bodyRes = httpResponse.andExpect(status().is2xxSuccessful)
+            .andReturn().response.getContentAsString(StandardCharsets.UTF_8)
+        val logoutRes = objectMapper.readValue(bodyRes, LogoutResponseDTO::class.java)
+        assertEquals(SUCCESS_LOGOUT_ALL_MESSAGE, logoutRes.message)
+
         val userAuthSessions = authSessionRepo.findAllByUserId(authSessionSaved1.user.id)
 
         assertEquals(2, userAuthSessions.size)

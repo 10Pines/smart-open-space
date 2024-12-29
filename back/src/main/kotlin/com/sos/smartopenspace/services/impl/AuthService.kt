@@ -35,7 +35,7 @@ class AuthService(
         return createAuthSession(user)
     }
 
-    override fun logout(tokenHeader: String) {
+    override fun logout(tokenHeader: String): Long {
         val token = jwtService.extractToken(tokenHeader)
         val userId = jwtService.extractUserId(token)
         val authSession = authSessionRepository
@@ -44,9 +44,10 @@ class AuthService(
             authSession.revoke()
             authSessionRepository.save(authSession)
         }
+        return userId
     }
 
-    override fun logoutAllSessions(tokenHeader: String) {
+    override fun logoutAllSessions(tokenHeader: String): Long {
         val token = jwtService.extractToken(tokenHeader)
         val userId = jwtService.extractUserId(token)
         val authSessions = authSessionRepository
@@ -55,6 +56,7 @@ class AuthService(
             authSessions.forEach { it.revoke() }
             authSessionRepository.saveAll(authSessions)
         }
+        return userId
     }
 
     override fun validateToken(tokenHeader: String, userId: Long): Boolean {

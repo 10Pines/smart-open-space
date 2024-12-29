@@ -60,6 +60,7 @@
     "date-fns": "^2.28.0",
     "grommet": "^2.39.0",
     "grommet-icons": "^4.4.0",
+    "jwt-decode": "^4.0.0",
     "logrocket": "^3.0.1",
     "markdown-to-txt": "^2.0.1",
     "pluralize": "^8.0.0",

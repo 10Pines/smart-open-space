@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
   val kotlinVersion = "1.9.22"
   id("org.springframework.boot") version "3.2.7"
-  id("io.spring.dependency-management") version "1.1.6"
+  id("io.spring.dependency-management") version "1.1.7"
   id("org.flywaydb.flyway") version "11.0.0"
   id("de.undercouch.download") version "5.3.0"
   id("org.sonarqube") version "6.0.1.5171"

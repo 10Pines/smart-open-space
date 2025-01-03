@@ -60,8 +60,8 @@ class AuthController(
         @RequestParam(FILTER_CREATED_ON_FROM_NAME, required = false) createdOnFromStr: String?,
         @RequestParam(FILTER_CREATED_ON_TO_NAME, required = false) createdOnToStr: String?,
     ): DeletedSessionsResponseDTO {
-        var createdOnFrom: Instant = Instant.parse(FILTER_CREATION_ON_MIN)
-        var createdOnTo: Instant = Instant.parse(FILTER_CREATION_ON_MAX)
+        var createdOnFrom = Instant.parse(FILTER_CREATION_ON_MIN)
+        var createdOnTo = Instant.parse(FILTER_CREATION_ON_MAX)
         runCatching {
             createdOnFrom = createdOnFromStr?.let { Instant.parse(it) } ?: createdOnFrom
             createdOnTo = createdOnToStr?.let { Instant.parse(it) } ?: createdOnTo

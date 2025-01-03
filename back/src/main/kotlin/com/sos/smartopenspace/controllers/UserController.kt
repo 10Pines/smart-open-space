@@ -7,7 +7,7 @@ import com.sos.smartopenspace.dto.request.UserLoginRequestDTO
 import com.sos.smartopenspace.dto.request.UserValidateTokenRequestDTO
 import com.sos.smartopenspace.services.EmailService
 import com.sos.smartopenspace.services.UserService
-import com.sos.smartopenspace.translators.response.UserResTranslator
+import com.sos.smartopenspace.translators.UserTranslator
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -18,23 +18,26 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("user")
 class UserController(private val userService: UserService, private val emailService: EmailService) {
+
+  @Deprecated("Use '/v1/auth/register' endpoint", level = DeprecationLevel.WARNING)
   @PostMapping
   @LoggingInputExecution
   fun create(@Valid @RequestBody user: User) =
-    UserResTranslator.translateFrom(userService.create(user))
+    UserTranslator.translateToUserResponse(userService.create(user))
 
+  @Deprecated("Use '/v1/auth/login' endpoint", level = DeprecationLevel.WARNING)
   @PostMapping("/auth")
   @LoggingInputExecution
   fun auth(@Valid @RequestBody user: UserLoginRequestDTO) =
-    UserResTranslator.translateFrom(userService.auth(user.email, user.password))
+    UserTranslator.translateToUserResponse(userService.findUserAndMatchPassword(user.email, user.password))
 
   @PostMapping("/recovery")
   @LoggingInputExecution
   fun sendRecoveryEmail(@Valid @RequestBody user: RecoveryEmailRequestDTO) =
-    UserResTranslator.translateFrom(emailService.sendRecoveryEmail(user.email))
+    UserTranslator.translateToUserResponse(emailService.sendRecoveryEmail(user.email))
 
   @PostMapping("/reset")
   @LoggingInputExecution
   fun resetPassword(@Valid @RequestBody user: UserValidateTokenRequestDTO) =
-    UserResTranslator.translateFrom(userService.resetPassword(user.email, user.resetToken, user.password))
+    UserTranslator.translateToUserResponse(userService.resetPassword(user.email, user.resetToken, user.password))
 }

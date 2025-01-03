@@ -55,7 +55,7 @@ dependencies {
   implementation("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
   implementation("org.glassfish.jersey.inject:jersey-hk2")
   runtimeOnly("com.h2database:h2")
-  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.16.0")
+  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.17.0")
   testImplementation("org.springframework.boot:spring-boot-starter-test"){
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }

@@ -2,6 +2,7 @@ package com.sos.smartopenspace.services
 
 import com.sos.smartopenspace.domain.AuthSession
 import com.sos.smartopenspace.domain.User
+import java.time.Instant
 
 interface AuthServiceI {
 
@@ -14,4 +15,6 @@ interface AuthServiceI {
     fun logoutAllSessions(tokenHeader: String)
 
     fun validateToken(tokenHeader: String, userId: Long): Boolean
+
+    fun purgeInvalidSessions(creationDateFrom: Instant, creationDateTo: Instant): Int
 }

@@ -6,7 +6,6 @@ import com.sos.smartopenspace.anOpenSpace
 import com.sos.smartopenspace.domain.*
 import com.sos.smartopenspace.persistence.OpenSpaceRepository
 import com.sos.smartopenspace.persistence.TalkRepository
-import com.sos.smartopenspace.persistence.UserRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -23,9 +22,6 @@ import java.time.LocalTime
 class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Autowired
-    lateinit var repoUser: UserRepository
-
-    @Autowired
     lateinit var repoOpenSpace: OpenSpaceRepository
 
     @Autowired
@@ -33,7 +29,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `creating a valid OpenSpace returns an ok status response`() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val description = "W".repeat(1000)
         val track_color = "#FFFFFF"
         val track_name = "a track"
@@ -68,7 +64,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `deleting an OpenSpace returns an ok status response`() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val anOpenSpace = createOpenSpaceFor(user)
 
         mockMvc.perform(
@@ -81,8 +77,8 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `deleting an OpenSpace with an invalid user returns a bad request response`() {
-        val user = repoUser.save(aUser(userEmail = "user@gmail.com"))
-        val otherUser = repoUser.save(aUser(userEmail = "other_user@gmail.com"))
+        val user = userRepo.save(aUser(userEmail = "user@gmail.com"))
+        val otherUser = userRepo.save(aUser(userEmail = "other_user@gmail.com"))
         val anOpenSpace = createOpenSpaceFor(user)
 
         mockMvc.perform(
@@ -93,7 +89,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `creating an invalid OpenSpace returns a bad request response`() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val openSpaceBody = anOpenSpaceCreationBody("W".repeat(1001))
         mockMvc.perform(
             MockMvcRequestBuilders.post("/openSpace/${user.id}")
@@ -105,7 +101,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `can create a valid talk and get it correctly`() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val track = Track("a track", color = "#FFFFFF")
         val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(user, setOf(track)))
         anOpenSpace.toggleCallForPapers(user)
@@ -130,7 +126,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `can create a valid marketplace talk and get it correctly`() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(user))
         anOpenSpace.toggleCallForPapers(user)
 
@@ -151,7 +147,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `creating an invalid talk return an bad request status`() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val anOpenSpace = repoOpenSpace.save(anyOpenSpace())
         val anInvalidLink = "invalid link"
 
@@ -165,7 +161,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `creating a talk when call for papers is closed return an unprocessable entity status`() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val anOpenSpace = repoOpenSpace.save(anyOpenSpace())
         val aMeetingLink = "https://aLink"
 
@@ -179,7 +175,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `deleting a valid talk return an ok status response `() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val anOpenSpace = createOpenSpaceFor(user)
         val aTalk = Talk("a talk", speaker = user)
         createTalkFor(user, anOpenSpace, aTalk)
@@ -197,8 +193,8 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `deleting a valid talk with an invalid user return a bad request response `() {
-        val user = repoUser.save(aUser(userEmail = "user@gmail.com"))
-        val otherUser = repoUser.save(aUser(userEmail = "otherUser@gmail.com"))
+        val user = userRepo.save(aUser(userEmail = "user@gmail.com"))
+        val otherUser = userRepo.save(aUser(userEmail = "otherUser@gmail.com"))
         val anOpenSpace = createOpenSpaceFor(user)
         val aTalk = Talk("a talk", speaker = user)
         createTalkFor(user, anOpenSpace, aTalk)
@@ -211,7 +207,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `deleting an invalid talk return a not found response `() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val anOpenSpace = createOpenSpaceFor(user)
 
         mockMvc.perform(
@@ -229,7 +225,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `start a call for papers returns an ok status response and the modified Open Space`() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(user))
 
         mockMvc.perform(
@@ -242,8 +238,8 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `starting a call for papers with a non organizer user return a bad request status`() {
-        val organizer = repoUser.save(aUser(userEmail = "organizer@gmail.com"))
-        val aUser = repoUser.save(aUser(userEmail = "user@gmail.com"))
+        val organizer = userRepo.save(aUser(userEmail = "organizer@gmail.com"))
+        val aUser = userRepo.save(aUser(userEmail = "user@gmail.com"))
         val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(organizer))
 
         mockMvc.perform(
@@ -254,7 +250,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `can update an open space name`() {
-        val organizer = repoUser.save(aUser())
+        val organizer = userRepo.save(aUser())
         val anOpenSpace = createOpenSpaceFor(organizer)
 
         val changedName = "a different name for the open space"
@@ -277,7 +273,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `can update open space collections`() {
-        val organizer = repoUser.save(aUser())
+        val organizer = userRepo.save(aUser())
         val anOpenSpace = createOpenSpaceFor(organizer)
 
         val name = "a name"
@@ -308,7 +304,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `updating an invalid open space throws a not found response`() {
-        val organizer = repoUser.save(aUser())
+        val organizer = userRepo.save(aUser())
 
         val changedName = "a different name for the open space"
         val description = "W".repeat(1000)
@@ -327,7 +323,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `updating an invalid user throws a not found response`() {
-        val organizer = repoUser.save(aUser())
+        val organizer = userRepo.save(aUser())
         val anOpenSpace = createOpenSpaceFor(organizer)
 
         val changedName = "a different name for the open space"
@@ -347,7 +343,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `start voting returns an ok status response and the modified Open Space`() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(user))
 
         mockMvc.perform(
@@ -360,7 +356,7 @@ class OpenSpaceControllerTest: BaseControllerTest() {
 
     @Test
     fun `toggle show speaker name returns an ok status response and the modified Open Space`() {
-        val user = repoUser.save(aUser())
+        val user = userRepo.save(aUser())
         val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(user))
 
         mockMvc.perform(

@@ -24,9 +24,6 @@ class TalkControllerTest: BaseControllerTest() {
   lateinit var slotRepository: SlotRepository
 
   @Autowired
-  lateinit var userRepository: UserRepository
-
-  @Autowired
   lateinit var openSpaceRepository: OpenSpaceRepository
 
   @Autowired
@@ -107,7 +104,7 @@ class TalkControllerTest: BaseControllerTest() {
 
   @Test
   fun `can update a talk correctly`() {
-    val user = userRepository.save(aUser())
+    val user = userRepo.save(aUser())
     val anOpenSpace = anOpenSpace()
     user.addOpenSpace(anOpenSpace)
     anOpenSpace.toggleCallForPapers(user)
@@ -136,7 +133,7 @@ class TalkControllerTest: BaseControllerTest() {
 
   @Test
   fun `updating an inexistent talk returns a bad request status`() {
-    val user = userRepository.save(aUser())
+    val user = userRepo.save(aUser())
     val anOpenSpace = anOpenSpace()
     user.addOpenSpace(anOpenSpace)
     anOpenSpace.toggleCallForPapers(user)
@@ -242,12 +239,12 @@ class TalkControllerTest: BaseControllerTest() {
 
   private fun anySavedTalk(organizer: User) = talkRepository.save(Talk("Charla", speaker = organizer))
 
-  private fun anySavedUser(userEmail: String) = userRepository.save(aUser(userEmail = userEmail))
+  private fun anySavedUser(userEmail: String) = userRepo.save(aUser(userEmail = userEmail))
 
   private fun anySavedOpenSpace() = openSpaceRepository.save(anOpenSpace())
 
   private fun aSavedUserWithTalk(talk: Talk) =
-    userRepository.save(aUser(mutableSetOf(), mutableSetOf(talk), "Pepe@sos.sos"))
+    userRepo.save(aUser(mutableSetOf(), mutableSetOf(talk), "Pepe@sos.sos"))
 
   private fun aSavedSlot(): Slot {
     return slotRepository.save(TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now()))

@@ -97,6 +97,8 @@ class AuthService(
             revoked = false,
             user = user,
         )
+        //FIXME: Should be removed or set as DEBUG when issue is fixed
+        LOGGER.info("Creating auth session $authSession with token length ${authSession.token.length}")
         return authSessionRepository.save(authSession)
     }
 

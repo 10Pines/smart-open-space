@@ -1,5 +1,6 @@
 package com.sos.smartopenspace.domain
 
+import com.sos.smartopenspace.util.toStringByReflex
 import jakarta.persistence.*
 import java.time.Instant
 
@@ -20,4 +21,11 @@ class AuthSession(
     fun revoke() {
         revoked = true
     }
+
+    override fun toString(): String =
+        toStringByReflex(
+            this,
+            mask = listOf("token"),
+        )
+
 }

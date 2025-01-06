@@ -1,0 +1,1 @@
+ALTER TABLE auth_session ALTER COLUMN token TYPE VARCHAR(455);

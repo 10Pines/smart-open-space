@@ -9,7 +9,7 @@ class AuthSession(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     var id: String = "",
-    @Column(unique = true)
+    @Column(unique = true, length = 455)
     val token: String,
     val createdOn: Instant,
     val expiresOn: Instant,

@@ -99,6 +99,11 @@ class AuthService(
             revoked = false,
             user = user,
         )
+        LOGGER.debug(
+            "Creating auth session {} with token length {}",
+            authSession,
+            authSession.token.length
+        )
         return authSessionRepository.save(authSession)
     }
 

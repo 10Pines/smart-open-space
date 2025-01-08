@@ -2,8 +2,12 @@ package com.sos.smartopenspace.domain
 
 open class BadRequestException(message: String?) : RuntimeException(message)
 open class NotFoundException(message: String) : BadRequestException(message)
-open class UnauthorizedException(message: String) : RuntimeException(message)
 open class UnprocessableEntityException(message: String?) : RuntimeException(message)
+/**
+ * It is a RuntimeException. Handles 401 (Unauthorized) http status code in ExceptionHandler.
+ * Semantic should be invalid auth session and client should perform a new login.
+ */
+open class UnauthorizedException(message: String) : RuntimeException(message)
 
 class AlreadyActivedQueuingException : BadRequestException("Encolamiento ya se encuentra activo")
 class AnotherTalkIsEnqueuedException : BadRequestException("Existe otra charla encolada")

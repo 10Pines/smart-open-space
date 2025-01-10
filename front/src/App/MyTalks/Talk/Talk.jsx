@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import {Box, Grid, Text, Tip} from 'grommet';
+import {Box, Grid, Spinner, Text, Tip} from 'grommet';
 import PropTypes from 'prop-types';
 
 import {
@@ -61,11 +61,8 @@ const Talk = ({
   const onSubmitExchange = ({ slot, room }) =>
     exchangeTalk(talk.id, slot.id, room.id).then(pushToOpenSpace);
 
-  const color = talk.colorForTalkManagement();
-
-  const shouldDisplayDeleteTalkButton = user && talk.speaker.id === user.id;
+  const shouldDisplayDeleteTalkButton = user ? talk.speaker.id === user.id : false;
   const backgroundColor = talk.track ? talk.track.color : '#e4e4e4';
-  console.log("schedule:", talk.getScheduleInfo());
   const talkSchedule = talk.getScheduleInfo();
 
   return (
@@ -73,7 +70,12 @@ const Talk = ({
       <TalkTitle name={talk.name} track={talk.track} pushToTalk={pushToTalk} />
       <Grid gap={'xsmall'}>
         { talkSchedule ? (
-          <Box direction="column" justify="evenly" height={"30px"} gap="medium">
+          <Box direction="column"
+               justify="evenly"
+               height={"30px"}
+               gap="medium"
+               onClick={() => setOpenExchange(true)}
+          >
             <Box direction="row" gap={'xsmall'}>
               <LocationIcon size={"20px"}/>
               <Text>{talkSchedule.room.name}</Text>
@@ -88,12 +90,11 @@ const Talk = ({
             </Box>
           </Box>
         ) : (
-            <Box height={"30px"} width={"100%"} style={{alignItems: "center"}}>
+            <Box direction="column" height={"30px"}>
               {shouldDisplayScheduleTalkButton ?
                 <Box
                   direction={"row"}
-                  justify={"center"}
-                  gap={"small"}
+                  gap={"5px"}
                   style={{
                     cursor: "pointer",
                     transition: 'text-decoration 0.2s ease',
@@ -102,23 +103,27 @@ const Talk = ({
                   onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
                   onClick={() => setOpenSchedule(true)}
                 >
-                  <ScheduleIcon/>
-                  <Text>Agendá tu charla!</Text>
+                  <ScheduleIcon size={"20px"}/>
+                  <Text size={"16px"}>Agendá tu charla acá!</Text>
                 </Box>
                 :
-                <Text>Sin agendar</Text>
+                <Text size={"16px"}>Sin agendar</Text>
               }
             </Box>
         )}
         {talk.isInqueue() ? (
-          <Badge color={color} text="Esperando turno" />
+          <Box direction="row" gap={"5px"}>
+            <Badge color={"dark-2"} text="Esperando turno" />
+            <Spinner size={"2px"}/>
+          </Box>
         ) : (
           talk.canBeQueued() &&
           activeQueue && (
             <ButtonAction
-              color={color}
+              color={"light-3"}
               disabled={hasAnother}
               label="Encolar"
+              style={{width:'100px', border: "1px solid gray"}}
               onClick={() => enqueueTalk(talk.id).then(reloadTalks)}
             />
           )
@@ -129,7 +134,7 @@ const Talk = ({
               <Box alignSelf="end">
                 <Button
                   icon={<DeleteIcon />}
-                  color={"#c3c3c3"}
+                  color={backgroundColor}
                   label=""
                   style={{width: "fit-content", backgroundColor: "transparent"}}
                   onClick={() => setShowDeleteModal(true)}

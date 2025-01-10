@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { Box, Heading, Text } from 'grommet';
 import PropTypes from 'prop-types';
 
-import { nextTalk, useGetCurrentUserTalks, useGetTalks } from '#api/os-client';
+import {nextTalk, useGetAssignedSlots, useGetCurrentUserTalks, useGetTalks} from '#api/os-client';
 import { useQueue } from '#api/sockets-client';
 import MyProps from '#helpers/MyProps';
 import { useUser } from '#helpers/useAuth';
@@ -26,6 +26,7 @@ import TalkView from './Talk';
 import Talk from '../model/talk';
 import { Room } from '../model/room';
 import TalkTable from './TalkTable/TalkTable';
+import {getAssignedTalks} from "#helpers/talkUtils.js";
 
 const slideDownAnimation = {
   type: 'slideDown',
@@ -187,6 +188,7 @@ const MyTalks = () => {
   const shouldDisplayAddTalkButton = hasTalks && canAddTalk;
   const roomsWithFreeSlots = getRoomsWithSlots(openSpace.freeSlots);
   const roomsWithAssignableSlots = getRoomsWithSlots(openSpace.assignableSlots);
+  const assignedTalks = getAssignedTalks(talks, assignedSlots);
 
   function getRoomsWithSlots(roomWithSlots) {
     return roomWithSlots.map(

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Box, Grid, Text } from 'grommet';
+import {Box, Grid, Spinner, Text, Tip} from 'grommet';
 import PropTypes from 'prop-types';
 
 import {
@@ -13,14 +13,15 @@ import {
 import { useUser } from '#helpers/useAuth';
 import ButtonLoading from '#shared/ButtonLoading';
 import Card from '#shared/Card';
-import { DeleteIcon } from '#shared/icons';
-import Title from '#shared/Title';
+import {CalendarIcon, ClockIcon, DeleteIcon, ScheduleIcon, LocationIcon} from '#shared/icons';
 import { useParams } from 'react-router-dom';
 import SelectSlot from './SelectSlot';
 import { usePushToOpenSpace, usePushToSchedule } from '#helpers/routes';
 import { Room } from '../../model/room';
 import { usePushToTalk } from '#helpers/routes';
 import { DeleteModal } from '../components/DeleteModal';
+import TalkTitle from "#app/OpenSpace/Talk/TalkTitle.jsx";
+import Button from "#components/atom/Button.jsx";
 
 const Badge = ({ color, text }) => (
   <Box alignSelf="center">
@@ -60,49 +61,87 @@ const Talk = ({
   const onSubmitExchange = ({ slot, room }) =>
     exchangeTalk(talk.id, slot.id, room.id).then(pushToOpenSpace);
 
-  const color = talk.colorForTalkManagement();
-
-  const shouldDisplayDeleteTalkButton = user && talk.speaker.id === user.id;
+  const shouldDisplayDeleteTalkButton = user ? talk.speaker.id === user.id : false;
+  const backgroundColor = talk.track ? talk.track.color : '#e4e4e4';
+  const talkSchedule = talk.getScheduleInfo();
 
   return (
-    <Card borderColor={color} gap="small">
-      <Box onClick={pushToTalk}>
-        <Title>{talk.name}</Title>
-      </Box>
+    <Card pad={{top: "small", left: 'medium', right: "medium", bottom: 0}} borderColor={backgroundColor} gap={"xsmall"} justify={false} backgroundColor={backgroundColor} style={{width: "288px", height: "270px", borderRadius: "5px"}}>
+      <TalkTitle name={talk.name} track={talk.track} pushToTalk={pushToTalk} />
       <Grid gap={'xsmall'}>
-        {talk.isAssigned() ? (
-          <Box direction="row" justify="evenly">
-            <Badge color={color} text="Agendada" />
+        { talkSchedule ? (
+          <Box direction="column"
+               justify="evenly"
+               height={"30px"}
+               gap="medium"
+               onClick={() => setOpenExchange(true)}
+          >
+            <Box direction="row" gap={'xsmall'}>
+              <LocationIcon size={"20px"}/>
+              <Text>{talkSchedule.room.name}</Text>
+            </Box>
+            <Box direction="row" gap={'xsmall'}>
+              <CalendarIcon size={"20px"}/>
+              <Text>{talkSchedule.slot.date}</Text>
+            </Box>
+            <Box direction="row" gap={'xsmall'}>
+              <ClockIcon size={"20px"}/>
+              <Text>{talkSchedule.slot.startTime}</Text>
+            </Box>
           </Box>
         ) : (
-          shouldDisplayScheduleTalkButton && (
-            <ButtonAction
-              color={color}
-              label="Agendar"
-              onClick={() => setOpenSchedule(true)}
-            />
-          )
+            <Box direction="column" height={"30px"}>
+              {shouldDisplayScheduleTalkButton ?
+                <Box
+                  direction={"row"}
+                  gap={"5px"}
+                  style={{
+                    cursor: "pointer",
+                    transition: 'text-decoration 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                  onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                  onClick={() => setOpenSchedule(true)}
+                >
+                  <ScheduleIcon size={"20px"}/>
+                  <Text size={"16px"}>Agendá tu charla acá!</Text>
+                </Box>
+                :
+                <Text size={"16px"}>Sin agendar</Text>
+              }
+            </Box>
         )}
         {talk.isInqueue() ? (
-          <Badge color={color} text="Esperando turno" />
+          <Box direction="row" gap={"5px"}>
+            <Badge color={"dark-2"} text="Esperando turno" />
+            <Spinner size={"2px"}/>
+          </Box>
         ) : (
           talk.canBeQueued() &&
           activeQueue && (
             <ButtonAction
-              color={color}
+              color={"light-3"}
               disabled={hasAnother}
               label="Encolar"
+              style={{width:'100px', border: "1px solid gray"}}
               onClick={() => enqueueTalk(talk.id).then(reloadTalks)}
             />
           )
         )}
         {shouldDisplayDeleteTalkButton && (
-          <ButtonAction
-            icon={<DeleteIcon />}
-            color={color}
-            label="Eliminar"
-            onClick={() => setShowDeleteModal(true)}
-          />
+          <Box width={"100%"} style={{alignItems: "end"}}>
+            <Tip content={<Text color={"black"}>Eliminar charla</Text>} color={"black"}>
+              <Box alignSelf="end">
+                <Button
+                  icon={<DeleteIcon />}
+                  color={backgroundColor}
+                  label=""
+                  style={{width: "fit-content", backgroundColor: "transparent"}}
+                  onClick={() => setShowDeleteModal(true)}
+                />
+              </Box>
+            </Tip>
+          </Box>
         )}
       </Grid>
       {openSchedule && roomsWithFreeSlots && (

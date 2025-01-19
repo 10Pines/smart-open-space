@@ -20,7 +20,6 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.Instant
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 class JwtServiceTest : BaseServiceTest() {
@@ -59,7 +58,7 @@ class JwtServiceTest : BaseServiceTest() {
 
     @Test
     fun `test createToken should return a jwt token`() {
-        val issuedAt = Instant.parse("2024-12-25T15:40:10Z")
+        val issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS)
         val expirationAt = issuedAt.plus(15, ChronoUnit.DAYS)
         val userId = 123456L
         val userEmail = "pepe_grillo@mail.com"

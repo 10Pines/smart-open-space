@@ -63,6 +63,7 @@ class AuthController(
         @RequestParam(FILTER_CREATED_ON_FROM_NAME, required = false) createdOnFromStr: String?,
         @RequestParam(FILTER_CREATED_ON_TO_NAME, required = false) createdOnToStr: String?,
     ): DeletedSessionsResponseDTO {
+        //TODO: Add secret key to use endpoint (using ENV VARS)
         var createdOnFrom = Instant.parse(FILTER_CREATION_ON_MIN)
         var createdOnTo = Instant.parse(FILTER_CREATION_ON_MAX)
         runCatching {

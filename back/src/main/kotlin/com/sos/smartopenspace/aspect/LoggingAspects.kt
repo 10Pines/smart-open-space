@@ -1,5 +1,6 @@
 package com.sos.smartopenspace.aspect
 
+import com.sos.smartopenspace.services.impl.JwtService.Companion.TOKEN_PREFIX
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect
@@ -14,6 +15,9 @@ class LoggingAspects {
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(this::class.java)
+
+        private const val MASK_STR = "***"
+        private const val STR_SEPARATOR = ", "
     }
 
     @Before("@annotation(com.sos.smartopenspace.aspect.LoggingExecution) " +
@@ -21,8 +25,11 @@ class LoggingAspects {
     fun logBefore(joinPoint: JoinPoint) {
         val methodName = joinPoint.signature.name
         val className = joinPoint.target::class.simpleName
-        val paramNames = getSignatureParameterNames(joinPoint).joinToString(", ")
-        val args = joinPoint.args.joinToString(", ") { "$it" }
+        val paramNames = getSignatureParameterNames(joinPoint).joinToString(STR_SEPARATOR)
+        val args = joinPoint.args.joinToString(STR_SEPARATOR) {
+            val argStr = "$it"
+            if (argStr.startsWith(TOKEN_PREFIX)) MASK_STR else argStr
+        }
         LOGGER.info("Executing method: $className.$methodName(${paramNames}) with arguments: [$args]")
     }
 

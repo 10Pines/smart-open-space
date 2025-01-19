@@ -42,6 +42,7 @@ class OpenSpaceService(
     ): OpenSpace {
         val openSpace = findById(openSpaceID)
         val user = findUser(userID)
+        checkOwnershipOpenSpace(user, openSpace)
         val deletedTracks = updatableItemCollectionService.getDeletedItems(
             openSpaceRequestDTO.tracks,
             openSpace.tracks
@@ -81,7 +82,6 @@ class OpenSpaceService(
     }
 
     fun delete(userID: Long, openSpaceID: Long): Long {
-        //FIXME: Add auth + authorization JWT or similar
         val user = findUser(userID)
         val openSpace = findById(openSpaceID)
 
@@ -142,6 +142,13 @@ class OpenSpaceService(
         openSpace.enqueueTalk(talk)
         queueSocket.sendFor(openSpace)
         return openSpace
+    }
+
+    private fun checkOwnershipOpenSpace(user: User, openSpace: OpenSpace) {
+        //TODO: Refactor to use User.checkOwnershipOf (but broke with null when call from user method)
+        if (user.id != openSpace.organizer.id) {
+            throw UserNotOwnerOfOpenSpaceException()
+        }
     }
 
     private fun checkPermissions(

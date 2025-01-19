@@ -35,6 +35,10 @@ export default class Talk {
     return this.isIn(this.slots.map((slot) => slot.talk));
   }
 
+  getScheduleInfo() {
+    return this.slots.find((slot) => slot.talk.id === this.id);
+  }
+
   isInqueue() {
     return this.isIn(this.queue);
   }

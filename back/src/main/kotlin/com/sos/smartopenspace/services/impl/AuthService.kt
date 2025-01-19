@@ -81,6 +81,15 @@ class AuthService(
         return true
     }
 
+    override fun tokenBelongsToUser(tokenHeader: String, userId: Long): Boolean =
+        runCatching {
+            val token = jwtService.extractToken(tokenHeader)
+            val userIdFromToken = jwtService.extractUserId(token)
+            return userIdFromToken == userId
+        }.onFailure { ex ->
+            LOGGER.error("Error when validating token belongs to userId $userId", ex)
+        }.getOrDefault(false)
+
     @Transactional
     override fun purgeInvalidSessions(creationDateFrom: Instant, creationDateTo: Instant): Int {
         val now = getNowUTC()

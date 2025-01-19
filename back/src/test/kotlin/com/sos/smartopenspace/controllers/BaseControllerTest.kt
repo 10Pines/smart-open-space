@@ -2,7 +2,6 @@ package com.sos.smartopenspace.controllers
 
 import com.sos.smartopenspace.persistence.AuthSessionRepository
 import com.sos.smartopenspace.persistence.UserRepository
-import org.junit.jupiter.api.AfterEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest

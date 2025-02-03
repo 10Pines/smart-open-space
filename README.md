@@ -23,7 +23,7 @@
 - [:trophy: Solución](#trophy-solución)
 - [:tada: Diferencial](#tada-diferencial)
 - [:wrench: Instalación](#wrench-instalación)
-- [:scroll: Documentación](#scroll-documentación)
+- [:scroll: Documentación (Diagramas, ADRs, etc)](#scroll-documentación)
 - [:computer: Demo](#computer-demo)
 - [:cop: Licencia](#cop-licencia)
 
@@ -126,7 +126,10 @@ JDBC_DATABASE_PASSWORD=openheart
 
 [Ir a documentación](/docs/README.md)
 
-## :computer: Demo
+## :computer: Demo :construction: 
+
+Esta demo esta deprecada. Nueva demo en proceso :construction: 
+
 [![Youtube demo][demo-prev]][demo-link]
 
 ## :cop: LICENCIA

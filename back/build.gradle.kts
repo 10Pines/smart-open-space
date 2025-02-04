@@ -61,7 +61,7 @@ dependencies {
   }
   testImplementation("org.junit.jupiter:junit-jupiter-api")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-  testImplementation("io.mockk:mockk:1.13.13")
+  testImplementation("io.mockk:mockk:1.13.16")
   testImplementation("org.springframework.security:spring-security-test")
 }
 

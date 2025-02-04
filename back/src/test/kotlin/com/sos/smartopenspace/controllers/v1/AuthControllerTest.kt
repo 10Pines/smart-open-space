@@ -1,6 +1,5 @@
 package com.sos.smartopenspace.controllers.v1
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.sos.smartopenspace.controllers.BaseControllerTest
 import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATED_ON_FROM_NAME
 import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATED_ON_TO_NAME
@@ -16,9 +15,6 @@ import com.sos.smartopenspace.dto.response.auth.LogoutResponseDTO
 import com.sos.smartopenspace.dto.response.purge.DeletedSessionsResponseDTO
 import com.sos.smartopenspace.sampler.AuthSessionSampler
 import com.sos.smartopenspace.sampler.UserSampler
-import com.sos.smartopenspace.services.UserService
-import com.sos.smartopenspace.services.impl.AuthService
-import com.sos.smartopenspace.services.impl.JwtService
 import com.sos.smartopenspace.services.impl.JwtService.Companion.TOKEN_PREFIX
 import com.sos.smartopenspace.testUtil.ReadMocksHelper
 import com.sos.smartopenspace.testUtil.addQueryParamsIfNotNull
@@ -32,7 +28,6 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.StandardCharsets

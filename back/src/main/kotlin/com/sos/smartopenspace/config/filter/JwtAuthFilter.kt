@@ -1,7 +1,7 @@
 package com.sos.smartopenspace.config.filter
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.sos.smartopenspace.dto.DefaultErrorDto
+import com.sos.smartopenspace.config.isPublicEndpoint
+import com.sos.smartopenspace.domain.UnauthorizedException
 import com.sos.smartopenspace.persistence.AuthSessionRepository
 import com.sos.smartopenspace.services.impl.JwtService
 import com.sos.smartopenspace.services.impl.JwtService.Companion.TOKEN_PREFIX
@@ -11,17 +11,25 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.ws.rs.core.HttpHeaders
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import org.springframework.web.servlet.HandlerExceptionResolver
 
 @Component
 class JwtAuthFilter(
     private val jwtService: JwtService,
     private val authSessionRepository: AuthSessionRepository,
-    private val objectMapper: ObjectMapper,
+    private val handlerExceptionResolver: HandlerExceptionResolver,
+    private val userDetailsService: UserDetailsService,
 ) : OncePerRequestFilter() {
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean =
+        isPublicEndpoint(request)
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -29,63 +37,44 @@ class JwtAuthFilter(
         filterChain: FilterChain
     ) {
         val now = getNowUTC()
-        val executeNextFilter = {
+        try {
+            val jwtTokenHeader: String? = request.getHeader(HttpHeaders.AUTHORIZATION)
+            if (jwtTokenHeader.doesNotContainBearerToken()) {
+                throw UnauthorizedException("Jwt token is empty or invalid")
+            }
+            val jwtToken = jwtTokenHeader!!.substring(TOKEN_PREFIX.length)
+            if (!jwtService.isValidToken(jwtToken)) {
+                throw UnauthorizedException("Jwt token is invalid or expired")
+            }
+            val userId = jwtService.extractUserId(jwtToken)
+
+            val authentication: Authentication? = SecurityContextHolder.getContext().authentication
+            if (authentication == null) {
+                authSessionRepository.findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
+                    jwtToken,
+                    userId,
+                    now
+                ) ?: throw UnauthorizedException("Jwt token is invalid or expired")
+                val userDetails = userDetailsService.loadUserByUsername(userId.toString())
+                val authToken = UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.authorities
+                )
+                authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+                SecurityContextHolder.getContext().authentication = authToken
+            }
             filterChain.doFilter(request, response)
+        } catch (ex: Exception) {
+            LOGGER.error("Current jwt token was expired or revoked with date_now $now")
+            handlerExceptionResolver.resolveException(request, response, null, ex)
         }
-
-        if (EXCLUDED_JWT_PATHS.any { request.servletPath.startsWith(it) }) {
-            executeNextFilter()
-            return
-        }
-
-        val jwtTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
-        if (jwtTokenHeader.isNullOrBlank() || !jwtTokenHeader.startsWith(TOKEN_PREFIX)) {
-            LOGGER.error("Header authorization with bearer token not found in request")
-            handlingAuthErrorWithMessage(
-                response,
-                "Header authorization with bearer token not found"
-            )
-            return
-        }
-
-        val jwtToken = jwtTokenHeader.substring(TOKEN_PREFIX.length)
-        if (!jwtService.isValidToken(jwtToken)) {
-            handlingAuthErrorWithMessage(response, "Jwt token is invalid or expired")
-            return
-        }
-
-        //TODO: Review is this required to validate if the token is revoked every request or in each auth request???
-        val userId = jwtService.extractUserId(jwtToken)
-        authSessionRepository.findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
-            jwtToken,
-            userId,
-            now
-        ) ?: run {
-            LOGGER.error("Current jwt token was expired or revoked userId $userId and date_now $now")
-            handlingAuthErrorWithMessage(response, "Token was expired or revoked")
-            return
-        }
-        executeNextFilter()
     }
 
-    private fun handlingAuthErrorWithMessage(response: HttpServletResponse, errMsg: String) {
-        val status = HttpStatus.UNAUTHORIZED
-        response.status = status.value()
-        response.contentType = MediaType.APPLICATION_JSON_VALUE
-        response.writer.write(objectMapper.writeValueAsString(DefaultErrorDto(errMsg, status)))
-    }
+    private fun String?.doesNotContainBearerToken() =
+        this == null || !this.startsWith(TOKEN_PREFIX)
 
     companion object {
-        private const val ANY_PREFIX = ""
-        const val AUTH_PREFIX = "/v1/auth"
-
-        //TODO: Should validate only in specific endpoints
-        private val EXCLUDED_JWT_PATHS = listOf(
-            ANY_PREFIX, // TODO: remove this line which match any path
-            AUTH_PREFIX,
-        )
-
-
         private val LOGGER = LoggerFactory.getLogger(this::class.java)
     }
 }

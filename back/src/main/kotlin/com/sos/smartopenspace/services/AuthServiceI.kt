@@ -29,4 +29,6 @@ interface AuthServiceI {
      * @return size of invalid sessions deleted.
      */
     fun purgeInvalidSessions(creationDateFrom: Instant, creationDateTo: Instant): Int
+
+    fun tokenBelongsToUser(tokenHeader: String, userId: Long): Boolean
 }

@@ -41,18 +41,6 @@ import java.time.temporal.ChronoUnit
 
 class AuthControllerTest : BaseControllerTest() {
 
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    lateinit var userService: UserService
-
-    @Autowired
-    lateinit var authService: AuthService
-
-    @Autowired
-    lateinit var jwtService: JwtService
-
     @AfterEach
     fun tearDown() {
         clearAllEntities()

@@ -47,8 +47,7 @@ class PublicEndpointsConfigTest {
         every { request.requestURI } returns endpoint
         every { request.servletPath } returns endpoint
         every { request.pathInfo } returns null
-        val res = isPublicEndpoint(request)
-        assertTrue(res)
+        assertTrue(isPublicEndpoint(request))
     }
 
     @ParameterizedTest
@@ -72,8 +71,7 @@ class PublicEndpointsConfigTest {
         every { request.requestURI } returns endpoint
         every { request.servletPath } returns endpoint
         every { request.pathInfo } returns null
-        val res = isPublicEndpoint(request)
-        assertTrue(res)
+        assertTrue(isPublicEndpoint(request))
     }
 
     @ParameterizedTest
@@ -102,8 +100,7 @@ class PublicEndpointsConfigTest {
         every { request.requestURI } returns endpoint
         every { request.servletPath } returns endpoint
         every { request.pathInfo } returns null
-        val res = isPublicEndpoint(request)
-        assertFalse(res)
+        assertFalse(isPublicEndpoint(request))
     }
 
     @ParameterizedTest(name = "{0}")
@@ -115,8 +112,7 @@ class PublicEndpointsConfigTest {
         every { request.requestURI } returns endpoint
         every { request.servletPath } returns endpoint
         every { request.pathInfo } returns null
-        val res = isPublicEndpoint(request)
-        assertTrue(res)
+        assertTrue(isPublicEndpoint(request))
     }
 
     companion object {

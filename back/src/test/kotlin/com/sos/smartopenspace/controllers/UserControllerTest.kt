@@ -15,9 +15,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class UserControllerTest: BaseControllerTest() {
 
-  @Autowired
-  lateinit var userService: UserService
-
   @Test
   fun `user registration returns ok status response`() {
     val email = "email@gmail.com"

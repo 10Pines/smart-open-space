@@ -2,7 +2,6 @@ package com.sos.smartopenspace.controllers
 
 import com.sos.smartopenspace.aspect.LoggingExecution
 import com.sos.smartopenspace.aspect.LoggingInputExecution
-import com.sos.smartopenspace.domain.UserNotBelongToAuthToken
 import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
 import com.sos.smartopenspace.dto.request.OpenSpaceRequestDTO
 import com.sos.smartopenspace.services.AuthServiceI
@@ -31,7 +30,7 @@ class OpenSpaceController(
         @PathVariable openSpaceID: Long,
         @PathVariable userID: Long,
         @Valid @RequestBody openSpace: OpenSpaceRequestDTO
-    ) = validateTokenWithUserIDParam(authToken, userID).let {
+    ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
         OpenSpaceTranslator.translateFrom(openSpaceService.update(userID, openSpaceID, openSpace))
     }
 
@@ -41,7 +40,7 @@ class OpenSpaceController(
         @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
         @PathVariable userID: Long,
         @PathVariable openSpaceID: Long
-    ) = validateTokenWithUserIDParam(authToken, userID).let {
+    ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
         openSpaceService.delete(userID, openSpaceID)
     }
 
@@ -64,7 +63,7 @@ class OpenSpaceController(
         @PathVariable userID: Long,
         @PathVariable openSpaceID: Long,
         @PathVariable talkID: Long
-    ) = validateTokenWithUserIDParam(authToken, userID).let {
+    ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
         TalkTranslator.translateFrom(openSpaceService.deleteTalk(talkID, openSpaceID, userID))
     }
 
@@ -127,11 +126,5 @@ class OpenSpaceController(
                 userID
             )
         )
-
-    private fun validateTokenWithUserIDParam(authToken: String, userID: Long) {
-        if (!authService.tokenBelongsToUser(authToken, userID)) {
-            throw UserNotBelongToAuthToken()
-        }
-    }
 
 }

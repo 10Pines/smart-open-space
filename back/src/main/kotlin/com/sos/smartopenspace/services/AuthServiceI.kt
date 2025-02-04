@@ -2,6 +2,7 @@ package com.sos.smartopenspace.services
 
 import com.sos.smartopenspace.domain.AuthSession
 import com.sos.smartopenspace.domain.User
+import com.sos.smartopenspace.domain.UserNotBelongToAuthToken
 import java.time.Instant
 
 interface AuthServiceI {
@@ -31,4 +32,10 @@ interface AuthServiceI {
     fun purgeInvalidSessions(creationDateFrom: Instant, creationDateTo: Instant): Int
 
     fun tokenBelongsToUser(tokenHeader: String, userId: Long): Boolean
+
+    /**
+     * @return if token belongs to userId.
+     * @throws UserNotBelongToAuthToken if token does not belong to user.
+     */
+    fun validateTokenBelongsToUserId(tokenHeader: String, userId: Long)
 }

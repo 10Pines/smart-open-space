@@ -1,7 +1,6 @@
 package com.sos.smartopenspace.controllers
 
 import com.sos.smartopenspace.aspect.LoggingInputExecution
-import com.sos.smartopenspace.domain.UserNotBelongToAuthToken
 import com.sos.smartopenspace.dto.request.CreateReviewRequestDTO
 import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
 import com.sos.smartopenspace.services.AuthServiceI
@@ -55,7 +54,7 @@ class TalkController(
         @PathVariable talkId: Long,
         @PathVariable userId: Long,
         @Valid @RequestBody createTalkRequestDTO: CreateTalkRequestDTO
-    ) = validateTokenWithUserIDParam(authToken, userId).let {
+    ) = authService.validateTokenBelongsToUserId(authToken, userId).let {
         TalkTranslator.translateFrom(talkService.updateTalk(talkId, userId, createTalkRequestDTO))
     }
 
@@ -65,7 +64,7 @@ class TalkController(
         @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
         @PathVariable talkID: Long,
         @PathVariable userID: Long
-    ) = validateTokenWithUserIDParam(authToken, userID).let {
+    ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
         TalkTranslator.translateFrom(talkService.voteTalk(talkID, userID))
     }
 
@@ -75,7 +74,7 @@ class TalkController(
         @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
         @PathVariable talkID: Long,
         @PathVariable userID: Long
-    ) = validateTokenWithUserIDParam(authToken, userID).let {
+    ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
         TalkTranslator.translateFrom(talkService.unvoteTalk(talkID, userID))
     }
 
@@ -86,13 +85,8 @@ class TalkController(
         @PathVariable talkID: Long,
         @PathVariable userID: Long,
         @Valid @RequestBody createReviewRequestDTO: CreateReviewRequestDTO
-    ) = validateTokenWithUserIDParam(authToken, userID).let {
+    ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
         TalkTranslator.translateFrom(talkService.addReview(talkID, userID, createReviewRequestDTO))
     }
 
-    private fun validateTokenWithUserIDParam(authToken: String, userID: Long) {
-        if (!authService.tokenBelongsToUser(authToken, userID)) {
-            throw UserNotBelongToAuthToken()
-        }
-    }
 }

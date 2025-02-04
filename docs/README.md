@@ -1,7 +1,14 @@
 
 ## :scroll: Documentación
 
-### Diagrama de Arquitectura
+### Architecture Decision Records (ADRs)
+
+- [001 - ID de nuevas entidades de dominio](/docs/adrs/001_id_nuevas_entidades_dominio.md)
+
+
+### Diagrama de Arquitectura :warning:
+
+Esta sección esta desactualizada :construction:
 
 #### Visualización del Open Space
 

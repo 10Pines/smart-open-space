@@ -24,7 +24,7 @@ fun anOpenSpace(
       slots = slots.toMutableSet(),
       talks = talks,
       description = description,
-      tracks = tracks.toMutableSet()
+      tracks = tracks.toMutableSet(),
     )
 }
 

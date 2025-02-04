@@ -2,93 +2,136 @@ package com.sos.smartopenspace.controllers
 
 import com.sos.smartopenspace.aspect.LoggingExecution
 import com.sos.smartopenspace.aspect.LoggingInputExecution
+import com.sos.smartopenspace.domain.UserNotBelongToAuthToken
 import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
 import com.sos.smartopenspace.dto.request.OpenSpaceRequestDTO
+import com.sos.smartopenspace.services.AuthServiceI
 import com.sos.smartopenspace.services.OpenSpaceService
 import com.sos.smartopenspace.translators.OpenSpaceTranslator
 import com.sos.smartopenspace.translators.TalkTranslator
 import jakarta.validation.Valid
+import jakarta.ws.rs.core.HttpHeaders
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("openSpace")
-class OpenSpaceController(private val openSpaceService: OpenSpaceService) {
-  @PostMapping("/{userID}")
-  @LoggingExecution
-  fun create(@PathVariable userID: Long, @Valid @RequestBody openSpace: OpenSpaceRequestDTO) =
-      OpenSpaceTranslator.translateFrom(openSpaceService.create(userID, openSpace))
+class OpenSpaceController(
+    private val openSpaceService: OpenSpaceService,
+    private val authService: AuthServiceI
+) {
+    @PostMapping("/{userID}")
+    @LoggingExecution
+    fun create(@PathVariable userID: Long, @Valid @RequestBody openSpace: OpenSpaceRequestDTO) =
+        OpenSpaceTranslator.translateFrom(openSpaceService.create(userID, openSpace))
 
-  @PutMapping("/{openSpaceID}/user/{userID}")
-  @LoggingInputExecution
-  fun updateOpenSpace(@PathVariable openSpaceID: Long, @PathVariable userID: Long, @Valid @RequestBody openSpace: OpenSpaceRequestDTO) =
-      OpenSpaceTranslator.translateFrom(openSpaceService.update(userID, openSpaceID, openSpace))
+    @PutMapping("/{openSpaceID}/user/{userID}")
+    @LoggingInputExecution
+    fun updateOpenSpace(
+        @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
+        @PathVariable openSpaceID: Long,
+        @PathVariable userID: Long,
+        @Valid @RequestBody openSpace: OpenSpaceRequestDTO
+    ) = validateTokenWithUserIDParam(authToken, userID).let {
+        OpenSpaceTranslator.translateFrom(openSpaceService.update(userID, openSpaceID, openSpace))
+    }
 
-  @DeleteMapping("/{openSpaceID}/user/{userID}")
-  @LoggingExecution
-  fun delete(@PathVariable userID: Long, @PathVariable openSpaceID: Long) =
-      openSpaceService.delete(userID, openSpaceID)
+    @DeleteMapping("/{openSpaceID}/user/{userID}")
+    @LoggingExecution
+    fun delete(
+        @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
+        @PathVariable userID: Long,
+        @PathVariable openSpaceID: Long
+    ) = validateTokenWithUserIDParam(authToken, userID).let {
+        openSpaceService.delete(userID, openSpaceID)
+    }
 
-  @PostMapping("/talk/{userID}/{osID}")
-  @LoggingExecution
-  fun createTalk(@PathVariable userID: Long, @PathVariable osID: Long, @Valid @RequestBody createTalkRequestDTO: CreateTalkRequestDTO) =
-      TalkTranslator.translateFrom(openSpaceService.createTalk(userID, osID, createTalkRequestDTO))
 
-  @DeleteMapping("/{openSpaceID}/talk/{talkID}/user/{userID}")
-  @LoggingExecution
-  fun deleteTalk(@PathVariable userID: Long, @PathVariable openSpaceID: Long, @PathVariable talkID: Long) =
-      TalkTranslator.translateFrom(openSpaceService.deleteTalk(talkID, openSpaceID, userID))
+    @PostMapping("/talk/{userID}/{osID}")
+    @LoggingExecution
+    fun createTalk(
+        @PathVariable userID: Long,
+        @PathVariable osID: Long,
+        @Valid @RequestBody createTalkRequestDTO: CreateTalkRequestDTO
+    ) =
+        TalkTranslator.translateFrom(
+            openSpaceService.createTalk(userID, osID, createTalkRequestDTO)
+        )
 
-  @GetMapping("/user/{userID}")
-  @LoggingInputExecution
-  fun findAllByUser(@PathVariable userID: Long) =
-      openSpaceService.findAllByUser(userID).map { OpenSpaceTranslator.translateFrom(it) }
+    @DeleteMapping("/{openSpaceID}/talk/{talkID}/user/{userID}")
+    @LoggingExecution
+    fun deleteTalk(
+        @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
+        @PathVariable userID: Long,
+        @PathVariable openSpaceID: Long,
+        @PathVariable talkID: Long
+    ) = validateTokenWithUserIDParam(authToken, userID).let {
+        TalkTranslator.translateFrom(openSpaceService.deleteTalk(talkID, openSpaceID, userID))
+    }
 
-  @GetMapping("/{id}")
-  @LoggingInputExecution
-  fun findById(@PathVariable id: Long) =
-      OpenSpaceTranslator.translateFrom(openSpaceService.findById(id))
+    @GetMapping("/user/{userID}")
+    @LoggingInputExecution
+    fun findAllByUser(@PathVariable userID: Long) =
+        openSpaceService.findAllByUser(userID).map { OpenSpaceTranslator.translateFrom(it) }
 
-  @GetMapping("/talks/{userID}/{osID}")
-  @LoggingInputExecution
-  fun findTalksByUser(@PathVariable userID: Long, @PathVariable osID: Long) =
-      openSpaceService.findTalksOfUserInOpenSpace(userID, osID).map { TalkTranslator.translateFrom(it) }
+    @GetMapping("/{id}")
+    @LoggingInputExecution
+    fun findById(@PathVariable id: Long) =
+        OpenSpaceTranslator.translateFrom(openSpaceService.findById(id))
 
-  @GetMapping("/talks/{id}")
-  @LoggingInputExecution
-  fun findTalks(@PathVariable id: Long) =
-      openSpaceService.findTalks(id).map { TalkTranslator.translateFrom(it) }
+    @GetMapping("/talks/{userID}/{osID}")
+    @LoggingInputExecution
+    fun findTalksByUser(@PathVariable userID: Long, @PathVariable osID: Long) =
+        openSpaceService.findTalksOfUserInOpenSpace(userID, osID)
+            .map { TalkTranslator.translateFrom(it) }
 
-  @GetMapping("/assignedSlots/{id}")
-  @LoggingInputExecution
-  fun findAssignedSlotsById(@PathVariable id: Long) = openSpaceService.findAssignedSlotsById(id)
+    @GetMapping("/talks/{id}")
+    @LoggingInputExecution
+    fun findTalks(@PathVariable id: Long) =
+        openSpaceService.findTalks(id).map { TalkTranslator.translateFrom(it) }
 
-  @PutMapping("/activateQueue/{userID}/{osID}")
-  @LoggingInputExecution
-  fun activateQueue(@PathVariable userID: Long, @PathVariable osID: Long) =
-      OpenSpaceTranslator.translateFrom(openSpaceService.activateQueue(userID, osID))
+    @GetMapping("/assignedSlots/{id}")
+    @LoggingInputExecution
+    fun findAssignedSlotsById(@PathVariable id: Long) = openSpaceService.findAssignedSlotsById(id)
 
-  @PutMapping("/finishQueue/{userID}/{osID}")
-  @LoggingInputExecution
-  fun finishQueue(@PathVariable userID: Long, @PathVariable osID: Long) =
-      OpenSpaceTranslator.translateFrom(openSpaceService.finishQueue(userID, osID))
+    @PutMapping("/activateQueue/{userID}/{osID}")
+    @LoggingInputExecution
+    fun activateQueue(@PathVariable userID: Long, @PathVariable osID: Long) =
+        OpenSpaceTranslator.translateFrom(openSpaceService.activateQueue(userID, osID))
 
-  @PutMapping("/enqueueTalk/{userID}/{talkID}")
-  @LoggingInputExecution
-  fun enqueueTalk(@PathVariable userID: Long, @PathVariable talkID: Long) =
-      OpenSpaceTranslator.translateFrom(openSpaceService.enqueueTalk(userID, talkID))
+    @PutMapping("/finishQueue/{userID}/{osID}")
+    @LoggingInputExecution
+    fun finishQueue(@PathVariable userID: Long, @PathVariable osID: Long) =
+        OpenSpaceTranslator.translateFrom(openSpaceService.finishQueue(userID, osID))
 
-  @PutMapping("/{openSpaceId}/user/{userID}/callForPapers")
-  @LoggingInputExecution
-  fun callForPapers(@PathVariable userID: Long, @PathVariable openSpaceId: Long) =
-      OpenSpaceTranslator.translateFrom(openSpaceService.toggleCallForPapers(openSpaceId, userID))
+    @PutMapping("/enqueueTalk/{userID}/{talkID}")
+    @LoggingInputExecution
+    fun enqueueTalk(@PathVariable userID: Long, @PathVariable talkID: Long) =
+        OpenSpaceTranslator.translateFrom(openSpaceService.enqueueTalk(userID, talkID))
 
-  @PutMapping("/{openSpaceId}/user/{userID}/voting")
-  @LoggingInputExecution
-  fun voting(@PathVariable userID: Long, @PathVariable openSpaceId: Long) =
-      OpenSpaceTranslator.translateFrom(openSpaceService.toggleVoting(openSpaceId, userID))
+    @PutMapping("/{openSpaceId}/user/{userID}/callForPapers")
+    @LoggingInputExecution
+    fun callForPapers(@PathVariable userID: Long, @PathVariable openSpaceId: Long) =
+        OpenSpaceTranslator.translateFrom(openSpaceService.toggleCallForPapers(openSpaceId, userID))
 
-  @PutMapping("/{openSpaceId}/user/{userID}/showSpeakerName")
-  @LoggingInputExecution
-  fun showSpeaker(@PathVariable userID: Long, @PathVariable openSpaceId: Long) =
-      OpenSpaceTranslator.translateFrom(openSpaceService.toggleShowSpeakerName(openSpaceId, userID))
+    @PutMapping("/{openSpaceId}/user/{userID}/voting")
+    @LoggingInputExecution
+    fun voting(@PathVariable userID: Long, @PathVariable openSpaceId: Long) =
+        OpenSpaceTranslator.translateFrom(openSpaceService.toggleVoting(openSpaceId, userID))
+
+    @PutMapping("/{openSpaceId}/user/{userID}/showSpeakerName")
+    @LoggingInputExecution
+    fun showSpeaker(@PathVariable userID: Long, @PathVariable openSpaceId: Long) =
+        OpenSpaceTranslator.translateFrom(
+            openSpaceService.toggleShowSpeakerName(
+                openSpaceId,
+                userID
+            )
+        )
+
+    private fun validateTokenWithUserIDParam(authToken: String, userID: Long) {
+        if (!authService.tokenBelongsToUser(authToken, userID)) {
+            throw UserNotBelongToAuthToken()
+        }
+    }
+
 }

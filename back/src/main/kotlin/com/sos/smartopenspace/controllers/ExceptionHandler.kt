@@ -1,9 +1,6 @@
 package com.sos.smartopenspace.controllers
 
-import com.sos.smartopenspace.domain.BadRequestException
-import com.sos.smartopenspace.domain.NotFoundException
-import com.sos.smartopenspace.domain.UnauthorizedException
-import com.sos.smartopenspace.domain.UnprocessableEntityException
+import com.sos.smartopenspace.domain.*
 import com.sos.smartopenspace.dto.DefaultErrorDto
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -56,6 +53,13 @@ class ExceptionHandler {
     @ExceptionHandler(UnauthorizedException::class)
     fun notAuthHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
         val httpStatus = HttpStatus.UNAUTHORIZED
+        handleLogError(httpStatus, ex)
+        return ResponseEntity(DefaultErrorDto(ex.message, httpStatus), httpStatus)
+    }
+
+    @ExceptionHandler(ForbiddenException::class)
+    fun forbiddenHandler(ex: Exception): ResponseEntity<DefaultErrorDto> {
+        val httpStatus = HttpStatus.FORBIDDEN
         handleLogError(httpStatus, ex)
         return ResponseEntity(DefaultErrorDto(ex.message, httpStatus), httpStatus)
     }

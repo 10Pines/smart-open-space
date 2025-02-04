@@ -3,7 +3,9 @@ package com.sos.smartopenspace.controllers.v1
 import com.sos.smartopenspace.aspect.LoggingExecution
 import com.sos.smartopenspace.aspect.LoggingInputExecution
 import com.sos.smartopenspace.domain.BadRequestException
+import com.sos.smartopenspace.domain.UnauthorizedException
 import com.sos.smartopenspace.dto.request.auth.LoginRequestDTO
+import com.sos.smartopenspace.dto.request.auth.PurgePasswordDTO
 import com.sos.smartopenspace.dto.request.auth.RegisterRequestDTO
 import com.sos.smartopenspace.dto.response.auth.AuthResponseDTO
 import com.sos.smartopenspace.dto.response.auth.LogoutResponseDTO
@@ -13,13 +15,16 @@ import com.sos.smartopenspace.translators.UserTranslator
 import jakarta.validation.Valid
 import jakarta.ws.rs.core.HttpHeaders
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
 @RestController
 @RequestMapping("/v1/auth")
 class AuthController(
-    private val authService: AuthServiceI
+    private val authService: AuthServiceI,
+    @Value("\${auth.purge.password}")
+    private val purgePassword: String,
 ) {
 
     @PostMapping("/register")
@@ -62,8 +67,11 @@ class AuthController(
     fun purgeInvalidSessions(
         @RequestParam(FILTER_CREATED_ON_FROM_NAME, required = false) createdOnFromStr: String?,
         @RequestParam(FILTER_CREATED_ON_TO_NAME, required = false) createdOnToStr: String?,
+        @Valid @RequestBody purgePasswordDTO: PurgePasswordDTO,
     ): DeletedSessionsResponseDTO {
-        //TODO: Add secret key to use endpoint (using ENV VARS)
+        if (!purgePassword.matchWithRequest(purgePasswordDTO)) {
+            throw UnauthorizedException("Resource is forbidden")
+        }
         var createdOnFrom = Instant.parse(FILTER_CREATION_ON_MIN)
         var createdOnTo = Instant.parse(FILTER_CREATION_ON_MAX)
         runCatching {
@@ -84,6 +92,9 @@ class AuthController(
             creationDateTo = createdOnTo,
         )
     }
+
+    private fun String.matchWithRequest(purgePasswordDTO: PurgePasswordDTO) =
+        this == purgePasswordDTO.purgePassword
 
     companion object {
         const val FILTER_CREATED_ON_FROM_NAME = "created_on_from"

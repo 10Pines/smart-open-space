@@ -6,16 +6,13 @@ import com.sos.smartopenspace.anOpenSpace
 import com.sos.smartopenspace.anOpenSpaceWith
 import com.sos.smartopenspace.domain.*
 import com.sos.smartopenspace.generateTalkBody
-import com.sos.smartopenspace.persistence.*
-import com.sos.smartopenspace.services.impl.AuthService
 import com.sos.smartopenspace.services.impl.JwtService.Companion.TOKEN_PREFIX
 import jakarta.ws.rs.core.HttpHeaders
 import jakarta.ws.rs.core.MediaType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -23,21 +20,6 @@ import java.time.LocalTime
 
 @Transactional
 class TalkControllerTest: BaseControllerTest() {
-
-  @Autowired
-  lateinit var slotRepository: SlotRepository
-
-  @Autowired
-  lateinit var openSpaceRepository: OpenSpaceRepository
-
-  @Autowired
-  lateinit var talkRepository: TalkRepository
-
-  @Autowired
-  lateinit var roomRepository: RoomRepository
-
-  @Autowired
-  lateinit var authService: AuthService
 
   @Test
   fun `schedule a talk returns an ok status response`() {
@@ -48,7 +30,7 @@ class TalkControllerTest: BaseControllerTest() {
     val openSpace = openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot), setOf(room)))
 
     mockMvc.perform(
-      MockMvcRequestBuilders.put("/talk/schedule/${organizer.id}/${talk.id}/${aSlot.id}/${room.id}")
+      put("/talk/schedule/${organizer.id}/${talk.id}/${aSlot.id}/${room.id}")
     ).andExpect(MockMvcResultMatchers.status().isOk)
 
     assertTrue(openSpace.freeSlots().isEmpty())
@@ -64,7 +46,7 @@ class TalkControllerTest: BaseControllerTest() {
     val room = anySavedRoom()
 
     mockMvc.perform(
-      MockMvcRequestBuilders.put("/talk/schedule/${speaker.id}/${talk.id}/${slot.id}/${room.id}")
+      put("/talk/schedule/${speaker.id}/${talk.id}/${slot.id}/${room.id}")
     ).andExpect(MockMvcResultMatchers.status().isBadRequest)
   }
 
@@ -79,7 +61,7 @@ class TalkControllerTest: BaseControllerTest() {
     openSpace.scheduleTalk(talk, organizer, aSlot as TalkSlot, room)
 
     mockMvc.perform(
-            MockMvcRequestBuilders.put("/talk/exchange/${talk.id}/${otherSlot.id}/${room.id}")
+            put("/talk/exchange/${talk.id}/${otherSlot.id}/${room.id}")
     ).andExpect(MockMvcResultMatchers.status().isOk)
 
     assertEquals(1, freeSlots(openSpace).size)
@@ -95,7 +77,7 @@ class TalkControllerTest: BaseControllerTest() {
     aSavedUserWithTalk(talk)
 
     mockMvc.perform(
-      MockMvcRequestBuilders.get("/talk/${talk.id}")
+      get("/talk/${talk.id}")
     ).andExpect(MockMvcResultMatchers.status().isOk)
       .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(talk.id))
       .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(talk.name))
@@ -104,7 +86,7 @@ class TalkControllerTest: BaseControllerTest() {
   @Test
   fun `Asking for a talk that not exist returns a not found`() {
     mockMvc.perform(
-      MockMvcRequestBuilders.get("/talk/77777")
+      get("/talk/77777")
     ).andExpect(MockMvcResultMatchers.status().isNotFound)
   }
 
@@ -123,7 +105,7 @@ class TalkControllerTest: BaseControllerTest() {
 
     val changedDescription = "a different description"
     val entityResponse = mockMvc.perform(
-      MockMvcRequestBuilders.put("/talk/${aTalk.id}/user/${user.id}")
+      put("/talk/${aTalk.id}/user/${user.id}")
         .contentType(MediaType.APPLICATION_JSON)
         .content(generateTalkBody(description = changedDescription))
         .header(HttpHeaders.AUTHORIZATION, userBearerToken)
@@ -132,7 +114,7 @@ class TalkControllerTest: BaseControllerTest() {
     val talkId = JsonPath.read<Int>(entityResponse.contentAsString, "$.id")
 
     mockMvc.perform(
-      MockMvcRequestBuilders.get("/openSpace/talks/${anOpenSpace.id}")
+      get("/openSpace/talks/${anOpenSpace.id}")
     )
       .andExpect(MockMvcResultMatchers.status().isOk)
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(talkId))
@@ -149,8 +131,7 @@ class TalkControllerTest: BaseControllerTest() {
     val nonexistentTalkId = 789
 
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${nonexistentTalkId}/user/${user.id}")
+        put("/talk/${nonexistentTalkId}/user/${user.id}")
         .contentType(MediaType.APPLICATION_JSON)
         .content(generateTalkBody())
         .header(HttpHeaders.AUTHORIZATION, userBearerToken)
@@ -168,8 +149,7 @@ class TalkControllerTest: BaseControllerTest() {
     val talkId = 789
 
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${talkId}/user/${user.id}")
+      put("/talk/${talkId}/user/${user.id}")
         .contentType(MediaType.APPLICATION_JSON)
         .content(generateTalkBody())
     )
@@ -187,8 +167,7 @@ class TalkControllerTest: BaseControllerTest() {
     val talkId = 789
 
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${talkId}/user/${user.id}")
+      put("/talk/${talkId}/user/${user.id}")
         .contentType(MediaType.APPLICATION_JSON)
         .content(generateTalkBody())
         .header(HttpHeaders.AUTHORIZATION, otherUserBearerToken)
@@ -203,8 +182,7 @@ class TalkControllerTest: BaseControllerTest() {
     val talk = anySavedTalk(userTalkOwner)
 
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${talk.id}/user/${aUser.id}/vote")
+      put("/talk/${talk.id}/user/${aUser.id}/vote")
         .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
     )
       .andExpect(MockMvcResultMatchers.status().isOk)
@@ -217,8 +195,7 @@ class TalkControllerTest: BaseControllerTest() {
     val talk = anySavedTalk(userTalkOwner)
 
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${talk.id}/user/${userTalkOwner.id}/vote")
+      put("/talk/${talk.id}/user/${userTalkOwner.id}/vote")
         .header(HttpHeaders.AUTHORIZATION, userTalkOwnerBearerToken)
     )
       .andExpect(MockMvcResultMatchers.status().isBadRequest)
@@ -231,8 +208,7 @@ class TalkControllerTest: BaseControllerTest() {
     val talk = anySavedTalkWithUserVote(userTalkOwner, aUser)
     assertTrue(talk.votingUsers.contains(aUser))
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${talk.id}/user/${aUser.id}/vote")
+      put("/talk/${talk.id}/user/${aUser.id}/vote")
         .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
     )
       .andExpect(MockMvcResultMatchers.status().isOk)
@@ -245,8 +221,7 @@ class TalkControllerTest: BaseControllerTest() {
     val talk = anySavedTalk(userTalkOwner)
 
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${talk.id}/user/${userTalkOwner.id}/vote")
+      put("/talk/${talk.id}/user/${userTalkOwner.id}/vote")
     )
       .andExpect(MockMvcResultMatchers.status().isUnauthorized)
   }
@@ -258,8 +233,7 @@ class TalkControllerTest: BaseControllerTest() {
     val talk = anySavedTalkWithUserVote(userTalkOwner, aUser)
     assertTrue(talk.votingUsers.contains(aUser))
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${talk.id}/user/${aUser.id}/vote")
+      put("/talk/${talk.id}/user/${aUser.id}/vote")
         .header(HttpHeaders.AUTHORIZATION, userTalkOwnerBearerToken)
     )
       .andExpect(MockMvcResultMatchers.status().isForbidden)
@@ -273,8 +247,7 @@ class TalkControllerTest: BaseControllerTest() {
     talkRepository.save(talk)
 
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${talk.id}/user/${aUser.id}/unvote")
+      put("/talk/${talk.id}/user/${aUser.id}/unvote")
         .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
     )
       .andExpect(MockMvcResultMatchers.status().isOk)
@@ -288,8 +261,7 @@ class TalkControllerTest: BaseControllerTest() {
     talkRepository.save(talk)
 
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${talk.id}/user/${aUser.id}/unvote")
+      put("/talk/${talk.id}/user/${aUser.id}/unvote")
         .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
 
     )
@@ -304,8 +276,7 @@ class TalkControllerTest: BaseControllerTest() {
     talkRepository.save(talk)
 
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${talk.id}/user/${aUser.id}/unvote")
+      put("/talk/${talk.id}/user/${aUser.id}/unvote")
         .header(HttpHeaders.AUTHORIZATION, otherUserBearerToken)
 
     )
@@ -319,8 +290,7 @@ class TalkControllerTest: BaseControllerTest() {
     talkRepository.save(talk)
 
     mockMvc.perform(
-      MockMvcRequestBuilders
-        .put("/talk/${talk.id}/user/${aUser.id}/unvote")
+      put("/talk/${talk.id}/user/${aUser.id}/unvote")
     )
       .andExpect(MockMvcResultMatchers.status().isUnauthorized)
   }
@@ -332,7 +302,7 @@ class TalkControllerTest: BaseControllerTest() {
     val content = aReviewCreationBody(5, "a review")
 
     mockMvc.perform(
-      MockMvcRequestBuilders.post("/talk/${talk.id}/user/${aUser.id}/review")
+      post("/talk/${talk.id}/user/${aUser.id}/review")
         .contentType(MediaType.APPLICATION_JSON)
         .content(content)
         .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
@@ -349,7 +319,7 @@ class TalkControllerTest: BaseControllerTest() {
     val content = aReviewCreationBody(2, "second review")
 
     mockMvc.perform(
-      MockMvcRequestBuilders.post("/talk/${talk.id}/user/${aUser.id}/review")
+      post("/talk/${talk.id}/user/${aUser.id}/review")
         .contentType(MediaType.APPLICATION_JSON)
         .content(content)
         .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
@@ -364,7 +334,7 @@ class TalkControllerTest: BaseControllerTest() {
     val content = aReviewCreationBody(6, "a review")
 
     mockMvc.perform(
-      MockMvcRequestBuilders.post("/talk/${talk.id}/user/${aUser.id}/review")
+      post("/talk/${talk.id}/user/${aUser.id}/review")
         .contentType(MediaType.APPLICATION_JSON)
         .content(content)
         .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
@@ -379,7 +349,7 @@ class TalkControllerTest: BaseControllerTest() {
     val content = aReviewCreationBody(0, "a review")
 
     mockMvc.perform(
-      MockMvcRequestBuilders.post("/talk/${talk.id}/user/${aUser.id}/review")
+      post("/talk/${talk.id}/user/${aUser.id}/review")
         .contentType(MediaType.APPLICATION_JSON)
         .content(content)
         .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
@@ -395,7 +365,7 @@ class TalkControllerTest: BaseControllerTest() {
 
     val someOtherUserId = aUser.id+10
     mockMvc.perform(
-      MockMvcRequestBuilders.post("/talk/${talk.id}/user/$someOtherUserId/review")
+      post("/talk/${talk.id}/user/$someOtherUserId/review")
         .contentType(MediaType.APPLICATION_JSON)
         .content(content)
         .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
@@ -410,7 +380,7 @@ class TalkControllerTest: BaseControllerTest() {
     val content = aReviewCreationBody(4, "a review")
 
     mockMvc.perform(
-      MockMvcRequestBuilders.post("/talk/${talk.id}/user/${aUser.id}/review")
+      post("/talk/${talk.id}/user/${aUser.id}/review")
         .contentType(MediaType.APPLICATION_JSON)
         .content(content)
     )

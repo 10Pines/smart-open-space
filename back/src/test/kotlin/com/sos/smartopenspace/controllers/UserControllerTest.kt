@@ -2,10 +2,8 @@ package com.sos.smartopenspace.controllers
 
 import com.jayway.jsonpath.JsonPath
 import com.sos.smartopenspace.domain.User
-import com.sos.smartopenspace.services.UserService
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -14,9 +12,6 @@ import org.springframework.transaction.annotation.Transactional
 
 @Transactional
 class UserControllerTest: BaseControllerTest() {
-
-  @Autowired
-  lateinit var userService: UserService
 
   @Test
   fun `user registration returns ok status response`() {

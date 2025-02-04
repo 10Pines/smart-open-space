@@ -3,6 +3,7 @@ package com.sos.smartopenspace.services.impl
 
 import com.sos.smartopenspace.domain.AuthSession
 import com.sos.smartopenspace.domain.User
+import com.sos.smartopenspace.domain.UserNotBelongToAuthToken
 import com.sos.smartopenspace.persistence.AuthSessionRepository
 import com.sos.smartopenspace.services.AuthServiceI
 import com.sos.smartopenspace.services.UserService
@@ -73,7 +74,8 @@ class AuthService(
             return false
         }
         val existValidTokenSaved = authSessionRepository
-            .findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(token, userIdFromToken, now).let { it != null }
+            .findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(token, userIdFromToken, now)
+            .let { it != null }
         if (!existValidTokenSaved) {
             LOGGER.error("Current jwt token was expired or revoked with userId $userId, tokenUserId $userIdFromToken and date_now $now")
             return false
@@ -90,10 +92,20 @@ class AuthService(
             LOGGER.error("Error when validating token belongs to userId $userId", ex)
         }.getOrDefault(false)
 
+    override fun validateTokenBelongsToUserId(tokenHeader: String, userId: Long) {
+        if (!tokenBelongsToUser(tokenHeader, userId)) {
+            throw UserNotBelongToAuthToken()
+        }
+    }
+
     @Transactional
     override fun purgeInvalidSessions(creationDateFrom: Instant, creationDateTo: Instant): Int {
         val now = getNowUTC()
-        return authSessionRepository.deleteAllSessionsExpiresOnBeforeAndBetweenCreationOn(now, creationDateFrom, creationDateTo)
+        return authSessionRepository.deleteAllSessionsExpiresOnBeforeAndBetweenCreationOn(
+            now,
+            creationDateFrom,
+            creationDateTo
+        )
     }
 
 

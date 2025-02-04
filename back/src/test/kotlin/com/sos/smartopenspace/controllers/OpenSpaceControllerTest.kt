@@ -4,17 +4,12 @@ import com.jayway.jsonpath.JsonPath
 import com.sos.smartopenspace.aUser
 import com.sos.smartopenspace.anOpenSpace
 import com.sos.smartopenspace.domain.*
-import com.sos.smartopenspace.persistence.AuthSessionRepository
-import com.sos.smartopenspace.persistence.OpenSpaceRepository
-import com.sos.smartopenspace.persistence.TalkRepository
-import com.sos.smartopenspace.services.impl.AuthService
 import com.sos.smartopenspace.services.impl.JwtService.Companion.TOKEN_PREFIX
 import jakarta.ws.rs.core.HttpHeaders
 import jakarta.ws.rs.core.MediaType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.transaction.annotation.Transactional
@@ -25,18 +20,6 @@ import java.time.LocalTime
 
 @Transactional
 class OpenSpaceControllerTest : BaseControllerTest() {
-
-    @Autowired
-    lateinit var authSessionRepository: AuthSessionRepository
-
-    @Autowired
-    lateinit var repoOpenSpace: OpenSpaceRepository
-
-    @Autowired
-    lateinit var repoTalk: TalkRepository
-
-    @Autowired
-    lateinit var authService: AuthService
 
     @Test
     fun `creating a valid OpenSpace returns an ok status response`() {
@@ -146,7 +129,7 @@ class OpenSpaceControllerTest : BaseControllerTest() {
     fun `can create a valid talk and get it correctly`() {
         val user = userRepo.save(aUser())
         val track = Track("a track", color = "#FFFFFF")
-        val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(user, setOf(track)))
+        val anOpenSpace = openSpaceRepo.save(anyOpenSpaceWith(user, setOf(track)))
         anOpenSpace.toggleCallForPapers(user)
         val aMeetingLink = "https://aLink"
         val aDocument = Document("a document", URI("https://www.lipsum.com/").toURL())
@@ -172,7 +155,7 @@ class OpenSpaceControllerTest : BaseControllerTest() {
     @Test
     fun `can create a valid marketplace talk and get it correctly`() {
         val user = userRepo.save(aUser())
-        val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(user))
+        val anOpenSpace = openSpaceRepo.save(anyOpenSpaceWith(user))
         anOpenSpace.toggleCallForPapers(user)
 
         mockMvc.perform(
@@ -193,7 +176,7 @@ class OpenSpaceControllerTest : BaseControllerTest() {
     @Test
     fun `creating an invalid talk return an bad request status`() {
         val user = userRepo.save(aUser())
-        val anOpenSpace = repoOpenSpace.save(anyOpenSpace())
+        val anOpenSpace = openSpaceRepo.save(anyOpenSpace())
         val anInvalidLink = "invalid link"
 
         mockMvc.perform(
@@ -207,7 +190,7 @@ class OpenSpaceControllerTest : BaseControllerTest() {
     @Test
     fun `creating a talk when call for papers is closed return an unprocessable entity status`() {
         val user = userRepo.save(aUser())
-        val anOpenSpace = repoOpenSpace.save(anyOpenSpace())
+        val anOpenSpace = openSpaceRepo.save(anyOpenSpace())
         val aMeetingLink = "https://aLink"
 
         mockMvc.perform(
@@ -320,14 +303,14 @@ class OpenSpaceControllerTest : BaseControllerTest() {
     private fun createOpenSpaceFor(user: User): OpenSpace {
         val anOpenSpace = anOpenSpace()
         user.addOpenSpace(anOpenSpace)
-        repoOpenSpace.save(anOpenSpace)
+        openSpaceRepo.save(anOpenSpace)
         return anOpenSpace
     }
 
     @Test
     fun `start a call for papers returns an ok status response and the modified Open Space`() {
         val user = userRepo.save(aUser())
-        val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(user))
+        val anOpenSpace = openSpaceRepo.save(anyOpenSpaceWith(user))
 
         mockMvc.perform(
             MockMvcRequestBuilders.put("/openSpace/${anOpenSpace.id}/user/${user.id}/callForPapers")
@@ -341,7 +324,7 @@ class OpenSpaceControllerTest : BaseControllerTest() {
     fun `starting a call for papers with a non organizer user return a forbidden status`() {
         val organizer = userRepo.save(aUser(userEmail = "organizer@gmail.com"))
         val aUser = userRepo.save(aUser(userEmail = "user@gmail.com"))
-        val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(organizer))
+        val anOpenSpace = openSpaceRepo.save(anyOpenSpaceWith(organizer))
 
         mockMvc.perform(
             MockMvcRequestBuilders.put("/openSpace/${anOpenSpace.id}/user/${aUser.id}/callForPapers")
@@ -410,7 +393,7 @@ class OpenSpaceControllerTest : BaseControllerTest() {
                 .header(HttpHeaders.AUTHORIZATION, organizerBearerToken)
         ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response
 
-        val changedOpenSpace = repoOpenSpace.findById(anOpenSpace.id).get()
+        val changedOpenSpace = openSpaceRepo.findById(anOpenSpace.id).get()
         assertEquals(changedName, changedOpenSpace.name)
     }
 
@@ -440,7 +423,7 @@ class OpenSpaceControllerTest : BaseControllerTest() {
                 .header(HttpHeaders.AUTHORIZATION, organizerBearerToken)
         ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response
 
-        val changedOpenSpace = repoOpenSpace.findById(anOpenSpace.id).get()
+        val changedOpenSpace = openSpaceRepo.findById(anOpenSpace.id).get()
         assertTrue(changedOpenSpace.rooms.any { it.name == newRoom.name })
         assertTrue(changedOpenSpace.tracks.any { it.name == newTrack.name })
         assertTrue(changedOpenSpace.slots.any { it.startTime == LocalTime.parse("09:00") })
@@ -471,7 +454,7 @@ class OpenSpaceControllerTest : BaseControllerTest() {
         val (someUser, someUserBearerToken, someUserAuthSession) = registerAndGetAuthSession(aUser(userEmail = "someUser@gmail.com"))
         val (organizer, _) = registerAndGenerateAuthToken(aUser(userEmail = "organizer@gmail.com"))
         userRepo.delete(someUser)
-        authSessionRepository.deleteById(someUserAuthSession.id)
+        authSessionRepo.deleteById(someUserAuthSession.id)
         val anOpenSpace = createOpenSpaceFor(organizer)
 
         val changedName = "a different name for the open space"
@@ -493,7 +476,7 @@ class OpenSpaceControllerTest : BaseControllerTest() {
     @Test
     fun `start voting returns an ok status response and the modified Open Space`() {
         val user = userRepo.save(aUser())
-        val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(user))
+        val anOpenSpace = openSpaceRepo.save(anyOpenSpaceWith(user))
 
         mockMvc.perform(
             MockMvcRequestBuilders.put("/openSpace/${anOpenSpace.id}/user/${user.id}/voting")
@@ -506,7 +489,7 @@ class OpenSpaceControllerTest : BaseControllerTest() {
     @Test
     fun `toggle show speaker name returns an ok status response and the modified Open Space`() {
         val user = userRepo.save(aUser())
-        val anOpenSpace = repoOpenSpace.save(anyOpenSpaceWith(user))
+        val anOpenSpace = openSpaceRepo.save(anyOpenSpaceWith(user))
 
         mockMvc.perform(
             MockMvcRequestBuilders.put("/openSpace/${anOpenSpace.id}/user/${user.id}/showSpeakerName")
@@ -560,7 +543,7 @@ class OpenSpaceControllerTest : BaseControllerTest() {
     private fun createTalkFor(organizer: User, anOpenSpace: OpenSpace, aTalk: Talk) {
         anOpenSpace.toggleCallForPapers(organizer)
         anOpenSpace.addTalk(aTalk)
-        repoTalk.save(aTalk)
+        talkRepo.save(aTalk)
     }
 
     private fun assertThatTheUserHasNoTalks(user: User, anOpenSpace: OpenSpace) {

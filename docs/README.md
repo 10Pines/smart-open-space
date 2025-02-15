@@ -5,6 +5,9 @@
 
 - [001 - ID de nuevas entidades de dominio](/docs/adrs/001_id_nuevas_entidades_dominio.md)
 
+### Metricas
+
+[Guia Métricas del backend](/docs/metrics/metrics-backend.md)
 
 ### Diagrama de Arquitectura :warning:
 

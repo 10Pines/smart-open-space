@@ -4,6 +4,9 @@ services:
   app-back:
     image: sos-back
     restart: always
+    build:
+      context: ./back
+      dockerfile: ./Dockerfile
     environment:
       SPRING_PROFILE: docker
       APP_PORT: 8080

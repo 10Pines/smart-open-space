@@ -16,9 +16,9 @@ Esta sección es para construir y ejecutar rápidamente la aplicación con conte
 
 Observación: Cada vez que actualicemos la aplicación o su codigo fuente, debemos reconstruir las imagenes del backend y frontend para tener su ultima versión.
 
-1. Construir la imagen del back a partir de su Dockerfile:
+1. Buildear jar con gradle (esto se debe realizar siempre que queramos la version mas actual)
 ```bash
-docker build -t sos-back .
+./gradlew clean && ./gradlew build -x check
 ```
 
 2. Revisar variables de entorno (env vars), como `PORT`, `SPRING_PROFILE`, `DB_PORT`, donde van a configurarse en los contenedores en el archivo [`docker-compose.yml`](/docs/container/docker-compose.yml).

@@ -46,6 +46,8 @@ docker-compose -p 'sos-full-app' up -d --build
 
 5. Servicios disponibles:
 
+
+- [Frontend app server](http://localhost:1234): `localhost:1234` 
 - Backend app server: `localhost:8080` (example: [ping url](http://localhost:8080/ping))
 - Postgresql db: `localhost:6543`
 - [Pgadmin](http://localhost:8888): `localhost:8888`
@@ -54,6 +56,5 @@ docker-compose -p 'sos-full-app' up -d --build
 
 - Grafana:
 - Prometheus: 
-- Frontend app server: :construction:
 
-Observación: Los puertos pueden varias en base a la configuración establecida.
+Observación: Los puertos pueden variar en base a la configuración establecida.

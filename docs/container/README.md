@@ -9,26 +9,42 @@ Esta sección es para construir y ejecutar rápidamente la aplicación con conte
 - Pgadmin (UI client for postgress)
 - Prometheus
 - Grafana
-- Front-app :construction: \<WIP> 
+- Front-app :construction: \<WIP>
 
 
 ### Guía
 
 Observación: Cada vez que actualicemos la aplicación o su codigo fuente, debemos reconstruir las imagenes del backend y frontend para tener su ultima versión.
 
-1. Buildear jar con gradle (esto se debe realizar siempre que queramos la version mas actual)
+1. Construir dockerfile Back
+
+Estar en el directorio root del repositorio. Luego, ejecutar:
+
 ```bash
 ./gradlew clean && ./gradlew build -x check
 ```
 
-2. Revisar variables de entorno (env vars), como `PORT`, `SPRING_PROFILE`, `DB_PORT`, donde van a configurarse en los contenedores en el archivo [`docker-compose.yml`](/docs/container/docker-compose.yml).
+Despues ejecutar:
 
-3. Revisar que no tengamos una instancia local del servicio ejecutando o algun puerto ocupado de la configuración anterior. Luego, ejecutamos el comando:
+```bash
+cd back && docker build -t sos-back .
+```
+
+2. Construir dockerfile Front
+
+Estar en el directorio root del repositorio. Luego, ejecutar:
+```bash
+cd front && docker build -t sos-front .
+```
+
+3. Revisar variables de entorno (env vars), como `APP_PORT`, `SPRING_PROFILE`, `DB_PORT`, donde van a configurarse en los contenedores en el archivo [`docker-compose.yml`](/docs/container/docker-compose.yml).
+
+4. Revisar que no tengamos una instancia local del servicio ejecutando o algun puerto ocupado de la configuración anterior. Luego, ejecutamos el comando:
 ```bash
 docker-compose -p 'sos-full-app' up -d --build
 ```
 
-4. Servicios disponibles:
+5. Servicios disponibles:
 
 - Backend app server: `localhost:8080` (example: [ping url](http://localhost:8080/ping))
 - Postgresql db: `localhost:6543`

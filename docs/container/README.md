@@ -15,15 +15,13 @@ Esta sección es para construir y ejecutar rápidamente la aplicación con conte
 - Blackbox (health-checker)
 
 
-#### WIP :construction:
+#### En proceso de integración :construction:
 - Promptail
 - Cadvisor
 - Tempo 
 - Loki 
 - Otel
 - Zipkin
-
-
 
 
 ### Guía
@@ -53,7 +51,7 @@ cd front && docker build -t sos-front .
 
 3. Revisar variables de entorno (env vars), como `APP_PORT`, `SPRING_PROFILE`, `DB_PORT`, donde van a configurarse en los contenedores en el archivo [`docker-compose.yml`](/docs/container/docker-compose.yml).
 
-4. Revisar que no tengamos una instancia local del servicio ejecutando o algun puerto ocupado de la configuración anterior. Luego, ejecutamos el comando en el root del proyecto:
+4. Revisar que no tengamos una instancia local del servicio ejecutando o algun puerto ocupado de la configuración anterior. Luego, ejecutamos el comando en el directorio root del proyecto:
 ```bash
 docker-compose -p 'sos-full-app' up -d --build
 ```

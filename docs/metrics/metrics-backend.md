@@ -111,3 +111,10 @@ curl --location 'http://localhost:8080/actuator/metrics/server_request'
 ```bash
 curl --location 'http://localhost:8080/actuator/metrics/server_request?tag=uri%3A%2FopenSpace%2F%7Bid%7D'
 ```
+
+
+## Consejos
+
+- Evitar acoplar lo más posible las métricas a la lógica de negocio. Para ello, lo mejor es implementarlo con aspectos, como se ve en los ejemplos de arriba.
+- Los tags tienen que ser datos con baja cardinalidad, ya que sino puede incrementar los costos de mantenimiento de las base de datos timeseries (prometheus, etc). Un ejemplo de alta cardinalidad serían los id's de usuarios o entidades que crecen infinitamente.
+- En prometheus, se requiere enviar siempre las métricas con los mismos tags, si estos no lo poseen habría que defaultear en algun valor default, por ejemplo: `none` o `unknown`. Sino hacemos esto, puede ser que no se visualicen las métricas en el registry de prometheus aunque se visualicen en el actuator.

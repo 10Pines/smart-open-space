@@ -19,9 +19,14 @@ class UserMetricAspects(
     @Around("@annotation(com.sos.smartopenspace.aspect.metrics.UserRegisterMetric)")
     fun observeAroundUserRegisterMetric(joinPoint: ProceedingJoinPoint): Any? {
         //TODO: could add custom tags from joinPoint
+        val defaultEmptyTags = KeyValues.of(
+            TAG_ERROR_NAME, TAG_EMPTY_VALUE,
+            TAG_ERROR_CODE, TAG_EMPTY_VALUE,
+            TAG_ERROR_MESSAGE, TAG_EMPTY_VALUE,
+        )
         return observationMetricHelper.observeBusinessChecked<Any, Throwable>(
             USER_REGISTER_METRIC,
-            KeyValues.empty(),
+            defaultEmptyTags,
             joinPoint::proceed
         )
     }

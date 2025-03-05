@@ -1,0 +1,64 @@
+global:
+  scrape_interval:     10s
+  evaluation_interval: 10s
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    monitor: "docker-host-alpha"
+
+# Load and evaluate rules in this file every 'evaluation_interval' seconds.
+rule_files:
+  - "alert.rules"
+
+# A scrape configuration containing exactly one endpoint to scrape.
+scrape_configs:
+  - job_name: "nodeexporter"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["nodeexporter:9100"]
+
+  - job_name: "cadvisor"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["cadvisor:8080"]
+
+  - job_name: "prometheus"
+    scrape_interval: 10s
+    static_configs:
+      - targets: ["localhost:9090"]
+
+# checks "ping" status of the targets
+  - job_name: "blackbox"
+    metrics_path: /probe
+    scrape_interval: 5s
+    params:
+      module: [ http_2xx ]
+    static_configs:
+      - targets:
+        - http://sos-back:8081/
+        - http://sos-front:1234/
+    relabel_configs:
+      - source_labels: [ __address__ ]
+        target_label: __param_target
+      - source_labels: [ __param_target ]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox:9115
+
+  - job_name: sos-back-job
+    static_configs:
+      - targets:
+          - sos-back:8081
+    metrics_path: /actuator/prometheus
+
+  - job_name: "tempo"
+    static_configs:
+      - targets: [ "tempo:3200" ]
+
+alerting:
+  alertmanagers:
+    - scheme: http
+      static_configs:
+        - targets:
+            - "alertmanager:9093"

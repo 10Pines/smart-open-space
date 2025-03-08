@@ -1,0 +1,101 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: sos-back-alerts
+      folder: sos-back-alerts
+      interval: 5m
+      rules:
+        - uid: c749d1b4-d7e7-4b00-8eed-03d084cb4293
+          title: Apdex Score below 0.7
+          condition: Apdex_mean_to_compare
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 3600
+                to: 0
+              datasourceUid: PBFA97CFB590B2093
+              model:
+                datasource:
+                    type: prometheus
+                    uid: PBFA97CFB590B2093
+                editorMode: code
+                expr: "(\n  sum(rate(server_request_seconds_bucket{instance=\"sos-back:8081\", uri!=\"/v1/auth/register\", le=\"0.536870911\"}[$__range])) \n  +\n  (\n    sum(rate(server_request_seconds_bucket{instance=\"sos-back:8081\", uri!=\"/v1/auth/register\", le=\"1.431655765\"}[$__range])) \n    - sum(rate(server_request_seconds_bucket{instance=\"sos-back:8081\", uri!=\"/v1/auth/register\", le=\"0.536870911\"}[$__range])) \n  ) / 2\n) / \nsum(rate(server_request_seconds_bucket{instance=\"sos-back:8081\", uri!=\"/v1/auth/register\", le=\"+Inf\"}[$__range]))\n"
+                interval: ""
+                intervalMs: 15000
+                legendFormat: Tiempo de respuesta
+                maxDataPoints: 43200
+                range: true
+                refId: A
+            - refId: Apdex_mean
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: mean
+                refId: Apdex_mean
+                settings:
+                    mode: dropNN
+                type: reduce
+            - refId: Apdex_mean_to_compare
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0.8
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: Apdex_mean
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: Apdex_mean_to_compare
+                type: threshold
+          dashboardUid: f8798fb0-d9b2-4afd-a13a-7e0a973923d5
+          panelId: 29
+          noDataState: NoData
+          execErrState: Error
+          for: 5m
+          annotations:
+            __dashboardUid__: f8798fb0-d9b2-4afd-a13a-7e0a973923d5
+            __panelId__: "29"
+            summary: In last hour, apdex average is below than 0.6
+          labels:
+            category: business
+            severity: critical
+          isPaused: false

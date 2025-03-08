@@ -8,10 +8,10 @@ class MetricConstantsTest {
 
     @ParameterizedTest
     @CsvSource(
-        "user_register,sos.business.user_register",
-        "user_login,sos.business.user_login",
-        "sarasa,sos.business.sarasa",
-        "'',sos.business.",
+        "user_register,sos_business_user_register",
+        "user_login,sos_business_user_login",
+        "sarasa,sos_business_sarasa",
+        "'',sos_business_",
     )
     fun `test getBusinessMetricWith`(metricName: String, expected: String) {
         assertEquals(expected, getBusinessMetricWith(metricName))

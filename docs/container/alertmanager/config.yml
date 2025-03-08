@@ -1,0 +1,26 @@
+# The root route with all parameters, which are inherited by the child
+# routes if they are not overwritten.
+route:
+  # Base alert receiver (is a fallback is none was matched)
+  receiver: discord_fallback
+  group_by: ['alertname', 'job']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+  # All alerts that do not match the following child routes
+  # will remain at the root node and be dispatched to 'base-alert-receiver'.
+  # NOTE: key "continue" must be "true" if want to continue alerting through other receivers/channels
+  routes:
+  # Infrastrcuture alert channel, all infrastructure alerts (continue true to continue route matching)
+  - receiver: discord_infrastructure_receiver
+    matchers:
+    - category =~ "infrastructure"
+    continue: true
+
+receivers:
+  - name: discord_fallback
+    discord_configs:
+      - webhook_url: https://discord.com/api/webhooks/1343310363432714343/8DU9uplrM0iyWsNBCYEo0nZc8miirwnLXL-iukdfq1LIwHMLQ-HJBr87l-1LsK67246n
+  - name: discord_infrastructure_receiver
+    discord_configs:
+      - webhook_url: https://discord.com/api/webhooks/1343310363432714343/8DU9uplrM0iyWsNBCYEo0nZc8miirwnLXL-iukdfq1LIwHMLQ-HJBr87l-1LsK67246n

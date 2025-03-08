@@ -1,6 +1,8 @@
 # Container
 
-Esta sección es para construir y ejecutar rápidamente la aplicación con contenedores / docker.
+Esta sección es para construir y ejecutar rápidamente la aplicación con contenedores / docker, y utilizar el ecosistema de observabilidad y monitoreo de prometheus-grafana.
+
+- [Grafana - Guía de configuracion de alertas (ejemplo: apdex)](/docs/container/grafana/alerts/README.md)
 
 ### Herramientas
 
@@ -24,7 +26,7 @@ Esta sección es para construir y ejecutar rápidamente la aplicación con conte
 - Zipkin
 
 
-### Guía
+### Guía - set up
 
 Observación: Cada vez que actualicemos la aplicación o su codigo fuente, debemos reconstruir las imagenes del backend y frontend para tener su ultima versión.
 

@@ -120,7 +120,7 @@
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
-      "description": "Apdex = (Satisfied Reqs + (Tolerating Reqs / 2)) / Total Reqs ",
+      "description": "Apdex = (Satisfied Reqs + (Tolerating Reqs / 2)) / Total Reqs \n\nExclude register",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -160,6 +160,7 @@
           "mappings": [],
           "max": 1,
           "min": 0,
+          "noValue": "0",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -204,14 +205,14 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "(\n  sum(rate(server_request_seconds_bucket{instance=\"$instance\", le=\"0.5\"}[$__range])) \n  +\n  (\n    sum(rate(server_request_seconds_bucket{instance=\"$instance\", le=\"1.0\"}[$__range])) \n    - sum(rate(server_request_seconds_bucket{instance=\"$instance\", le=\"0.5\"}[$__range])) \n  ) / 2\n) / \nsum(rate(server_request_seconds_bucket{instance=\"$instance\", le=\"+Inf\"}[$__range]))\n",
+          "expr": "(\n  sum(rate(server_request_seconds_bucket{instance=\"$instance\", uri!=\"/v1/auth/register\", le=\"0.536870911\"}[$__range])) \n  +\n  (\n    sum(rate(server_request_seconds_bucket{instance=\"$instance\", uri!=\"/v1/auth/register\", le=\"1.431655765\"}[$__range])) \n    - sum(rate(server_request_seconds_bucket{instance=\"$instance\", uri!=\"/v1/auth/register\", le=\"0.536870911\"}[$__range])) \n  ) / 2\n) / \nsum(rate(server_request_seconds_bucket{instance=\"$instance\", uri!=\"/v1/auth/register\", le=\"+Inf\"}[$__range]))\n",
           "interval": "",
           "legendFormat": "Tiempo de respuesta",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Apdex Score (<500ms | <1s)",
+      "title": "Apdex Score (<540ms | <1.4s) - (exclude register)",
       "type": "timeseries"
     },
     {
@@ -227,6 +228,7 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
+            "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -927,7 +929,32 @@
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "POST /v1/auth/login"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 7,
@@ -1318,8 +1345,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               },
@@ -1331,7 +1357,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 31
+            "y": 28
           },
           "id": 9,
           "options": {
@@ -1413,8 +1439,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1430,7 +1455,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 43
+            "y": 40
           },
           "id": 10,
           "options": {
@@ -1512,8 +1537,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1529,7 +1553,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 55
+            "y": 52
           },
           "id": 11,
           "options": {
@@ -1641,7 +1665,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(increase(sos_business_user_register_seconds_count{instance=\"sos-back:8081\"}[$__range]))",
+          "expr": "sum(increase(sos_business_user_register_seconds_count{instance=\"$instance\"}[$__range]))",
           "format": "time_series",
           "instant": false,
           "legendFormat": "{{error}}",
@@ -1717,7 +1741,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(increase(sos_business_user_register_seconds_count{instance=\"sos-back:8081\", error!~\"none\"}[$__range]))",
+          "expr": "sum(increase(sos_business_user_register_seconds_count{instance=\"$instance\", error!~\"none\"}[$__range]))",
           "format": "time_series",
           "instant": false,
           "legendFormat": "{{label_name}}",
@@ -1725,7 +1749,7 @@
           "refId": "A"
         }
       ],
-      "title": "Errors",
+      "title": "Errors Register",
       "type": "stat"
     },
     {
@@ -1793,7 +1817,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "topk(25, sum by(error, error_code, error_message) (increase(sos_business_user_register_seconds_count{instance=\"sos-back:8081\", error!~\"none\"}[$__range])))",
+          "expr": "topk(25, sum by(error, error_code, error_message) (increase(sos_business_user_register_seconds_count{instance=\"$instance\", error!~\"none\"}[$__range])))",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -1837,8 +1861,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1874,7 +1897,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(increase(sos_business_user_register_seconds_count{instance=\"sos-back:8081\", error=\"none\"}[$__range]))",
+          "expr": "sum(increase(sos_business_user_register_seconds_count{instance=\"$instance\", error=\"none\"}[$__range]))",
           "format": "time_series",
           "instant": false,
           "legendFormat": "__auto",
@@ -1884,9 +1907,395 @@
       ],
       "title": "Success Register",
       "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 39
+      },
+      "id": 30,
+      "panels": [],
+      "title": "Login",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "transparent",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 0,
+        "y": 40
+      },
+      "id": 32,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(increase(server_request_seconds_count{instance=~\"$instance\", uri=~\"/v1/auth/login\"}[$__range]))",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{error}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Total Login",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "dark-green",
+                "value": 0
+              },
+              {
+                "color": "dark-red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 2,
+        "y": 40
+      },
+      "id": 33,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(increase(server_request_seconds_count{instance=~\"$instance\", uri=~\"/v1/auth/login\", error_code!~\"none\", error_message!~\"usuario_incorrecto\"}[$__range]))",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{label_name}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Unexpected Errors Login",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 10,
+        "x": 4,
+        "y": 40
+      },
+      "id": 31,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "frameIndex": 1,
+        "showHeader": true
+      },
+      "pluginVersion": "9.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "topk(25, sum by(error, error_code, error_message) (increase(server_request_seconds_count{instance=~\"$instance\", uri=~\"/v1/auth/login\", error_code!=\"none\"}[$__range])))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Top - Login errors ",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "Value": "Total"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-green",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 0,
+        "y": 43
+      },
+      "id": 34,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(increase(server_request_seconds_count{instance=~\"$instance\", uri=~\"/v1/auth/login\", error_code=~\"none\"}[$__range]))",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Success Login",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "dark-green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 2,
+        "y": 43
+      },
+      "id": 35,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(increase(server_request_seconds_count{instance=~\"$instance\", uri=~\"/v1/auth/login\", error_message=\"usuario_incorrecto\"}[$__range]))",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{label_name}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Errors - Invalid User Login",
+      "type": "stat"
     }
   ],
-  "refresh": false,
+  "refresh": "",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [
@@ -1959,6 +2368,6 @@
   "timezone": "",
   "title": "Smart Open Space Back",
   "uid": "f8798fb0-d9b2-4afd-a13a-7e0a973923d5",
-  "version": 178,
+  "version": 228,
   "weekStart": ""
 }

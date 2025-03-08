@@ -15,6 +15,7 @@ Esta sección es para construir y ejecutar rápidamente la aplicación con conte
 - Node-exporter
 - Alertmanager
 - Blackbox (health-checker)
+- Postgres-exporter
 
 
 #### En proceso de integración :construction:

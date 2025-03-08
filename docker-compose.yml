@@ -157,6 +157,20 @@ services:
       - observation-net
     labels:
       org.label-schema.group: "monitoring"
+  
+  postgresexporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.17.1
+    container_name: postgresexporter
+    environment:
+      DATA_SOURCE_URI: 'db/postgres?sslmode=disable'
+      DATA_SOURCE_USER: openminded
+      DATA_SOURCE_PASS: openheart
+    networks:
+      - observation-net
+    labels:
+      org.label-schema.group: "monitoring"
+    depends_on:
+      - db
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0

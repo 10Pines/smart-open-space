@@ -18,40 +18,27 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
 class AppConfig(
-    private val userRepository: UserRepository
+    private val userDetailsService: SecurityUserDetailsService,
 ) {
 
     @Bean
     fun objectMapper(): ObjectMapper =
         ObjectMapperUtil.build()
 
-
-    @Bean
-    fun userDetailsService(): UserDetailsService =
-        UserDetailsService { userId: String? ->
-            runCatching {
-                UserDetailsDTO(
-                    userRepository.findById(userId!!.toLong())
-                        .orElseThrow { UserNotFoundException() })
-            }.getOrElse {
-                throw UserNotFoundException()
-            }
-        }
-
     @Bean
     fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager =
         config.authenticationManager
 
     @Bean
+    fun passwordEncoder(): PasswordEncoder =
+        BCryptPasswordEncoder()
+
+    @Bean
     fun authenticationProvider(): AuthenticationProvider {
         val authProvider = DaoAuthenticationProvider()
-        authProvider.setUserDetailsService(userDetailsService())
+        authProvider.setUserDetailsService(userDetailsService)
         authProvider.setPasswordEncoder(passwordEncoder())
         return authProvider
     }
-
-    @Bean
-    fun passwordEncoder(): PasswordEncoder =
-        BCryptPasswordEncoder()
 
 }

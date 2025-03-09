@@ -20,7 +20,7 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         val cfg = http.csrf { it.disable() }
-            .sessionManagement { s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { authReq ->
                 PUBLIC_ENDPOINTS.forEach { (method, requestMatchers) ->
                     when (method) {

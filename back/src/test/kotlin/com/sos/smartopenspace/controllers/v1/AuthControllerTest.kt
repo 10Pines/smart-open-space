@@ -1,6 +1,5 @@
 package com.sos.smartopenspace.controllers.v1
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.sos.smartopenspace.controllers.BaseControllerTest
 import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATED_ON_FROM_NAME
 import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATED_ON_TO_NAME
@@ -16,9 +15,6 @@ import com.sos.smartopenspace.dto.response.auth.LogoutResponseDTO
 import com.sos.smartopenspace.dto.response.purge.DeletedSessionsResponseDTO
 import com.sos.smartopenspace.sampler.AuthSessionSampler
 import com.sos.smartopenspace.sampler.UserSampler
-import com.sos.smartopenspace.services.UserService
-import com.sos.smartopenspace.services.impl.AuthService
-import com.sos.smartopenspace.services.impl.JwtService
 import com.sos.smartopenspace.services.impl.JwtService.Companion.TOKEN_PREFIX
 import com.sos.smartopenspace.testUtil.ReadMocksHelper
 import com.sos.smartopenspace.testUtil.addQueryParamsIfNotNull
@@ -32,7 +28,6 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.StandardCharsets
@@ -40,18 +35,6 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 class AuthControllerTest : BaseControllerTest() {
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    lateinit var userService: UserService
-
-    @Autowired
-    lateinit var authService: AuthService
-
-    @Autowired
-    lateinit var jwtService: JwtService
 
     @AfterEach
     fun tearDown() {
@@ -413,6 +396,47 @@ class AuthControllerTest : BaseControllerTest() {
         assertEquals(InvalidTokenException().message, responseErrMsg)
     }
 
+    @ParameterizedTest
+    @CsvSource(
+        value = [
+            "invalid_password",
+            "sarasasa"
+        ]
+    )
+    fun `test purge invalid sessions with invalid purge password should be return unauthorized with error message`(
+        password: String
+    ) {
+        val request = buildPurgeRequestWithPassword(password = password)
+
+        val httpResponse = mockMvc.perform(request)
+        // THEN
+        val responseBodyStr =
+            httpResponse.andExpect(status().isUnauthorized).andReturn()
+                .response.getContentAsString(StandardCharsets.UTF_8)
+        assertNotNull(responseBodyStr)
+        val responseErrMsg = extractJsonApiErrorMessage<String>(responseBodyStr)
+            ?: fail("Response error message not found")
+        val expectedErrMsg = "Resource is forbidden"
+        assertEquals(expectedErrMsg, responseErrMsg)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        value = [
+            "null",
+            "''",
+            "'  '",
+        ], nullValues = ["null"]
+    )
+    fun `test purge invalid sessions with invalid purge password DTO should be return bad request with error message`(
+        password: String?
+    ) {
+        val request = password?.let { buildPurgeRequestWithPassword(password = it) }
+            ?: MockMvcRequestBuilders.delete(PURGE_INVALID_SESSIONS_ENDPOINT)
+        val httpResponse = mockMvc.perform(request)
+        // THEN
+        httpResponse.andExpect(status().isBadRequest)
+    }
 
     @ParameterizedTest
     @CsvSource(
@@ -435,7 +459,7 @@ class AuthControllerTest : BaseControllerTest() {
             FILTER_CREATED_ON_TO_NAME to createdOnTo
         )
         val request = addQueryParamsIfNotNull(
-            MockMvcRequestBuilders.delete(PURGE_INVALID_SESSIONS_ENDPOINT),
+            buildPurgeRequestWithPassword(),
             queryParams
         )
         val httpResponse = mockMvc.perform(request)
@@ -494,7 +518,8 @@ class AuthControllerTest : BaseControllerTest() {
         val user2AuthSessionSavedRevoked = createNewAuthSessionWith(
             user = user2,
             issuedAt = issuedAtOld.minus(5, ChronoUnit.DAYS),
-            revoked = true)
+            revoked = true
+        )
         val user2AuthSessionSavedExpired = createNewAuthSessionWith(
             user = user2,
             issuedAt = issuedAtOld.minus(6, ChronoUnit.DAYS),
@@ -508,7 +533,7 @@ class AuthControllerTest : BaseControllerTest() {
             FILTER_CREATED_ON_TO_NAME to createdOnTo
         )
         val request = addQueryParamsIfNotNull(
-            MockMvcRequestBuilders.delete(PURGE_INVALID_SESSIONS_ENDPOINT),
+            buildPurgeRequestWithPassword(),
             queryParams
         )
         val httpResponse = mockMvc.perform(request)
@@ -522,11 +547,17 @@ class AuthControllerTest : BaseControllerTest() {
             objectMapper.readValue(responseBodyStr, DeletedSessionsResponseDTO::class.java)
 
         assertEquals(4, deletedSessionsResponseDTO.deletedSessions)
-        val expectedCreatedOnFromRes = createdOnFrom?:FILTER_CREATION_ON_MIN
-        val expectedCreatedOnToRes = createdOnTo?:FILTER_CREATION_ON_MAX
+        val expectedCreatedOnFromRes = createdOnFrom ?: FILTER_CREATION_ON_MIN
+        val expectedCreatedOnToRes = createdOnTo ?: FILTER_CREATION_ON_MAX
 
-        assertEquals(Instant.parse(expectedCreatedOnFromRes), deletedSessionsResponseDTO.creationDateFrom)
-        assertEquals(Instant.parse(expectedCreatedOnToRes), deletedSessionsResponseDTO.creationDateTo)
+        assertEquals(
+            Instant.parse(expectedCreatedOnFromRes),
+            deletedSessionsResponseDTO.creationDateFrom
+        )
+        assertEquals(
+            Instant.parse(expectedCreatedOnToRes),
+            deletedSessionsResponseDTO.creationDateTo
+        )
 
         listOf(
             user1AuthSessionSavedValid,
@@ -574,7 +605,8 @@ class AuthControllerTest : BaseControllerTest() {
         val user2AuthSessionSavedRevoked = createNewAuthSessionWith(
             user = user2,
             issuedAt = issuedAtOld.minus(5, ChronoUnit.DAYS),
-            revoked = true)
+            revoked = true
+        )
         val user2AuthSessionSavedExpired = createNewAuthSessionWith(
             user = user2,
             issuedAt = issuedAtOld.minus(6, ChronoUnit.DAYS),
@@ -590,7 +622,7 @@ class AuthControllerTest : BaseControllerTest() {
             FILTER_CREATED_ON_TO_NAME to createdOnTo
         )
         val request = addQueryParamsIfNotNull(
-            MockMvcRequestBuilders.delete(PURGE_INVALID_SESSIONS_ENDPOINT),
+            buildPurgeRequestWithPassword(),
             queryParams
         )
         val httpResponse = mockMvc.perform(request)
@@ -643,6 +675,11 @@ class AuthControllerTest : BaseControllerTest() {
         )
         return authSessionRepo.save(newAuthSession)
     }
+
+    private fun buildPurgeRequestWithPassword(password: String = "purge_pass") =
+        MockMvcRequestBuilders.delete(PURGE_INVALID_SESSIONS_ENDPOINT)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""{ "purgePassword": "$password" }""")
 
     companion object {
         private const val REGISTER_MOCKS_DIR = "register/"

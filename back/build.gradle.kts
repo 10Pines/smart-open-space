@@ -27,7 +27,6 @@ repositories {
 dependencyManagement {
   dependencies {
     dependency("com.h2database:h2:2.3.232")
-    dependency("com.github.loki4j:loki-logback-appender:1.6.0")
   }
 }
 
@@ -49,9 +48,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-websocket")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   runtimeOnly("io.micrometer:micrometer-registry-prometheus")
-  implementation("com.github.loki4j:loki-logback-appender")
-  implementation("io.micrometer:micrometer-tracing-bridge-brave")
-  implementation("io.zipkin.reporter2:zipkin-reporter-brave")
+  //implementation("com.github.loki4j:loki-logback-appender:1.5.2")
   implementation("com.google.guava:guava:32.0.0-android")
   implementation("net.sargue:mailgun:2.0.0")
   implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")

@@ -30,8 +30,8 @@ services:
     networks:
       - observation-net
     labels:
-      org.lavel-schema.group: "sos-services"
-      logging: "promptail"
+      org.label-schema.group: "sos-services"
+      logging: "promtail"
       logging_jobname: "containerlogs"
 
   sos-back:
@@ -51,8 +51,8 @@ services:
     networks:
       - observation-net
     labels:
-      org.lavel-schema.group: "sos-services"
-      logging: "promptail"
+      org.label-schema.group: "sos-services"
+      logging: "promtail"
       logging_jobname: "containerlogs"
 
   db:
@@ -71,8 +71,8 @@ services:
     networks:
       - observation-net
     labels:
-      org.lavel-schema.group: "sos-services"
-      logging: "promptail"
+      org.label-schema.group: "sos-services"
+      logging: "promtail"
       logging_jobname: "containerlogs"
 
   pgadmin:
@@ -228,7 +228,6 @@ services:
       - /var/log:/var/log
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
-
     command: -config.file=/etc/promtail/config.yml
     networks:
       - observation-net
@@ -246,44 +245,6 @@ services:
     restart: unless-stopped
     expose:
       - 9093
-    networks:
-      - observation-net
-    labels:
-      org.label-schema.group: "monitoring"
-      logging: "promtail"
-      logging_jobname: "containerlogs"
-
-  otel-collector:
-    image: otel/opentelemetry-collector:0.79.0
-    container_name: otel-collector
-    command: [ "--config=/etc/otel-collector.yaml" ]
-    volumes:
-      - ./docs/container/otel/otel-collector.yaml:/etc/otel-collector.yaml
-    networks:
-      - observation-net
-    ports:
-      - "4317"
-      - "4318"
-    depends_on:
-      - tempo
-    labels:
-      org.label-schema.group: "monitoring"
-      logging: "promtail"
-      logging_jobname: "containerlogs"
-
-  tempo:
-    image: grafana/tempo:latest
-    container_name: tempo
-    command: [ "--config.file=/etc/tempo/tempo.yaml" ]
-    volumes:
-      - ./docs/container/tempo:/etc/tempo
-      - ./docs/container/tempo-data:/tmp/tempo
-    ports:
-      - "14268"  # jaeger ingest
-      - "3200"   # tempo
-      - "4317"  # otlp grpc
-      - "4318"  # otlp http
-      - "9411"   # zipkin
     networks:
       - observation-net
     labels:

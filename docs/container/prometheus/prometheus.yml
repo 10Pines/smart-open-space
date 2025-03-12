@@ -57,10 +57,6 @@ scrape_configs:
           - sos-back:8081
     metrics_path: /actuator/prometheus
 
-  - job_name: "tempo"
-    static_configs:
-      - targets: [ "tempo:3200" ]
-
 alerting:
   alertmanagers:
     - scheme: http

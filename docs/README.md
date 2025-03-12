@@ -13,13 +13,9 @@
 
 [Guía set up containers/docker](/docs/container/README.md)
 
-### Diagrama de Arquitectura
+### Diagramas de Arquitectura
 
-- Current Production :construction:
-
-![Architecture diagram Current Production](/docs/assets/)
-
-- Docker compose container architecture diagram
+- Diagrama actual de docker-compose containers
 
 ![Architecture diagram with docker compose container running](/docs/assets/sos_architecture_diagram.drawio.png)
 

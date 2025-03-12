@@ -14,7 +14,7 @@ Se tomo como base este repositorio con su configuración: [github.com/Einsteinis
 - **Postgres**: base de datos.
 - [**Prometheus**](https://prometheus.io/): Software para monitorear y alertar eventos. Persiste métricas en una time serie database (TSDB) alimentándose por llamadas HTTP. Posee queries flexibles y alertas en tiempo real. Este recopila dichas métricas utilizando la técnica “scrape”.
 - [**Grafana**](https://grafana.com/): Aplicación web para visualizar analíticas, trazas, diagramas y gráficos. También, puede manejar alertas relacionados con los diagramas. Posee una fácil integración con Prometheus, Loki y Tempo.
-- [**Node-exporter**](https://github.com/prometheus/node_exporter)
+- [**Node-exporter**](https://github.com/prometheus/node_exporter): Es una library de Prometheus que sirve para recolectar y exportar datos de infraestructura del host de docker.
 - [**Blackbox (health-checker)**](https://github.com/prometheus/blackbox_exporter): Es una herramienta de Prometheus que en general permite sondear servicios utilizando HTTP, HTTPS, DNS; TCP y ICMP. Utilizado para obtener Liveness probe de los servicios.
 - [**Postgres-exporter**](https://github.com/prometheus-community/postgres_exporter)
 - [**Cadvisor**](https://github.com/google/cadvisor): Recolecta métricas de infraestructura de los contenedores que están corriendo de Docker. Es una library provista por google.

@@ -4,6 +4,7 @@ import com.sos.smartopenspace.domain.*
 import com.sos.smartopenspace.dto.DefaultErrorDto
 import com.sos.smartopenspace.metrics.API_ERROR_CONTEXT_FIELD
 import com.sos.smartopenspace.metrics.ObservationMetricHelper
+import io.github.resilience4j.ratelimiter.RequestNotPermitted
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -103,6 +104,16 @@ class ExceptionHandler(
         handleLogError(httpStatus, ex)
 
         val errorDto = DefaultErrorDto(ex.message, httpStatus)
+        observeError(request, errorDto)
+        return ResponseEntity(errorDto, httpStatus)
+    }
+
+    @ExceptionHandler(RequestNotPermitted::class)
+    fun handleRateLimiterException(request: HttpServletRequest, ex: RequestNotPermitted): ResponseEntity<DefaultErrorDto> {
+        val httpStatus = HttpStatus.TOO_MANY_REQUESTS
+        handleLogError(httpStatus, ex, false)
+
+        val errorDto = DefaultErrorDto("rate_limiter_too_many_request", httpStatus)
         observeError(request, errorDto)
         return ResponseEntity(errorDto, httpStatus)
     }

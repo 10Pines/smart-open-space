@@ -1,26 +1,40 @@
 
-## :scroll: Documentación
+# :scroll: Documentación
 
-### Architecture Decision Records (ADRs)
+## Índice
+- [Architecture Decision Records (ADRs)](#architecture-decision-records-adrs)
+- [Métricas](#métricas)
+- [Set up Container](#set-up-container)
+- [Performance tests](#performance-tests)
+- [Diagramas de Arquitectura](#diagramas-de-arquitectura)
+- [Documentación Legacy](#documentación-legacy)
+
+## Architecture Decision Records (ADRs)
 
 - [001 - ID de nuevas entidades de dominio](/docs/adrs/001_id_nuevas_entidades_dominio.md)
 
-### Métricas
+## Métricas
 
-[Guia Métricas del backend](/docs/metrics/metrics-backend.md)
+[Guia Métricas del backend](/docs/metrics/metrics-backend.md) para consultar por API (actuator) y/o configurar métricas en el backend.
 
-### Set up Container
+## Set up Container
 
-[Guía set up containers/docker](/docs/container/README.md)
+[Guía set up containers/docker](/docs/container/README.md) para configurar la aplicación de smart-open-space con todas las herramientas de observabilidad utilizando docker-compose.
 
-### Diagramas de Arquitectura
+## Performance tests
+
+[Sección de performance tests](/docs/performance_test/README.md)
+
+## Diagramas de Arquitectura
 
 - Diagrama actual de docker-compose containers
 
 ![Architecture diagram with docker compose container running](/docs/assets/sos_architecture_diagram.drawio.png)
 
+---
+## Documentación Legacy
 
-#### Visualización del Open Space
+### Visualización del Open Space
 
 ![Diagrama de arquitectura](/docs/other/Arquitectura.png)
 

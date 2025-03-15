@@ -1,0 +1,20 @@
+config:
+  target: "http://localhost:8081"
+  phases:
+    - duration: 90  # sec
+      arrivalRate: 1  # clients per sec
+      rampTo: 5  # Increase clients per seconds
+      name: Low load test
+  defaults:
+    headers:
+      Content-Type: "application/json"
+  processor: "./util.js"
+
+scenarios:
+  - flow:
+    - function: "getRandomId"
+    - get:
+        url: "/openSpace/{{ id }}"
+        expect:
+          - statusCode: 200
+          - statusCode: 404

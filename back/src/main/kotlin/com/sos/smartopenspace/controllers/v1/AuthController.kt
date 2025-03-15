@@ -12,6 +12,7 @@ import com.sos.smartopenspace.dto.response.auth.LogoutResponseDTO
 import com.sos.smartopenspace.dto.response.purge.DeletedSessionsResponseDTO
 import com.sos.smartopenspace.services.AuthServiceI
 import com.sos.smartopenspace.translators.UserTranslator
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter
 import jakarta.validation.Valid
 import jakarta.ws.rs.core.HttpHeaders
 import org.slf4j.LoggerFactory
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
+@RateLimiter(name = "default")
 @RestController
 @RequestMapping("/v1/auth")
 class AuthController(

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <springProperty scope="context" name="appName" source="spring.application.name" />
+  <springProperty name="email_username" source="logging.appender.email.username"/>
+  <springProperty name="email_password" source="logging.appender.email.password"/>
+  <springProperty name="email_to" source="logging.appender.email.to"/>
+
+  <!-- use Spring default values -->
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+
+  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+      <layout class="ch.qos.logback.classic.PatternLayout">
+        <Pattern>%date{yyyy-MM-dd HH:mm:ss.SSZ} [LEVEL:%clr(%level)] [THREAD:%clr(%thread){magenta}] [SESSION_ID:%clr(%mdc{requestSessionId:-none}){blue}] [REQUEST_ID:%clr(%mdc{requestId:-none}){blue}] [REQUEST_WITH_JWT:%clr(%mdc{requestContainsJwt:-none}){blue}] %clr(%logger{3}){cyan}: %msg %ex %n</Pattern>
+      </layout>
+    </encoder>
+  </appender>
+
+  <springProfile name="docker">
+      <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+          <http>
+              <url>http://localhost:3100/loki/api/v1/push</url>
+          </http>
+          <format>
+              <label>
+                  <pattern>
+                      app=${appName},
+                      host=${HOSTNAME},
+                      level=%level,
+                      thread=%thread,
+                      logger=%logger
+                  </pattern>
+              </label>
+              <message>
+                  <pattern>
+                      {
+                      "timestamp": "%date{ISO8601}"
+                      "level": "%level",
+                      "requestId": "%mdc{requestId:-none}",
+                      "sessionId": "%mdc{requestSessionId:-none}",
+                      "thread": "%thread",
+                      "logger": "%logger",
+                      "class": "%class",
+                      "method": "%method",
+                      "line": "%line",
+                      "message": "%msg",
+                      "exception": "%ex"
+                      }
+                  </pattern>
+              </message>
+              <sortByTime>true</sortByTime>
+          </format>
+      </appender>
+  </springProfile>
+
+
+
+  <springProfile name="!docker">
+    <root level="info">
+      <appender-ref ref="Console"/>
+    </root>
+  </springProfile>
+  <springProfile name="docker">
+      <root level="info">
+          <appender-ref ref="Console"/>
+          <appender-ref ref="LOKI"/>
+      </root>
+  </springProfile>
+
+</configuration>

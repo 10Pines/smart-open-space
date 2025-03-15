@@ -8,10 +8,13 @@ import com.sos.smartopenspace.services.AuthServiceI
 import com.sos.smartopenspace.services.OpenSpaceService
 import com.sos.smartopenspace.translators.OpenSpaceTranslator
 import com.sos.smartopenspace.translators.TalkTranslator
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter
 import jakarta.validation.Valid
 import jakarta.ws.rs.core.HttpHeaders
 import org.springframework.web.bind.annotation.*
 
+
+@RateLimiter(name = "default")
 @RestController
 @RequestMapping("openSpace")
 class OpenSpaceController(

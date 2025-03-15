@@ -50,6 +50,10 @@ git clone git@github.com:10PinesLabs/smart-open-space.git
 cd smart-open-space
 ```
 
+### Construir y ejecutar app con containers (docker)
+
+- [Documentación para construir aplicación con containers/docker](/docs/container)
+
 ### Levantar backend
 
 #### Con Docker:

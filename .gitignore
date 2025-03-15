@@ -10,3 +10,6 @@
 jsconfig.json
 
 node_modules
+
+# Artillery
+tp_report.json

@@ -1,6 +1,7 @@
 package com.sos.smartopenspace.services.impl
 
 
+import com.sos.smartopenspace.aspect.metrics.UserRegisterMetric
 import com.sos.smartopenspace.domain.AuthSession
 import com.sos.smartopenspace.domain.User
 import com.sos.smartopenspace.domain.UserNotBelongToAuthToken
@@ -25,6 +26,7 @@ class AuthService(
 ) : AuthServiceI {
 
     @Transactional
+    @UserRegisterMetric
     override fun register(newUser: User): AuthSession {
         val userCreated = userService.create(newUser)
         return createAuthSession(userCreated)

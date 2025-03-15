@@ -45,5 +45,5 @@ class ObservationMetricHelper(
 
 
     private fun buildContextualName(prefix: String): String =
-        "$prefix.context"
+        "${prefix}_context"
 }

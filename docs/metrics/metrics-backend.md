@@ -12,12 +12,12 @@ Para las métricas de la aplicación del lado del backend, tendremos spring boot
 
 Se dividió la métricas en dos grupos de métricas y van a poseer dichos prefijos:
 
-- Metricas de performance: `server.request`
-- Métricas de negocio: `sos.business`
+- Metricas de performance: `server_request`
+- Métricas de negocio: `sos_business`
 
-Un ejempo de métrica de performance sería: `server.request.some_sdk.some_client`
+Un ejempo de métrica de performance sería: `server_request_some_sdk_some_client`
 
-Un ejemplo de métrica de negocio sería: `sos.business.user_register`
+Un ejemplo de métrica de negocio sería: `sos_business_user_register`
 
 
 ## ¿Cómo agregar una métrica?
@@ -41,9 +41,14 @@ Despues, dentro de la clase `UserMetricAspects` agregaremos los métodos utiliza
     fun observeAroundUserRegisterMetric(joinPoint: ProceedingJoinPoint): Any? {
         // En este punto, se puede agregar en los KeyValues los tags que se desean agregar
         //  siempre y cuando sean de baja cardinalidad.
+        val defaultEmptyTags = KeyValues.of(
+            TAG_ERROR_NAME, TAG_EMPTY_VALUE,
+            TAG_ERROR_CODE, TAG_EMPTY_VALUE,
+            TAG_ERROR_MESSAGE, TAG_EMPTY_VALUE,
+        )
         return observationMetricHelper.observeBusinessChecked<Any, Throwable>(
             USER_REGISTER_METRIC,
-            KeyValues.empty(),
+            defaultEmptyTags,
             joinPoint::proceed
         )
     }
@@ -88,7 +93,7 @@ Por ultimo, agregamos la annotation en el método donde vamos a realizar la medi
 
 En spring boot, poseemos spring boot actuator que nos disponibiliza endpoints de consulta de métricas. Para ello, deberíamos consultar con el siguiente request para:
 
-- Ver todas las métricas:
+- Ver todas las métricas (el puerto puede cambiar):
 
 ```bash
 curl --location 'http://localhost:8080/actuator/metrics'
@@ -98,11 +103,18 @@ curl --location 'http://localhost:8080/actuator/metrics'
 - Ver una métrica en particular:
 
 ```bash
-curl --location 'http://localhost:8080/actuator/metrics/server.request'
+curl --location 'http://localhost:8080/actuator/metrics/server_request'
 ```
 
 - Filtrar dentro de una métrica en particular:
 
 ```bash
-curl --location 'http://localhost:8080/actuator/metrics/server.request?tag=uri%3A%2FopenSpace%2F%7Bid%7D'
+curl --location 'http://localhost:8080/actuator/metrics/server_request?tag=uri%3A%2FopenSpace%2F%7Bid%7D'
 ```
+
+
+## Consejos
+
+- Evitar acoplar lo más posible las métricas a la lógica de negocio. Para ello, lo mejor es implementarlo con aspectos, como se ve en los ejemplos de arriba.
+- Los tags tienen que ser datos con baja cardinalidad, ya que sino puede incrementar los costos de mantenimiento de las base de datos timeseries (prometheus, etc). Un ejemplo de alta cardinalidad serían los id's de usuarios o entidades que crecen infinitamente.
+- En prometheus, se requiere enviar siempre las métricas con los mismos tags, si estos no lo poseen habría que defaultear en algun valor default, por ejemplo: `none` o `unknown`. Sino hacemos esto, puede ser que no se visualicen las métricas en el registry de prometheus aunque se visualicen en el actuator.

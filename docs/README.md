@@ -5,13 +5,20 @@
 
 - [001 - ID de nuevas entidades de dominio](/docs/adrs/001_id_nuevas_entidades_dominio.md)
 
-### Metricas
+### Métricas
 
 [Guia Métricas del backend](/docs/metrics/metrics-backend.md)
 
-### Diagrama de Arquitectura :warning:
+### Set up Container
 
-Esta sección esta desactualizada :construction:
+[Guía set up containers/docker](/docs/container/README.md)
+
+### Diagramas de Arquitectura
+
+- Diagrama actual de docker-compose containers
+
+![Architecture diagram with docker compose container running](/docs/assets/sos_architecture_diagram.drawio.png)
+
 
 #### Visualización del Open Space
 

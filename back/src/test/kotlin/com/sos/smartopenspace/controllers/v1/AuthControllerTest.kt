@@ -13,6 +13,7 @@ import com.sos.smartopenspace.domain.User
 import com.sos.smartopenspace.domain.UserUnauthorizedException
 import com.sos.smartopenspace.dto.response.auth.LogoutResponseDTO
 import com.sos.smartopenspace.dto.response.purge.DeletedSessionsResponseDTO
+import com.sos.smartopenspace.metrics.TAG_INVALID_CLIENT_REQ_VALUE
 import com.sos.smartopenspace.sampler.AuthSessionSampler
 import com.sos.smartopenspace.sampler.UserSampler
 import com.sos.smartopenspace.services.impl.JwtService.Companion.TOKEN_PREFIX
@@ -21,6 +22,7 @@ import com.sos.smartopenspace.testUtil.addQueryParamsIfNotNull
 import com.sos.smartopenspace.testUtil.extractJsonApiErrorMessage
 import com.sos.smartopenspace.testUtil.extractJsonPathValue
 import com.sos.smartopenspace.util.getNowUTC
+import io.micrometer.core.instrument.MeterRegistry
 import jakarta.ws.rs.core.HttpHeaders
 import jakarta.ws.rs.core.MediaType
 import org.junit.jupiter.api.AfterEach
@@ -28,6 +30,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.StandardCharsets
@@ -36,9 +39,13 @@ import java.time.temporal.ChronoUnit
 
 class AuthControllerTest : BaseControllerTest() {
 
+    @Autowired
+    private lateinit var meterRegistry: MeterRegistry
+
     @AfterEach
     fun tearDown() {
         clearAllEntities()
+        meterRegistry.clear()
     }
 
     @Test
@@ -60,9 +67,8 @@ class AuthControllerTest : BaseControllerTest() {
         )
         // THEN
         val responseBodyStr =
-            httpResponse.andExpect(status().isOk).andReturn().response.getContentAsString(
-                StandardCharsets.UTF_8
-            )
+            httpResponse.andExpect(status().isOk)
+                .andReturn().response.getContentAsString(StandardCharsets.UTF_8)
         val token =
             extractJsonPathValue<String>(responseBodyStr, "$.token")
                 ?: fail("Response token not found")
@@ -81,6 +87,54 @@ class AuthControllerTest : BaseControllerTest() {
         assertEquals(authSession.user.id, userIdJwt)
         assertEquals(authSession.token, token)
         assertFalse(authSession.revoked)
+
+        val metricRes = meterRegistry.get("sos_business_user_register")
+            .tag("error_message", "none")
+            .tag("error_name", "none")
+            .tag("error_code", "none")
+            .tag("exception_classname", "none")
+            .timer()
+
+        assertEquals(1, metricRes.count())
+    }
+
+    @Test
+    fun `register with a valid register request dto but email already exist should be http bad request`() {
+        val registerReqDtoMockFile = "valid_register_request.json"
+        val registerReqDtoMockStr =
+            ReadMocksHelper.readAuthMocksFile(REGISTER_MOCKS_DIR + registerReqDtoMockFile)
+        val userEmail = extractJsonPathValue<String>(registerReqDtoMockStr, "$.email")
+            ?: fail("not email provided")
+        createUserWithEmailAndPassword(userEmail, "jhsahjfaOld!")
+
+
+        // WHEN
+        val httpResponse = mockMvc.perform(
+            MockMvcRequestBuilders.post(REGISTER_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .content(registerReqDtoMockStr)
+        )
+        // THEN
+        val responseBodyStr =
+            httpResponse.andExpect(status().isBadRequest)
+                .andReturn().response.getContentAsString(StandardCharsets.UTF_8)
+        val expectedErrMsg = "El mail ya esta en uso"
+        val expectedErrStatusCode = 400
+        assertEquals(expectedErrMsg, extractJsonPathValue<String>(responseBodyStr, "$.message"))
+        assertEquals(expectedErrStatusCode, extractJsonPathValue<Int>(responseBodyStr, "$.statusCode"))
+        assertEquals("bad_request", extractJsonPathValue<String>(responseBodyStr, "$.status"))
+        assertEquals(false, extractJsonPathValue<Boolean>(responseBodyStr, "$.isFallbackError"))
+
+
+        val metricRes = meterRegistry.get("sos_business_user_register")
+            .tag("error_message", expectedErrMsg.replace(" ", "_").lowercase())
+            .tag("error_name", TAG_INVALID_CLIENT_REQ_VALUE)
+            .tag("error_code", expectedErrStatusCode.toString())
+            .tag("exception_classname", "BadRequestException".lowercase())
+            .timer()
+
+        assertEquals(1, metricRes.count())
     }
 
 

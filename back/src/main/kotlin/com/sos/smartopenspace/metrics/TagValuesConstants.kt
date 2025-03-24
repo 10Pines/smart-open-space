@@ -3,6 +3,8 @@ package com.sos.smartopenspace.metrics
 // Tag keys
 const val TAG_REQUEST_CONTAINS_JWT = "request_with_jwt"
 
+
+const val TAG_EX_CLASSNAME = "exception_classname"
 const val TAG_ERROR_NAME = "error_name"
 const val TAG_ERROR_CODE = "error_code"
 const val TAG_ERROR_MESSAGE = "error_message"
@@ -11,8 +13,10 @@ const val TAG_IS_FALLBACK_ERROR = "is_fallback_error"
 
 // Tag values
 const val MAX_VALUE_MESSAGE_WIDTH = 30
-const val TAG_EMPTY_VALUE = "unknown"
-const val TAG_NOT_APPLY_VALUE = "n/a"
+const val TAG_EMPTY_VALUE = "none"
+const val TAG_UNKNOWN_VALUE = "unknown"
+
+const val TAG_INVALID_CLIENT_REQ_VALUE = "invalid_client_request"
 
 /**
  * Get the value of the tag at most MAX_VALUE_MESSAGE_WIDTH characters long or

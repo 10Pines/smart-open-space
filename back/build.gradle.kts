@@ -56,13 +56,13 @@ dependencies {
   implementation("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
   implementation("org.glassfish.jersey.inject:jersey-hk2")
   runtimeOnly("com.h2database:h2")
-  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.17.0")
+  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.18.0")
   testImplementation("org.springframework.boot:spring-boot-starter-test"){
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }
   testImplementation("org.junit.jupiter:junit-jupiter-api")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-  testImplementation("io.mockk:mockk:1.13.13")
+  testImplementation("io.mockk:mockk:1.13.17")
   testImplementation("org.springframework.security:spring-security-test")
 }
 

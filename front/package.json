@@ -26,6 +26,7 @@
     "dev": "vite --port 1234",
     "watch": "vite --port 1234",
     "build": "vite build",
+    "build-docker": "vite build --mode docker",
     "preview": "vite preview",
     "heroku-postbuild": "npm run build"
   },

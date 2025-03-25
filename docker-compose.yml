@@ -1,13 +1,253 @@
-version: '3.1'
+version: "3.7"
+
+networks:
+  observation-net:
+    driver: bridge
+
+volumes:
+  sos-db-data:
+  sos-pgadmin-data:
+  prometheus_data: {}
+  grafana_data: {}
+  cache:
+    driver: local
+
 services:
-  database:
-    image: "postgres:14.2-alpine"
-    command: ["postgres", "-c", "log_statement=all"]
+
+  sos-front:
+    image: sos-front
+    container_name: sos-front
+    restart: always
+    build:
+      context: ./front
+      dockerfile: ./Dockerfile
     environment:
-      - POSTGRES_DB=sos
-      - POSTGRES_USER=openminded
-      - POSTGRES_PASSWORD=openheart
+      APP_PORT: 1234
+    ports:
+      - 1234:1234
+    depends_on:
+      - sos-back
+    networks:
+      - observation-net
+    labels:
+      org.label-schema.group: "sos-services"
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+
+  sos-back:
+    image: sos-back
+    container_name: sos-back
+    restart: always
+    build:
+      context: ./back
+      dockerfile: ./Dockerfile
+    environment:
+      SPRING_PROFILE: docker
+      APP_PORT: 8081
+    ports:
+      - 8081:8081
+    depends_on:
+      - db
+    networks:
+      - observation-net
+    labels:
+      org.label-schema.group: "sos-services"
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+
+  db:
+    image: postgres:15.0-alpine
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_DB: sos
+      POSTGRES_USER: openminded
+      POSTGRES_PASSWORD: openheart
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - sos-db-data:/var/lib/postgresql/data
     ports:
       - "6543:5432"
+    networks:
+      - observation-net
+    labels:
+      org.label-schema.group: "sos-services"
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+
+  pgadmin:
+    image: dpage/pgadmin4:6.15
+    container_name: db-client-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres@asd.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "8888:80"
     volumes:
-      - ./db-data:/var/lib/postgresql/data
+      - sos-pgadmin-data:/var/lib/pgadmin
+    links:
+      - "db:pgsql-server"
+    networks:
+      - observation-net
+    depends_on:
+      - db
+
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    container_name: prometheus
+    volumes:
+      - ./docs/container/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    expose:
+      - 9090
+    ports:
+      - "9090:9090"
+    networks:
+      - observation-net
+    labels:
+      org.label-schema.group: "monitoring"
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+
+  blackbox:
+    container_name: blackbox
+    image: prom/blackbox-exporter:v0.24.0
+    command:
+      - '--config.file=/etc/blackbox/blackbox.yml'
+    volumes:
+      - './docs/container/blackbox/blackbox.yml:/etc/blackbox/blackbox.yml'
+    depends_on:
+      - sos-back
+      - sos-front
+    ports:
+      - "9115:9115"
+    networks:
+        - observation-net
+    labels:
+        org.label-schema.group: "monitoring"
+        logging: "promtail"
+        logging_jobname: "containerlogs"
+
+  nodeexporter:
+    image: prom/node-exporter:v0.18.1
+    container_name: nodeexporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    expose:
+      - 9100
+    networks:
+      - observation-net
+    labels:
+      org.label-schema.group: "monitoring"
+  
+  postgresexporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.17.1
+    container_name: postgresexporter
+    environment:
+      DATA_SOURCE_URI: 'db/postgres?sslmode=disable'
+      DATA_SOURCE_USER: openminded
+      DATA_SOURCE_PASS: openheart
+    networks:
+      - observation-net
+    labels:
+      org.label-schema.group: "monitoring"
+    depends_on:
+      - db
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
+    restart: unless-stopped
+    expose:
+      - 8080
+    networks:
+      - observation-net
+    labels:
+      org.label-schema.group: "monitoring"
+
+  grafana:
+    image: grafana/grafana:9.5.2
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./docs/container/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
+    networks:
+      - observation-net
+    labels:
+      org.label-schema.group: "monitoring"
+
+  loki:
+    image: grafana/loki:2.8.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - observation-net
+    labels:
+      org.label-schema.group: "monitoring"
+
+  promtail:
+    container_name: promtail
+    image: grafana/promtail:2.8.0
+    volumes:
+      - ./docs/container/promtail:/etc/promtail
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - observation-net
+    depends_on:
+      - loki
+
+  alertmanager:
+    image: prom/alertmanager:v0.25.0
+    container_name: alertmanager
+    volumes:
+      - ./docs/container/alertmanager:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    restart: unless-stopped
+    expose:
+      - 9093
+    networks:
+      - observation-net
+    labels:
+      org.label-schema.group: "monitoring"
+      logging: "promtail"
+      logging_jobname: "containerlogs"

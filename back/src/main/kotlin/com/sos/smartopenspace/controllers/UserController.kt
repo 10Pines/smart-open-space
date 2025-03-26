@@ -8,6 +8,7 @@ import com.sos.smartopenspace.dto.request.UserValidateTokenRequestDTO
 import com.sos.smartopenspace.services.EmailService
 import com.sos.smartopenspace.services.UserService
 import com.sos.smartopenspace.translators.UserTranslator
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 
+@RateLimiter(name = "default")
 @RestController
 @RequestMapping("user")
 class UserController(private val userService: UserService, private val emailService: EmailService) {

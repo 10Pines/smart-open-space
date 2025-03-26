@@ -49,6 +49,8 @@ Estar en el directorio root del repositorio. Luego, ejecutar:
 cd front && docker build -t sos-front .
 ```
 
+Nota: En caso de error, borrar carpetas temporales `node_modules` y `build`.
+
 3. Revisar variables de entorno (env vars), como `APP_PORT`, `SPRING_PROFILE`, `DB_PORT`, donde van a configurarse en los contenedores en el archivo [`docker-compose.yml`](/docs/container/docker-compose.yml).
 
 4. Revisar que no tengamos una instancia local del servicio ejecutando o algun puerto ocupado de la configuración anterior. Luego, ejecutamos el comando en el directorio root del proyecto:

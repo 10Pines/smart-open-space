@@ -41,7 +41,7 @@ scrape_configs:
       module: [ http_2xx ]
     static_configs:
       - targets:
-        - http://sos-back:8081/
+        - http://sos-back:8081/actuator/health
         - http://sos-front:1234/
     relabel_configs:
       - source_labels: [ __address__ ]

@@ -23,6 +23,7 @@ class UserMetricAspects(
             TAG_ERROR_NAME, TAG_EMPTY_VALUE,
             TAG_ERROR_CODE, TAG_EMPTY_VALUE,
             TAG_ERROR_MESSAGE, TAG_EMPTY_VALUE,
+            TAG_EX_CLASSNAME, TAG_EMPTY_VALUE,
         )
         return observationMetricHelper.observeBusinessChecked<Any, Throwable>(
             USER_REGISTER_METRIC,
@@ -37,13 +38,14 @@ class UserMetricAspects(
     )
     fun observeAfterThrowingUserRegisterMetric(ex: Exception) {
         val tags = mutableMapOf(
-            TAG_ERROR_NAME to TAG_EMPTY_VALUE,
-            TAG_ERROR_CODE to TAG_EMPTY_VALUE,
-            TAG_ERROR_MESSAGE to TAG_EMPTY_VALUE,
+            TAG_EX_CLASSNAME to ex.javaClass.simpleName.lowercase(),
+            TAG_ERROR_NAME to TAG_UNKNOWN_VALUE,
+            TAG_ERROR_CODE to TAG_UNKNOWN_VALUE,
+            TAG_ERROR_MESSAGE to TAG_UNKNOWN_VALUE,
         )
         when (ex) {
             is BadRequestException -> {
-                tags[TAG_ERROR_NAME] = "invalid_client_request"
+                tags[TAG_ERROR_NAME] = TAG_INVALID_CLIENT_REQ_VALUE
                 tags[TAG_ERROR_CODE] = HttpStatus.BAD_REQUEST.value().toString()
                 tags[TAG_ERROR_MESSAGE] = getAtMaxWidthOrEmptyValueIfBlankOrNull(ex.message)
             }

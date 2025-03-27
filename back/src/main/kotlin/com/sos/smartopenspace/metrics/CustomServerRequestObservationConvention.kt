@@ -36,10 +36,10 @@ class CustomServerRequestObservationConvention :
             }
             else -> {
                 keyValues = keyValues.and(
-                    TAG_IS_FALLBACK_ERROR, KeyValue.NONE_VALUE,
-                    TAG_ERROR_CODE, KeyValue.NONE_VALUE,
-                    TAG_ERROR_NAME, KeyValue.NONE_VALUE,
-                    TAG_ERROR_MESSAGE, KeyValue.NONE_VALUE,
+                    TAG_IS_FALLBACK_ERROR, TAG_EMPTY_VALUE,
+                    TAG_ERROR_CODE, TAG_EMPTY_VALUE,
+                    TAG_ERROR_NAME, TAG_EMPTY_VALUE,
+                    TAG_ERROR_MESSAGE, TAG_EMPTY_VALUE,
                 )
             }
         }

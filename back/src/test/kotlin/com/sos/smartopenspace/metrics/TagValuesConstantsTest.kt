@@ -11,8 +11,8 @@ class TagValuesConstantsTest {
         "sarasa,sarasa",
         "sarasa with space,sarasa_with_space",
         "SARASA UPPER,sarasa_upper",
-        "'',unknown",
-        "' ',unknown",
+        "'',none",
+        "' ',none",
     )
     fun `test getAtMaxWidthOrEmptyValueIfBlank`(tagValue: String, expected: String) {
         assertEquals(expected, getAtMaxWidthOrEmptyValueIfBlank(tagValue))
@@ -24,9 +24,9 @@ class TagValuesConstantsTest {
         "sarasa,sarasa",
         "sarasa with space,sarasa_with_space",
         "SARASA UPPER,sarasa_upper",
-        "'',unknown",
-        "' ',unknown",
-        "null,unknown",
+        "'',none",
+        "' ',none",
+        "null,none",
     nullValues = ["null"])
     fun `test getAtMaxWidthOrEmptyValueIfBlankOrNull`(tagValue: String?, expected: String) {
         assertEquals(expected, getAtMaxWidthOrEmptyValueIfBlankOrNull(tagValue))

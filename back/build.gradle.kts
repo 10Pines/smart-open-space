@@ -65,6 +65,7 @@ dependencies {
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
   testImplementation("io.mockk:mockk:1.13.17")
   testImplementation("org.springframework.security:spring-security-test")
+  testImplementation("io.micrometer:micrometer-observation-test")
 }
 
 allOpen {

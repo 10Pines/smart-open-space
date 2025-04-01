@@ -1,7 +1,8 @@
 import de.undercouch.gradle.tasks.download.Download
 
 plugins {
-  val kotlinVersion = "2.0.10"
+  base
+  val kotlinVersion = "2.1.20"
   id("org.springframework.boot") version "3.2.7"
   id("io.spring.dependency-management") version "1.1.7"
   id("org.flywaydb.flyway") version "11.0.0"
@@ -29,7 +30,6 @@ dependencies {
   implementation("org.flywaydb:flyway-core")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlin:kotlin-stdlib")
-  runtimeOnly("org.postgresql:postgresql")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-mail")
@@ -39,7 +39,6 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-websocket")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("io.github.resilience4j:resilience4j-spring-boot3:2.2.0")
-  runtimeOnly("io.micrometer:micrometer-registry-prometheus")
   //implementation("com.github.loki4j:loki-logback-appender:1.5.2")
   implementation("com.google.guava:guava:32.0.1-android")
   implementation("net.sargue:mailgun:2.0.0")
@@ -48,12 +47,10 @@ dependencies {
   implementation("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
   implementation("org.glassfish.jersey.inject:jersey-hk2")
   runtimeOnly("com.h2database:h2")
+  runtimeOnly("org.postgresql:postgresql")
   runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.18.0")
-  testImplementation("org.springframework.boot:spring-boot-starter-test"){
-    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-  }
-  testImplementation("org.junit.jupiter:junit-jupiter-api")
-  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+  runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("io.mockk:mockk:1.13.17")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.micrometer:micrometer-observation-test")
@@ -65,14 +62,10 @@ allOpen {
   annotation("jakarta.persistence.MappedSuperclass")
 }
 
-tasks.withType<Test> {
-  useJUnitPlatform()
-}
-
 kotlin {
   compilerOptions {
     freeCompilerArgs = listOf("-Xjsr305=strict")
-    version = "2.0"
+    version = "2.1"
   }
 }
 
@@ -101,6 +94,19 @@ buildscript {
   }
 }
 
+tasks.test {
+  useJUnitPlatform()
+  mustRunAfter("unzipAndSetUpNewrelic")
+}
+
+tasks.compileTestKotlin {
+  mustRunAfter("unzipAndSetUpNewrelic")
+}
+
+tasks.processTestResources {
+  mustRunAfter("unzipAndSetUpNewrelic")
+}
+
 tasks.clean {
   delete("newrelic")
 }
@@ -114,13 +120,7 @@ tasks.jacocoTestReport {
     xml.required.value(true)
     html.required.value(false)
   }
-}
-
-val testCoverage by tasks.registering {
-  group = "verification"
-  description = "Runs the unit tests with coverage."
-  dependsOn(":test", ":jacocoTestReport")
-  tasks.findByName("jacocoTestReport")?.mustRunAfter(tasks.findByName("test"))
+  mustRunAfter("test")
 }
 
 // This make to not add version in jar and fat-jar file name

@@ -1,9 +1,7 @@
-import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.Download
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
+import de.undercouch.gradle.tasks.download.Download
 
 plugins {
-  val kotlinVersion = "1.9.22"
+  val kotlinVersion = "2.0.10"
   id("org.springframework.boot") version "3.2.7"
   id("io.spring.dependency-management") version "1.1.7"
   id("org.flywaydb.flyway") version "11.0.0"
@@ -24,13 +22,6 @@ repositories {
   mavenCentral()
 }
 
-dependencyManagement {
-  dependencies {
-    dependency("com.h2database:h2:2.3.232")
-  }
-}
-
-
 dependencies {
   val jwtVersion = "0.12.6"
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -50,7 +41,7 @@ dependencies {
   implementation("io.github.resilience4j:resilience4j-spring-boot3:2.2.0")
   runtimeOnly("io.micrometer:micrometer-registry-prometheus")
   //implementation("com.github.loki4j:loki-logback-appender:1.5.2")
-  implementation("com.google.guava:guava:32.0.0-android")
+  implementation("com.google.guava:guava:32.0.1-android")
   implementation("net.sargue:mailgun:2.0.0")
   implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
   implementation("io.jsonwebtoken:jjwt-impl:$jwtVersion")
@@ -78,13 +69,12 @@ tasks.withType<Test> {
   useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
-  kotlinOptions {
+kotlin {
+  compilerOptions {
     freeCompilerArgs = listOf("-Xjsr305=strict")
-    jvmTarget = "21"
+    version = "2.0"
   }
 }
-
 
 flyway {
   driver = "org.postgresql.Driver"
@@ -99,6 +89,7 @@ sonar {
   properties {
     property("sonar.projectKey", "10Pines_smart-open-space_bc3c48a8-fa5d-4258-9950-a6c5a57efd77")
     property("sonar.projectName", "smart-open-space")
+    property("sonar.host.url", "https://sonar.10pines.com")
   }
 }
 

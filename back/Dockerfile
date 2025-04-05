@@ -1,7 +1,16 @@
+FROM gradle:8-jdk21-alpine AS build-stage
+
+WORKDIR /app
+COPY . .
+RUN gradle clean
+RUN gradle build -x test
+
+
+# Final stage
 FROM eclipse-temurin:21-jre-ubi9-minimal
 
-COPY newrelic newrelic
-COPY build/libs/smart-open-space.jar smart-open-space.jar
+COPY --from=build-stage /app/newrelic newrelic
+COPY --from=build-stage /app/build/libs/smart-open-space.jar smart-open-space.jar
 
 # app required envs
 ENV SPRING_PROFILE=$SPRING_PROFILE

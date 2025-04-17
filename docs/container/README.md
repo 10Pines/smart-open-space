@@ -28,21 +28,13 @@ Se tomo como base este repositorio con su configuración: [github.com/Einsteinis
 
 Observación: Cada vez que actualicemos la aplicación o su codigo fuente, debemos reconstruir las imagenes del backend y frontend para tener su ultima versión.
 
-1. Construir dockerfile Back
-
-Estar en el directorio root del repositorio. Luego, ejecutar:
-
-```bash
-./gradlew clean && ./gradlew build -x check
-```
-
-Despues ejecutar:
+1. [opcional] Construir Dockerfile Back
 
 ```bash
 cd back && docker build -t sos-back .
 ```
 
-2. Construir dockerfile Front
+2. [opcional] Construir Dockerfile Front
 
 Estar en el directorio root del repositorio. Luego, ejecutar:
 ```bash

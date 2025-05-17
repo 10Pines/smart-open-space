@@ -1,0 +1,28 @@
+service: smart-open-space-front
+
+image: cassa97/smart-open-space-front
+
+# Deploy to these servers.
+servers:
+  web:
+    - 192.168.0.1
+
+proxy:
+  ssl: true
+  app_port: 80
+  host: smart-open-space-sample.me
+  healthcheck:
+    path: /
+
+registry:
+  username: cassa97
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
+
+env:
+  clear:
+    APP_PORT: 80
+

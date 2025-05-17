@@ -1,0 +1,50 @@
+service: smart-open-space-back
+
+image: cassa97/smart-open-space-back
+
+# Deploy to these servers.
+servers:
+  web:
+    - jocas97@192.168.1.74
+
+proxy:
+  ssl: true
+  app_port: 8080
+  host: smart-open-space-sample.me
+  healthcheck:
+    path: /ping
+
+registry:
+  username: cassa97
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+
+builder:
+  arch: amd64
+
+env:
+  clear:
+    SPRING_PROFILE: prod
+    APP_PORT: 8080
+  secret:
+    - DB_HOST
+    - DB_NAME
+    - DB_USER
+    - DB_PASSWORD
+
+# Use accessory services (secrets come from .kamal/secrets).
+accessories:
+    db:
+      image: postgres:15.0-alpine
+      host: jocas97@192.168.1.74
+      port: "127.0.0.1:6543:5432"
+      env:
+        clear:
+          - PGDATA: /var/lib/postgresql/data 
+        secret:
+          - POSTGRES_DB: DB_NAME
+          - POSTGRES_USER: DB_USER
+          - POSTGRES_PASSWORD: DB_PASSWORD
+      volumes:
+        - sos-db-data:/var/lib/postgresql/data

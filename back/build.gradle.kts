@@ -7,7 +7,7 @@ plugins {
   id("io.spring.dependency-management") version "1.1.7"
   id("org.flywaydb.flyway") version "11.0.0"
   id("de.undercouch.download") version "5.6.0"
-  id("org.sonarqube") version "6.0.1.5171"
+  id("org.sonarqube") version "6.1.0.5360"
   kotlin("jvm") version kotlinVersion
   kotlin("plugin.spring") version kotlinVersion
   kotlin("plugin.jpa") version kotlinVersion
@@ -38,7 +38,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-web")
   implementation("org.springframework.boot:spring-boot-starter-websocket")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
-  implementation("io.github.resilience4j:resilience4j-spring-boot3:2.2.0")
+  implementation("io.github.resilience4j:resilience4j-spring-boot3:2.3.0")
   //implementation("com.github.loki4j:loki-logback-appender:1.5.2")
   implementation("com.google.guava:guava:32.0.1-android")
   implementation("net.sargue:mailgun:2.0.0")

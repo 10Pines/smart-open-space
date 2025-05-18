@@ -24,7 +24,7 @@ builder:
 
 env:
   clear:
-    SPRING_PROFILE: prod
+    SPRING_PROFILE: docker
     APP_PORT: 8080
   secret:
     - DB_HOST
@@ -35,6 +35,7 @@ env:
 # Use accessory services (secrets come from .kamal/secrets).
 accessories:
     db:
+      service: db
       image: postgres:15.0-alpine
       host: jocas97@192.168.1.74
       port: "127.0.0.1:6543:5432"

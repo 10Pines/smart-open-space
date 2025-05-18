@@ -4,13 +4,12 @@ image: cassa97/smart-open-space-back
 
 # Deploy to these servers.
 servers:
-  web:
-    - jocas97@192.168.1.74
+  - jocas97@192.168.1.74
 
 proxy:
-  ssl: true
+  ssl: false
   app_port: 8080
-  host: smart-open-space-sample.me
+  host: 192.168.1.74
   healthcheck:
     path: /ping
 
@@ -41,10 +40,10 @@ accessories:
       port: "127.0.0.1:6543:5432"
       env:
         clear:
-          - PGDATA: /var/lib/postgresql/data 
+          PGDATA: "/var/lib/postgresql/data"
         secret:
-          - POSTGRES_DB: DB_NAME
-          - POSTGRES_USER: DB_USER
-          - POSTGRES_PASSWORD: DB_PASSWORD
+          - POSTGRES_DB
+          - POSTGRES_USER
+          - POSTGRES_PASSWORD
       volumes:
         - sos-db-data:/var/lib/postgresql/data

@@ -4,7 +4,7 @@ image: cassa97/smart-open-space-back
 
 # Deploy to these servers.
 servers:
-  - 192.168.1.74
+  - jocas97@192.168.1.74
 
 #proxy:
 #  ssl: false

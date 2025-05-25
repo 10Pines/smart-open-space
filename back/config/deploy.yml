@@ -25,7 +25,7 @@ builder:
 
 env:
   clear:
-    SPRING_PROFILE: kamal
+    SPRING_PROFILE: docker
     APP_PORT: 8080
 #  secret:
 #    - DB_HOST

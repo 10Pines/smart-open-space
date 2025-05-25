@@ -7,7 +7,7 @@ ssh:
 
 # Deploy to these servers.
 servers:
-  - 92.168.1.74
+  - 192.168.1.74
 
 #proxy:
 #  ssl: false

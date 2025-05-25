@@ -2,9 +2,12 @@ service: smart-open-space-back
 
 image: cassa97/smart-open-space-back
 
+ssh:
+  user: jocas97
+
 # Deploy to these servers.
 servers:
-  - jocas97@192.168.1.74
+  - 92.168.1.74
 
 #proxy:
 #  ssl: false
@@ -36,7 +39,7 @@ accessories:
     db:
       service: db
       image: postgres:15.0-alpine
-      host: jocas97@192.168.1.74
+      host: 192.168.1.74
       port: "127.0.0.1:6543:5432"
       env:
         clear:

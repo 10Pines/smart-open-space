@@ -9,12 +9,12 @@ ssh:
 servers:
   - 192.168.1.74
 
-#proxy:
-#  ssl: false
-#  app_port: 8080
-#  host: 192.168.1.74
-#  healthcheck:
-#    path: /ping
+proxy:
+  ssl: false
+  app_port: 8080
+  host: 192.168.1.74
+  healthcheck:
+    path: /ping
 
 registry:
   username: cassa97

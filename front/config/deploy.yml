@@ -2,15 +2,17 @@ service: smart-open-space-front
 
 image: cassa97/smart-open-space-front
 
+ssh:
+  user: jocas97
+
 # Deploy to these servers.
 servers:
   web:
-    - 192.168.0.1
+    - 192.168.1.74
 
 proxy:
-  ssl: true
-  app_port: 80
-  host: smart-open-space-sample.me
+  ssl: false
+  app_port: 1234
   healthcheck:
     path: /
 
@@ -24,5 +26,5 @@ builder:
 
 env:
   clear:
-    APP_PORT: 80
+    UI_PORT: 1234
 

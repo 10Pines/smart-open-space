@@ -7,12 +7,12 @@ ssh:
 
 # Deploy to these servers.
 servers:
-  - 192.168.1.74
+  web:
+    - 192.168.1.74
 
 proxy:
   ssl: false
   app_port: 8080
-  host: 192.168.1.74
   healthcheck:
     path: /ping
 
@@ -26,8 +26,9 @@ builder:
   arch: amd64
 
 env:
-  SPRING_PROFILE: docker
-  APP_PORT: 8080
+  clear:
+    SPRING_PROFILE: docker
+    APP_PORT: 8080
 #  secret:
 #    - DB_HOST
 #    - DB_NAME

@@ -14,6 +14,6 @@ RUN adduser -D static
 USER static
 WORKDIR /home/static
 COPY --from=build-stage /app/dist .
-ENV APP_PORT=$APP_PORT
+ENV UI_PORT=$UI_PORT
 
-CMD ["sh", "-c", "busybox httpd -f -v -p $APP_PORT"]
+CMD ["sh", "-c", "busybox httpd -f -v -p $UI_PORT"]

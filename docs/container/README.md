@@ -28,27 +28,31 @@ Se tomo como base este repositorio con su configuración: [github.com/Einsteinis
 
 Observación: Cada vez que actualicemos la aplicación o su codigo fuente, debemos reconstruir las imagenes del backend y frontend para tener su ultima versión.
 
-1. [opcional] Construir Dockerfile Back
+1. **[opcional]** Construir Dockerfile Back
 
-```bash
-cd back && docker build -t sos-back .
-```
+    ```bash
+    cd back && docker build -t sos-back .
+    ```
 
-2. [opcional] Construir Dockerfile Front
+2. **[opcional]** Construir Dockerfile Front
 
-Estar en el directorio root del repositorio. Luego, ejecutar:
-```bash
-cd front && docker build -t sos-front .
-```
+   - Estar en el directorio root del repositorio. Luego, ejecutar:
 
-Nota: En caso de error, borrar carpetas temporales `node_modules` y `build`.
+    ```bash 
+    cd front && docker build --build-arg API_URL=http://localhost:8081 -t sos-front .
+    ```
+
+
+   - **Observaciones**: 
+     - En caso de error, borrar carpetas temporales `node_modules` y `build`.
+     - `API_URL` es el host y puerto donde se va a ejecutar el back.
 
 3. Revisar variables de entorno (env vars), como `APP_PORT`, `SPRING_PROFILE`, `DB_PORT`, donde van a configurarse en los contenedores en el archivo [`docker-compose.yml`](/docs/container/docker-compose.yml).
 
 4. Revisar que no tengamos una instancia local del servicio ejecutando o algun puerto ocupado de la configuración anterior. Luego, ejecutamos el comando en el directorio root del proyecto:
-```bash
-docker-compose -p 'sos-full-app' up -d --build
-```
+    ```bash
+    docker-compose -p 'sos-full-app' up -d --build
+    ```
 
 5. Servicios principales disponibles:
 
@@ -63,7 +67,6 @@ docker-compose -p 'sos-full-app' up -d --build
 | Prometheus                                      | [localhost:9090](http://localhost:9090)      |
 
 
-
-Observaciónes: 
-- Los puertos pueden variar en base a la configuración establecida.
-- Existen mas servicios disponibles, pero son internos e integradores a Grafana y Prometheus. 
+   - **Observaciónes**: 
+     - Los puertos pueden variar en base a la configuración establecida.
+     - Existen mas servicios disponibles, pero son internos e integradores a Grafana y Prometheus.

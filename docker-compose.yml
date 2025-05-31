@@ -19,6 +19,8 @@ services:
     build:
       context: ./front
       dockerfile: ./Dockerfile
+      args:
+        API_URL: http://localhost:8081
     environment:
       UI_PORT: 1234
     ports:

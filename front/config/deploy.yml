@@ -23,6 +23,9 @@ registry:
 
 builder:
   arch: amd64
+  args:
+    # This is API URL of backend (VITE_API_URL)
+    API_URL: http://192.168.1.74:8080
 
 env:
   clear:

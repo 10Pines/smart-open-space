@@ -12,7 +12,7 @@ servers:
 
 proxy:
   ssl: false
-  app_port: 8080
+  app_port: 8081
   healthcheck:
     path: /ping
 
@@ -28,7 +28,7 @@ builder:
 env:
   clear:
     SPRING_PROFILE: docker
-    APP_PORT: 8080
+    APP_PORT: 8081
 #  secret:
 #    - DB_HOST
 #    - DB_NAME

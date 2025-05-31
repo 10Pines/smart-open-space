@@ -4,6 +4,13 @@ server {
     root   /usr/share/nginx/html;
     index  index.html index.htm;
 
+    # Health check endpoint
+    location = /up {
+        access_log off;
+        return 200 'OK';
+        add_header Content-Type text/plain;
+    }
+
     location / {
         try_files $uri $uri/ /index.html;
     }

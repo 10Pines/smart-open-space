@@ -8,13 +8,14 @@ ssh:
 # Deploy to these servers.
 servers:
   web:
-    - 192.168.1.74
+    hosts:
+      - 192.168.1.74
 
 proxy:
   ssl: false
   app_port: 1234
   healthcheck:
-    path: /
+    path: /up
 
 registry:
   username: cassa97
@@ -30,4 +31,5 @@ builder:
 env:
   clear:
     UI_PORT: 1234
+
 

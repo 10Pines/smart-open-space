@@ -3,17 +3,17 @@ service: smart-open-space-front
 image: cassa97/smart-open-space-front
 
 ssh:
-  user: jocas97
+  user: jocvm2
 
 # Deploy to these servers.
 servers:
   web:
     hosts:
-      - 192.168.1.74
+      - 192.168.184.124
 
 proxy:
   ssl: false
-  app_port: 1234
+  app_port: 80
   healthcheck:
     path: /up
 
@@ -26,10 +26,10 @@ builder:
   arch: amd64
   args:
     # This is API URL of backend (VITE_API_URL)
-    API_URL: http://192.168.1.74:8080
+    API_URL: http://192.168.1.74:8081
 
 env:
   clear:
-    UI_PORT: 1234
+    UI_PORT: 80
 
 

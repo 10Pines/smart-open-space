@@ -56,10 +56,27 @@ const resetUserSessionStorage = () => {
   setLocalStorage(STORAGE_AUTH_JWT_KEY, null);
 };
 
+const generateFallbackUUIDv4 = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+const generateRandomUUID = () => {
+  try {
+    return crypto.randomUUID();
+  } catch (e) {
+    console.error('crypto.randomUUID not supported. Using fallback function');
+    return generateFallbackUUIDv4();
+  }
+};
+
 const getRequestSessionId = () => {
     const value = getSessionStorage(INTERNAL_SESSION_ID_KEY);
     if (!value) {
-        const generatedValue = crypto.randomUUID();
+        const generatedValue = generateRandomUUID();
         setSessionStorage(INTERNAL_SESSION_ID_KEY, generatedValue);
         return generatedValue;
     }

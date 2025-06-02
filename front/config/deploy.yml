@@ -13,7 +13,7 @@ servers:
 
 proxy:
   ssl: false
-  app_port: 80
+  app_port: 1234
   healthcheck:
     path: /up
 
@@ -26,11 +26,11 @@ builder:
   arch: amd64
   args:
     # This is API URL of backend (VITE_API_URL)
-    API_URL: http://192.168.1.74:80
+    API_URL: http://192.168.1.74
     SKIP_HTTPS_IPS: 192.168.184.124,192.168.184.123
 
 env:
   clear:
-    UI_PORT: 80
+    UI_PORT: 1234
 
 

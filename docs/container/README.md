@@ -42,10 +42,13 @@ Observación: Cada vez que actualicemos la aplicación o su codigo fuente, debem
     cd front && docker build --build-arg API_URL=http://localhost:8081 -t sos-front .
     ```
 
+  - **Argumentos**
+    - `API_URL`: es el host y puerto donde se va a ejecutar el back. Es Opcional y su valor default es `http://localhost:8081`.
+    - `SKIP_HTTPS_IPS`: es opcional y su valor debe ser un listado separado por `,` de ips o dominios que van a ser excluidos en el redireccionamiento automatico de HTTP a HTTPS. Ejemplo: `192.168.184.124,192.168.184.123`
 
    - **Observaciones**: 
      - En caso de error, borrar carpetas temporales `node_modules` y `build`.
-     - `API_URL` es el host y puerto donde se va a ejecutar el back.
+
 
 3. Revisar variables de entorno (env vars), como `APP_PORT`, `SPRING_PROFILE`, `DB_PORT`, donde van a configurarse en los contenedores en el archivo [`docker-compose.yml`](/docs/container/docker-compose.yml).
 
@@ -54,7 +57,7 @@ Observación: Cada vez que actualicemos la aplicación o su codigo fuente, debem
     docker-compose -p 'sos-full-app' up -d --build
     ```
 
-5. Servicios principales disponibles:
+5. Servicios principales disponibles (usando puertos default):
 
 
 | Servicio                                        | Endpoint                                     |

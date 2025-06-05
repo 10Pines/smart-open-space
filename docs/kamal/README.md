@@ -1,16 +1,16 @@
 # Kamal Deploy
 
-Actualmente, smart-open-space soporta kamal 2. Sin embargo, requiere personalización dependiendo de los ambientes que se requieran utilizar para el despliegue.
+Actualmente, smart-open-space soporta kamal 2. Sin embargo, requiere de una personalización dependiendo de los servidores y herramientas que se requieran utilizar para su despliegue.
 
 [Documentación oficial de kamal](https://kamal-deploy.org/docs/installation/)
 
 
-## Requisitos
-- Un ambiente de ruby (o sino usando Docker [docs info](https://kamal-deploy.org/docs/installation/dockerized/)).
-- Tener las SSH keys configuradas en los servidores y usuarios a utilizar para realizar los despliegues. Estos usuarios van a ser utilizados en el `deploy.yml` para realizar la conexión.
+## Requisitos minimos
+- Tener un ambiente de ruby (o sino usando Docker [docs info](https://kamal-deploy.org/docs/installation/dockerized/) teniendo funcionalidades limitadas).
+- Tener las SSH keys configuradas en los servidores y usuarios a utilizar para realizar los despliegues automatizados. Estos usuarios van a ser utilizados en el `deploy.yml` para realizar la conexión (el default es root).
 - Tener Docker instalado tanto en el servidor que realiza el despliegue como en el servidor a desplegar. 
-- Tener un container registry (ejemplo: dockerhub) con un usuario y token para poder acceder y realizar push y pull de las imagenes de los servicios a desplegar. Se debe configurar la variable de entorno `$KAMAL_REGISTRY_SECRET` con el token de acceso del usuario a utilizar.
-- (Opcional) tener los host de dominios configurados con algun DNS y listos para usar.
+- Tener un container registry (ejemplo: dockerhub) con un usuario y token para poder acceder. Esto es requerido para realizar el push y pull de las imagenes de los servicios a desplegar. Se debe configurar la variable de entorno `$KAMAL_REGISTRY_SECRET` con el token de acceso del usuario a utilizar.
+- Es opcional, pero altamente recomendado tener los host de dominios configurados con algun DNS y listos para usar. Esto es para utilizar HTTPS en los servicios. Sino se puede realizar con HTTP.
 
 ## Guía
 
@@ -36,7 +36,9 @@ Actualmente, smart-open-space soporta kamal 2. Sin embargo, requiere personaliza
    - `env.clear`: diccionario de variables de entorno en texto plano (no debe contener datos sensibles).
    - `env.secret`: lista de claves en modo secreto (se buscan en el archivo `./kamal/secrets`).
    - `accessories`: servicios adicionales a instanciar junto con el servicio principal (opcional). Pueden ser base de datos, etc.
-   - `builder`: argumentos para usar al construir el Dockerfile del servicio.
+   - `builder`: argumentos para usar al construir el Dockerfile del servicio. En el caso del front, existen dos `args`:
+     - `API_URL`: Necesario para especificar el host o ip donde va a estar deployado el back.
+     - `SKIP_HTTPS_IPS`: Es opcional. Son ips o hostnames para evitar realizar el redireccionamiento a HTTPS automatico. Útil para realizar pruebas o ambientes bajos.
    - `proxy`: configuración de kamal-proxy, incluyendo SSL (`ssl`), puerto de la app (`app_port`), ruta de healthcheck (`healthcheck.path`), nombre de host (`host`), entre otros.
 
     Consulta la [documentación oficial de Kamal](https://kamal-deploy.org/docs/installation/) para más opciones e información.
@@ -69,3 +71,12 @@ Actualmente, smart-open-space soporta kamal 2. Sin embargo, requiere personaliza
 
 
     Se pueden ver mas opciones de comandos en la [documentación oficial de Kamal](https://kamal-deploy.org/docs/installation/).
+
+
+6. (EXTRA) Si existen problemas con el CORS, revisar si los hostnames estan presentes en las `application.properties` del back (se puede configurar por ENV si se usa el profile `kamal`).
+
+```yaml
+app.cors.allowed.methods=GET,POST,PUT,PATCH,DELETE,OPTIONS
+app.cors.allowed.origins=http://localhost:1234,...,https://smartopenspace.10pines.com
+app.cors.allowed.socket-origins=http://localhost:1234,...,https://smartopenspace.10pines.com
+```

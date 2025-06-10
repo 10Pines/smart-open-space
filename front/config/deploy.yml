@@ -18,7 +18,8 @@ proxy:
     path: /up
 
 registry:
-  username: cassa97
+  username:
+    - KAMAL_REGISTRY_USERNAME
   password:
     - KAMAL_REGISTRY_PASSWORD
 

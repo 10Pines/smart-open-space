@@ -11,7 +11,9 @@ Actualmente, smart-open-space soporta kamal 2. Sin embargo, requiere de una pers
 - Tener un ambiente de ruby (o sino usando Docker [docs info](https://kamal-deploy.org/docs/installation/dockerized/) teniendo funcionalidades limitadas).
 - Tener las SSH keys configuradas en los servidores y usuarios a utilizar para realizar los despliegues automatizados. Estos usuarios van a ser utilizados en el `deploy.yml` para realizar la conexión (el default es root).
 - Tener Docker instalado tanto en el servidor/ambiente que realiza el despliegue como en el servidor a desplegar.
-- Tener un container registry (ejemplo: dockerhub) con un usuario y token para poder acceder. Esto es requerido para realizar el push y pull de las imagenes de los servicios a desplegar. Se debe configurar la variable de entorno `$KAMAL_REGISTRY_SECRET` con el token de acceso del usuario a utilizar.
+- Tener un container registry (ejemplo: dockerhub) con un usuario y token para poder acceder. Esto es requerido para realizar el push y pull de las imagenes de los servicios a desplegar. Se debe configurar las siguientes variables de entorno: 
+  - `$KAMAL_REGISTRY_USERNAME` con el nombre de usuario de acceso al container registry.
+  - `$KAMAL_REGISTRY_PASSWORD` con el token secreto de acceso perteneciente del usuario al container registry.
 
 ### Requisitos opcionales
 - Es altamente recomendado tener los hostnames de los dominios configurados con algun DNS y listos para usar. Esto es para utilizar HTTPS en los servicios. Kamal utiliza "Let's encrypt" si esta habilitada su propiedad "ssl". Sino se puede realizar con HTTP.
@@ -28,7 +30,7 @@ Actualmente, smart-open-space soporta kamal 2. Sin embargo, requiere de una pers
    - `./back/.kamal/secrets`
    - `./front/.kamal/secrets`
 
-    **CUIDADO**: usar siemrpe las variables del sistema o algun gestor de contraseñas/secrets compatible con kamal como 1password (revisar documentación oficial para configurarlo).
+    **CUIDADO**: usar siempre las variables del sistema o algun gestor de contraseñas/secrets compatible con kamal como 1password (revisar documentación oficial para configurarlo).
 
 
 3. Personaliza el archivo de despligue `deploy.yml` con las siguientes propiedades:

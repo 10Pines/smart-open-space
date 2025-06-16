@@ -1,14 +1,17 @@
-name: KAMAL Command
+name: Back Kamal Command
 
 on:
   workflow_dispatch:
     inputs:
       command:
-        description: "KAMAL command to run"
+        description: "KAMAL back command to run"
         default: "kamal app details"
 
 jobs:
-  Command:
+  command:
+    defaults:
+      run:
+        working-directory: back
     runs-on: ubuntu-latest
 
     env:
@@ -36,7 +39,7 @@ jobs:
       
       - uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_BACK_PRIVATE_KEY }}
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1

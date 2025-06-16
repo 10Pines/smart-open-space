@@ -1,4 +1,4 @@
-name: Kamal CD
+name: Back Kamal CD
 
 on:
   push:
@@ -8,8 +8,10 @@ on:
 jobs:
   deploy:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    defaults:
+      run:
+        working-directory: back    
     runs-on: ubuntu-latest
-
     env:
       DOCKER_BUILDKIT: 1
       KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
@@ -45,7 +47,7 @@ jobs:
 
       - uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_BACK_PRIVATE_KEY }}
 
       - name: Set up Docker Buildx
         id: buildx

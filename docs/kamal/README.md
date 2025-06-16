@@ -30,7 +30,9 @@ Actualmente, smart-open-space soporta kamal 2. Sin embargo, requiere de una pers
    - `./back/.kamal/secrets`
    - `./front/.kamal/secrets`
 
-    **CUIDADO**: usar siempre las variables del sistema o algun gestor de contraseñas/secrets compatible con kamal como 1password (revisar documentación oficial para configurarlo).
+    **ADVERTENCIA**: usar siempre las variables del sistema o algun gestor de contraseñas/secrets compatible con kamal como 1password (revisar documentación oficial para configurarlo).
+
+    **RECOMENDACIÓN**: se pueden leer los archivos `./back/config/.env.sample` y `./front/config/.env.sample` para tener un template de las variables de entorno (envs) que se deben configurar en el host de despliegue con algunos valores de ejemplo. Se recomienda cambiar los valores en la información sensible (contraseñas, usuarios, etc).
 
 
 3. Personaliza el archivo de despligue `deploy.yml` con las siguientes propiedades:

@@ -1,0 +1,50 @@
+name: KAMAL Command
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "KAMAL command to run"
+        default: "kamal app details"
+
+jobs:
+  Command:
+    runs-on: ubuntu-latest
+
+    env:
+      KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
+      KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+      SPRING_PROFILE: ${{ secrets.SPRING_PROFILE }}
+      FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+      CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
+      CORS_ALLOWED_SOCKET_ORIGINS: ${{ secrets.CORS_ALLOWED_SOCKET_ORIGINS }}
+      MAIL_SENDER: ${{ secrets.MAIL_SENDER }}
+      MAILGUN_SMTP_SERVER: ${{ secrets.MAILGUN_SMTP_SERVER }}
+      MAILGUN_SMTP_PORT: ${{ secrets.MAILGUN_SMTP_PORT }}
+      MAILGUN_SMTP_LOGIN: ${{ secrets.MAILGUN_SMTP_LOGIN }}
+      MAILGUN_SMTP_PASSWORD: ${{ secrets.MAILGUN_SMTP_PASSWORD }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRATION_IN_MINUTES: ${{ secrets.JWT_EXPIRATION_IN_MINUTES }}
+      PURGE_PASSWORD: ${{ secrets.PURGE_PASSWORD }}
+      JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
+      SOS_DB_USER: ${{ secrets.SOS_DB_USER }}
+      SOS_DB_PASSWORD: ${{ secrets.SOS_DB_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2
+      
+      - name: Install dependencies
+        run: gem install kamal
+
+      - name: Run KAMAL command
+        run: ${{ github.event.inputs.command }}

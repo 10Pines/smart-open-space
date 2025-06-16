@@ -28,15 +28,15 @@ builder:
 
 env:
   clear:
-    SPRING_PROFILE: kamal
     LOG_LEVEL: INFO
     APP_PORT: 8081
-    JDBC_DATABASE_URL: jdbc:postgresql://db/sos
-    FRONTEND_URL: http://192.168.184.124
-    MAIL_SENDER: smartopenspace@10pines.com
-    CORS_ALLOWED_ORIGINS: http://localhost:1234,http://localhost,http://192.168.184.124,https://smartopenspace.herokuapp.com,https://smartopenspace.10pines.com
-    CORS_ALLOWED_SOCKET_ORIGINS: http://localhost:1234,http://localhost,http://192.168.184.124,https://smartopenspace.herokuapp.com,https://openspaces.10pines.com,https://smartopenspace-10pines.herokuapp.com,https://smartopenspace.10pines.com
   secret:
+    - SPRING_PROFILE
+    - FRONTEND_URL
+    - CORS_ALLOWED_ORIGINS
+    - CORS_ALLOWED_SOCKET_ORIGINS
+    - MAIL_SENDER
+    - JDBC_DATABASE_URL 
     - JDBC_DATABASE_USERNAME
     - JDBC_DATABASE_PASSWORD
     - MAILGUN_SMTP_SERVER
@@ -46,6 +46,7 @@ env:
     - JWT_SECRET
     - JWT_EXPIRATION_IN_MINUTES
     - PURGE_PASSWORD
+
 
 # Use accessory services (secrets come from .kamal/secrets).
 accessories:

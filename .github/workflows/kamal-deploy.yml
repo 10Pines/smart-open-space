@@ -1,0 +1,55 @@
+name: Kamal CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_BUILDKIT: 1
+      KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
+      KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+      SPRING_PROFILE: ${{ secrets.SPRING_PROFILE }}
+      FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+      CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
+      CORS_ALLOWED_SOCKET_ORIGINS: ${{ secrets.CORS_ALLOWED_SOCKET_ORIGINS }}
+      MAIL_SENDER: ${{ secrets.MAIL_SENDER }}
+      MAILGUN_SMTP_SERVER: ${{ secrets.MAILGUN_SMTP_SERVER }}
+      MAILGUN_SMTP_PORT: ${{ secrets.MAILGUN_SMTP_PORT }}
+      MAILGUN_SMTP_LOGIN: ${{ secrets.MAILGUN_SMTP_LOGIN }}
+      MAILGUN_SMTP_PASSWORD: ${{ secrets.MAILGUN_SMTP_PASSWORD }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRATION_IN_MINUTES: ${{ secrets.JWT_EXPIRATION_IN_MINUTES }}
+      PURGE_PASSWORD: ${{ secrets.PURGE_PASSWORD }}
+      JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
+      SOS_DB_USER: ${{ secrets.SOS_DB_USER }}
+      SOS_DB_PASSWORD: ${{ secrets.SOS_DB_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.0
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: gem install kamal
+
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run deploy command
+        run: kamal deploy

@@ -2,14 +2,14 @@ service: smart-open-space-front
 
 image: cassa97/smart-open-space-front
 
-ssh:
-  user: jocvm2
+#ssh:
+#  user: jocvm2
 
 # Deploy to these servers.
 servers:
   web:
     hosts:
-      - 192.168.184.124
+      - 206.189.236.250
 
 proxy:
   ssl: false
@@ -27,8 +27,8 @@ builder:
   arch: amd64
   args:
     # This is API URL of backend (VITE_API_URL)
-    API_URL: http://192.168.1.74
-    SKIP_HTTPS_IPS: 192.168.184.124,192.168.184.123
+    API_URL: http://206.189.236.250
+    #SKIP_HTTPS_IPS: 206.189.236.250
 
 env:
   clear:

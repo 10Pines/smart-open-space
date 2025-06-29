@@ -17,10 +17,10 @@ jobs:
     env:
       KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
       KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
-      SPRING_PROFILE: ${{ secrets.SPRING_PROFILE }}
-      FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
-      CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
-      CORS_ALLOWED_SOCKET_ORIGINS: ${{ secrets.CORS_ALLOWED_SOCKET_ORIGINS }}
+      SPRING_PROFILE: ${{ vars.SPRING_PROFILE }}
+      FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+      CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
+      CORS_ALLOWED_SOCKET_ORIGINS: ${{ vars.CORS_ALLOWED_SOCKET_ORIGINS }}
       MAIL_SENDER: ${{ secrets.MAIL_SENDER }}
       MAILGUN_SMTP_SERVER: ${{ secrets.MAILGUN_SMTP_SERVER }}
       MAILGUN_SMTP_PORT: ${{ secrets.MAILGUN_SMTP_PORT }}
@@ -32,6 +32,8 @@ jobs:
       JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
       SOS_DB_USER: ${{ secrets.SOS_DB_USER }}
       SOS_DB_PASSWORD: ${{ secrets.SOS_DB_PASSWORD }}
+      NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
+      NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
 
     steps:
       - name: Checkout

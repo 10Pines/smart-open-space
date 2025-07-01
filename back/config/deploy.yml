@@ -2,6 +2,9 @@ service: smart-open-space-back
 
 image: cassa97/smart-open-space-back
 
+# Timeout to deploy this service
+deploy_timeout: 120
+
 #ssh:
 #  user: jocas97
 

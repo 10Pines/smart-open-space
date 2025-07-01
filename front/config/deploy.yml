@@ -2,6 +2,9 @@ service: smart-open-space-front
 
 image: cassa97/smart-open-space-front
 
+# Timeout to deploy this service
+deploy_timeout: 120
+
 #ssh:
 #  user: jocvm2
 

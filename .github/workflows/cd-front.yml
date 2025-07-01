@@ -1,9 +1,10 @@
-name: Front Kamal CD
+name: CD Front
 
 on:
   push:
     branches:
       - main
+      #- enhancement/kamal-integration # For test (should be removed before merge)
 
 jobs:
   deploy:

@@ -1,9 +1,10 @@
-name: Back Kamal CD
+name: CD Back
 
 on:
   push:
     branches:
       - main
+      - enhancement/kamal-integration # For test (should be removed before merge)
 
 jobs:
   deploy:

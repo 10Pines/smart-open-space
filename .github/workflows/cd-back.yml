@@ -54,5 +54,9 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v3
 
+      # Could fail if was already set up
+      - name: Run setup command
+        run: kamal setup || true
+
       - name: Run deploy command
         run: kamal deploy

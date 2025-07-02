@@ -33,7 +33,7 @@ env:
   clear:
     LOG_LEVEL: INFO
     APP_PORT: 8081
-  secret:
+  secret: # secrets come from .kamal/secrets
     - SPRING_PROFILE
     - FRONTEND_URL
     - CORS_ALLOWED_ORIGINS
@@ -51,19 +51,19 @@ env:
     - PURGE_PASSWORD
 
 
-# Use accessory services (secrets come from .kamal/secrets).
-# accessories:
-#     db:
-#       service: db
-#       image: postgres:15.0-alpine
-#       host: 206.189.236.250
-#       port: "127.0.0.1:6543:5432"
-#       env:
-#         clear:
-#           PGDATA: "/var/lib/postgresql/data"
-#           POSTGRES_DB: sos
-#         secret:
-#           - POSTGRES_USER
-#           - POSTGRES_PASSWORD
-#       volumes:
-#         - sos-db-data:/var/lib/postgresql/data
+# Use accessory services
+accessories:
+    db:
+      service: db
+      image: postgres:15.0-alpine
+      host: 206.189.236.250
+      port: "127.0.0.1:6543:5432"
+      env:
+        clear:
+          PGDATA: "/var/lib/postgresql/data"
+          POSTGRES_DB: sos
+        secret: # secrets come from .kamal/secrets
+          - POSTGRES_USER
+          - POSTGRES_PASSWORD
+      volumes:
+        - sos-db-data:/var/lib/postgresql/data

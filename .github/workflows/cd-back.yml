@@ -52,8 +52,15 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Run kamal setup command
-        run: kamal setup || true # Ignore error if already setup
+      # In case of lock errors (fix)
+      - name: Run kamal lock release 
+        run: kamal lock release || true 
+
+      # Setup kamal proxy and accesories
+      #- name: Run kamal setup command
+      #  run: kamal setup || true
+
+
 
       - name: Run kamal deploy command
         run: kamal deploy

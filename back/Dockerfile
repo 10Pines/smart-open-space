@@ -21,4 +21,4 @@ ENV NEW_RELIC_LICENSE_KEY=$NEW_RELIC_LICENSE_KEY
 ENV NEW_RELIC_LOG=$NEW_RELIC_LOG
 
 
-CMD ["java","-Xmx452","-javaagent:newrelic/newrelic.jar","-jar","/smart-open-space.jar","--server.port=${APP_PORT}","--spring.profiles.active=${SPRING_PROFILE}"]
+CMD ["java","-Xmx512","-javaagent:newrelic/newrelic.jar","-jar","/smart-open-space.jar","--server.port=${APP_PORT}","--spring.profiles.active=${SPRING_PROFILE}"]

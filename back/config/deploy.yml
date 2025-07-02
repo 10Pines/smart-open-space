@@ -3,7 +3,7 @@ service: smart-open-space-back
 image: cassa97/smart-open-space-back
 
 # Timeout to deploy this service
-deploy_timeout: 300
+deploy_timeout: 200
 
 #ssh:
 #  user: jocas97
@@ -52,18 +52,18 @@ env:
 
 
 # Use accessory services (secrets come from .kamal/secrets).
-accessories:
-    db:
-      service: db
-      image: postgres:15.0-alpine
-      host: 206.189.236.250
-      port: "127.0.0.1:6543:5432"
-      env:
-        clear:
-          PGDATA: "/var/lib/postgresql/data"
-          POSTGRES_DB: sos
-        secret:
-          - POSTGRES_USER
-          - POSTGRES_PASSWORD
-      volumes:
-        - sos-db-data:/var/lib/postgresql/data
+# accessories:
+#     db:
+#       service: db
+#       image: postgres:15.0-alpine
+#       host: 206.189.236.250
+#       port: "127.0.0.1:6543:5432"
+#       env:
+#         clear:
+#           PGDATA: "/var/lib/postgresql/data"
+#           POSTGRES_DB: sos
+#         secret:
+#           - POSTGRES_USER
+#           - POSTGRES_PASSWORD
+#       volumes:
+#         - sos-db-data:/var/lib/postgresql/data

@@ -1,9 +1,20 @@
 # Automatización de despliegues - Kamal
 
-Actualmente, smart-open-space soporta kamal 2. Sin embargo, requiere de una personalización dependiendo de los servidores y herramientas que se requieran utilizar para su despliegue.
+Actualmente, smart-open-space soporta kamal 2. Sin embargo, requiere de una personalización dependiendo de los servidores y herramientas que se requieran utilizar para su despliegue. 
 
 [Documentación oficial de kamal](https://kamal-deploy.org/docs/installation/)
 
+En este proyecto, se tienen dos workflows (github actions) para poder realizar el CD de la aplicación:
+- [CD Back](/.github/workflows/cd-back.yml)
+- [CD Front](/.github/workflows/cd-front.yml)
+
+Cada uno se encarga de desplegar su propia instancia de servicio.
+
+Luego hay otros dos workflows (github actions) a demanda para ejecutar comandos a necesidad:
+- [Back Kamal Command](/.github/workflows/kamal-back-command.yml) 
+- [Front Kamal Command](/.github/workflows/kamal-front-command.yml) 
+
+A continuación se detallará una guía con requisitos, configuraciones y pasos para realizar el despliegue de manera manual.
 
 ## Requisitos
 
@@ -93,4 +104,4 @@ app.cors.allowed.origins=http://localhost:1234,...,https://smartopenspace.10pine
 app.cors.allowed.socket-origins=http://localhost:1234,...,https://smartopenspace.10pines.com
 ```
 
-Si se desea usar HTTP, se debe agregar la IP / hostname en el listado de ENV del deploy.yml del ./front `SKIP_HTTPS_IPS`
+Si se desea usar HTTP, se debe agregar la IP / hostname en el listado de ENV del deploy.yml del ./front `SKIP_HTTPS_IPS`.

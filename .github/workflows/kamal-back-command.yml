@@ -1,9 +1,6 @@
 name: Back Kamal Command
 
 on:
-  push:
-    branches:
-      - enhancement/kamal-integration # For test (should be removed before merge)
   workflow_dispatch:
     inputs:
       command:

@@ -1,4 +1,4 @@
-name: CD Back
+name: "CD Back"
 
 on:
   push:
@@ -6,8 +6,11 @@ on:
       - main
       - enhancement/kamal-integration # For test (should be removed before merge)
 
+
+# if with 'false' to avoid deploys
 jobs:
   deploy:
+    if: ${{ false && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     defaults:
       run:
         working-directory: back    
@@ -31,6 +34,8 @@ jobs:
       JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
       SOS_DB_USER: ${{ secrets.SOS_DB_USER }}
       SOS_DB_PASSWORD: ${{ secrets.SOS_DB_PASSWORD }}
+      NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
+      NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

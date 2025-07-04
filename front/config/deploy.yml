@@ -3,10 +3,11 @@ service: smart-open-space-front
 image: cassa97/smart-open-space-front
 
 # Timeout to deploy this service
-deploy_timeout: 120
+deploy_timeout: 45
 
+# User to connect to deploy host (default=root)
 #ssh:
-#  user: jocvm2
+#  user: someuser
 
 # Deploy to these servers.
 servers:

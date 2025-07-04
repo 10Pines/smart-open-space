@@ -3,10 +3,11 @@ service: smart-open-space-back
 image: cassa97/smart-open-space-back
 
 # Timeout to deploy this service
-deploy_timeout: 200
+deploy_timeout: 45
 
+# User to connect to deploy host (default=root)
 #ssh:
-#  user: jocas97
+#  user: someuser
 
 # Deploy to these servers.
 servers:

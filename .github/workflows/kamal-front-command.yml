@@ -1,6 +1,9 @@
 name: Front Kamal Command
 
 on:
+  push:
+    branches:
+      - enhancement/kamal-integration # For test (should be removed before merge)
   workflow_dispatch:
     inputs:
       command:
@@ -29,7 +32,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2.2
+          ruby-version: 3.3.0
       
       - name: Install dependencies
         run: gem install kamal

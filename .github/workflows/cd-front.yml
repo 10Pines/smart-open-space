@@ -1,14 +1,15 @@
-name: CD Front
+name: "CD Front"
 
 on:
-  push:
-    branches:
-      - main
-      #- enhancement/kamal-integration # For test (should be removed before merge)
+  workflow_run:
+    workflows: ["CD Back"]
+    types:
+      - completed
 
+# if with 'false' to avoid deploys
 jobs:
   deploy:
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    if: ${{ false && vars.ENABLE_KAMAL_DEPLOY == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     defaults:
       run:
         working-directory: front    

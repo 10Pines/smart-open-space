@@ -2,16 +2,26 @@
 # :scroll: Documentación
 
 ## Índice
-- [Architecture Decision Records (ADRs)](#architecture-decision-records-adrs)
-- [Métricas](#métricas)
-- [Set up Container](#set-up-container)
-- [Performance tests](#performance-tests)
-- [Diagramas de Arquitectura](#diagramas-de-arquitectura)
-- [Documentación Legacy](#documentación-legacy)
+- [:scroll: Documentación](#scroll-documentación)
+  - [Índice](#índice)
+  - [Architecture Decision Records (ADRs)](#architecture-decision-records-adrs)
+  - [Métricas](#métricas)
+  - [Set up Container](#set-up-container)
+  - [Performance tests](#performance-tests)
+  - [Automatización de despliegues](#automatización-de-despliegues)
+  - [Diagramas de Arquitectura](#diagramas-de-arquitectura)
+  - [Documentación Legacy](#documentación-legacy)
+    - [Visualización del Open Space](#visualización-del-open-space)
+    - [Casos de uso](#casos-de-uso)
+      - [Entrega 1](#entrega-1)
+      - [Entrega 2](#entrega-2)
+      - [Entrega 3](#entrega-3)
+      - [Entrega 4](#entrega-4)
 
 ## Architecture Decision Records (ADRs)
 
 - [001 - ID de nuevas entidades de dominio](/docs/adrs/001_id_nuevas_entidades_dominio.md)
+- [002 - Automatización y gestión de despliegues](/docs/adrs/002_automatizacion_y_gestion_de_despliegues.md)
 
 ## Métricas
 
@@ -24,6 +34,10 @@
 ## Performance tests
 
 [Sección de performance tests](/docs/performance_test/README.md)
+
+## Automatización de despliegues
+
+[Sección de automatización de despliegues - Kamal](/docs/kamal/README.md)
 
 ## Diagramas de Arquitectura
 

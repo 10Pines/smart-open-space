@@ -1,0 +1,41 @@
+service: smart-open-space-front
+
+image: cassa97/smart-open-space-front
+
+# Timeout to deploy this service
+deploy_timeout: 45
+
+# User to connect to deploy host (default=root)
+#ssh:
+#  user: someuser
+
+# Deploy to these servers.
+servers:
+  web:
+    hosts:
+      - 206.189.236.250
+
+proxy:
+  ssl: false
+  app_port: 1234
+  healthcheck:
+    path: /up
+
+registry:
+  username:
+    - KAMAL_REGISTRY_USERNAME
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
+  args:
+    # This is API URL of backend (VITE_API_URL)
+    API_URL: http://206.189.236.250
+    #SKIP_HTTPS_IPS: 206.189.236.250
+
+env:
+  clear:
+    UI_PORT: 1234
+
+

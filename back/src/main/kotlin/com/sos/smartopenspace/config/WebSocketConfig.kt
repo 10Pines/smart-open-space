@@ -11,16 +11,17 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 class WebSocketConfig(
   private val scheduleSocket: ScheduleSocket,
-  private val queueSocket: QueueSocket
+  private val queueSocket: QueueSocket,
+  private val corsProps: CorsProps
 ) : WebSocketConfigurer {
   override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
     registry
       .addHandler(scheduleSocket, "/scheduleSocket")
-      .setAllowedOrigins("http://localhost:1234", "https://smartopenspace.herokuapp.com", "https://openspaces.10pines.com", "https://smartopenspace-10pines.herokuapp.com", "https://smartopenspace.10pines.com")
+      .setAllowedOrigins(*corsProps.corsSocketOrigins())
       .withSockJS()
     registry
       .addHandler(queueSocket, "/queueSocket")
-      .setAllowedOrigins("http://localhost:1234", "https://smartopenspace.herokuapp.com", "https://openspaces.10pines.com", "https://smartopenspace-10pines.herokuapp.com", "https://smartopenspace.10pines.com")
+      .setAllowedOrigins(*corsProps.corsSocketOrigins())
       .withSockJS()
   }
 }

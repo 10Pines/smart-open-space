@@ -7,11 +7,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 @Profile("dev", "docker")
-class WebConfig : WebMvcConfigurer {
+class WebConfig(
+  private val corsProps: CorsProps
+) : WebMvcConfigurer {
   override fun addCorsMappings(registry: CorsRegistry) {
     registry
       .addMapping("/**")
-      .allowedMethods("GET", "PUT", "POST", "DELETE")
-      .allowedOrigins("http://localhost:1234", "https://smartopenspace.herokuapp.com", "https://smartopenspace.10pines.com")
+      .allowedMethods(*corsProps.corsAllowedMethods())
+      .allowedOrigins(*corsProps.corsAllowedOrigins())
   }
 }

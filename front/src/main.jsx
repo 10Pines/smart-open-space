@@ -14,9 +14,18 @@ const logRocketKey = import.meta.env.VITE_LOGROCKET_KEY;
 logRocketKey && LogRocket.init(logRocketKey);
 toast.configure();
 
+const skipHttpsIpsEnv = import.meta.env.VITE_SKIP_HTTPS_IPS
+
+const skipHttpsIps = skipHttpsIpsEnv
+  ? skipHttpsIpsEnv.split(',').map(ip => ip.trim())
+  : [];
+
+const renderWithHttpsIfApply = (component) => 
+  skipHttpsIps.includes(window.location.hostname) 
+    ? component
+    : (<HttpsRedirect>{component}</HttpsRedirect>);
+
 render(
-  <HttpsRedirect>
-    <App />
-  </HttpsRedirect>,
+  renderWithHttpsIfApply(<App />),
   document.getElementById('root')
 );

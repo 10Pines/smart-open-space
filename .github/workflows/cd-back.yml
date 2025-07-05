@@ -1,0 +1,70 @@
+name: "CD Back"
+
+on:
+  push:
+    branches:
+      - main
+
+
+# if with 'false' to avoid deploys
+jobs:
+  deploy:
+    if: ${{ false && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    defaults:
+      run:
+        working-directory: back    
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_BUILDKIT: 1
+      KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
+      KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+      SPRING_PROFILE: ${{ vars.SPRING_PROFILE }}
+      FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+      CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
+      CORS_ALLOWED_SOCKET_ORIGINS: ${{ vars.CORS_ALLOWED_SOCKET_ORIGINS }}
+      MAIL_SENDER: ${{ secrets.MAIL_SENDER }}
+      MAILGUN_SMTP_SERVER: ${{ secrets.MAILGUN_SMTP_SERVER }}
+      MAILGUN_SMTP_PORT: ${{ secrets.MAILGUN_SMTP_PORT }}
+      MAILGUN_SMTP_LOGIN: ${{ secrets.MAILGUN_SMTP_LOGIN }}
+      MAILGUN_SMTP_PASSWORD: ${{ secrets.MAILGUN_SMTP_PASSWORD }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRATION_IN_MINUTES: ${{ secrets.JWT_EXPIRATION_IN_MINUTES }}
+      PURGE_PASSWORD: ${{ secrets.PURGE_PASSWORD }}
+      JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
+      SOS_DB_USER: ${{ secrets.SOS_DB_USER }}
+      SOS_DB_PASSWORD: ${{ secrets.SOS_DB_PASSWORD }}
+      NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
+      NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.0
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: gem install kamal
+
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_BACK_PRIVATE_KEY }}
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+
+      # In case of lock errors (fix)
+      - name: Run kamal lock release 
+        run: kamal lock release || true 
+
+      # Setup kamal proxy and accesories
+      #- name: Run kamal setup command
+      #  run: kamal setup || true
+
+
+
+      - name: Run kamal deploy command
+        run: kamal deploy

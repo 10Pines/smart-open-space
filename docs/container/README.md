@@ -28,37 +28,36 @@ Se tomo como base este repositorio con su configuración: [github.com/Einsteinis
 
 Observación: Cada vez que actualicemos la aplicación o su codigo fuente, debemos reconstruir las imagenes del backend y frontend para tener su ultima versión.
 
-1. Construir dockerfile Back
+1. **[opcional]** Construir Dockerfile Back
 
-Estar en el directorio root del repositorio. Luego, ejecutar:
+    ```bash
+    cd back && docker build -t sos-back .
+    ```
 
-```bash
-./gradlew clean && ./gradlew build -x check
-```
+2. **[opcional]** Construir Dockerfile Front
 
-Despues ejecutar:
+   - Estar en el directorio root del repositorio. Luego, ejecutar:
 
-```bash
-cd back && docker build -t sos-back .
-```
+    ```bash 
+    cd front && docker build --build-arg API_URL=http://localhost:8081 -t sos-front .
+    ```
 
-2. Construir dockerfile Front
+  - **Argumentos**
+    - `API_URL`: es el host y puerto donde se va a ejecutar el back. Es Opcional y su valor default es `http://localhost:8081`.
+    - `SKIP_HTTPS_IPS`: es opcional y su valor debe ser un listado separado por `,` de ips o dominios que van a ser excluidos en el redireccionamiento automatico de HTTP a HTTPS. Ejemplo: `192.168.184.124,192.168.184.123`
 
-Estar en el directorio root del repositorio. Luego, ejecutar:
-```bash
-cd front && docker build -t sos-front .
-```
+   - **Observaciones**: 
+     - En caso de error, borrar carpetas temporales `node_modules` y `build`.
 
-Nota: En caso de error, borrar carpetas temporales `node_modules` y `build`.
 
 3. Revisar variables de entorno (env vars), como `APP_PORT`, `SPRING_PROFILE`, `DB_PORT`, donde van a configurarse en los contenedores en el archivo [`docker-compose.yml`](/docs/container/docker-compose.yml).
 
 4. Revisar que no tengamos una instancia local del servicio ejecutando o algun puerto ocupado de la configuración anterior. Luego, ejecutamos el comando en el directorio root del proyecto:
-```bash
-docker-compose -p 'sos-full-app' up -d --build
-```
+    ```bash
+    docker-compose -p 'sos-full-app' up -d --build
+    ```
 
-5. Servicios principales disponibles:
+5. Servicios principales disponibles (usando puertos default):
 
 
 | Servicio                                        | Endpoint                                     |
@@ -71,7 +70,6 @@ docker-compose -p 'sos-full-app' up -d --build
 | Prometheus                                      | [localhost:9090](http://localhost:9090)      |
 
 
-
-Observaciónes: 
-- Los puertos pueden variar en base a la configuración establecida.
-- Existen mas servicios disponibles, pero son internos e integradores a Grafana y Prometheus. 
+   - **Observaciónes**: 
+     - Los puertos pueden variar en base a la configuración establecida.
+     - Existen mas servicios disponibles, pero son internos e integradores a Grafana y Prometheus.

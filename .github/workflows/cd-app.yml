@@ -6,10 +6,11 @@ on:
       - main
       - enhancement/444-cd-github-kamal # MUST DELETE THIS (only for test)
 
-# Add this 'if' before merge
-# 'deploy.if:' => {{ vars.IS_ENABLE_KAMAL_CD == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+# TODO: Add this 'if' key en each job deploy before merge to main branch
+# {{ vars.IS_ENABLE_KAMAL_CD == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 jobs:
-  deploy:
+  deploy-back:
+    if: ${{ vars.IS_ENABLE_KAMAL_CD == 'true' }}
     defaults:
       run:
         working-directory: back    
@@ -64,7 +65,40 @@ jobs:
       #- name: Run kamal setup command
       #  run: kamal setup || true
 
+      - name: Run kamal deploy command
+        run: kamal deploy
 
+  deploy-front: # require deploy-back ends ok
+    if: ${{ vars.IS_ENABLE_KAMAL_CD == 'true' }}
+    defaults:
+      run:
+        working-directory: front    
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_BUILDKIT: 1
+      KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
+      KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.0
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: gem install kamal
+
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_FRONT_PRIVATE_KEY }}
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Run kamal deploy command
         run: kamal deploy

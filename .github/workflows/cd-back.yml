@@ -6,10 +6,11 @@ on:
       - main
       - enhancement/444-cd-github-kamal # MUST DELETE THIS (only for test)
 
-# Add this 'if' before merge
-# 'deploy.if:' => {{ vars.IS_ENABLE_KAMAL_CD == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+# Add this condition in if before merge
+#  && github.event_name == 'push' && github.ref == 'refs/heads/main'
 jobs:
-  deploy:
+  deploy-back:
+    if: ${{ vars.IS_ENABLE_KAMAL_CD == 'true' }}
     defaults:
       run:
         working-directory: back    
@@ -63,8 +64,6 @@ jobs:
       # Setup kamal proxy and accesories
       #- name: Run kamal setup command
       #  run: kamal setup || true
-
-
 
       - name: Run kamal deploy command
         run: kamal deploy

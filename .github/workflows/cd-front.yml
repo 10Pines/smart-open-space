@@ -1,4 +1,4 @@
-name: CD_Front
+name: "CD Front"
 
 on:
   workflow_run:

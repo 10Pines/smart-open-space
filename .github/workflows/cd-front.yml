@@ -3,8 +3,10 @@ name: CD_Front
 on:
   workflow_run:
     workflows: ["CD_Back"]
-    #branches: ["main"] 
-    types: ["completed"] 
+    branches:
+      - "main"
+      - "enhancement/444-cd-github-kamal" # MUST DELETE THIS (only for test)
+    types: ["completed"]
 
 # Add this condition in if before merge
 #  && github.event_name == 'push' && github.ref == 'refs/heads/main'

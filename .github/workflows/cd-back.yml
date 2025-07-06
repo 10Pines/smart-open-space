@@ -4,12 +4,12 @@ on:
   push:
     branches:
       - main
+      - enhancement/444-cd-github-kamal # MUST DELETE THIS (only for test)
 
-
-# if with 'false' to avoid deploys
+# Add this 'if' before merge
+# 'deploy.if:' => {{ vars.IS_ENABLE_KAMAL_CD == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 jobs:
   deploy:
-    if: ${{ false && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     defaults:
       run:
         working-directory: back    

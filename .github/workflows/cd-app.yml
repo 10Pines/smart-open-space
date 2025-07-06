@@ -1,5 +1,7 @@
 name: "CD App"
 
+# In case of errors, check actual repo kamal documentations
+
 on:
   push:
     branches:
@@ -53,20 +55,13 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_BACK_PRIVATE_KEY }}
 
-      #- name: Set up Docker Buildx
-      #  id: buildx
-      #  uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
 
-      # In case of lock errors (fix)
-      #- name: Run kamal lock release 
-      #  run: kamal lock release || true 
+      - name: Run kamal deploy command
+        run: kamal deploy
 
-      # Setup kamal proxy and accesories
-      #- name: Run kamal setup command
-      #  run: kamal setup || true
-
-      #- name: Run kamal deploy command
-      #  run: kamal deploy
   deploy_front:
     if: ${{ vars.IS_ENABLE_KAMAL_CD == 'true' }}
     needs: [deploy_back]

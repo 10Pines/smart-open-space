@@ -4,19 +4,28 @@ Actualmente, smart-open-space soporta kamal 2. Sin embargo, requiere de una pers
 
 [Documentación oficial de kamal](https://kamal-deploy.org/docs/installation/)
 
-En este proyecto, se tienen dos workflows (github actions) para poder realizar el CD de la aplicación:
-- [CD Back](/.github/workflows/cd-back.yml)
-- [CD Front](/.github/workflows/cd-front.yml)
+## Introducción CD (Despligue Continuo)
 
-Cada uno se encarga de desplegar su propia instancia de servicio.
+En este proyecto, se tienen dos jobs para poder realizar el CD de la aplicación dentro de un mismo github action workflow:
+- [CD App](/.github/workflows/cd-app.yml)
 
-Luego hay otros dos workflows (github actions) a demanda para ejecutar comandos a necesidad:
-- [Back Kamal Command](/.github/workflows/kamal-back-command.yml) 
-- [Front Kamal Command](/.github/workflows/kamal-front-command.yml) 
+Los jobs se llaman en el siguiente orden:
+ 1. `deploy_back` dedicado a construir la imagen del servicio back y desplegarla en el servidor
+ 2. `deploy_front` dedicado a construir la imagen del servicio front y desplegarla en el servidor. 
 
-A continuación se detallará una guía con requisitos, configuraciones y pasos para realizar el despliegue de manera manual.
+:warning: En caso de errores, existen dos github actions ejecutables manualmente para ejecutar comandos a demanda:
+- [Workflow manual para el server back](/.github/workflows/kamal-back-command.yml)
+- [Workflow manual para el server front](/.github/workflows/kamal-back-command.yml)
 
-## Requisitos
+Posibles casos de error:
+
+| Caso                                       | Solución                                  | Posible comando solución           | Causas                                                                                                                                                                                                                   |
+| ------------------------------------------ | ----------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Error de lock                              | Ejecutar un lock release                  | kamal lock release | Errores inesperados o se rompe el pipeline de CD                                                                                                                                                                         |
+| No existen el proxy ni los accesorios de los servicios | Ejecutar kamal setup                      | kamal setup      | Puede deberse a ser un servidor nuevo, o bien, tener un accesorio nuevo. Tener cuidado con kamal setup que intenta recrear un kamal proxy nuevo (si ya existe uno, puede romper el comando). n el caso de requerir solo los accesorios revisar comandos de kamal accessory                               |
+| No levanta el servicio / deploy timeout    | Liberar recursos (memoria principalmente) | N/A                | Al no poseer recursos la aplicación no puede levantar correctamente. Aca se puede liberar recursos, o bien, brindar mas memoria al servidor. Esto siempre descartando que no sea un error introducido a nivel aplicación o usuario |
+
+## Guía manual y de configuraciónes 
 
 ### Requisitos minimos
 - Tener un ambiente de ruby (o sino usando Docker [docs info](https://kamal-deploy.org/docs/installation/dockerized/) teniendo funcionalidades limitadas).
@@ -29,7 +38,7 @@ A continuación se detallará una guía con requisitos, configuraciones y pasos 
 ### Requisitos opcionales
 - Es altamente recomendado tener los hostnames de los dominios configurados con algun DNS y listos para usar. Esto es para utilizar HTTPS en los servicios. Kamal utiliza "Let's encrypt" si esta habilitada su propiedad "ssl". Sino se puede realizar con HTTP.
 
-## Guía
+### Pasos (seguir en orden)
 
 1. Si se ejecuta con Docker, se puede ignorar este paso. Sino, instalar kamal globalmente en el sistema que va a realizar el despliegue.
 

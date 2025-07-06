@@ -16,6 +16,7 @@ servers:
 
 proxy:
   ssl: true
+  ssl_redirect: false # Cloudflare will handle SSL (to avoid loop)
   host: smartopenspace-api.10pines.com
   app_port: 8081
   healthcheck:

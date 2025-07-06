@@ -33,7 +33,7 @@ builder:
   arch: amd64
   args:
     # This is API URL of backend (VITE_API_URL)
-    API_URL: http://206.189.236.250
+    API_URL: https://smartopenspace-api.10pines.com
     #SKIP_HTTPS_IPS: 206.189.236.250
 
 env:

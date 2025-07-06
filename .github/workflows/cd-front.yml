@@ -1,8 +1,8 @@
-name: "CD Front"
+name: CD_Front
 
 on:
   workflow_run:
-    workflows: ["deploy-back"]
+    workflows: ["CD_Back"]
     #branches: ["main"] 
     types: ["completed"] 
 

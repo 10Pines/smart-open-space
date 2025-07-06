@@ -1,4 +1,4 @@
-name: "CD Back"
+name: CD_Back
 
 on:
   push:

@@ -13,11 +13,15 @@ Los jobs se llaman en el siguiente orden:
  1. `deploy_back` dedicado a construir la imagen del servicio back y desplegarla en el servidor
  2. `deploy_front` dedicado a construir la imagen del servicio front y desplegarla en el servidor. 
 
-:warning: En caso de errores, existen dos github actions ejecutables manualmente para ejecutar comandos a demanda:
+Tambien, existen dos github variables para activar/desactivar el CD de cada servicio:
+- `IS_ENABLE_KAMAL_CD_BACK` si es igual a `true`, entonces permitira ejecutar el job.
+- `IS_ENABLE_KAMAL_CD_FRONT` si es igual a `true`, entonces permitira ejecutar el job.
+
+:warning: En caso de errores al desplegar con kamal, existen dos github actions ejecutables manualmente para ejecutar comandos a demanda:
 - [Workflow manual para el server back](/.github/workflows/kamal-back-command.yml)
 - [Workflow manual para el server front](/.github/workflows/kamal-back-command.yml)
 
-Posibles casos de error:
+Posibles casos de error (revisar previamente guía de kamal con sus configuraciones y recomendaciones, y su documentación oficial):
 
 | Caso                                       | Solución                                  | Posible comando solución           | Causas                                                                                                                                                                                                                   |
 | ------------------------------------------ | ----------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

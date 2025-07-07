@@ -13,6 +13,9 @@ class CorsProps(
     @Value("\${app.cors.allowed.socket-origins}")
     val corsAllowedSocketOrigins: String,
 ) {
+    init {
+        LOGGER.info("CorsProps=$this")
+    }
 
     fun corsAllowedMethods(): Array<String> = getArrayFromStringRaw(corsAllowedMethods).also {
         logArrayValue("Allowed CORS methods", it)
@@ -32,6 +35,10 @@ class CorsProps(
     private fun logArrayValue(header: String, value: Array<String>) {
         LOGGER.info("${header}: ${value.joinToString(", ")}")
     }
+
+    override fun toString() =
+        "CorsProps(corsAllowedMethods='$corsAllowedMethods', corsAllowedOrigins='$corsAllowedOrigins', corsAllowedSocketOrigins='$corsAllowedSocketOrigins')"
+
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(this::class.java)

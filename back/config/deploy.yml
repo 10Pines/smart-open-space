@@ -2,8 +2,8 @@ service: smart-open-space-back
 
 image: cassa97/smart-open-space-back
 
-# Timeout to deploy this service
-deploy_timeout: 45
+# Timeout to deploy this service (default=30sec)
+deploy_timeout: 60
 
 # User to connect to deploy host (default=root)
 #ssh:
@@ -15,7 +15,9 @@ servers:
     - 206.189.236.250
 
 proxy:
-  ssl: false
+  ssl: true
+  ssl_redirect: false # Cloudflare will handle SSL (to avoid loop)
+  host: smartopenspace-api.10pines.com
   app_port: 8081
   healthcheck:
     path: /ping

@@ -1,18 +1,15 @@
 name: "CD App"
 
-# In case of errors, check actual repo kamal documentations
+# INFO: In case of errors, check actual repository kamal documentations.
 
 on:
   push:
     branches:
       - main
-      - enhancement/444-cd-github-kamal # MUST DELETE THIS (only for test)
 
-# Add this condition in if before merge
-#  && github.event_name == 'push' && github.ref == 'refs/heads/main'
 jobs:
   deploy_back:
-    if: ${{ vars.IS_ENABLE_KAMAL_CD_BACK == 'true' }}
+    if: ${{ vars.IS_ENABLE_KAMAL_CD_BACK == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     defaults:
       run:
         working-directory: back    
@@ -63,7 +60,7 @@ jobs:
         run: kamal deploy
 
   deploy_front:
-    if: ${{ vars.IS_ENABLE_KAMAL_CD_FRONT == 'true' }}
+    if: ${{ vars.IS_ENABLE_KAMAL_CD_FRONT == 'true'  && github.event_name == 'push' && github.ref == 'refs/heads/main'}}
     needs: [deploy_back]
     defaults:
       run:

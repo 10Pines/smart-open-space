@@ -1,5 +1,9 @@
 name: Front Kamal Command
 
+permissions:
+  contents: read
+  pull-requests: read
+
 on:
   workflow_dispatch:
     inputs:

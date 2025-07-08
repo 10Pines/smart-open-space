@@ -1,5 +1,9 @@
 name: Backend CI
 
+permissions:
+  contents: read
+  pull-requests: write
+
 on: push
 
 jobs:

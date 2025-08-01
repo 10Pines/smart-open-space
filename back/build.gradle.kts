@@ -48,7 +48,7 @@ dependencies {
   implementation("org.glassfish.jersey.inject:jersey-hk2")
   runtimeOnly("com.h2database:h2")
   runtimeOnly("org.postgresql:postgresql")
-  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.19.0")
+  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.22.0")
   runtimeOnly("io.micrometer:micrometer-registry-prometheus")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("io.mockk:mockk:1.13.17")

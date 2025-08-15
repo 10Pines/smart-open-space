@@ -6,6 +6,9 @@ build/
 application-default.properties
 bin
 
+# JACOCO reports
+**/htmlReport/**
+
 ### STS ###
 .apt_generated
 .classpath

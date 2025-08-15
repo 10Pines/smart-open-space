@@ -88,4 +88,59 @@ class StringUtilTest {
         val expectedRes = "Sample(id=12, name=test, password=***)"
         assertEquals(expectedRes, res)
     }
+
+    @Test
+    fun `test toStringByReflex of sample class, only exclude fields`() {
+        class Sample(
+            val id: Long,
+            val name: String,
+            val excludeField1: String,
+            val excludeField2: Long,
+            val password: String,
+            val excludeField3: Any
+        )
+
+        val input = Sample(
+            id = 12,
+            name = "test",
+            excludeField1 = "exclude1",
+            excludeField2 = 112312,
+            excludeField3 = "a" to "b",
+            password = "jeje123456xD"
+        )
+        val res = toStringByReflex(
+            input,
+            exclude = listOf("excludeField1", "excludeField2", "excludeField3")
+        )
+
+        val expectedRes = "Sample(id=12, name=test, password=jeje123456xD)"
+        assertEquals(expectedRes, res)
+    }
+
+    @Test
+    fun `test toStringByReflex of sample class, only mask fields`() {
+        class Sample(
+            val id: Long,
+            val name: String,
+            val excludeField1: String,
+            val password: String,
+            val sensitiveData: Any
+        )
+
+        val input = Sample(
+            id = 12,
+            name = "test",
+            excludeField1 = "exclude1",
+            sensitiveData = "key" to "sensitiveData",
+            password = "jeje123456xD"
+        )
+        val res = toStringByReflex(
+            input,
+            mask = listOf("password", "sensitiveData")
+        )
+
+        val expectedRes =
+            "Sample(excludeField1=exclude1, id=12, name=test, password=***, sensitiveData=***)"
+        assertEquals(expectedRes, res)
+    }
 }

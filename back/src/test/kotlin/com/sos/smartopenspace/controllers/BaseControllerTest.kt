@@ -1,7 +1,12 @@
 package com.sos.smartopenspace.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.sos.smartopenspace.persistence.*
+import com.sos.smartopenspace.persistence.AuthSessionRepository
+import com.sos.smartopenspace.persistence.OpenSpaceRepository
+import com.sos.smartopenspace.persistence.RoomRepository
+import com.sos.smartopenspace.persistence.SlotRepository
+import com.sos.smartopenspace.persistence.TalkRepository
+import com.sos.smartopenspace.persistence.UserRepository
 import com.sos.smartopenspace.services.UserService
 import com.sos.smartopenspace.services.impl.AuthService
 import com.sos.smartopenspace.services.impl.JwtService
@@ -10,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.ResultActions
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -58,6 +64,10 @@ abstract class BaseControllerTest {
         authSessionRepo.deleteAll()
         userRepo.deleteAll()
     }
+
+    protected final inline fun <reified T> readMvcResponseAndConvert(resActions: ResultActions): T =
+        objectMapper.readValue(resActions.andReturn().response.contentAsString, T::class.java)
+
 
     //FIXME: Add after each tearDown method to clear all entities
     //  Not implemented because exist tests with state that needs to be preserved

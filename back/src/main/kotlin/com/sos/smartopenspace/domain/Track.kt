@@ -13,12 +13,12 @@ data class Track(
     @field:NotEmpty
     val name: String,
 
-    @field:Size(max=500)
+    @field:Size(max = 500)
     val description: String = "",
 
     @field:HexColor
     val color: String,
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     override var id: Long = 0

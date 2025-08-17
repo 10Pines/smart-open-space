@@ -4,7 +4,17 @@ import com.jayway.jsonpath.JsonPath
 import com.sos.smartopenspace.aUser
 import com.sos.smartopenspace.anOpenSpace
 import com.sos.smartopenspace.anOpenSpaceWith
-import com.sos.smartopenspace.domain.*
+import com.sos.smartopenspace.domain.OpenSpace
+import com.sos.smartopenspace.domain.Review
+import com.sos.smartopenspace.domain.Room
+import com.sos.smartopenspace.domain.RoomNotFoundException
+import com.sos.smartopenspace.domain.Slot
+import com.sos.smartopenspace.domain.Talk
+import com.sos.smartopenspace.domain.TalkSlot
+import com.sos.smartopenspace.domain.TrackNotFoundException
+import com.sos.smartopenspace.domain.User
+import com.sos.smartopenspace.dto.DefaultErrorDto
+import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
 import com.sos.smartopenspace.generateTalkBody
 import com.sos.smartopenspace.services.impl.JwtService.Companion.TOKEN_PREFIX
 import jakarta.ws.rs.core.HttpHeaders
@@ -12,7 +22,9 @@ import jakarta.ws.rs.core.MediaType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -69,6 +81,31 @@ class TalkControllerTest: BaseControllerTest() {
   }
 
   @Test
+  fun `exchange a talk with not exist room THEN returns an RoomNotFoundException status response`() {
+    val organizer = anySavedUser("user@gmail.com")
+    val talk = anySavedTalk(organizer)
+    val room = anySavedRoom()
+    val aSlot = aSavedSlot()
+    val otherSlot = otherSavedSlot()
+    val openSpace = openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot, otherSlot), setOf(room)))
+    openSpace.scheduleTalk(talk, organizer, aSlot as TalkSlot, room)
+
+    // WHEN
+    val res = mockMvc.perform(put("/talk/exchange/${talk.id}/${otherSlot.id}/999999"))
+
+    // THEN
+    res.andExpect(MockMvcResultMatchers.status().isNotFound)
+    val resBody: DefaultErrorDto = readMvcResponseAndConvert(res)
+    val expectedRes = DefaultErrorDto(
+        message = RoomNotFoundException().message,
+        statusCode = 404,
+        status = "not_found",
+        isFallbackError = false
+    )
+    assertEquals(expectedRes, resBody)
+  }
+
+  @Test
   fun `Asking for an specific talk returns an ok status`() {
     val organizer = anySavedUser("user@gmail.com")
     val talk = anySavedTalk(organizer)
@@ -119,6 +156,45 @@ class TalkControllerTest: BaseControllerTest() {
       .andExpect(MockMvcResultMatchers.status().isOk)
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(talkId))
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].description").value(changedDescription))
+  }
+
+  @Test
+  fun `cannot update a talk because track is not found`() {
+    val (user, userBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = "user@gmail.com"))
+    val anOpenSpace = anOpenSpace()
+    user.addOpenSpace(anOpenSpace)
+    anOpenSpace.toggleCallForPapers(user)
+    openSpaceRepository.save(anOpenSpace)
+
+    val aTalk = Talk("a talk", "Some description", speaker = user)
+    anOpenSpace.addTalk(aTalk)
+    val talkPersisted: Talk = talkRepository.save(aTalk)
+
+    val updateTalkRequestBody = CreateTalkRequestDTO(
+        name = "sarasa",
+        description = "xd",
+        trackId = 999999 // Non-existent track ID
+    )
+    val changedDescription = "a different description"
+    val response = mockMvc.perform(
+      put("/talk/${aTalk.id}/user/${user.id}")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(updateTalkRequestBody))
+        .header(HttpHeaders.AUTHORIZATION, userBearerToken)
+    )
+
+    response.andExpect(MockMvcResultMatchers.status().isNotFound)
+
+    val errorBody: DefaultErrorDto = readMvcResponseAndConvert(response)
+    val expectedRes =  DefaultErrorDto(
+      message = TrackNotFoundException().message,
+      statusCode = 404,
+      status = "not_found",
+      isFallbackError = false
+    )
+    assertEquals(expectedRes, errorBody)
+    val notUpdatedTalk = talkRepository.findById(talkPersisted.id).orElseGet { throw IllegalStateException("Talk not found") }
+    assertEquals(talkPersisted, notUpdatedTalk)
   }
 
   @Test
@@ -309,6 +385,31 @@ class TalkControllerTest: BaseControllerTest() {
     )
       .andExpect(MockMvcResultMatchers.status().isOk)
       .andExpect(MockMvcResultMatchers.jsonPath("$.reviews[0].grade").value(5))
+  }
+
+  @Test
+  fun `review talk with userID not exist should not add a review`() {
+    val (aUser, aUserBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = "user@gmail.com"))
+    val talk = anySavedTalk(aUser)
+    val content = aReviewCreationBody(5, "a review")
+
+    val res = mockMvc.perform(
+      post("/talk/${talk.id}/user/999999/review")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(content)
+        .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
+    )
+
+    res.andExpect(MockMvcResultMatchers.status().isForbidden)
+    /*
+    val resBody = readMvcResponseAndConvert<DefaultErrorDto>(res)
+    val expectedRes = DefaultErrorDto(
+      message = UserNotFoundException().message,
+      statusCode = 404,
+      status = "not_found",
+      isFallbackError = false
+    )
+    assertEquals(expectedRes, resBody)*/
   }
 
   @Test

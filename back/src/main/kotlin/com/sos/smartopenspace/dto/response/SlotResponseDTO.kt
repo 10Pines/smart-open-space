@@ -1,5 +1,6 @@
 package com.sos.smartopenspace.dto.response
 
+import com.google.common.base.Objects
 import com.sos.smartopenspace.util.toStringByReflex
 import java.time.LocalDate
 import java.time.LocalTime
@@ -18,6 +19,18 @@ abstract class SlotResponseDTO(
 ) {
     override fun toString(): String =
         toStringByReflex(this)
+
+    override fun equals(other: Any?) =
+        (other is SlotResponseDTO)
+                && other::class == this::class
+                && other.id == id
+                && other.startTime == startTime
+                && other.endTime == endTime
+                && other.date == date
+
+    override fun hashCode(): Int =
+        Objects.hashCode(id, startTime, endTime, date, type)
+
 }
 
 class TalkSlotResponseDTO(

@@ -320,9 +320,3 @@ class OpenSpace(
         !isOrganizer(user) && throw NotTheOrganizerException()
 
 }
-
-enum class QueueState {
-    PENDING,
-    ACTIVE,
-    FINISHED
-}

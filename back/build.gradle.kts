@@ -3,7 +3,7 @@ import de.undercouch.gradle.tasks.download.Download
 plugins {
   base
   val kotlinVersion = "2.1.20"
-  id("org.springframework.boot") version "3.2.7"
+  id("org.springframework.boot") version "3.3.13"
   id("io.spring.dependency-management") version "1.1.7"
   id("org.flywaydb.flyway") version "11.0.0"
   id("de.undercouch.download") version "5.6.0"
@@ -28,6 +28,7 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
   implementation("org.flywaydb:flyway-core")
+  implementation("org.flywaydb:flyway-database-postgresql")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlin:kotlin-stdlib")
   implementation("org.springframework.boot:spring-boot-starter-aop")

@@ -15,7 +15,7 @@ class Document(
   @field:NotEmpty()
   var name: String,
 
-  @Column(columnDefinition="VarChar")
+  @Column(columnDefinition = "VarChar")
   @field:NotNull
   var link: URL,
 
@@ -25,6 +25,6 @@ class Document(
 ) : UpdatableItemCollection {
 
   override fun toString(): String =
-      toStringByReflex(this)
+    toStringByReflex(this)
 
 }

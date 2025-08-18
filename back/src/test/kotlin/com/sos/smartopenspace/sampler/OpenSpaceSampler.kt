@@ -10,43 +10,43 @@ import com.sos.smartopenspace.domain.User
 
 object OpenSpaceSampler {
 
-    fun get() = getWith()
+  fun get() = getWith()
 
-    fun getWith(
-        id: Long = 10L,
-        name: String = "New Open Space",
-        description: String = "This is a sample open space description.",
-        urlImage: String = "https://example.com/image.png",
-        rooms: MutableSet<Room> = mutableSetOf(),
-        slots: MutableSet<Slot> = mutableSetOf(),
-        talks: MutableSet<Talk> = mutableSetOf(),
-        tracks: MutableSet<Track> = mutableSetOf(),
-        organizer: User = UserSampler.get(),
-        assignedSlots: MutableSet<AssignedSlot> = mutableSetOf(),
-        isActiveVoting: Boolean = false,
-        isShowSpeakerName: Boolean = false,
-        toScheduleTalks: MutableSet<Talk> = mutableSetOf(),
-        queueTalks: MutableList<Talk> = mutableListOf()
-    ): OpenSpace = OpenSpace(
-        id = id,
-        name = name,
-        description = description,
-        rooms = rooms,
-        slots = slots,
-        talks = talks,
-        tracks = tracks,
-        urlImage = urlImage,
-    ).let {
-        it.showSpeakerName = isShowSpeakerName
-        it.isActiveVoting = isActiveVoting
-        it.assignedSlots.addAll(assignedSlots)
-        it.toSchedule.addAll(toScheduleTalks)
-        it.queue.addAll(queueTalks)
-        it.organizer = organizer
+  fun getWith(
+    id: Long = 10L,
+    name: String = "New Open Space",
+    description: String = "This is a sample open space description.",
+    urlImage: String = "https://example.com/image.png",
+    rooms: MutableSet<Room> = mutableSetOf(),
+    slots: MutableSet<Slot> = mutableSetOf(),
+    talks: MutableSet<Talk> = mutableSetOf(),
+    tracks: MutableSet<Track> = mutableSetOf(),
+    organizer: User = UserSampler.get(),
+    assignedSlots: MutableSet<AssignedSlot> = mutableSetOf(),
+    isActiveVoting: Boolean = false,
+    isShowSpeakerName: Boolean = false,
+    toScheduleTalks: MutableSet<Talk> = mutableSetOf(),
+    queueTalks: MutableList<Talk> = mutableListOf()
+  ): OpenSpace = OpenSpace(
+    id = id,
+    name = name,
+    description = description,
+    rooms = rooms,
+    slots = slots,
+    talks = talks,
+    tracks = tracks,
+    urlImage = urlImage,
+  ).let {
+    it.showSpeakerName = isShowSpeakerName
+    it.isActiveVoting = isActiveVoting
+    it.assignedSlots.addAll(assignedSlots)
+    it.toSchedule.addAll(toScheduleTalks)
+    it.queue.addAll(queueTalks)
+    it.organizer = organizer
 
 
-        organizer.addOpenSpace(it)
-        it
-    }
+    organizer.addOpenSpace(it)
+    it
+  }
 
 }

@@ -31,7 +31,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @Transactional
-class TalkControllerTest: BaseControllerTest() {
+class TalkControllerTest : BaseControllerTest() {
 
   @Test
   fun `schedule a talk returns an ok status response`() {
@@ -39,7 +39,8 @@ class TalkControllerTest: BaseControllerTest() {
     val talk = anySavedTalk(organizer)
     val room = anySavedRoom()
     val aSlot = aSavedSlot()
-    val openSpace = openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot), setOf(room)))
+    val openSpace =
+      openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot), setOf(room)))
 
     mockMvc.perform(
       put("/talk/schedule/${organizer.id}/${talk.id}/${aSlot.id}/${room.id}")
@@ -69,15 +70,22 @@ class TalkControllerTest: BaseControllerTest() {
     val room = anySavedRoom()
     val aSlot = aSavedSlot()
     val otherSlot = otherSavedSlot()
-    val openSpace = openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot, otherSlot), setOf(room)))
+    val openSpace = openSpaceRepository.save(
+      anOpenSpaceWith(
+        talk,
+        organizer,
+        setOf(aSlot, otherSlot),
+        setOf(room)
+      )
+    )
     openSpace.scheduleTalk(talk, organizer, aSlot as TalkSlot, room)
 
     mockMvc.perform(
-            put("/talk/exchange/${talk.id}/${otherSlot.id}/${room.id}")
+      put("/talk/exchange/${talk.id}/${otherSlot.id}/${room.id}")
     ).andExpect(MockMvcResultMatchers.status().isOk)
 
     assertEquals(1, freeSlots(openSpace).size)
-    assertTrue( freeSlots(openSpace).contains(aSlot))
+    assertTrue(freeSlots(openSpace).contains(aSlot))
   }
 
   @Test
@@ -87,7 +95,14 @@ class TalkControllerTest: BaseControllerTest() {
     val room = anySavedRoom()
     val aSlot = aSavedSlot()
     val otherSlot = otherSavedSlot()
-    val openSpace = openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot, otherSlot), setOf(room)))
+    val openSpace = openSpaceRepository.save(
+      anOpenSpaceWith(
+        talk,
+        organizer,
+        setOf(aSlot, otherSlot),
+        setOf(room)
+      )
+    )
     openSpace.scheduleTalk(talk, organizer, aSlot as TalkSlot, room)
 
     // WHEN
@@ -97,10 +112,10 @@ class TalkControllerTest: BaseControllerTest() {
     res.andExpect(MockMvcResultMatchers.status().isNotFound)
     val resBody: DefaultErrorDto = readMvcResponseAndConvert(res)
     val expectedRes = DefaultErrorDto(
-        message = RoomNotFoundException().message,
-        statusCode = 404,
-        status = "not_found",
-        isFallbackError = false
+      message = RoomNotFoundException().message,
+      statusCode = 404,
+      status = "not_found",
+      isFallbackError = false
     )
     assertEquals(expectedRes, resBody)
   }
@@ -171,9 +186,9 @@ class TalkControllerTest: BaseControllerTest() {
     val talkPersisted: Talk = talkRepository.save(aTalk)
 
     val updateTalkRequestBody = CreateTalkRequestDTO(
-        name = "sarasa",
-        description = "xd",
-        trackId = 999999 // Non-existent track ID
+      name = "sarasa",
+      description = "xd",
+      trackId = 999999 // Non-existent track ID
     )
     val changedDescription = "a different description"
     val response = mockMvc.perform(
@@ -186,14 +201,15 @@ class TalkControllerTest: BaseControllerTest() {
     response.andExpect(MockMvcResultMatchers.status().isNotFound)
 
     val errorBody: DefaultErrorDto = readMvcResponseAndConvert(response)
-    val expectedRes =  DefaultErrorDto(
+    val expectedRes = DefaultErrorDto(
       message = TrackNotFoundException().message,
       statusCode = 404,
       status = "not_found",
       isFallbackError = false
     )
     assertEquals(expectedRes, errorBody)
-    val notUpdatedTalk = talkRepository.findById(talkPersisted.id).orElseGet { throw IllegalStateException("Talk not found") }
+    val notUpdatedTalk = talkRepository.findById(talkPersisted.id)
+      .orElseGet { throw IllegalStateException("Talk not found") }
     assertEquals(talkPersisted, notUpdatedTalk)
   }
 
@@ -207,7 +223,7 @@ class TalkControllerTest: BaseControllerTest() {
     val nonexistentTalkId = 789
 
     mockMvc.perform(
-        put("/talk/${nonexistentTalkId}/user/${user.id}")
+      put("/talk/${nonexistentTalkId}/user/${user.id}")
         .contentType(MediaType.APPLICATION_JSON)
         .content(generateTalkBody())
         .header(HttpHeaders.AUTHORIZATION, userBearerToken)
@@ -464,7 +480,7 @@ class TalkControllerTest: BaseControllerTest() {
     val talk = anySavedTalk(aUser)
     val content = aReviewCreationBody(4, "a review")
 
-    val someOtherUserId = aUser.id+10
+    val someOtherUserId = aUser.id + 10
     mockMvc.perform(
       post("/talk/${talk.id}/user/$someOtherUserId/review")
         .contentType(MediaType.APPLICATION_JSON)
@@ -497,7 +513,8 @@ class TalkControllerTest: BaseControllerTest() {
 
   private fun anySavedRoom() = roomRepository.save(Room("Sala"))
 
-  private fun anySavedTalk(organizer: User) = talkRepository.save(Talk("Charla", speaker = organizer))
+  private fun anySavedTalk(organizer: User) =
+    talkRepository.save(Talk("Charla", speaker = organizer))
 
   private fun anySavedTalkWithUserVote(talkOwner: User, userToVote: User): Talk {
     val talk = anySavedTalk(talkOwner)
@@ -519,11 +536,23 @@ class TalkControllerTest: BaseControllerTest() {
     userRepo.save(aUser(mutableSetOf(), mutableSetOf(talk), "Pepe@sos.sos"))
 
   private fun aSavedSlot(): Slot {
-    return slotRepository.save(TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now()))
+    return slotRepository.save(
+      TalkSlot(
+        LocalTime.parse("09:00"),
+        LocalTime.parse("09:30"),
+        LocalDate.now()
+      )
+    )
   }
 
   private fun otherSavedSlot(): Slot {
-    return slotRepository.save(TalkSlot(LocalTime.parse("09:30"), LocalTime.parse("10:00"), LocalDate.now().plusDays(1)))
+    return slotRepository.save(
+      TalkSlot(
+        LocalTime.parse("09:30"),
+        LocalTime.parse("10:00"),
+        LocalDate.now().plusDays(1)
+      )
+    )
   }
 
   private fun freeSlots(openSpace: OpenSpace) = openSpace.freeSlots().first().second

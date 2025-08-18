@@ -21,54 +21,54 @@ import org.springframework.test.web.servlet.ResultActions
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 abstract class BaseControllerTest {
-    @Autowired
-    protected lateinit var mockMvc: MockMvc
+  @Autowired
+  protected lateinit var mockMvc: MockMvc
 
-    @Autowired
-    protected lateinit var objectMapper: ObjectMapper
+  @Autowired
+  protected lateinit var objectMapper: ObjectMapper
 
-    @Autowired
-    protected lateinit var userRepo: UserRepository
+  @Autowired
+  protected lateinit var userRepo: UserRepository
 
-    @Autowired
-    protected lateinit var authSessionRepo: AuthSessionRepository
+  @Autowired
+  protected lateinit var authSessionRepo: AuthSessionRepository
 
-    @Autowired
-    protected lateinit var openSpaceRepo: OpenSpaceRepository
+  @Autowired
+  protected lateinit var openSpaceRepo: OpenSpaceRepository
 
-    @Autowired
-    protected lateinit var talkRepo: TalkRepository
+  @Autowired
+  protected lateinit var talkRepo: TalkRepository
 
-    @Autowired
-    protected lateinit var slotRepository: SlotRepository
+  @Autowired
+  protected lateinit var slotRepository: SlotRepository
 
-    @Autowired
-    protected lateinit var openSpaceRepository: OpenSpaceRepository
+  @Autowired
+  protected lateinit var openSpaceRepository: OpenSpaceRepository
 
-    @Autowired
-    protected lateinit var talkRepository: TalkRepository
+  @Autowired
+  protected lateinit var talkRepository: TalkRepository
 
-    @Autowired
-    protected lateinit var roomRepository: RoomRepository
+  @Autowired
+  protected lateinit var roomRepository: RoomRepository
 
-    @Autowired
-    protected lateinit var authService: AuthService
+  @Autowired
+  protected lateinit var authService: AuthService
 
-    @Autowired
-    protected lateinit var userService: UserService
+  @Autowired
+  protected lateinit var userService: UserService
 
-    @Autowired
-    protected lateinit var jwtService: JwtService
+  @Autowired
+  protected lateinit var jwtService: JwtService
 
-    protected fun clearAllEntities() {
-        authSessionRepo.deleteAll()
-        userRepo.deleteAll()
-    }
+  protected fun clearAllEntities() {
+    authSessionRepo.deleteAll()
+    userRepo.deleteAll()
+  }
 
-    protected final inline fun <reified T> readMvcResponseAndConvert(resActions: ResultActions): T =
-        objectMapper.readValue(resActions.andReturn().response.contentAsString, T::class.java)
+  protected final inline fun <reified T> readMvcResponseAndConvert(resActions: ResultActions): T =
+    objectMapper.readValue(resActions.andReturn().response.contentAsString, T::class.java)
 
 
-    //FIXME: Add after each tearDown method to clear all entities
-    //  Not implemented because exist tests with state that needs to be preserved
+  //FIXME: Add after each tearDown method to clear all entities
+  //  Not implemented because exist tests with state that needs to be preserved
 }

@@ -31,7 +31,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @Transactional
-class TalkControllerTest : BaseControllerTest() {
+class TalkControllerTest : BaseIntegrationTest() {
 
   @Test
   fun `schedule a talk returns an ok status response`() {
@@ -40,7 +40,7 @@ class TalkControllerTest : BaseControllerTest() {
     val room = anySavedRoom()
     val aSlot = aSavedSlot()
     val openSpace =
-      openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot), setOf(room)))
+      this.openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot), setOf(room)))
 
     mockMvc.perform(
       put("/talk/schedule/${organizer.id}/${talk.id}/${aSlot.id}/${room.id}")
@@ -54,7 +54,7 @@ class TalkControllerTest : BaseControllerTest() {
     val organizer = anySavedUser("user@gmail.com")
     val talk = anySavedTalk(organizer)
     val speaker = aSavedUserWithTalk(talk)
-    val openSpace = openSpaceRepository.save(anOpenSpaceWith(talk, organizer))
+    val openSpace = this.openSpaceRepository.save(anOpenSpaceWith(talk, organizer))
     val slot = openSpace.slots.first()
     val room = anySavedRoom()
 
@@ -70,7 +70,7 @@ class TalkControllerTest : BaseControllerTest() {
     val room = anySavedRoom()
     val aSlot = aSavedSlot()
     val otherSlot = otherSavedSlot()
-    val openSpace = openSpaceRepository.save(
+    val openSpace = this.openSpaceRepository.save(
       anOpenSpaceWith(
         talk,
         organizer,
@@ -95,7 +95,7 @@ class TalkControllerTest : BaseControllerTest() {
     val room = anySavedRoom()
     val aSlot = aSavedSlot()
     val otherSlot = otherSavedSlot()
-    val openSpace = openSpaceRepository.save(
+    val openSpace = this.openSpaceRepository.save(
       anOpenSpaceWith(
         talk,
         organizer,
@@ -149,7 +149,7 @@ class TalkControllerTest : BaseControllerTest() {
     val anOpenSpace = anOpenSpace()
     user.addOpenSpace(anOpenSpace)
     anOpenSpace.toggleCallForPapers(user)
-    openSpaceRepository.save(anOpenSpace)
+    this.openSpaceRepository.save(anOpenSpace)
 
     val aTalk = Talk("a talk", speaker = user)
     anOpenSpace.addTalk(aTalk)
@@ -179,7 +179,7 @@ class TalkControllerTest : BaseControllerTest() {
     val anOpenSpace = anOpenSpace()
     user.addOpenSpace(anOpenSpace)
     anOpenSpace.toggleCallForPapers(user)
-    openSpaceRepository.save(anOpenSpace)
+    this.openSpaceRepository.save(anOpenSpace)
 
     val aTalk = Talk("a talk", "Some description", speaker = user)
     anOpenSpace.addTalk(aTalk)
@@ -219,7 +219,7 @@ class TalkControllerTest : BaseControllerTest() {
     val anOpenSpace = anOpenSpace()
     user.addOpenSpace(anOpenSpace)
     anOpenSpace.toggleCallForPapers(user)
-    openSpaceRepository.save(anOpenSpace)
+    this.openSpaceRepository.save(anOpenSpace)
     val nonexistentTalkId = 789
 
     mockMvc.perform(
@@ -237,7 +237,7 @@ class TalkControllerTest : BaseControllerTest() {
     val anOpenSpace = anOpenSpace()
     user.addOpenSpace(anOpenSpace)
     anOpenSpace.toggleCallForPapers(user)
-    openSpaceRepository.save(anOpenSpace)
+    this.openSpaceRepository.save(anOpenSpace)
     val talkId = 789
 
     mockMvc.perform(
@@ -255,7 +255,7 @@ class TalkControllerTest : BaseControllerTest() {
     val anOpenSpace = anOpenSpace()
     user.addOpenSpace(anOpenSpace)
     anOpenSpace.toggleCallForPapers(user)
-    openSpaceRepository.save(anOpenSpace)
+    this.openSpaceRepository.save(anOpenSpace)
     val talkId = 789
 
     mockMvc.perform(
@@ -530,7 +530,7 @@ class TalkControllerTest : BaseControllerTest() {
 
   private fun anySavedUser(userEmail: String) = userRepo.save(aUser(userEmail = userEmail))
 
-  private fun anySavedOpenSpace() = openSpaceRepository.save(anOpenSpace())
+  private fun anySavedOpenSpace() = this.openSpaceRepository.save(anOpenSpace())
 
   private fun aSavedUserWithTalk(talk: Talk) =
     userRepo.save(aUser(mutableSetOf(), mutableSetOf(talk), "Pepe@sos.sos"))

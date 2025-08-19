@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 
 
 @Transactional
-class UserControllerTest: BaseControllerTest() {
+class UserControllerTest: BaseIntegrationTest() {
 
   @Test
   fun `user registration returns ok status response`() {

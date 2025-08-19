@@ -37,3 +37,6 @@ out/
 
 ### New relic agent ###
 newrelic/
+
+### Kotlin
+.kotlin/

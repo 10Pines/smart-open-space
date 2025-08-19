@@ -16,11 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-abstract class BaseControllerTest {
+abstract class BaseIntegrationTest {
   @Autowired
   protected lateinit var mockMvc: MockMvc
 
@@ -32,12 +33,6 @@ abstract class BaseControllerTest {
 
   @Autowired
   protected lateinit var authSessionRepo: AuthSessionRepository
-
-  @Autowired
-  protected lateinit var openSpaceRepo: OpenSpaceRepository
-
-  @Autowired
-  protected lateinit var talkRepo: TalkRepository
 
   @Autowired
   protected lateinit var slotRepository: SlotRepository
@@ -68,6 +63,9 @@ abstract class BaseControllerTest {
   protected final inline fun <reified T> readMvcResponseAndConvert(resActions: ResultActions): T =
     objectMapper.readValue(resActions.andReturn().response.contentAsString, T::class.java)
 
+
+  protected fun getAnyUniqueEmail() =
+    "${UUID.randomUUID()}@example.com"
 
   //FIXME: Add after each tearDown method to clear all entities
   //  Not implemented because exist tests with state that needs to be preserved

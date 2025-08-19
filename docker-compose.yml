@@ -3,7 +3,7 @@ networks:
     driver: bridge
 
 volumes:
-  sos-db-data:
+  sos-db-data-postgres17:
   sos-pgadmin-data:
   prometheus_data: {}
   grafana_data: {}
@@ -56,7 +56,7 @@ services:
       logging_jobname: "containerlogs"
 
   db:
-    image: postgres:15.0-alpine
+    image: postgres:17-alpine
     container_name: db
     restart: always
     environment:
@@ -65,7 +65,7 @@ services:
       POSTGRES_PASSWORD: openheart
       PGDATA: /var/lib/postgresql/data
     volumes:
-      - sos-db-data:/var/lib/postgresql/data
+      - sos-db-data-postgres17:/var/lib/postgresql/data
     ports:
       - "6543:5432"
     networks:

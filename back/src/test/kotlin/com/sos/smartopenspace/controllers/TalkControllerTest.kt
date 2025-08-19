@@ -4,7 +4,17 @@ import com.jayway.jsonpath.JsonPath
 import com.sos.smartopenspace.aUser
 import com.sos.smartopenspace.anOpenSpace
 import com.sos.smartopenspace.anOpenSpaceWith
-import com.sos.smartopenspace.domain.*
+import com.sos.smartopenspace.domain.OpenSpace
+import com.sos.smartopenspace.domain.Review
+import com.sos.smartopenspace.domain.Room
+import com.sos.smartopenspace.domain.RoomNotFoundException
+import com.sos.smartopenspace.domain.Slot
+import com.sos.smartopenspace.domain.Talk
+import com.sos.smartopenspace.domain.TalkSlot
+import com.sos.smartopenspace.domain.TrackNotFoundException
+import com.sos.smartopenspace.domain.User
+import com.sos.smartopenspace.dto.DefaultErrorDto
+import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
 import com.sos.smartopenspace.generateTalkBody
 import com.sos.smartopenspace.services.impl.JwtService.Companion.TOKEN_PREFIX
 import jakarta.ws.rs.core.HttpHeaders
@@ -12,14 +22,16 @@ import jakarta.ws.rs.core.MediaType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.LocalTime
 
 @Transactional
-class TalkControllerTest: BaseControllerTest() {
+class TalkControllerTest : BaseControllerTest() {
 
   @Test
   fun `schedule a talk returns an ok status response`() {
@@ -27,7 +39,8 @@ class TalkControllerTest: BaseControllerTest() {
     val talk = anySavedTalk(organizer)
     val room = anySavedRoom()
     val aSlot = aSavedSlot()
-    val openSpace = openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot), setOf(room)))
+    val openSpace =
+      openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot), setOf(room)))
 
     mockMvc.perform(
       put("/talk/schedule/${organizer.id}/${talk.id}/${aSlot.id}/${room.id}")
@@ -57,15 +70,54 @@ class TalkControllerTest: BaseControllerTest() {
     val room = anySavedRoom()
     val aSlot = aSavedSlot()
     val otherSlot = otherSavedSlot()
-    val openSpace = openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot, otherSlot), setOf(room)))
+    val openSpace = openSpaceRepository.save(
+      anOpenSpaceWith(
+        talk,
+        organizer,
+        setOf(aSlot, otherSlot),
+        setOf(room)
+      )
+    )
     openSpace.scheduleTalk(talk, organizer, aSlot as TalkSlot, room)
 
     mockMvc.perform(
-            put("/talk/exchange/${talk.id}/${otherSlot.id}/${room.id}")
+      put("/talk/exchange/${talk.id}/${otherSlot.id}/${room.id}")
     ).andExpect(MockMvcResultMatchers.status().isOk)
 
     assertEquals(1, freeSlots(openSpace).size)
-    assertTrue( freeSlots(openSpace).contains(aSlot))
+    assertTrue(freeSlots(openSpace).contains(aSlot))
+  }
+
+  @Test
+  fun `exchange a talk with not exist room THEN returns an RoomNotFoundException status response`() {
+    val organizer = anySavedUser("user@gmail.com")
+    val talk = anySavedTalk(organizer)
+    val room = anySavedRoom()
+    val aSlot = aSavedSlot()
+    val otherSlot = otherSavedSlot()
+    val openSpace = openSpaceRepository.save(
+      anOpenSpaceWith(
+        talk,
+        organizer,
+        setOf(aSlot, otherSlot),
+        setOf(room)
+      )
+    )
+    openSpace.scheduleTalk(talk, organizer, aSlot as TalkSlot, room)
+
+    // WHEN
+    val res = mockMvc.perform(put("/talk/exchange/${talk.id}/${otherSlot.id}/999999"))
+
+    // THEN
+    res.andExpect(MockMvcResultMatchers.status().isNotFound)
+    val resBody: DefaultErrorDto = readMvcResponseAndConvert(res)
+    val expectedRes = DefaultErrorDto(
+      message = RoomNotFoundException().message,
+      statusCode = 404,
+      status = "not_found",
+      isFallbackError = false
+    )
+    assertEquals(expectedRes, resBody)
   }
 
   @Test
@@ -122,6 +174,46 @@ class TalkControllerTest: BaseControllerTest() {
   }
 
   @Test
+  fun `cannot update a talk because track is not found`() {
+    val (user, userBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = "user@gmail.com"))
+    val anOpenSpace = anOpenSpace()
+    user.addOpenSpace(anOpenSpace)
+    anOpenSpace.toggleCallForPapers(user)
+    openSpaceRepository.save(anOpenSpace)
+
+    val aTalk = Talk("a talk", "Some description", speaker = user)
+    anOpenSpace.addTalk(aTalk)
+    val talkPersisted: Talk = talkRepository.save(aTalk)
+
+    val updateTalkRequestBody = CreateTalkRequestDTO(
+      name = "sarasa",
+      description = "xd",
+      trackId = 999999 // Non-existent track ID
+    )
+    val changedDescription = "a different description"
+    val response = mockMvc.perform(
+      put("/talk/${aTalk.id}/user/${user.id}")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(updateTalkRequestBody))
+        .header(HttpHeaders.AUTHORIZATION, userBearerToken)
+    )
+
+    response.andExpect(MockMvcResultMatchers.status().isNotFound)
+
+    val errorBody: DefaultErrorDto = readMvcResponseAndConvert(response)
+    val expectedRes = DefaultErrorDto(
+      message = TrackNotFoundException().message,
+      statusCode = 404,
+      status = "not_found",
+      isFallbackError = false
+    )
+    assertEquals(expectedRes, errorBody)
+    val notUpdatedTalk = talkRepository.findById(talkPersisted.id)
+      .orElseGet { throw IllegalStateException("Talk not found") }
+    assertEquals(talkPersisted, notUpdatedTalk)
+  }
+
+  @Test
   fun `updating an nonexistent talk returns a not found status`() {
     val (user, userBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = "user@gmail.com"))
     val anOpenSpace = anOpenSpace()
@@ -131,7 +223,7 @@ class TalkControllerTest: BaseControllerTest() {
     val nonexistentTalkId = 789
 
     mockMvc.perform(
-        put("/talk/${nonexistentTalkId}/user/${user.id}")
+      put("/talk/${nonexistentTalkId}/user/${user.id}")
         .contentType(MediaType.APPLICATION_JSON)
         .content(generateTalkBody())
         .header(HttpHeaders.AUTHORIZATION, userBearerToken)
@@ -312,6 +404,31 @@ class TalkControllerTest: BaseControllerTest() {
   }
 
   @Test
+  fun `review talk with userID not exist should not add a review`() {
+    val (aUser, aUserBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = "user@gmail.com"))
+    val talk = anySavedTalk(aUser)
+    val content = aReviewCreationBody(5, "a review")
+
+    val res = mockMvc.perform(
+      post("/talk/${talk.id}/user/999999/review")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(content)
+        .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
+    )
+
+    res.andExpect(MockMvcResultMatchers.status().isForbidden)
+    /*
+    val resBody = readMvcResponseAndConvert<DefaultErrorDto>(res)
+    val expectedRes = DefaultErrorDto(
+      message = UserNotFoundException().message,
+      statusCode = 404,
+      status = "not_found",
+      isFallbackError = false
+    )
+    assertEquals(expectedRes, resBody)*/
+  }
+
+  @Test
   fun `cannot add another review talk if exist another review into talk reviews on same open space`() {
     val (aUser, aUserBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = "user@gmail.com"))
     val someReview = Review(3, aUser, "first review")
@@ -363,7 +480,7 @@ class TalkControllerTest: BaseControllerTest() {
     val talk = anySavedTalk(aUser)
     val content = aReviewCreationBody(4, "a review")
 
-    val someOtherUserId = aUser.id+10
+    val someOtherUserId = aUser.id + 10
     mockMvc.perform(
       post("/talk/${talk.id}/user/$someOtherUserId/review")
         .contentType(MediaType.APPLICATION_JSON)
@@ -396,7 +513,8 @@ class TalkControllerTest: BaseControllerTest() {
 
   private fun anySavedRoom() = roomRepository.save(Room("Sala"))
 
-  private fun anySavedTalk(organizer: User) = talkRepository.save(Talk("Charla", speaker = organizer))
+  private fun anySavedTalk(organizer: User) =
+    talkRepository.save(Talk("Charla", speaker = organizer))
 
   private fun anySavedTalkWithUserVote(talkOwner: User, userToVote: User): Talk {
     val talk = anySavedTalk(talkOwner)
@@ -418,11 +536,23 @@ class TalkControllerTest: BaseControllerTest() {
     userRepo.save(aUser(mutableSetOf(), mutableSetOf(talk), "Pepe@sos.sos"))
 
   private fun aSavedSlot(): Slot {
-    return slotRepository.save(TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now()))
+    return slotRepository.save(
+      TalkSlot(
+        LocalTime.parse("09:00"),
+        LocalTime.parse("09:30"),
+        LocalDate.now()
+      )
+    )
   }
 
   private fun otherSavedSlot(): Slot {
-    return slotRepository.save(TalkSlot(LocalTime.parse("09:30"), LocalTime.parse("10:00"), LocalDate.now().plusDays(1)))
+    return slotRepository.save(
+      TalkSlot(
+        LocalTime.parse("09:30"),
+        LocalTime.parse("10:00"),
+        LocalDate.now().plusDays(1)
+      )
+    )
   }
 
   private fun freeSlots(openSpace: OpenSpace) = openSpace.freeSlots().first().second

@@ -1,14 +1,13 @@
 package com.sos.smartopenspace.controllers
 
 import com.sos.smartopenspace.aUser
-import com.sos.smartopenspace.domain.Talk
 import com.sos.smartopenspace.domain.User
-import com.sos.smartopenspace.domain.UserNotBelongToAuthToken
 import com.sos.smartopenspace.dto.DefaultErrorDto
 import com.sos.smartopenspace.services.impl.JwtService.Companion.TOKEN_PREFIX
 import jakarta.ws.rs.core.HttpHeaders
 import jakarta.ws.rs.core.MediaType
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -155,32 +154,18 @@ class ExceptionHandlerTest : BaseIntegrationTest() {
   }
 
   @Test
-  fun `test GIVEN valid request but some data is broken THEN should return internal server error`() {
-    val (aUser, _) = registerAndGenerateAuthToken(aUser(userEmail = getAnyUniqueEmail()))
-    val (otherUser, otherUserBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = getAnyUniqueEmail()))
-    val talk = talkRepository.save(Talk("Charla", speaker = aUser))
-    val content = """{"grade": 5,"comment": "asd1234"}"""
-    userRepo.delete(otherUser)
+  fun `test GIVEN valid request but throws unexpected exception THEN should return internal server error`() {
+    val res = mockMvc.perform(get("/test/internal_server_error"))
 
-    val res = mockMvc.perform(
-      post("/talk/${talk.id}/user/${otherUser}/review")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(content)
-        .header(HttpHeaders.AUTHORIZATION, otherUserBearerToken)
-    )
-
-    res.andExpect(MockMvcResultMatchers.status().isForbidden)
+    res.andExpect(MockMvcResultMatchers.status().isInternalServerError)
 
     val resBody = readMvcResponseAndConvert<DefaultErrorDto>(res)
 
-
-    val expectedRes = DefaultErrorDto(
-      message = UserNotBelongToAuthToken().message,
-      statusCode = 403,
-      status = "forbidden",
-      isFallbackError = false
-    )
-    assertEquals(expectedRes, resBody)
+    val expectedStatusCode = HttpStatus.INTERNAL_SERVER_ERROR
+    assertEquals("test error fallback", resBody.message)
+    assertEquals(expectedStatusCode.value(), resBody.statusCode)
+    assertEquals(expectedStatusCode.name.lowercase(), resBody.status)
+    assertTrue(resBody.isFallbackError)
   }
 
   private fun registerAndGenerateAuthToken(userToRegister: User): Pair<User, String> {

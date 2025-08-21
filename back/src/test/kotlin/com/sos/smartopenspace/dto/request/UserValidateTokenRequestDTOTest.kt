@@ -5,15 +5,16 @@ import org.junit.jupiter.api.Test
 
 class UserValidateTokenRequestDTOTest {
 
-    @Test
-    fun `toString should return a string without sensitive data`() {
-        val userValidateTokenRequestDTO = UserValidateTokenRequestDTO(
-            email = "test@example.com",
-            password = "secret",
-            resetToken = "reset123"
-        )
+  @Test
+  fun `toString should return a string without sensitive data`() {
+    val userValidateTokenRequestDTO = UserValidateTokenRequestDTO(
+      email = "test@example.com",
+      password = "secret",
+      resetToken = "reset123"
+    )
 
-        val expectedString = "UserValidateTokenRequestDTO(email=test@example.com, password=***, resetToken=***)"
-        assertEquals(expectedString, userValidateTokenRequestDTO.toString())
-    }
+    val expectedString =
+      "UserValidateTokenRequestDTO(email=test@example.com, password=***, resetToken=***)"
+    assertEquals(expectedString, userValidateTokenRequestDTO.toString())
+  }
 }

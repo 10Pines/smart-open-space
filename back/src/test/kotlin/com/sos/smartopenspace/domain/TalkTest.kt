@@ -145,7 +145,12 @@ class TalkTest {
     aUser.addOpenSpace(anOpenSpace)
     anOpenSpace.toggleCallForPapers(aUser)
     val aMarketplaceTalk =
-      Talk("Una charla", speaker = aUser, isMarketplaceTalk = true, speakerName = "Braulio")
+      Talk(
+        "Una charla",
+        speaker = aUser,
+        isMarketplaceTalk = true,
+        speakerName = "Braulio"
+      )
 
     assertEquals("Braulio", aMarketplaceTalk.speakerName)
     assertNotNull(aMarketplaceTalk.isMarketplaceTalk)
@@ -157,8 +162,8 @@ class TalkTest {
     val aTalk = Talk("Una charla", speaker = aUser)
     val expectedRes =
       "Talk(description=, documents=[], id=0, isMarketplaceTalk=false, meetingLink=null, " +
-          "name=Una charla, reviews=[], speaker=User(email=apprentices@sos.sos, id=0, name=apprentices, " +
-          "password=***, resetToken=***, resetTokenLifetime=***), speakerName=null, track=null, votingUsers=[])"
+        "name=Una charla, reviews=[], speaker=User(email=apprentices@sos.sos, id=0, name=apprentices, " +
+        "password=***, resetToken=***, resetTokenLifetime=***), speakerName=null, track=null, votingUsers=[])"
     assertEquals(expectedRes, aTalk.toString())
   }
 }

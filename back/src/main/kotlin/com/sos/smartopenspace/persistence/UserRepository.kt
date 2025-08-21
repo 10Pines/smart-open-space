@@ -9,5 +9,5 @@ interface UserRepository : JpaRepository<User, Long> {
 
   fun findByEmailAndResetToken(email: String, resetToken: String): User?
 
-  fun findByEmail(email: String) : User?
+  fun findByEmail(email: String): User?
 }

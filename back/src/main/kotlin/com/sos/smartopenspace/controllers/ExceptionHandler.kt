@@ -92,7 +92,10 @@ class ExceptionHandler(
   }
 
   @ExceptionHandler(NotFoundException::class)
-  fun notFoundHandler(request: HttpServletRequest, ex: Exception): ResponseEntity<DefaultErrorDto> {
+  fun notFoundHandler(
+    request: HttpServletRequest,
+    ex: Exception
+  ): ResponseEntity<DefaultErrorDto> {
     val httpStatus = HttpStatus.NOT_FOUND
     handleLogError(httpStatus, ex, false)
 
@@ -102,7 +105,10 @@ class ExceptionHandler(
   }
 
   @ExceptionHandler(UnauthorizedException::class)
-  fun notAuthHandler(request: HttpServletRequest, ex: Exception): ResponseEntity<DefaultErrorDto> {
+  fun notAuthHandler(
+    request: HttpServletRequest,
+    ex: Exception
+  ): ResponseEntity<DefaultErrorDto> {
     val httpStatus = HttpStatus.UNAUTHORIZED
     handleLogError(httpStatus, ex)
 
@@ -168,13 +174,18 @@ class ExceptionHandler(
     request: HttpServletRequest,
     ex: Exception
   ): ResponseEntity<DefaultErrorDto> {
-    val errorDto = DefaultErrorDto(ex.message, HttpStatus.INTERNAL_SERVER_ERROR, true)
+    val errorDto =
+      DefaultErrorDto(ex.message, HttpStatus.INTERNAL_SERVER_ERROR, true)
     LOGGER.error("Handling fallback uncaught exception ${ex.javaClass} , [message=${ex.message}] and [error_dto=$errorDto]")
     observeError(request, errorDto)
     return ResponseEntity(errorDto, HttpStatus.INTERNAL_SERVER_ERROR)
   }
 
-  private fun handleLogError(status: HttpStatus, ex: Exception, withStackTrace: Boolean = true) {
+  private fun handleLogError(
+    status: HttpStatus,
+    ex: Exception,
+    withStackTrace: Boolean = true
+  ) {
     val errMsg =
       "Handling http status ${status.name} with exception ${ex.javaClass} and message: ${ex.message}."
     if (withStackTrace) {
@@ -184,8 +195,15 @@ class ExceptionHandler(
     }
   }
 
-  private fun observeError(request: HttpServletRequest, errorDto: DefaultErrorDto) {
-    observationMetricHelper.addContext(request, API_ERROR_CONTEXT_FIELD, errorDto)
+  private fun observeError(
+    request: HttpServletRequest,
+    errorDto: DefaultErrorDto
+  ) {
+    observationMetricHelper.addContext(
+      request,
+      API_ERROR_CONTEXT_FIELD,
+      errorDto
+    )
   }
 
 }

@@ -24,7 +24,11 @@ class AssignedSlotTest {
     "09:00, 09:30, false",
     "09:01, 09:00, false",
   )
-  fun `test AssignedSlot startAt`(slotStartAt: String, startAtInput: String, expectedRes: Boolean) {
+  fun `test AssignedSlot startAt`(
+    slotStartAt: String,
+    startAtInput: String,
+    expectedRes: Boolean
+  ) {
 
     val talkSlot = SlotSampler.getTalkSlotWith(
       startTime = LocalTime.parse(slotStartAt),
@@ -53,7 +57,11 @@ class AssignedSlotTest {
     "2024-12-11, 2024-12-12, false",
     "2024-12-11, null, false",
   )
-  fun `test AssignedSlot hasDate`(slotDate: String, date: String, expectedRes: Boolean) {
+  fun `test AssignedSlot hasDate`(
+    slotDate: String,
+    date: String,
+    expectedRes: Boolean
+  ) {
 
     val talkSlot = SlotSampler.getTalkSlotWith(
       date = LocalDate.parse(slotDate),
@@ -133,11 +141,11 @@ class AssignedSlotTest {
 
     val expectedRes =
       "AssignedSlot(id=0, room=Room(description=A room for meetings, id=0, link=http://example.com, " +
-          "name=Conference Room), slot=TalkSlot(date=2024-11-18, endTime=09:30, id=0, startTime=09:00), " +
-          "talk=Talk(description=This is a sample talk description., documents=[], id=1, " +
-          "isMarketplaceTalk=false, meetingLink=null, name=talk-test, reviews=[], " +
-          "speaker=User(email=test@mail.com, id=1, name=testuser, password=***, resetToken=***, " +
-          "resetTokenLifetime=***), speakerName=user-test, track=null, votingUsers=[]))"
+        "name=Conference Room), slot=TalkSlot(date=2024-11-18, endTime=09:30, id=0, startTime=09:00), " +
+        "talk=Talk(description=This is a sample talk description., documents=[], id=1, " +
+        "isMarketplaceTalk=false, meetingLink=null, name=talk-test, reviews=[], " +
+        "speaker=User(email=test@mail.com, id=1, name=testuser, password=***, resetToken=***, " +
+        "resetTokenLifetime=***), speakerName=user-test, track=null, votingUsers=[]))"
     assertEquals(expectedRes, assignedSlot.toString())
   }
 

@@ -16,37 +16,40 @@ import java.util.UUID
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class LogFilter : OncePerRequestFilter() {
 
-    companion object {
-        private const val REQUEST_ID_HEADER = "X-Request-Id"
-        private const val REQUEST_ID_SESSION = "X-Internal-Session-Id"
+  companion object {
+    private const val REQUEST_ID_HEADER = "X-Request-Id"
+    private const val REQUEST_ID_SESSION = "X-Internal-Session-Id"
 
-        private const val CTX_REQUEST_ID_KEY = "requestId"
-        private const val CTX_REQUEST_SESSION_ID_KEY = "requestSessionId"
-        private const val CTX_REQUEST_CONTAINS_JWT = "requestContainsJwt"
+    private const val CTX_REQUEST_ID_KEY = "requestId"
+    private const val CTX_REQUEST_SESSION_ID_KEY = "requestSessionId"
+    private const val CTX_REQUEST_CONTAINS_JWT = "requestContainsJwt"
 
-        private const val DEFAULT_EMPTY_VALUE = "none"
-    }
+    private const val DEFAULT_EMPTY_VALUE = "none"
+  }
 
-    override fun doFilterInternal(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        filterChain: FilterChain
-    ) {
-        val defaultRequestId = UUID.randomUUID().toString()
-        val requestId = request.getHeader(REQUEST_ID_HEADER)?.ifBlank { defaultRequestId }
-            ?: defaultRequestId
+  override fun doFilterInternal(
+    request: HttpServletRequest,
+    response: HttpServletResponse,
+    filterChain: FilterChain
+  ) {
+    val defaultRequestId = UUID.randomUUID().toString()
+    val requestId =
+      request.getHeader(REQUEST_ID_HEADER)?.ifBlank { defaultRequestId }
+        ?: defaultRequestId
 
-        val requestSessionId = request.getHeader(REQUEST_ID_SESSION)?.ifBlank { DEFAULT_EMPTY_VALUE }
-            ?: DEFAULT_EMPTY_VALUE
+    val requestSessionId =
+      request.getHeader(REQUEST_ID_SESSION)?.ifBlank { DEFAULT_EMPTY_VALUE }
+        ?: DEFAULT_EMPTY_VALUE
 
-        val requestContainsJwt:Boolean = request.getHeader(HttpHeaders.AUTHORIZATION)?.let {
-            it.contains(TOKEN_PREFIX) && it.length > TOKEN_PREFIX.length + 1
-        } ?: false
+    val requestContainsJwt: Boolean =
+      request.getHeader(HttpHeaders.AUTHORIZATION)?.let {
+        it.contains(TOKEN_PREFIX) && it.length > TOKEN_PREFIX.length + 1
+      } ?: false
 
-        MDC.put(CTX_REQUEST_ID_KEY, requestId)
-        MDC.put(CTX_REQUEST_SESSION_ID_KEY, requestSessionId)
-        MDC.put(CTX_REQUEST_CONTAINS_JWT, requestContainsJwt.toString())
-        filterChain.doFilter(request, response)
-    }
+    MDC.put(CTX_REQUEST_ID_KEY, requestId)
+    MDC.put(CTX_REQUEST_SESSION_ID_KEY, requestSessionId)
+    MDC.put(CTX_REQUEST_CONTAINS_JWT, requestContainsJwt.toString())
+    filterChain.doFilter(request, response)
+  }
 
 }

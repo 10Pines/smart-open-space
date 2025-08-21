@@ -3,6 +3,7 @@ package com.sos.smartopenspace.domain
 open class BadRequestException(message: String?) : RuntimeException(message)
 open class NotFoundException(message: String) : BadRequestException(message)
 open class UnprocessableEntityException(message: String?) : RuntimeException(message)
+
 /**
  * It is a RuntimeException. Handles 401 (Unauthorized) http status code in ExceptionHandler.
  * Semantic should be invalid auth session and client should perform a new login.
@@ -28,7 +29,7 @@ class UserDidntVoteThisTalkException : BadRequestException("Este usuario no voto
 
 class UserNotOwnerOfTalkException : ForbiddenException("El usuario no es el dueño de la charla")
 class UserNotOwnerOfOpenSpaceException : ForbiddenException("El usuario no es el dueño del openspace")
-class UserNotBelongToAuthToken: ForbiddenException("No tienes permisos para acceder a este recurso")
+class UserNotBelongToAuthToken : ForbiddenException("No tienes permisos para acceder a este recurso")
 class NotTheOrganizerException : ForbiddenException("No sos el organizador")
 
 class OpenSpaceNotFoundException : NotFoundException("OpenSpace no encontrado")

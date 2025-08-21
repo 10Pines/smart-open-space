@@ -10,85 +10,117 @@ import com.sos.smartopenspace.translators.TalkTranslator
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter
 import jakarta.validation.Valid
 import jakarta.ws.rs.core.HttpHeaders
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RateLimiter(name = "default")
 @RestController
 @RequestMapping("talk")
 class TalkController(
-    private val talkService: TalkService,
-    private val authService: AuthServiceI
+  private val talkService: TalkService,
+  private val authService: AuthServiceI
 ) {
 
-    @PutMapping("/schedule/{userID}/{talkID}/{slotID}/{roomID}")
-    @LoggingInputExecution
-    fun scheduleTalk(
-        @PathVariable userID: Long,
-        @PathVariable talkID: Long,
-        @PathVariable slotID: Long,
-        @PathVariable roomID: Long
-    ) =
-        OpenSpaceTranslator.translateFrom(talkService.scheduleTalk(talkID, userID, slotID, roomID))
+  @PutMapping("/schedule/{userID}/{talkID}/{slotID}/{roomID}")
+  @LoggingInputExecution
+  fun scheduleTalk(
+    @PathVariable userID: Long,
+    @PathVariable talkID: Long,
+    @PathVariable slotID: Long,
+    @PathVariable roomID: Long
+  ) =
+    OpenSpaceTranslator.translateFrom(
+      talkService.scheduleTalk(
+        talkID,
+        userID,
+        slotID,
+        roomID
+      )
+    )
 
-    @PutMapping("/exchange/{talkID}/{slotID}/{roomID}")
-    @LoggingInputExecution
-    fun exchangeTalk(
-        @PathVariable talkID: Long,
-        @PathVariable slotID: Long,
-        @PathVariable roomID: Long
-    ) =
-        OpenSpaceTranslator.translateFrom(talkService.exchangeTalk(talkID, roomID, slotID))
+  @PutMapping("/exchange/{talkID}/{slotID}/{roomID}")
+  @LoggingInputExecution
+  fun exchangeTalk(
+    @PathVariable talkID: Long,
+    @PathVariable slotID: Long,
+    @PathVariable roomID: Long
+  ) =
+    OpenSpaceTranslator.translateFrom(
+      talkService.exchangeTalk(
+        talkID,
+        roomID,
+        slotID
+      )
+    )
 
-    @PutMapping("/nextTalk/{userID}/{osID}")
-    @LoggingInputExecution
-    fun nextTalk(@PathVariable userID: Long, @PathVariable osID: Long) =
-        OpenSpaceTranslator.translateFrom(talkService.nextTalk(userID, osID))
+  @PutMapping("/nextTalk/{userID}/{osID}")
+  @LoggingInputExecution
+  fun nextTalk(@PathVariable userID: Long, @PathVariable osID: Long) =
+    OpenSpaceTranslator.translateFrom(talkService.nextTalk(userID, osID))
 
-    @GetMapping("/{talkID}")
-    @LoggingInputExecution
-    fun getTalk(@PathVariable talkID: Long) =
-        TalkTranslator.translateFrom(talkService.getTalk(talkID))
+  @GetMapping("/{talkID}")
+  @LoggingInputExecution
+  fun getTalk(@PathVariable talkID: Long) =
+    TalkTranslator.translateFrom(talkService.getTalk(talkID))
 
-    @PutMapping("/{talkId}/user/{userId}")
-    @LoggingInputExecution
-    fun updateTalk(
-        @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
-        @PathVariable talkId: Long,
-        @PathVariable userId: Long,
-        @Valid @RequestBody createTalkRequestDTO: CreateTalkRequestDTO
-    ) = authService.validateTokenBelongsToUserId(authToken, userId).let {
-        TalkTranslator.translateFrom(talkService.updateTalk(talkId, userId, createTalkRequestDTO))
-    }
+  @PutMapping("/{talkId}/user/{userId}")
+  @LoggingInputExecution
+  fun updateTalk(
+    @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
+    @PathVariable talkId: Long,
+    @PathVariable userId: Long,
+    @Valid @RequestBody createTalkRequestDTO: CreateTalkRequestDTO
+  ) = authService.validateTokenBelongsToUserId(authToken, userId).let {
+    TalkTranslator.translateFrom(
+      talkService.updateTalk(
+        talkId,
+        userId,
+        createTalkRequestDTO
+      )
+    )
+  }
 
-    @PutMapping("/{talkID}/user/{userID}/vote")
-    @LoggingInputExecution
-    fun voteTalk(
-        @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
-        @PathVariable talkID: Long,
-        @PathVariable userID: Long
-    ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
-        TalkTranslator.translateFrom(talkService.voteTalk(talkID, userID))
-    }
+  @PutMapping("/{talkID}/user/{userID}/vote")
+  @LoggingInputExecution
+  fun voteTalk(
+    @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
+    @PathVariable talkID: Long,
+    @PathVariable userID: Long
+  ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
+    TalkTranslator.translateFrom(talkService.voteTalk(talkID, userID))
+  }
 
-    @PutMapping("/{talkID}/user/{userID}/unvote")
-    @LoggingInputExecution
-    fun unvoteTalk(
-        @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
-        @PathVariable talkID: Long,
-        @PathVariable userID: Long
-    ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
-        TalkTranslator.translateFrom(talkService.unvoteTalk(talkID, userID))
-    }
+  @PutMapping("/{talkID}/user/{userID}/unvote")
+  @LoggingInputExecution
+  fun unvoteTalk(
+    @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
+    @PathVariable talkID: Long,
+    @PathVariable userID: Long
+  ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
+    TalkTranslator.translateFrom(talkService.unvoteTalk(talkID, userID))
+  }
 
-    @PostMapping("/{talkID}/user/{userID}/review")
-    @LoggingInputExecution
-    fun reviewTalk(
-        @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
-        @PathVariable talkID: Long,
-        @PathVariable userID: Long,
-        @Valid @RequestBody createReviewRequestDTO: CreateReviewRequestDTO
-    ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
-        TalkTranslator.translateFrom(talkService.addReview(talkID, userID, createReviewRequestDTO))
-    }
+  @PostMapping("/{talkID}/user/{userID}/review")
+  @LoggingInputExecution
+  fun reviewTalk(
+    @RequestHeader(HttpHeaders.AUTHORIZATION) authToken: String,
+    @PathVariable talkID: Long,
+    @PathVariable userID: Long,
+    @Valid @RequestBody createReviewRequestDTO: CreateReviewRequestDTO
+  ) = authService.validateTokenBelongsToUserId(authToken, userID).let {
+    TalkTranslator.translateFrom(
+      talkService.addReview(
+        talkID,
+        userID,
+        createReviewRequestDTO
+      )
+    )
+  }
 
 }

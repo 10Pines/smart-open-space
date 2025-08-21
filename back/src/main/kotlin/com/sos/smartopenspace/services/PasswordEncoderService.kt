@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service
 
 @Service
 class PasswordEncoderService(
-    private val passwordEncoder: PasswordEncoder,
+  private val passwordEncoder: PasswordEncoder,
 ) {
 
-    fun encodePassword(password: String): String {
-        return passwordEncoder.encode(password)
-    }
+  fun encodePassword(password: String): String {
+    return passwordEncoder.encode(password)
+  }
 
-    fun matchesPassword(password: String, encodedPassword: String): Boolean {
-        return passwordEncoder.matches(password, encodedPassword)
-    }
+  fun matchesPassword(password: String, encodedPassword: String): Boolean {
+    return passwordEncoder.matches(password, encodedPassword)
+  }
 }

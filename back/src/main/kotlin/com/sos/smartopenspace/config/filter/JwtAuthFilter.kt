@@ -22,59 +22,62 @@ import org.springframework.web.servlet.HandlerExceptionResolver
 
 @Component
 class JwtAuthFilter(
-    private val jwtService: JwtService,
-    private val authSessionRepository: AuthSessionRepository,
-    private val handlerExceptionResolver: HandlerExceptionResolver,
-    private val userDetailsService: UserDetailsService,
+  private val jwtService: JwtService,
+  private val authSessionRepository: AuthSessionRepository,
+  private val handlerExceptionResolver: HandlerExceptionResolver,
+  private val userDetailsService: UserDetailsService,
 ) : OncePerRequestFilter() {
 
-    override fun shouldNotFilter(request: HttpServletRequest): Boolean =
-        isPublicEndpoint(request)
+  override fun shouldNotFilter(request: HttpServletRequest): Boolean =
+    isPublicEndpoint(request)
 
-    override fun doFilterInternal(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        filterChain: FilterChain
-    ) {
-        val now = getNowUTC()
-        try {
-            val jwtTokenHeader: String? = request.getHeader(HttpHeaders.AUTHORIZATION)
-            if (jwtTokenHeader.doesNotContainBearerToken()) {
-                throw UnauthorizedException("Jwt token is empty or invalid")
-            }
-            val jwtToken = jwtTokenHeader!!.substring(TOKEN_PREFIX.length)
-            if (!jwtService.isValidToken(jwtToken)) {
-                throw UnauthorizedException("Jwt token is invalid or expired")
-            }
-            val userId = jwtService.extractUserId(jwtToken)
+  override fun doFilterInternal(
+    request: HttpServletRequest,
+    response: HttpServletResponse,
+    filterChain: FilterChain
+  ) {
+    val now = getNowUTC()
+    try {
+      val jwtTokenHeader: String? = request.getHeader(HttpHeaders.AUTHORIZATION)
+      if (jwtTokenHeader.doesNotContainBearerToken()) {
+        throw UnauthorizedException("Jwt token is empty or invalid")
+      }
+      val jwtToken = jwtTokenHeader!!.substring(TOKEN_PREFIX.length)
+      if (!jwtService.isValidToken(jwtToken)) {
+        throw UnauthorizedException("Jwt token is invalid or expired")
+      }
+      val userId = jwtService.extractUserId(jwtToken)
 
-            val authentication: Authentication? = SecurityContextHolder.getContext().authentication
-            if (authentication == null) {
-                authSessionRepository.findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
-                    jwtToken,
-                    userId,
-                    now
-                ) ?: throw UnauthorizedException("Jwt token is invalid or expired")
-                val userDetails = userDetailsService.loadUserByUsername(userId.toString())
-                val authToken = UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.authorities
-                )
-                authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
-                SecurityContextHolder.getContext().authentication = authToken
-            }
-            filterChain.doFilter(request, response)
-        } catch (ex: Exception) {
-            LOGGER.error("Current jwt token was expired or revoked with date_now $now")
-            handlerExceptionResolver.resolveException(request, response, null, ex)
-        }
+      val authentication: Authentication? =
+        SecurityContextHolder.getContext().authentication
+      if (authentication == null) {
+        authSessionRepository.findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
+          jwtToken,
+          userId,
+          now
+        ) ?: throw UnauthorizedException("Jwt token is invalid or expired")
+        val userDetails =
+          userDetailsService.loadUserByUsername(userId.toString())
+        val authToken = UsernamePasswordAuthenticationToken(
+          userDetails,
+          null,
+          userDetails.authorities
+        )
+        authToken.details =
+          WebAuthenticationDetailsSource().buildDetails(request)
+        SecurityContextHolder.getContext().authentication = authToken
+      }
+      filterChain.doFilter(request, response)
+    } catch (ex: Exception) {
+      LOGGER.error("Current jwt token was expired or revoked with date_now $now")
+      handlerExceptionResolver.resolveException(request, response, null, ex)
     }
+  }
 
-    private fun String?.doesNotContainBearerToken() =
-        this == null || !this.startsWith(TOKEN_PREFIX)
+  private fun String?.doesNotContainBearerToken() =
+    this == null || !this.startsWith(TOKEN_PREFIX)
 
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(this::class.java)
-    }
+  companion object {
+    private val LOGGER = LoggerFactory.getLogger(this::class.java)
+  }
 }

@@ -8,4 +8,4 @@ const val USER_REGISTER_METRIC = "user_register"
 
 
 fun getBusinessMetricWith(metricName: String): String =
-    "${BUSINESS_METRIC}_$metricName"
+  "${BUSINESS_METRIC}_$metricName"

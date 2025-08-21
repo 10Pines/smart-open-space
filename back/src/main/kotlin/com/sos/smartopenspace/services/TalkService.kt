@@ -1,9 +1,23 @@
 package com.sos.smartopenspace.services
 
-import com.sos.smartopenspace.domain.*
+import com.sos.smartopenspace.domain.NotFoundException
+import com.sos.smartopenspace.domain.OpenSpace
+import com.sos.smartopenspace.domain.OpenSpaceNotFoundException
+import com.sos.smartopenspace.domain.RepeatedReviewForTalkException
+import com.sos.smartopenspace.domain.Review
+import com.sos.smartopenspace.domain.RoomNotFoundException
+import com.sos.smartopenspace.domain.Talk
+import com.sos.smartopenspace.domain.TalkNotFoundException
+import com.sos.smartopenspace.domain.Track
+import com.sos.smartopenspace.domain.TrackNotFoundException
+import com.sos.smartopenspace.domain.UserCannotVoteItsTalkException
 import com.sos.smartopenspace.dto.request.CreateReviewRequestDTO
 import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
-import com.sos.smartopenspace.persistence.*
+import com.sos.smartopenspace.persistence.OpenSpaceRepository
+import com.sos.smartopenspace.persistence.RoomRepository
+import com.sos.smartopenspace.persistence.SlotRepository
+import com.sos.smartopenspace.persistence.TalkRepository
+import com.sos.smartopenspace.persistence.TrackRepository
 import com.sos.smartopenspace.websockets.QueueSocket
 import com.sos.smartopenspace.websockets.ScheduleSocket
 import org.springframework.data.repository.findByIdOrNull
@@ -13,27 +27,43 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class TalkService(
-        private val openSpaceRepository: OpenSpaceRepository,
-        private val talkRepository: TalkRepository,
-        private val roomRepository: RoomRepository,
-        private val trackRepository: TrackRepository,
-        private val userService: UserService,
-        private val scheduleSocket: ScheduleSocket,
-        private val queueSocket: QueueSocket,
-        private val slotRepository: SlotRepository,
-        private val updatableItemCollectionService: UpdatableItemCollectionService
+  private val openSpaceRepository: OpenSpaceRepository,
+  private val talkRepository: TalkRepository,
+  private val roomRepository: RoomRepository,
+  private val trackRepository: TrackRepository,
+  private val userService: UserService,
+  private val scheduleSocket: ScheduleSocket,
+  private val queueSocket: QueueSocket,
+  private val slotRepository: SlotRepository,
+  private val updatableItemCollectionService: UpdatableItemCollectionService
 ) {
   private fun findUser(userID: Long) = userService.findById(userID)
-  private fun findOpenSpace(id: Long) = openSpaceRepository.findByIdOrNull(id) ?: throw OpenSpaceNotFoundException()
-  private fun findTalk(id: Long) = talkRepository.findByIdOrNull(id) ?: throw TalkNotFoundException()
-  private fun findRoom(id: Long) = roomRepository.findByIdOrNull(id) ?: throw RoomNotFoundException()
+  private fun findOpenSpace(id: Long) =
+    openSpaceRepository.findByIdOrNull(id) ?: throw OpenSpaceNotFoundException()
+
+  private fun findTalk(id: Long) =
+    talkRepository.findByIdOrNull(id) ?: throw TalkNotFoundException()
+
+  private fun findRoom(id: Long) =
+    roomRepository.findByIdOrNull(id) ?: throw RoomNotFoundException()
 
   private fun findSlot(slotID: Long) =
-    slotRepository.findByIdOrNull(slotID) ?: throw NotFoundException("No se encontro el slot con el id ${slotID}")
+    slotRepository.findByIdOrNull(slotID)
+      ?: throw NotFoundException("No se encontro el slot con el id ${slotID}")
 
-  fun scheduleTalk(talkID: Long, userID: Long, slotID: Long, roomID: Long): OpenSpace {
+  fun scheduleTalk(
+    talkID: Long,
+    userID: Long,
+    slotID: Long,
+    roomID: Long
+  ): OpenSpace {
     val openSpace = openSpaceRepository.findFirstOpenSpaceByTalkId(talkID)
-    openSpace.scheduleTalk(findTalk(talkID), findUser(userID), findSlot(slotID), findRoom(roomID))
+    openSpace.scheduleTalk(
+      findTalk(talkID),
+      findUser(userID),
+      findSlot(slotID),
+      findRoom(roomID)
+    )
     scheduleSocket.sendFor(openSpace)
 
     return openSpace
@@ -61,7 +91,11 @@ class TalkService(
     return aTalk
   }
 
-  fun updateTalk(talkId: Long, userId: Long, createTalkRequestDTO: CreateTalkRequestDTO): Talk {
+  fun updateTalk(
+    talkId: Long,
+    userId: Long,
+    createTalkRequestDTO: CreateTalkRequestDTO
+  ): Talk {
     val talk = findTalk(talkId)
     val track: Track? = findTrack(createTalkRequestDTO.trackId)
     val user = findUser(userId)
@@ -77,8 +111,11 @@ class TalkService(
 
     talk.updateDocuments(
       updatableItemCollectionService.getNewItems(createTalkRequestDTO.documents),
-      updatableItemCollectionService.getDeletedItems(createTalkRequestDTO.documents, talk.documents)
+      updatableItemCollectionService.getDeletedItems(
+        createTalkRequestDTO.documents,
+        talk.documents
       )
+    )
 
     return talk
   }
@@ -100,14 +137,19 @@ class TalkService(
   }
 
   @Transactional(readOnly = true)
-  fun findTrackById(id: Long) = trackRepository.findByIdOrNull(id) ?: throw TrackNotFoundException()
+  fun findTrackById(id: Long) =
+    trackRepository.findByIdOrNull(id) ?: throw TrackNotFoundException()
 
 
   fun getTalk(talkID: Long): Talk {
     return findTalk(talkID)
   }
 
-  fun addReview(talkID: Long, userId: Long, createReviewRequestDTO: CreateReviewRequestDTO): Talk {
+  fun addReview(
+    talkID: Long,
+    userId: Long,
+    createReviewRequestDTO: CreateReviewRequestDTO
+  ): Talk {
     val talk = findTalk(talkID)
     if (talk.reviews.any { it.reviewer.id == userId }) throw RepeatedReviewForTalkException()
     val reviewer = userService.findById(userId)
@@ -116,7 +158,7 @@ class TalkService(
       grade = createReviewRequestDTO.grade,
       reviewer = reviewer,
       comment = createReviewRequestDTO.comment
-      )
+    )
 
     talk.addReview(newReview)
 

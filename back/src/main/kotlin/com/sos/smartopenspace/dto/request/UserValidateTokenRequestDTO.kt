@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty
 
 data class UserValidateTokenRequestDTO(
   @field:NotEmpty(message = "Ingrese un email")
-  @field:Email
+  @field:Email(message = "Ingrese un email válido")
   val email: String,
 
   @field:NotEmpty(message = "Ingrese una contraseña")

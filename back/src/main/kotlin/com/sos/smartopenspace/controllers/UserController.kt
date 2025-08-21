@@ -19,9 +19,15 @@ import org.springframework.web.bind.annotation.RestController
 @RateLimiter(name = "default")
 @RestController
 @RequestMapping("user")
-class UserController(private val userService: UserService, private val emailService: EmailService) {
+class UserController(
+  private val userService: UserService,
+  private val emailService: EmailService
+) {
 
-  @Deprecated("Use '/v1/auth/register' endpoint", level = DeprecationLevel.WARNING)
+  @Deprecated(
+    "Use '/v1/auth/register' endpoint",
+    level = DeprecationLevel.WARNING
+  )
   @PostMapping
   @LoggingInputExecution
   fun create(@Valid @RequestBody user: User) =
@@ -31,7 +37,12 @@ class UserController(private val userService: UserService, private val emailServ
   @PostMapping("/auth")
   @LoggingInputExecution
   fun auth(@Valid @RequestBody user: UserLoginRequestDTO) =
-    UserTranslator.translateToUserResponse(userService.findUserAndMatchPassword(user.email, user.password))
+    UserTranslator.translateToUserResponse(
+      userService.findUserAndMatchPassword(
+        user.email,
+        user.password
+      )
+    )
 
   @PostMapping("/recovery")
   @LoggingInputExecution
@@ -41,5 +52,11 @@ class UserController(private val userService: UserService, private val emailServ
   @PostMapping("/reset")
   @LoggingInputExecution
   fun resetPassword(@Valid @RequestBody user: UserValidateTokenRequestDTO) =
-    UserTranslator.translateToUserResponse(userService.resetPassword(user.email, user.resetToken, user.password))
+    UserTranslator.translateToUserResponse(
+      userService.resetPassword(
+        user.email,
+        user.resetToken,
+        user.password
+      )
+    )
 }

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class ObservationConfig {
 
-    @Bean
-    fun serverRequestObservationConvention() =
-        CustomServerRequestObservationConvention()
+  @Bean
+  fun serverRequestObservationConvention() =
+    CustomServerRequestObservationConvention()
 }

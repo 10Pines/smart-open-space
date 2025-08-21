@@ -226,7 +226,11 @@ class OpenSpaceTest {
   fun `an openSpace removes a talk when scheduled`() {
     val organizer = anyUser()
     val aTalk = Talk("Talk", speaker = organizer)
-    val aSlot = TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now())
+    val aSlot = TalkSlot(
+      LocalTime.parse("09:00"),
+      LocalTime.parse("09:30"),
+      LocalDate.now()
+    )
     val aRoom = Room("Sala")
     val openSpace = anOpenSpaceWith(
       organizer = organizer,
@@ -245,7 +249,11 @@ class OpenSpaceTest {
   fun `an openSpace removes a talk when queued`() {
     val organizer = anyUser()
     val aTalk = Talk("Talk", speaker = organizer)
-    val aSlot = TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now())
+    val aSlot = TalkSlot(
+      LocalTime.parse("09:00"),
+      LocalTime.parse("09:30"),
+      LocalDate.now()
+    )
     val aRoom = Room("Sala")
     val openSpace = anOpenSpaceWith(
       organizer = organizer,
@@ -264,7 +272,11 @@ class OpenSpaceTest {
   fun `an openSpace removes a talk that is to be scheduled`() {
     val organizer = anyUser()
     val aTalk = Talk("Talk", speaker = organizer)
-    val aSlot = TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now())
+    val aSlot = TalkSlot(
+      LocalTime.parse("09:00"),
+      LocalTime.parse("09:30"),
+      LocalDate.now()
+    )
     val aRoom = Room("Sala")
     val openSpace = anOpenSpaceWith(
       organizer = organizer,
@@ -282,7 +294,8 @@ class OpenSpaceTest {
   @Test
   fun `an openSpace removes a talk that is to be assigned in slot`() {
     val organizer = UserSampler.get()
-    val talkToDelete = TalkSampler.getWith(id = 15, name = "Talk", speaker = organizer)
+    val talkToDelete =
+      TalkSampler.getWith(id = 15, name = "Talk", speaker = organizer)
     val aSlot = SlotSampler.getTalkSlot()
     val aRoom = Room("Sala")
     val assignedSlotToDelete1 = AssignedSlot(
@@ -422,11 +435,11 @@ class OpenSpaceTest {
 
     val expectedStr =
       "OpenSpace(assignedSlots=[], description=, id=0, isActiveCallForPapers=false, isActiveVoting=false, " +
-          "name=os, organizer=User(email=augusto@sos.sos, id=0, name=augusto, password=***, resetToken=***, " +
-          "resetTokenLifetime=***), queue=[], queueState=PENDING, rooms=[], showSpeakerName=true, " +
-          "slots=[TalkSlot(date=2007-12-03, endTime=10:00, id=0, startTime=09:00), TalkSlot(date=2007-12-03, " +
-          "endTime=11:00, id=0, startTime=10:00), TalkSlot(date=2007-12-03, endTime=12:00, id=0, startTime=11:00)], " +
-          "talks=[], toSchedule=[], tracks=[], urlImage=)"
+        "name=os, organizer=User(email=augusto@sos.sos, id=0, name=augusto, password=***, resetToken=***, " +
+        "resetTokenLifetime=***), queue=[], queueState=PENDING, rooms=[], showSpeakerName=true, " +
+        "slots=[TalkSlot(date=2007-12-03, endTime=10:00, id=0, startTime=09:00), TalkSlot(date=2007-12-03, " +
+        "endTime=11:00, id=0, startTime=10:00), TalkSlot(date=2007-12-03, endTime=12:00, id=0, startTime=11:00)], " +
+        "talks=[], toSchedule=[], tracks=[], urlImage=)"
     assertEquals(expectedStr, openSpace.toString())
   }
 
@@ -569,7 +582,11 @@ class OpenSpaceTest {
     //TODO: Review is ok to return all rooms with every repeated assignable slots??
     val expectedAssignableSlots = mutableSetOf(assignableSlot1, assignableSlot2)
     val resultAssignableSlots = res.map { it.second }
-    assertTrue(resultAssignableSlots.all { it.containsAll(expectedAssignableSlots) })
+    assertTrue(resultAssignableSlots.all {
+      it.containsAll(
+        expectedAssignableSlots
+      )
+    })
   }
 
   @Test
@@ -875,7 +892,14 @@ class OpenSpaceTest {
 
     val resSlotsOfRoom2 = resFreeSlots.find { it.first == room2 }!!.second
     assertEquals(2, resSlotsOfRoom2.size)
-    assertTrue(resSlotsOfRoom2.containsAll(setOf(assignableSlot1, assignableSlot3)))
+    assertTrue(
+      resSlotsOfRoom2.containsAll(
+        setOf(
+          assignableSlot1,
+          assignableSlot3
+        )
+      )
+    )
 
     val resSlotsOfRoom3 = resFreeSlots.find { it.first == room3 }!!.second
     assertEquals(3, resSlotsOfRoom3.size)
@@ -892,14 +916,22 @@ class OpenSpaceTest {
 
   }
 
-  private fun createAndEnqueueTalk(openSpace: OpenSpace, organizer: User, aTalk: Talk) {
+  private fun createAndEnqueueTalk(
+    openSpace: OpenSpace,
+    organizer: User,
+    aTalk: Talk
+  ) {
     openSpace.toggleCallForPapers(organizer)
     openSpace.addTalk(aTalk)
     openSpace.activeQueue(organizer)
     openSpace.enqueueTalk(aTalk)
   }
 
-  private fun createATalkThatIsToBeScheduled(openSpace: OpenSpace, organizer: User, aTalk: Talk) {
+  private fun createATalkThatIsToBeScheduled(
+    openSpace: OpenSpace,
+    organizer: User,
+    aTalk: Talk
+  ) {
     openSpace.toggleCallForPapers(organizer)
     openSpace.addTalk(aTalk)
     openSpace.activeQueue(organizer)
@@ -923,8 +955,10 @@ class OpenSpaceTest {
     startDate: LocalDate,
     endDate: LocalDate
   ): OpenSpace {
-    val first_date_slot = TalkSlot(LocalTime.of(9, 0), LocalTime.of(10, 0), startDate)
-    val end_date_slot = TalkSlot(LocalTime.of(9, 0), LocalTime.of(10, 0), endDate)
+    val first_date_slot =
+      TalkSlot(LocalTime.of(9, 0), LocalTime.of(10, 0), startDate)
+    val end_date_slot =
+      TalkSlot(LocalTime.of(9, 0), LocalTime.of(10, 0), endDate)
     val openSpace = OpenSpace(
       name = "os",
       rooms = mutableSetOf(),

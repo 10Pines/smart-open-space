@@ -26,8 +26,13 @@ class EmailService(
   fun sendRecoveryEmail(email: String) =
     userService.findByEmail(email).also {
       val resetToken = userService.generatePasswordResetToken(it)
-      sendEmail(email, "$emailSubjectPrefix Recuperación de contraseña", recoveryEmailContent(email, resetToken))
-    }.also { LOGGER.info("Send recovery email successfully with $email and user id ${it.id}") }
+      sendEmail(
+        email,
+        "$emailSubjectPrefix Recuperación de contraseña",
+        recoveryEmailContent(email, resetToken)
+      )
+    }
+      .also { LOGGER.info("Send recovery email successfully with $email and user id ${it.id}") }
 
   @Language("HTML")
   private fun recoveryEmailContent(email: String, resetToken: String) =
@@ -36,11 +41,11 @@ class EmailService(
           <p>
             ¡Hola! Nos llegó una solicitud para restablecer la contraseña de tu cuenta de Smart Open Space asociada a este correo.
           </p>
-          
+
           <p>
             Para restablecerla, continúa desde el siguiente enlace: <a href="$frontendResetUrl/login?reset=true&email=$email&token=$resetToken">Restablecer contraseña</a>
           </p>
-          
+
           <p>
             Si no fuiste tú, puedes ignorar con tranquilidad este correo.
           </p>

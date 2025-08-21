@@ -32,7 +32,12 @@ class ScheduleSocketTest : BaseIntegrationTest() {
   @Test
   fun `test Given ScheduleSocket and an openSpaceId which exist with empty assignedSlots WHEN getData with OpenSpaceId THEN return an empty list`() {
     val persistedUser =
-      userRepo.save(UserSampler.getWith(name = "Pepe", email = getAnyUniqueEmail()))
+      userRepo.save(
+        UserSampler.getWith(
+          name = "Pepe",
+          email = getAnyUniqueEmail()
+        )
+      )
     val openSpace = OpenSpaceSampler.getWith(
       name = "Test Open Space",
       organizer = persistedUser,
@@ -50,7 +55,12 @@ class ScheduleSocketTest : BaseIntegrationTest() {
   @Test
   fun `test Given ScheduleSocket and an openSpace which exist with empty assignedSlots WHEN getData with OpenSpace THEN return an empty list`() {
     val persistedUser =
-      userRepo.save(UserSampler.getWith(name = "Pepe", email = getAnyUniqueEmail()))
+      userRepo.save(
+        UserSampler.getWith(
+          name = "Pepe",
+          email = getAnyUniqueEmail()
+        )
+      )
     val openSpace = OpenSpaceSampler.getWith(
       name = "Test Open Space",
       organizer = persistedUser,
@@ -69,7 +79,12 @@ class ScheduleSocketTest : BaseIntegrationTest() {
   fun `test Given ScheduleSocket and an openSpaceId which exist with assignedSlots WHEN getData with OpenSpaceId THEN return the expected list`() {
 
     val persistedUser =
-      userRepo.save(UserSampler.getWith(name = "Pepe", email = getAnyUniqueEmail()))
+      userRepo.save(
+        UserSampler.getWith(
+          name = "Pepe",
+          email = getAnyUniqueEmail()
+        )
+      )
     val talkPersisted1 = talkRepository.save(
       TalkSampler.getWith(
         id = 0L,
@@ -89,7 +104,8 @@ class ScheduleSocketTest : BaseIntegrationTest() {
     val talkSlotPersisted1 = slotRepository.save(SlotSampler.getTalkSlotWith())
     val talkSlotPersisted2 = slotRepository.save(SlotSampler.getTalkSlotWith())
 
-    val roomPersisted1 = roomRepository.save(RoomSampler.getWith(name = "Room 1"))
+    val roomPersisted1 =
+      roomRepository.save(RoomSampler.getWith(name = "Room 1"))
     val assignedSlot1 = AssignedSlot(
       talk = talkPersisted1,
       slot = talkSlotPersisted1,
@@ -126,7 +142,12 @@ class ScheduleSocketTest : BaseIntegrationTest() {
   @Test
   fun `test Given ScheduleSocket and an openSpace which exist with assignedSlots WHEN getData with OpenSpace THEN return the expected list`() {
 
-    val persistedUser = userRepo.save(UserSampler.getWith(name = "Pepe", email = getAnyUniqueEmail()))
+    val persistedUser = userRepo.save(
+      UserSampler.getWith(
+        name = "Pepe",
+        email = getAnyUniqueEmail()
+      )
+    )
     val talkPersisted1 = talkRepository.save(
       TalkSampler.getWith(
         id = 0L,
@@ -146,7 +167,8 @@ class ScheduleSocketTest : BaseIntegrationTest() {
     val talkSlotPersisted1 = slotRepository.save(SlotSampler.getTalkSlotWith())
     val talkSlotPersisted2 = slotRepository.save(SlotSampler.getTalkSlotWith())
 
-    val roomPersisted1 = roomRepository.save(RoomSampler.getWith(name = "Room 1"))
+    val roomPersisted1 =
+      roomRepository.save(RoomSampler.getWith(name = "Room 1"))
     val assignedSlot1 = AssignedSlot(
       talk = talkPersisted1,
       slot = talkSlotPersisted1,

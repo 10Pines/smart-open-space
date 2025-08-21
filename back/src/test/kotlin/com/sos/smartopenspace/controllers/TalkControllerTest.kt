@@ -13,6 +13,7 @@ import com.sos.smartopenspace.domain.Talk
 import com.sos.smartopenspace.domain.TalkSlot
 import com.sos.smartopenspace.domain.TrackNotFoundException
 import com.sos.smartopenspace.domain.User
+import com.sos.smartopenspace.domain.UserNotBelongToAuthToken
 import com.sos.smartopenspace.dto.DefaultErrorDto
 import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
 import com.sos.smartopenspace.generateTalkBody
@@ -40,7 +41,14 @@ class TalkControllerTest : BaseIntegrationTest() {
     val room = anySavedRoom()
     val aSlot = aSavedSlot()
     val openSpace =
-      this.openSpaceRepository.save(anOpenSpaceWith(talk, organizer, setOf(aSlot), setOf(room)))
+      this.openSpaceRepository.save(
+        anOpenSpaceWith(
+          talk,
+          organizer,
+          setOf(aSlot),
+          setOf(room)
+        )
+      )
 
     mockMvc.perform(
       put("/talk/schedule/${organizer.id}/${talk.id}/${aSlot.id}/${room.id}")
@@ -54,7 +62,8 @@ class TalkControllerTest : BaseIntegrationTest() {
     val organizer = anySavedUser("user@gmail.com")
     val talk = anySavedTalk(organizer)
     val speaker = aSavedUserWithTalk(talk)
-    val openSpace = this.openSpaceRepository.save(anOpenSpaceWith(talk, organizer))
+    val openSpace =
+      this.openSpaceRepository.save(anOpenSpaceWith(talk, organizer))
     val slot = openSpace.slots.first()
     val room = anySavedRoom()
 
@@ -106,7 +115,8 @@ class TalkControllerTest : BaseIntegrationTest() {
     openSpace.scheduleTalk(talk, organizer, aSlot as TalkSlot, room)
 
     // WHEN
-    val res = mockMvc.perform(put("/talk/exchange/${talk.id}/${otherSlot.id}/999999"))
+    val res =
+      mockMvc.perform(put("/talk/exchange/${talk.id}/${otherSlot.id}/999999"))
 
     // THEN
     res.andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -170,7 +180,10 @@ class TalkControllerTest : BaseIntegrationTest() {
     )
       .andExpect(MockMvcResultMatchers.status().isOk)
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(talkId))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[0].description").value(changedDescription))
+      .andExpect(
+        MockMvcResultMatchers.jsonPath("$[0].description")
+          .value(changedDescription)
+      )
   }
 
   @Test
@@ -283,7 +296,9 @@ class TalkControllerTest : BaseIntegrationTest() {
 
   @Test
   fun `a talk voted by their owner user returns bad request status response`() {
-    val (userTalkOwner, userTalkOwnerBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = "otherUser@gmail.com"))
+    val (userTalkOwner, userTalkOwnerBearerToken) = registerAndGenerateAuthToken(
+      aUser(userEmail = "otherUser@gmail.com")
+    )
     val talk = anySavedTalk(userTalkOwner)
 
     mockMvc.perform(
@@ -321,7 +336,9 @@ class TalkControllerTest : BaseIntegrationTest() {
   @Test
   fun `vote talk with not match userID param and token userID return forbidden response`() {
     val (aUser, _) = registerAndGenerateAuthToken(aUser(userEmail = "user@gmail.com"))
-    val (userTalkOwner, userTalkOwnerBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = "otherUser@gmail.com"))
+    val (userTalkOwner, userTalkOwnerBearerToken) = registerAndGenerateAuthToken(
+      aUser(userEmail = "otherUser@gmail.com")
+    )
     val talk = anySavedTalkWithUserVote(userTalkOwner, aUser)
     assertTrue(talk.votingUsers.contains(aUser))
     mockMvc.perform(
@@ -404,28 +421,30 @@ class TalkControllerTest : BaseIntegrationTest() {
   }
 
   @Test
-  fun `review talk with userID not exist should not add a review`() {
-    val (aUser, aUserBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = "user@gmail.com"))
+  fun `review talk with userID not exist with access token stolen should not add a review and throws UserNotBelongToAuthToken`() {
+    val (aUser, aUserBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = getAnyUniqueEmail()))
     val talk = anySavedTalk(aUser)
     val content = aReviewCreationBody(5, "a review")
 
     val res = mockMvc.perform(
-      post("/talk/${talk.id}/user/999999/review")
+      post("/talk/${talk.id}/user/9999/review")
         .contentType(MediaType.APPLICATION_JSON)
         .content(content)
         .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
     )
 
     res.andExpect(MockMvcResultMatchers.status().isForbidden)
-    /*
+
     val resBody = readMvcResponseAndConvert<DefaultErrorDto>(res)
+
+
     val expectedRes = DefaultErrorDto(
-      message = UserNotFoundException().message,
-      statusCode = 404,
-      status = "not_found",
+      message = UserNotBelongToAuthToken().message,
+      statusCode = 403,
+      status = "forbidden",
       isFallbackError = false
     )
-    assertEquals(expectedRes, resBody)*/
+    assertEquals(expectedRes, resBody)
   }
 
   @Test
@@ -516,7 +535,10 @@ class TalkControllerTest : BaseIntegrationTest() {
   private fun anySavedTalk(organizer: User) =
     talkRepository.save(Talk("Charla", speaker = organizer))
 
-  private fun anySavedTalkWithUserVote(talkOwner: User, userToVote: User): Talk {
+  private fun anySavedTalkWithUserVote(
+    talkOwner: User,
+    userToVote: User
+  ): Talk {
     val talk = anySavedTalk(talkOwner)
     talk.addVoteBy(userToVote)
     return talkRepository.save(talk)
@@ -528,7 +550,8 @@ class TalkControllerTest : BaseIntegrationTest() {
     return talkRepository.save(talk)
   }
 
-  private fun anySavedUser(userEmail: String) = userRepo.save(aUser(userEmail = userEmail))
+  private fun anySavedUser(userEmail: String) =
+    userRepo.save(aUser(userEmail = userEmail))
 
   private fun anySavedOpenSpace() = this.openSpaceRepository.save(anOpenSpace())
 
@@ -555,7 +578,8 @@ class TalkControllerTest : BaseIntegrationTest() {
     )
   }
 
-  private fun freeSlots(openSpace: OpenSpace) = openSpace.freeSlots().first().second
+  private fun freeSlots(openSpace: OpenSpace) =
+    openSpace.freeSlots().first().second
 
   private fun aReviewCreationBody(grade: Int, comment: String): String {
     return """

@@ -18,119 +18,130 @@ import java.time.temporal.ChronoUnit
 
 @Service
 class AuthService(
-    @Value("\${jwt.expirationInMinutes}")
-    private val expirationInMin: Long,
-    private val authSessionRepository: AuthSessionRepository,
-    private val userService: UserService,
-    private val jwtService: JwtService,
+  @Value("\${jwt.expirationInMinutes}")
+  private val expirationInMin: Long,
+  private val authSessionRepository: AuthSessionRepository,
+  private val userService: UserService,
+  private val jwtService: JwtService,
 ) : AuthServiceI {
 
-    @Transactional
-    @UserRegisterMetric
-    override fun register(newUser: User): AuthSession {
-        val userCreated = userService.create(newUser)
-        return createAuthSession(userCreated)
+  @Transactional
+  @UserRegisterMetric
+  override fun register(newUser: User): AuthSession {
+    val userCreated = userService.create(newUser)
+    return createAuthSession(userCreated)
+  }
+
+  @Transactional
+  override fun login(email: String, password: String): AuthSession {
+    val user = userService.findUserAndMatchPassword(email, password)
+    return createAuthSession(user)
+  }
+
+  override fun logout(tokenHeader: String): Long {
+    val token = jwtService.extractToken(tokenHeader)
+    val userId = jwtService.extractUserId(token)
+    val authSession = authSessionRepository
+      .findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
+        token,
+        userId,
+        getNowUTC()
+      )
+    authSession?.let {
+      authSession.revoke()
+      authSessionRepository.save(authSession)
     }
+    return userId
+  }
 
-    @Transactional
-    override fun login(email: String, password: String): AuthSession {
-        val user = userService.findUserAndMatchPassword(email, password)
-        return createAuthSession(user)
+  override fun logoutAllSessions(tokenHeader: String): Long {
+    val token = jwtService.extractToken(tokenHeader)
+    val userId = jwtService.extractUserId(token)
+    val authSessions = authSessionRepository
+      .findAllByUserIdAndNotRevokedAndNotExpiredFrom(userId, getNowUTC())
+    if (authSessions.isNotEmpty()) {
+      authSessions.forEach { it.revoke() }
+      authSessionRepository.saveAll(authSessions)
     }
+    return userId
+  }
 
-    override fun logout(tokenHeader: String): Long {
-        val token = jwtService.extractToken(tokenHeader)
-        val userId = jwtService.extractUserId(token)
-        val authSession = authSessionRepository
-            .findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(token, userId, getNowUTC())
-        authSession?.let {
-            authSession.revoke()
-            authSessionRepository.save(authSession)
-        }
-        return userId
+  override fun validateToken(tokenHeader: String, userId: Long): Boolean {
+    val now = getNowUTC()
+    val token = jwtService.extractToken(tokenHeader)
+    val isValidToken = jwtService.isValidToken(token)
+    if (!isValidToken) {
+      LOGGER.error("Current jwt token is invalid with userId $userId and date_now $now")
+      return false
     }
-
-    override fun logoutAllSessions(tokenHeader: String): Long {
-        val token = jwtService.extractToken(tokenHeader)
-        val userId = jwtService.extractUserId(token)
-        val authSessions = authSessionRepository
-            .findAllByUserIdAndNotRevokedAndNotExpiredFrom(userId, getNowUTC())
-        if (authSessions.isNotEmpty()) {
-            authSessions.forEach { it.revoke() }
-            authSessionRepository.saveAll(authSessions)
-        }
-        return userId
+    val userIdFromToken = jwtService.extractUserId(token)
+    if (userIdFromToken != userId) {
+      LOGGER.error("Jwt token user not match with userId $userId, tokenUserId $userIdFromToken and date_now $now")
+      return false
     }
-
-    override fun validateToken(tokenHeader: String, userId: Long): Boolean {
-        val now = getNowUTC()
-        val token = jwtService.extractToken(tokenHeader)
-        val isValidToken = jwtService.isValidToken(token)
-        if (!isValidToken) {
-            LOGGER.error("Current jwt token is invalid with userId $userId and date_now $now")
-            return false
-        }
-        val userIdFromToken = jwtService.extractUserId(token)
-        if (userIdFromToken != userId) {
-            LOGGER.error("Jwt token user not match with userId $userId, tokenUserId $userIdFromToken and date_now $now")
-            return false
-        }
-        val existValidTokenSaved = authSessionRepository
-            .findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(token, userIdFromToken, now)
-            .let { it != null }
-        if (!existValidTokenSaved) {
-            LOGGER.error("Current jwt token was expired or revoked with userId $userId, tokenUserId $userIdFromToken and date_now $now")
-            return false
-        }
-        return true
+    val existValidTokenSaved = authSessionRepository
+      .findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
+        token,
+        userIdFromToken,
+        now
+      )
+      .let { it != null }
+    if (!existValidTokenSaved) {
+      LOGGER.error("Current jwt token was expired or revoked with userId $userId, tokenUserId $userIdFromToken and date_now $now")
+      return false
     }
+    return true
+  }
 
-    override fun tokenBelongsToUser(tokenHeader: String, userId: Long): Boolean =
-        runCatching {
-            val token = jwtService.extractToken(tokenHeader)
-            val userIdFromToken = jwtService.extractUserId(token)
-            return userIdFromToken == userId
-        }.onFailure { ex ->
-            LOGGER.error("Error when validating token belongs to userId $userId", ex)
-        }.getOrDefault(false)
+  override fun tokenBelongsToUser(tokenHeader: String, userId: Long): Boolean =
+    runCatching {
+      val token = jwtService.extractToken(tokenHeader)
+      val userIdFromToken = jwtService.extractUserId(token)
+      return userIdFromToken == userId
+    }.onFailure { ex ->
+      LOGGER.error("Error when validating token belongs to userId $userId", ex)
+    }.getOrDefault(false)
 
-    override fun validateTokenBelongsToUserId(tokenHeader: String, userId: Long) {
-        if (!tokenBelongsToUser(tokenHeader, userId)) {
-            throw UserNotBelongToAuthToken()
-        }
+  override fun validateTokenBelongsToUserId(tokenHeader: String, userId: Long) {
+    if (!tokenBelongsToUser(tokenHeader, userId)) {
+      throw UserNotBelongToAuthToken()
     }
+  }
 
-    @Transactional
-    override fun purgeInvalidSessions(creationDateFrom: Instant, creationDateTo: Instant): Int {
-        val now = getNowUTC()
-        return authSessionRepository.deleteAllSessionsExpiresOnBeforeAndBetweenCreationOn(
-            now,
-            creationDateFrom,
-            creationDateTo
-        )
-    }
+  @Transactional
+  override fun purgeInvalidSessions(
+    creationDateFrom: Instant,
+    creationDateTo: Instant
+  ): Int {
+    val now = getNowUTC()
+    return authSessionRepository.deleteAllSessionsExpiresOnBeforeAndBetweenCreationOn(
+      now,
+      creationDateFrom,
+      creationDateTo
+    )
+  }
 
 
-    private fun createAuthSession(user: User): AuthSession {
-        val now = getNowUTC()
-        val expirationAt = now.plus(expirationInMin, ChronoUnit.MINUTES)
+  private fun createAuthSession(user: User): AuthSession {
+    val now = getNowUTC()
+    val expirationAt = now.plus(expirationInMin, ChronoUnit.MINUTES)
 
-        val authSession = AuthSession(
-            token = jwtService.createToken(now, expirationAt, user),
-            createdOn = now,
-            expiresOn = expirationAt,
-            revoked = false,
-            user = user,
-        )
-        LOGGER.debug(
-            "Creating auth session {} with token length {}",
-            authSession,
-            authSession.token.length
-        )
-        return authSessionRepository.save(authSession)
-    }
+    val authSession = AuthSession(
+      token = jwtService.createToken(now, expirationAt, user),
+      createdOn = now,
+      expiresOn = expirationAt,
+      revoked = false,
+      user = user,
+    )
+    LOGGER.debug(
+      "Creating auth session {} with token length {}",
+      authSession,
+      authSession.token.length
+    )
+    return authSessionRepository.save(authSession)
+  }
 
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(this::class.java)
-    }
+  companion object {
+    private val LOGGER = LoggerFactory.getLogger(this::class.java)
+  }
 }

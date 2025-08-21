@@ -61,7 +61,10 @@ abstract class BaseIntegrationTest {
   }
 
   protected final inline fun <reified T> readMvcResponseAndConvert(resActions: ResultActions): T =
-    objectMapper.readValue(resActions.andReturn().response.contentAsString, T::class.java)
+    objectMapper.readValue(
+      resActions.andReturn().response.contentAsString,
+      T::class.java
+    )
 
 
   protected fun getAnyUniqueEmail() =

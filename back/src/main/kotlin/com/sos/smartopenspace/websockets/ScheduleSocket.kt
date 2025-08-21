@@ -9,10 +9,11 @@ import org.springframework.stereotype.Component
 
 @Component
 class ScheduleSocket(
-    private val openSpaceService: OpenSpaceService,
-    objectMapper: ObjectMapper
+  private val openSpaceService: OpenSpaceService,
+  objectMapper: ObjectMapper
 ) : AbstractSocket<List<AssignedSlotResponseDTO>>(objectMapper) {
-    override fun getData(id: Long) = openSpaceService.findAssignedSlotsById(id)
-    override fun getData(os: OpenSpace) = os.assignedSlots.map { AssignedSlotTranslator.translateFrom(it) }
+  override fun getData(id: Long) = openSpaceService.findAssignedSlotsById(id)
+  override fun getData(os: OpenSpace) =
+    os.assignedSlots.map { AssignedSlotTranslator.translateFrom(it) }
 
 }

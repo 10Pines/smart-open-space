@@ -11,21 +11,22 @@ import org.springframework.transaction.annotation.Transactional
 
 
 @Transactional
-class UserControllerTest: BaseIntegrationTest() {
+class UserControllerTest : BaseIntegrationTest() {
 
   @Test
   fun `user registration returns ok status response`() {
     val email = "email@gmail.com"
     val password = "password"
     val name = "Fran"
-    val userInformation = anUserCreationBody(email = email, password = password, name = name)
+    val userInformation =
+      anUserCreationBody(email = email, password = password, name = name)
 
     val response = mockMvc.perform(
       MockMvcRequestBuilders.post("/user")
         .contentType("application/json")
         .content(userInformation)
     ).andExpect(MockMvcResultMatchers.status().isOk)
-     .andReturn().response
+      .andReturn().response
 
     val id = JsonPath.read<Int>(response.contentAsString, "$.id").toLong()
     assertNotNull(userRepo.findByIdOrNull(id))
@@ -36,7 +37,8 @@ class UserControllerTest: BaseIntegrationTest() {
     val email = "email@gmail.com"
     val password = "password"
     val name = "Fran"
-    val userInformation = anUserCreationBody(email = email, password = password, name = name)
+    val userInformation =
+      anUserCreationBody(email = email, password = password, name = name)
 
     mockMvc.perform(
       MockMvcRequestBuilders.post("/user")
@@ -53,16 +55,17 @@ class UserControllerTest: BaseIntegrationTest() {
 
   @Test
   fun `user login returns ok status response`() {
-      val email = "email@gmail.com"
-      val password = "password"
-      val name = "Fran"
-      val userInformation = anUserCreationBody(email = email, password = password, name = name)
+    val email = "email@gmail.com"
+    val password = "password"
+    val name = "Fran"
+    val userInformation =
+      anUserCreationBody(email = email, password = password, name = name)
 
-      mockMvc.perform(
-              MockMvcRequestBuilders.post("/user")
-                      .contentType("application/json")
-                      .content(userInformation)
-      )
+    mockMvc.perform(
+      MockMvcRequestBuilders.post("/user")
+        .contentType("application/json")
+        .content(userInformation)
+    )
 
     val userLoginInformation = """
           {
@@ -77,28 +80,34 @@ class UserControllerTest: BaseIntegrationTest() {
     ).andExpect(MockMvcResultMatchers.status().isOk)
   }
 
-    @Test
-    fun `user login returns not found status response`() {
-        val email = "email@gmail.com"
-        val password = "password"
-        userService.create(User(email= email, name = "Fran", password = password))
+  @Test
+  fun `user login returns not found status response`() {
+    val email = "email@gmail.com"
+    val password = "password"
+    userService.create(User(email = email, name = "Fran", password = password))
 
-        val userLoginInformation = """
+    val userLoginInformation = """
           {
                 "email": "${email}",
                 "password": "OtraPassword"
           }
       """
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/user/auth")
-                .contentType("application/json")
-                .content(userLoginInformation)
-        ).andExpect(MockMvcResultMatchers.status().isUnauthorized)
-    }
+    mockMvc.perform(
+      MockMvcRequestBuilders.post("/user/auth")
+        .contentType("application/json")
+        .content(userLoginInformation)
+    ).andExpect(MockMvcResultMatchers.status().isUnauthorized)
+  }
 
   @Test
   fun `user reset password with correct token updates password`() {
-    val user = userService.create(User(email = "email@gmail.com", name = "Fran", password = "password"))
+    val user = userService.create(
+      User(
+        email = "email@gmail.com",
+        name = "Fran",
+        password = "password"
+      )
+    )
     val resetToken = userService.generatePasswordResetToken(user)
     val anotherPassword = "OtraPassword"
 
@@ -130,7 +139,13 @@ class UserControllerTest: BaseIntegrationTest() {
 
   @Test
   fun `user reset password with invalid token throws not found`() {
-    val user = userService.create(User(email = "email@gmail.com", name = "Fran", password = "password"))
+    val user = userService.create(
+      User(
+        email = "email@gmail.com",
+        name = "Fran",
+        password = "password"
+      )
+    )
     userService.generatePasswordResetToken(user)
     val anotherPassword = "OtraPassword"
 
@@ -148,8 +163,12 @@ class UserControllerTest: BaseIntegrationTest() {
     ).andExpect(MockMvcResultMatchers.status().isUnauthorized)
   }
 
-  private fun anUserCreationBody(email: String, password: String, name: String): String {
-      return """
+  private fun anUserCreationBody(
+    email: String,
+    password: String,
+    name: String
+  ): String {
+    return """
 {
     "email": "${email}",
     "name": "${name}",

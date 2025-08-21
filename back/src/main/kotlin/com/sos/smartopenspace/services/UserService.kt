@@ -1,7 +1,11 @@
 package com.sos.smartopenspace.services
 
 import com.google.common.hash.Hashing
-import com.sos.smartopenspace.domain.*
+import com.sos.smartopenspace.domain.BadRequestException
+import com.sos.smartopenspace.domain.UnauthorizedException
+import com.sos.smartopenspace.domain.User
+import com.sos.smartopenspace.domain.UserNotFoundException
+import com.sos.smartopenspace.domain.UserUnauthorizedException
 import com.sos.smartopenspace.persistence.UserRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.dao.DataIntegrityViolationException
@@ -9,74 +13,77 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.nio.charset.StandardCharsets
-import java.util.*
+import java.util.Base64
 
 @Service
 @Transactional
 class UserService(
-    private val userRepository: UserRepository,
-    private val passwordEncoderService: PasswordEncoderService
+  private val userRepository: UserRepository,
+  private val passwordEncoderService: PasswordEncoderService
 ) {
-    @Value("\${user.reset.token.lifetime}")
-    private val resetTokenLifetime: Long = 0
+  @Value("\${user.reset.token.lifetime}")
+  private val resetTokenLifetime: Long = 0
 
-    fun create(user: User): User {
-        try {
-            user.password = securePassword(user.password)
-            return userRepository.saveAndFlush(user)
-        } catch (error: DataIntegrityViolationException) {
-            throw BadRequestException("El mail ya esta en uso")
-        }
+  fun create(user: User): User {
+    try {
+      user.password = securePassword(user.password)
+      return userRepository.saveAndFlush(user)
+    } catch (error: DataIntegrityViolationException) {
+      throw BadRequestException("El mail ya esta en uso")
+    }
+  }
+
+  @Transactional(readOnly = true)
+  fun findUserAndMatchPassword(email: String, password: String): User {
+    val user = findByEmail(email)
+    if (!passwordEncoderService.matchesPassword(password, user.password)) {
+      throw UserUnauthorizedException()
+    }
+    return user
+  }
+
+  fun resetPassword(email: String, resetToken: String, password: String): User {
+    val hashedToken = hash(resetToken)
+    val user = userRepository.findByEmailAndResetToken(email, hashedToken)
+      ?: throw UserUnauthorizedException()
+    if (user.resetTokenLifetime == null || user.resetTokenLifetime!! < System.currentTimeMillis()) {
+      throw UnauthorizedException("El token esta vencido")
     }
 
-    @Transactional(readOnly = true)
-    fun findUserAndMatchPassword(email: String, password: String): User {
-        val user = findByEmail(email)
-        if (!passwordEncoderService.matchesPassword(password, user.password)) {
-            throw UserUnauthorizedException()
-        }
-        return user
-    }
+    user.cleanResetToken()
+    user.password = securePassword(password)
+    return user
+  }
 
-    fun resetPassword(email: String, resetToken: String, password: String): User {
-        val hashedToken = hash(resetToken)
-        val user = userRepository.findByEmailAndResetToken(email, hashedToken) ?: throw UserUnauthorizedException()
-        if (user.resetTokenLifetime == null || user.resetTokenLifetime!! < System.currentTimeMillis()) {
-            throw UnauthorizedException("El token esta vencido")
-        }
+  private fun hash(password: String) = Hashing.sha256()
+    .hashString(password, StandardCharsets.UTF_8)
+    .toString()
 
-        user.cleanResetToken()
-        user.password = securePassword(password)
-        return user
-    }
+  @Transactional(readOnly = true)
+  fun findById(id: Long) =
+    userRepository.findByIdOrNull(id) ?: throw UserNotFoundException()
 
-    private fun hash(password: String) = Hashing.sha256()
-        .hashString(password, StandardCharsets.UTF_8)
-        .toString()
+  @Transactional(readOnly = true)
+  fun findByEmail(email: String) =
+    userRepository.findByEmail(email) ?: throw UserNotFoundException()
 
-    @Transactional(readOnly = true)
-    fun findById(id: Long) = userRepository.findByIdOrNull(id) ?: throw UserNotFoundException()
+  fun generatePasswordResetToken(user: User): String {
+    val random = ByteArray(64)
+    val token = convertToBase64(random.contentToString())
+      .replace("=", "")
+      .replace("/", "")
+      .replace("+", "")
 
-    @Transactional(readOnly = true)
-    fun findByEmail(email: String) = userRepository.findByEmail(email) ?: throw UserNotFoundException()
+    user.secureResetToken(token, resetTokenLifetime)
 
-    fun generatePasswordResetToken(user: User): String {
-        val random = ByteArray(64)
-        val token = convertToBase64(random.contentToString())
-            .replace("=", "")
-            .replace("/", "")
-            .replace("+", "")
+    return token
+  }
 
-        user.secureResetToken(token, resetTokenLifetime)
+  private fun convertToBase64(str: String): String {
+    return Base64.getEncoder().encodeToString(str.toByteArray())
+  }
 
-        return token
-    }
-
-    private fun convertToBase64(str: String): String {
-        return Base64.getEncoder().encodeToString(str.toByteArray())
-    }
-
-    private fun securePassword(password: String): String {
-        return passwordEncoderService.encodePassword(password)
-    }
+  private fun securePassword(password: String): String {
+    return passwordEncoderService.encodePassword(password)
+  }
 }

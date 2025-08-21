@@ -2,11 +2,22 @@ package com.sos.smartopenspace.domain
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.sos.smartopenspace.util.toStringByReflex
-import jakarta.persistence.*
-import java.net.URL
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
+import jakarta.persistence.ManyToMany
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
+import java.net.URL
 
 @Entity
 class Talk(
@@ -45,12 +56,23 @@ class Talk(
 ) {
 
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "vote",
-          joinColumns = [JoinColumn(name = "talk_id", referencedColumnName = "id")],
-          inverseJoinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")])
+  @JoinTable(
+    name = "vote",
+    joinColumns = [JoinColumn(name = "talk_id", referencedColumnName = "id")],
+    inverseJoinColumns = [JoinColumn(
+      name = "user_id",
+      referencedColumnName = "id"
+    )]
+  )
   var votingUsers: MutableSet<User> = mutableSetOf()
 
-  fun update(openSpace: OpenSpace, name: String, description: String, meetingLink: URL? = null, track: Track? = null) {
+  fun update(
+    openSpace: OpenSpace,
+    name: String,
+    description: String,
+    meetingLink: URL? = null,
+    track: Track? = null
+  ) {
     openSpace.checkTrackIsValid(track)
     this.name = name
     this.description = description
@@ -58,11 +80,14 @@ class Talk(
     this.track = track
   }
 
-  fun updateDocuments(newDocuments: Set<Document>, deletedDocuments: Set<Document>) {
+  fun updateDocuments(
+    newDocuments: Set<Document>,
+    deletedDocuments: Set<Document>
+  ) {
     this.documents.removeAll(deletedDocuments.toSet())
     this.documents.addAll(newDocuments)
   }
-  
+
   @JsonProperty
   fun votes(): Int {
     return votingUsers.size

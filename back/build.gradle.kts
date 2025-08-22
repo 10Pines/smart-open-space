@@ -89,7 +89,7 @@ sonar {
 // Require for flyway plugin v10 compatibility with postgresql
 buildscript {
   dependencies {
-    classpath("org.postgresql:postgresql:42.7.4")
+    classpath("org.postgresql:postgresql:42.7.7")
     classpath("org.flywaydb:flyway-database-postgresql:10.4.1")
   }
 }

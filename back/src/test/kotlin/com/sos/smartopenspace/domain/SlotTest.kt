@@ -1,7 +1,11 @@
 package com.sos.smartopenspace.domain
 
 import com.sos.smartopenspace.anOpenSpace
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertIterableEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalTime
@@ -11,16 +15,27 @@ class SlotTest {
   private val room1 = Room("1")
   private val talk1 = Talk("talk1", speaker = user)
   private val talk2 = Talk("talk2", speaker = user)
-  private val aSlot = TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now())
-  private val otherSlot = TalkSlot(LocalTime.parse("09:30"), LocalTime.parse("09:45"), LocalDate.now())
-  private val secondDaySlot = TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now().plusDays(1))
+  private val aSlot =
+    TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now())
+  private val otherSlot =
+    TalkSlot(LocalTime.parse("09:30"), LocalTime.parse("09:45"), LocalDate.now())
+  private val secondDaySlot =
+    TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now().plusDays(1))
 
   private fun anyUser(): User {
     return User("augusto@sos.sos", "Augusto", "Augusto")
   }
 
-  private fun anyOpenSpaceWithActiveQueued(talks: Set<Talk>, slots: Set<Slot> = setOf(aSlot, otherSlot, secondDaySlot)): OpenSpace {
-    val openSpace = anOpenSpace(talks = talks.toMutableSet(), rooms = setOf(room1), slots = slots)
+  private fun anyOpenSpaceWithActiveQueued(
+    talks: Set<Talk>,
+    slots: Set<Slot> = setOf(
+      aSlot,
+      otherSlot,
+      secondDaySlot
+    )
+  ): OpenSpace {
+    val openSpace =
+      anOpenSpace(talks = talks.toMutableSet(), rooms = setOf(room1), slots = slots)
     val organizer = anyUser()
     organizer.addOpenSpace(openSpace)
     openSpace.activeQueue(organizer)
@@ -35,7 +50,11 @@ class SlotTest {
   private fun anyOpenSpaceWithOrganizer(
     talks: MutableSet<Talk> = mutableSetOf(talk1, talk2)
   ): OpenSpace {
-    val openSpace = anOpenSpace(talks = talks.toMutableSet(), rooms = setOf(room1), slots = setOf(aSlot, otherSlot))
+    val openSpace = anOpenSpace(
+      talks = talks.toMutableSet(),
+      rooms = setOf(room1),
+      slots = setOf(aSlot, otherSlot)
+    )
     val organizer = User("augusto@sos.sos", "augusto", "Augusto")
     organizer.addOpenSpace(openSpace)
     openSpace.activeQueue(organizer)
@@ -157,18 +176,33 @@ class SlotTest {
     openSpace.scheduleTalk(talk1, openSpace.organizer, aSlot, room1)
     openSpace.scheduleTalk(talk2, openSpace.organizer, otherSlot, room1)
     openSpace.exchangeSlot(talk1, room1, otherSlot)
-    assertEquals(talk1, openSpace.assignedSlots.find { it.room == room1 && it.startAt(LocalTime.parse("09:30")) }?.talk)
-    assertEquals(talk2, openSpace.assignedSlots.find { it.room == room1 && it.startAt(LocalTime.parse("09:00")) }?.talk)
+    assertEquals(
+      talk1,
+      openSpace.assignedSlots.find { it.room == room1 && it.startAt(LocalTime.parse("09:30")) }?.talk
+    )
+    assertEquals(
+      talk2,
+      openSpace.assignedSlots.find { it.room == room1 && it.startAt(LocalTime.parse("09:00")) }?.talk
+    )
   }
 
   @Test
   fun `Cambiar charla de slot a uno ocupado en otra fecha`() {
-    val openSpace = anyOpenSpaceWithActiveQueued(setOf(talk1, talk2), setOf(aSlot, otherSlot, secondDaySlot))
+    val openSpace = anyOpenSpaceWithActiveQueued(
+      setOf(talk1, talk2),
+      setOf(aSlot, otherSlot, secondDaySlot)
+    )
     openSpace.scheduleTalk(talk1, openSpace.organizer, aSlot, room1)
     openSpace.scheduleTalk(talk2, openSpace.organizer, secondDaySlot, room1)
     openSpace.exchangeSlot(talk1, room1, secondDaySlot)
-    assertEquals(talk1, openSpace.assignedSlots.find { it.room == room1 && it.hasDate(secondDaySlot.date) }?.talk)
-    assertEquals(talk2, openSpace.assignedSlots.find { it.room == room1 && it.hasDate(aSlot.date) }?.talk)
+    assertEquals(
+      talk1,
+      openSpace.assignedSlots.find { it.room == room1 && it.hasDate(secondDaySlot.date) }?.talk
+    )
+    assertEquals(
+      talk2,
+      openSpace.assignedSlots.find { it.room == room1 && it.hasDate(aSlot.date) }?.talk
+    )
   }
 
   @Test
@@ -184,7 +218,11 @@ class SlotTest {
     val openSpace = anyOpenSpaceWithActiveQueued(setOf(talk1))
     openSpace.scheduleTalk(talk1, openSpace.organizer, aSlot, room1)
     assertThrows(SlotNotFoundException::class.java) {
-      openSpace.exchangeSlot(talk1, room1, TalkSlot(LocalTime.parse("10:00"), LocalTime.parse("10:30"), LocalDate.now()))
+      openSpace.exchangeSlot(
+        talk1,
+        room1,
+        TalkSlot(LocalTime.parse("10:00"), LocalTime.parse("10:30"), LocalDate.now())
+      )
     }
   }
 
@@ -208,14 +246,73 @@ class SlotTest {
       description = "A description",
       date = LocalDate.now()
     )
-    val expectedRes = "OtherSlot(date=${otherSlot.date}, description=A description, endTime=09:30, id=0, startTime=09:00)"
+    val expectedRes =
+      "OtherSlot(date=${otherSlot.date}, description=A description, endTime=09:30, id=0, startTime=09:00)"
     assertEquals(expectedRes, otherSlot.toString())
+  }
+
+  @Test
+  fun `TalkSlot cloneWithDate`() {
+    val originalSlotDate = LocalDate.now().plusDays(2)
+    val originalSlot = TalkSlot(
+      startTime = LocalTime.parse("09:00"),
+      endTime = LocalTime.parse("09:30"),
+      date = originalSlotDate
+    )
+
+    // WHEN
+    val newDate = originalSlotDate.plusDays(1)
+    val clonedSlot = originalSlot.cloneWithDate(newDate)
+
+    assertEquals(newDate, clonedSlot.date)
+    assertEquals(originalSlot.startTime, clonedSlot.startTime)
+    assertEquals(originalSlot.endTime, clonedSlot.endTime)
+  }
+
+  @Test
+  fun `OtherSlot cloneWithDate`() {
+    val originalSlotDate = LocalDate.now().plusDays(2)
+    val originalSlot = OtherSlot(
+      startTime = LocalTime.parse("09:00"),
+      endTime = LocalTime.parse("09:30"),
+      date = originalSlotDate,
+      description = "some description"
+    )
+
+    // WHEN
+    val newDate = originalSlotDate.plusDays(1)
+    val clonedSlot = originalSlot.cloneWithDate(newDate)
+
+
+    // THEN
+    assertTrue(clonedSlot is OtherSlot)
+    val clonedSlotAsOther = clonedSlot as OtherSlot
+    assertEquals(newDate, clonedSlotAsOther.date)
+    assertEquals(originalSlot.startTime, clonedSlotAsOther.startTime)
+    assertEquals(originalSlot.endTime, clonedSlotAsOther.endTime)
+    assertEquals(originalSlot.description, clonedSlotAsOther.description)
+  }
+
+  @Test
+  fun `OtherSlot isAssignable should be falsy`() {
+    val otherSlot = OtherSlot(
+      startTime = LocalTime.parse("09:00"),
+      endTime = LocalTime.parse("09:30"),
+      date = LocalDate.now().plusDays(2),
+      description = "some description"
+    )
+
+    // WHEN
+    val result = otherSlot.isAssignable()
+
+    // THEN
+    assertFalse(result)
   }
 
   private fun slotStartTimes(freeSlots: List<Pair<Room, List<Slot>>>) =
     freeSlots[0].second.map { it.startTime }
 
   private fun slotDate(freeSlots: List<Pair<Room, List<Slot>>>) =
-          freeSlots[0].second.map { it.date }
+    freeSlots[0].second.map { it.date }
 
 }

@@ -1,16 +1,17 @@
 package com.sos.smartopenspace.domain
+
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.sos.smartopenspace.util.toStringByReflex
-import jakarta.persistence.Id
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
 import jakarta.persistence.Inheritance
 import jakarta.persistence.InheritanceType
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -39,7 +40,12 @@ abstract class Slot(
 }
 
 @Entity
-class TalkSlot(startTime: LocalTime, endTime: LocalTime, date: LocalDate) : Slot(startTime, endTime, date) {
+class TalkSlot(
+  startTime: LocalTime,
+  endTime: LocalTime,
+  date: LocalDate,
+  id: Long = 0
+) : Slot(startTime, endTime, date, id) {
   override fun isAssignable() = true
   override fun cloneWithDate(date: LocalDate): Slot {
     return TalkSlot(startTime, endTime, date)
@@ -47,10 +53,21 @@ class TalkSlot(startTime: LocalTime, endTime: LocalTime, date: LocalDate) : Slot
 }
 
 @Entity
-class OtherSlot(startTime: LocalTime, endTime: LocalTime, val description: String, date: LocalDate) : Slot(startTime, endTime, date) {
+class OtherSlot(
+  val description: String,
+  startTime: LocalTime,
+  endTime: LocalTime,
+  date: LocalDate,
+  id: Long = 0
+) : Slot(startTime, endTime, date, id) {
   override fun isAssignable() = false
   override fun cloneWithDate(date: LocalDate): Slot {
-    return OtherSlot(startTime, endTime, description, date)
+    return OtherSlot(
+      startTime = startTime,
+      endTime = endTime,
+      description = description,
+      date = date
+    )
   }
 }
 

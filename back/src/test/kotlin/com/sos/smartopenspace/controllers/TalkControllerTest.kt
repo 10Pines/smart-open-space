@@ -13,6 +13,7 @@ import com.sos.smartopenspace.domain.Talk
 import com.sos.smartopenspace.domain.TalkSlot
 import com.sos.smartopenspace.domain.TrackNotFoundException
 import com.sos.smartopenspace.domain.User
+import com.sos.smartopenspace.domain.UserNotBelongToAuthToken
 import com.sos.smartopenspace.dto.DefaultErrorDto
 import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
 import com.sos.smartopenspace.generateTalkBody
@@ -404,28 +405,30 @@ class TalkControllerTest : BaseIntegrationTest() {
   }
 
   @Test
-  fun `review talk with userID not exist should not add a review`() {
-    val (aUser, aUserBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = "user@gmail.com"))
+  fun `review talk with userID not exist with access token stolen should not add a review and throws UserNotBelongToAuthToken`() {
+    val (aUser, aUserBearerToken) = registerAndGenerateAuthToken(aUser(userEmail = getAnyUniqueEmail()))
     val talk = anySavedTalk(aUser)
     val content = aReviewCreationBody(5, "a review")
 
     val res = mockMvc.perform(
-      post("/talk/${talk.id}/user/999999/review")
+      post("/talk/${talk.id}/user/9999/review")
         .contentType(MediaType.APPLICATION_JSON)
         .content(content)
         .header(HttpHeaders.AUTHORIZATION, aUserBearerToken)
     )
 
     res.andExpect(MockMvcResultMatchers.status().isForbidden)
-    /*
+
     val resBody = readMvcResponseAndConvert<DefaultErrorDto>(res)
+
+
     val expectedRes = DefaultErrorDto(
-      message = UserNotFoundException().message,
-      statusCode = 404,
-      status = "not_found",
+      message = UserNotBelongToAuthToken().message,
+      statusCode = 403,
+      status = "forbidden",
       isFallbackError = false
     )
-    assertEquals(expectedRes, resBody)*/
+    assertEquals(expectedRes, resBody)
   }
 
   @Test

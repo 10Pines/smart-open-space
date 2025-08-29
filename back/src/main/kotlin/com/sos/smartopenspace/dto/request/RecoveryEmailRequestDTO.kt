@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
 
 class RecoveryEmailRequestDTO(
-    @field:NotEmpty(message = "Ingrese un email")
-    @field:Email
-    val email: String
+  @field:NotEmpty(message = "Ingrese un email")
+  @field:Email(message = "Ingrese un email válido")
+  val email: String
 )

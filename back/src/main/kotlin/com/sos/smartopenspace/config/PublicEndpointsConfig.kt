@@ -15,6 +15,9 @@ val PUBLIC_ENDPOINTS: Map<String, List<AntPathRequestMatcher>> = mapOf(
         AntPathRequestMatcher("/actuator/prometheus"),
         AntPathRequestMatcher("/ping"),
     ),
+    HttpMethod.OPTIONS.name() to listOf(
+        AntPathRequestMatcher("/**"),
+    ),
     HttpMethod.GET.name() to listOf(
         AntPathRequestMatcher("/**"),
     ),

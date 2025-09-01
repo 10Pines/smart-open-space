@@ -3,13 +3,25 @@ package com.sos.smartopenspace.domain
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.sos.smartopenspace.util.toStringByReflex
-import java.time.LocalDate
-import jakarta.persistence.*
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
+import jakarta.persistence.OrderColumn
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Size
+import java.time.LocalDate
 
 @Entity
 class OpenSpace(
@@ -80,12 +92,15 @@ class OpenSpace(
   fun isActiveQueue() = queueState == QueueState.ACTIVE
   fun isFinishedQueue() = queueState == QueueState.FINISHED
 
+  //FIXME: Review logic and return type. LocalTime to LocalDateTime?
   @JsonProperty
   fun startTime() = slots.minOfOrNull { it.startTime }
 
+  //FIXME: Review logic and return type. LocalTime to LocalDateTime?
   @JsonProperty
   fun endTime() = slots.maxOfOrNull { it.endTime }
 
+  //FIXME: Review is ok to return all rooms with every repeated assignable slots??
   @JsonProperty
   fun assignableSlots() = rooms.map { room ->
     room to slots.filter { it.isAssignable() }
@@ -119,13 +134,20 @@ class OpenSpace(
 
   fun exchangeSlot(talk: Talk, room: Room, slot: TalkSlot) {
     checkSlotBelongsToTheScheduleGrid(slot)
-    val current = assignedSlots.find { it.talk == talk } ?: throw TalkIsNotScheduledException()
-    assignedSlots.find { it.room == room && it.slot == slot }?.moveTo(current.slot, current.room)
+    val current = assignedSlots.find { it.talk == talk }
+      ?: throw TalkIsNotScheduledException()
+    assignedSlots.find { it.room == room && it.slot == slot }
+      ?.moveTo(current.slot, current.room)
     current.moveTo(slot, room)
   }
 
+  /*
+  TODO: DELETE THIS
+    private fun isBusySlot(room: Room, slot: Slot) =
+      assignedSlots.any { it.startAt(slot.startTime) && it.hasDate(slot.date) && it.room == room }
+   */
   @JsonProperty
-  fun freeSlots() = rooms.map { room ->
+  fun freeSlots(): List<Pair<Room, List<Slot>>> = rooms.map { room ->
     room to slots.filter {
       it.isAssignable() && !isBusySlot(room, it)
     }
@@ -241,16 +263,24 @@ class OpenSpace(
   }
 
   @Transactional
-  fun updateTracksAndAssociatedTalks(newTracks: Set<Track>, deletedTracks: Set<Track>, talksWithoutTrack: List<Talk>) {
+  fun updateTracksAndAssociatedTalks(
+    newTracks: Set<Track>,
+    deletedTracks: Set<Track>,
+    talksWithoutTrack: List<Talk>
+  ) {
     this.tracks.removeAll(deletedTracks)
     this.tracks.addAll(newTracks)
     talksWithoutTrack.map { talk: Talk -> talk.track = null }
   }
 
   fun removeInvalidAssignedSlots() {
-    val existingRoomIds = this.rooms.map { it.id }
-    val existingSlotIds = this.slots.map { it.id }
-    this.assignedSlots.removeIf { !existingRoomIds.contains(it.room.id) || !existingSlotIds.contains(it.slot.id) }
+    val existingRoomIds = rooms.map { it.id }
+    val existingSlotIds = slots.map { it.id }
+    assignedSlots.removeIf {
+      !existingRoomIds.contains(it.room.id) || !existingSlotIds.contains(
+        it.slot.id
+      )
+    }
   }
 
   private fun isTrackValid(track: Track?) =
@@ -263,12 +293,14 @@ class OpenSpace(
       throw CallForPapersClosedException()
   }
 
-  private fun isBusySlot(room: Room, slot: Slot) = assignedSlots.any { it.startAt(slot.startTime) && it.hasDate(slot.date) && it.room == room }
+  private fun isBusySlot(room: Room, slot: Slot) =
+    assignedSlots.any { it.startAt(slot.startTime) && it.hasDate(slot.date) && it.room == room }
 
   private fun checkTalkBelongs(talk: Talk) {
     if (!containsTalk(talk))
       throw TalkDoesntBelongException()
   }
+
   private fun checkSlotBelongsToTheScheduleGrid(slot: TalkSlot) {
     if (!containsSlot(slot))
       throw SlotNotFoundException()
@@ -284,12 +316,7 @@ class OpenSpace(
 
   private fun isCurrentSpeaker(user: User) = user == currentTalk()?.speaker
   private fun isOrganizer(user: User) = user == organizer
-  private fun checkIsOrganizer(user: User) = !isOrganizer(user) && throw NotTheOrganizerException()
+  private fun checkIsOrganizer(user: User) =
+    !isOrganizer(user) && throw NotTheOrganizerException()
 
-}
-
-enum class QueueState {
-  PENDING,
-  ACTIVE,
-  FINISHED
 }

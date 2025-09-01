@@ -1,6 +1,6 @@
 package com.sos.smartopenspace.controllers.v1
 
-import com.sos.smartopenspace.controllers.BaseControllerTest
+import com.sos.smartopenspace.controllers.BaseIntegrationTest
 import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATED_ON_FROM_NAME
 import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATED_ON_TO_NAME
 import com.sos.smartopenspace.controllers.v1.AuthController.Companion.FILTER_CREATION_ON_MAX
@@ -37,7 +37,7 @@ import java.nio.charset.StandardCharsets
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-class AuthControllerTest : BaseControllerTest() {
+class AuthControllerTest : BaseIntegrationTest() {
 
     @Autowired
     private lateinit var meterRegistry: MeterRegistry

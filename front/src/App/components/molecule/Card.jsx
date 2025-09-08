@@ -36,7 +36,17 @@ const Card = ({
       {...props}
     >
       <CardHeader>
-        <Text as="h2" size="large" weight="normal" margin="0" color="black">
+        <Text 
+          as="h2" 
+          size="large" 
+          weight="normal" 
+          margin="0" 
+          color="black"
+          style={{
+            wordBreak: 'break-word',
+            overflow: 'hidden'
+          }}
+        >
           {title}
         </Text>
       </CardHeader>

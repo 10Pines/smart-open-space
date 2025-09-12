@@ -14,7 +14,8 @@ class DocumentTest {
       link = URI.create("http://example.com/path-test").toURL(),
     )
 
-    val expectedString = "Document(id=1, link=http://example.com/path-test, name=document-test)"
+    val expectedString =
+      "Document(id=1, link=http://example.com/path-test, name=document-test)"
     assertEquals(expectedString, document.toString())
   }
 

@@ -19,181 +19,191 @@ import org.springframework.web.filter.ServerHttpObservationFilter
 
 class ObservationMetricHelperTest {
 
-    private lateinit var observationRegistry: TestObservationRegistry
+  private lateinit var observationRegistry: TestObservationRegistry
 
-    private lateinit var observationMetricHelper: ObservationMetricHelper
+  private lateinit var observationMetricHelper: ObservationMetricHelper
 
-    @MockK
-    private lateinit var httpServletRequest: HttpServletRequest
+  @MockK
+  private lateinit var httpServletRequest: HttpServletRequest
 
-    @MockK
-    private lateinit var httpServletResponse: HttpServletResponse
+  @MockK
+  private lateinit var httpServletResponse: HttpServletResponse
 
-    @BeforeEach
-    fun setUp() {
-        MockKAnnotations.init(this)
-        observationRegistry = TestObservationRegistry.create()
-        observationMetricHelper = ObservationMetricHelper(observationRegistry)
+  @BeforeEach
+  fun setUp() {
+    MockKAnnotations.init(this)
+    observationRegistry = TestObservationRegistry.create()
+    observationMetricHelper = ObservationMetricHelper(observationRegistry)
+  }
+
+  @Test
+  fun `test observeBusinessChecked observes ok`() {
+    val newMetric = "some_metric_name"
+
+    val expectedFunRes = "sarasa_result"
+    val res = observationMetricHelper.observeBusinessChecked<String, Exception>(
+      newMetric,
+      KeyValues.of("result", "ok", "is_test", "true")
+    ) {
+      expectedFunRes
     }
 
-    @Test
-    fun `test observeBusinessChecked observes ok`() {
-        val newMetric = "some_metric_name"
 
-        val expectedFunRes = "sarasa_result"
-        val res = observationMetricHelper.observeBusinessChecked<String, Exception>(
-            newMetric,
-            KeyValues.of("result", "ok", "is_test", "true")
-        ) {
-            expectedFunRes
-        }
+    assertEquals(expectedFunRes, res!!)
+
+    val expectedMetric = getBusinessMetricWith(newMetric)
+    assertThat(observationRegistry)
+      .doesNotHaveAnyRemainingCurrentObservation()
+      .hasObservationWithNameEqualTo(expectedMetric)
+      .that()
+      .hasLowCardinalityKeyValue("result", "ok")
+      .hasLowCardinalityKeyValue("is_test", "true")
+      .hasBeenStarted()
+      .hasBeenStopped()
+  }
+
+  @Test
+  fun `test observeBusinessChecked and addTags observes throwing exception and override tags`() {
+    val newMetric = "some_metric_name"
 
 
-        assertEquals(expectedFunRes, res!!)
-
-        val expectedMetric = getBusinessMetricWith(newMetric)
-        assertThat(observationRegistry)
-            .doesNotHaveAnyRemainingCurrentObservation()
-            .hasObservationWithNameEqualTo(expectedMetric)
-            .that()
-            .hasLowCardinalityKeyValue("result", "ok")
-            .hasLowCardinalityKeyValue("is_test", "true")
-            .hasBeenStarted()
-            .hasBeenStopped()
+    val resultTagValue = "error"
+    val errorMsg = "invalid_operation"
+    val exRes = assertThrows<RuntimeException> {
+      observationMetricHelper.observeBusinessChecked<String, Exception>(
+        newMetric,
+        KeyValues.of("result", "ok", "is_test", "true")
+      ) {
+        observationMetricHelper.addMetricTags(
+          mapOf(
+            "result" to resultTagValue,
+            "error_message" to errorMsg,
+          )
+        )
+        throw RuntimeException(errorMsg)
+      }
     }
 
-    @Test
-    fun `test observeBusinessChecked and addTags observes throwing exception and override tags`() {
-        val newMetric = "some_metric_name"
+    assertEquals(errorMsg, exRes.message)
+    val expectedMetric = getBusinessMetricWith(newMetric)
+    assertThat(observationRegistry)
+      .doesNotHaveAnyRemainingCurrentObservation()
+      .hasObservationWithNameEqualTo(expectedMetric)
+      .that()
+      .hasLowCardinalityKeyValue("result", resultTagValue)
+      .hasLowCardinalityKeyValue("is_test", "true")
+      .hasLowCardinalityKeyValue("error_message", errorMsg)
+      .hasBeenStarted()
+      .hasBeenStopped()
+  }
 
+  @Test
+  fun `test observeBusinessChecked with request with context should add Context`() {
+    val observationContext =
+      ServerRequestObservationContext(httpServletRequest, httpServletResponse)
+    val newMetric = "some_metric_name"
+    val contextKey = "some_context_key"
+    val valueContextKey = mapOf<String, Any>("key_a" to "value_a", "key_b" to 2)
 
-        val resultTagValue = "error"
-        val errorMsg = "invalid_operation"
-        val exRes = assertThrows<RuntimeException> {
-            observationMetricHelper.observeBusinessChecked<String, Exception>(
-                newMetric,
-                KeyValues.of("result", "ok", "is_test", "true")
-            ) {
-                observationMetricHelper.addMetricTags(
-                    mapOf(
-                        "result" to resultTagValue,
-                        "error_message" to errorMsg,
-                    )
-                )
-                throw RuntimeException(errorMsg)
-            }
-        }
+    every { httpServletRequest.getAttribute(ServerHttpObservationFilter::class.java.name + ".context") } returns observationContext
 
-        assertEquals(errorMsg, exRes.message)
-        val expectedMetric = getBusinessMetricWith(newMetric)
-        assertThat(observationRegistry)
-            .doesNotHaveAnyRemainingCurrentObservation()
-            .hasObservationWithNameEqualTo(expectedMetric)
-            .that()
-            .hasLowCardinalityKeyValue("result", resultTagValue)
-            .hasLowCardinalityKeyValue("is_test", "true")
-            .hasLowCardinalityKeyValue("error_message", errorMsg)
-            .hasBeenStarted()
-            .hasBeenStopped()
+    val expectedFunRes = "sarasa_result"
+    val res = observationMetricHelper.observeBusinessChecked<String, Exception>(
+      newMetric,
+      KeyValues.of("result", "ok", "is_test", "true")
+    ) {
+      observationMetricHelper.addContext(
+        httpServletRequest,
+        contextKey,
+        valueContextKey
+      )
+      expectedFunRes
     }
 
-    @Test
-    fun `test observeBusinessChecked with request with context should add Context`() {
-        val observationContext = ServerRequestObservationContext(httpServletRequest, httpServletResponse)
-        val newMetric = "some_metric_name"
-        val contextKey = "some_context_key"
-        val valueContextKey = mapOf<String, Any>("key_a" to "value_a", "key_b" to 2)
 
-        every { httpServletRequest.getAttribute(ServerHttpObservationFilter::class.java.name + ".context") } returns observationContext
+    assertEquals(expectedFunRes, res!!)
 
-        val expectedFunRes = "sarasa_result"
-        val res = observationMetricHelper.observeBusinessChecked<String, Exception>(
-            newMetric,
-            KeyValues.of("result", "ok", "is_test", "true")
-        ) {
-            observationMetricHelper.addContext(httpServletRequest, contextKey, valueContextKey)
-            expectedFunRes
-        }
+    val expectedMetric = getBusinessMetricWith(newMetric)
+    assertThat(observationRegistry)
+      .doesNotHaveAnyRemainingCurrentObservation()
+      .hasObservationWithNameEqualTo(expectedMetric)
+      .that()
+      .hasLowCardinalityKeyValue("result", "ok")
+      .hasLowCardinalityKeyValue("is_test", "true")
+      .hasBeenStarted()
+      .hasBeenStopped()
 
+    assertEquals(valueContextKey, observationContext.get(contextKey))
+  }
 
-        assertEquals(expectedFunRes, res!!)
+  @Test
+  fun `test observeBusinessChecked with request without context should not add Context and not throws anything`() {
+    val newMetric = "some_metric_name"
+    val contextKey = "some_context_key"
+    val valueContextKey = mapOf<String, Any>("key_a" to "value_a", "key_b" to 2)
 
-        val expectedMetric = getBusinessMetricWith(newMetric)
-        assertThat(observationRegistry)
-            .doesNotHaveAnyRemainingCurrentObservation()
-            .hasObservationWithNameEqualTo(expectedMetric)
-            .that()
-            .hasLowCardinalityKeyValue("result", "ok")
-            .hasLowCardinalityKeyValue("is_test", "true")
-            .hasBeenStarted()
-            .hasBeenStopped()
+    every { httpServletRequest.getAttribute(ServerHttpObservationFilter::class.java.name + ".context") } returns null
 
-        assertEquals(valueContextKey, observationContext.get(contextKey))
+    val expectedFunRes = "sarasa_result"
+    val res = observationMetricHelper.observeBusinessChecked<String, Exception>(
+      newMetric,
+      KeyValues.of("result", "ok", "is_test", "true")
+    ) {
+      observationMetricHelper.addContext(
+        httpServletRequest,
+        contextKey,
+        valueContextKey
+      )
+      expectedFunRes
     }
 
-    @Test
-    fun `test observeBusinessChecked with request without context should not add Context and not throws anything`() {
-        val newMetric = "some_metric_name"
-        val contextKey = "some_context_key"
-        val valueContextKey = mapOf<String, Any>("key_a" to "value_a", "key_b" to 2)
 
-        every { httpServletRequest.getAttribute(ServerHttpObservationFilter::class.java.name + ".context") } returns null
+    assertEquals(expectedFunRes, res!!)
 
-        val expectedFunRes = "sarasa_result"
-        val res = observationMetricHelper.observeBusinessChecked<String, Exception>(
-            newMetric,
-            KeyValues.of("result", "ok", "is_test", "true")
-        ) {
-            observationMetricHelper.addContext(httpServletRequest, contextKey, valueContextKey)
-            expectedFunRes
-        }
+    val expectedMetric = getBusinessMetricWith(newMetric)
+    assertThat(observationRegistry)
+      .doesNotHaveAnyRemainingCurrentObservation()
+      .hasObservationWithNameEqualTo(expectedMetric)
+      .that()
+      .hasLowCardinalityKeyValue("result", "ok")
+      .hasLowCardinalityKeyValue("is_test", "true")
+      .hasBeenStarted()
+      .hasBeenStopped()
+  }
 
+  @Test
+  fun `test observeBusinessChecked with request with context value null should not add Context`() {
+    val observationContext =
+      ServerRequestObservationContext(httpServletRequest, httpServletResponse)
+    val newMetric = "some_metric_name"
+    val contextKey = "some_context_key"
 
-        assertEquals(expectedFunRes, res!!)
+    every { httpServletRequest.getAttribute(ServerHttpObservationFilter::class.java.name + ".context") } returns observationContext
 
-        val expectedMetric = getBusinessMetricWith(newMetric)
-        assertThat(observationRegistry)
-            .doesNotHaveAnyRemainingCurrentObservation()
-            .hasObservationWithNameEqualTo(expectedMetric)
-            .that()
-            .hasLowCardinalityKeyValue("result", "ok")
-            .hasLowCardinalityKeyValue("is_test", "true")
-            .hasBeenStarted()
-            .hasBeenStopped()
+    val expectedFunRes = "sarasa_result"
+    val res = observationMetricHelper.observeBusinessChecked<String, Exception>(
+      newMetric,
+      KeyValues.of("result", "ok", "is_test", "true")
+    ) {
+      observationMetricHelper.addContext(httpServletRequest, contextKey, null)
+      expectedFunRes
     }
 
-    @Test
-    fun `test observeBusinessChecked with request with context value null should not add Context`() {
-        val observationContext = ServerRequestObservationContext(httpServletRequest, httpServletResponse)
-        val newMetric = "some_metric_name"
-        val contextKey = "some_context_key"
 
-        every { httpServletRequest.getAttribute(ServerHttpObservationFilter::class.java.name + ".context") } returns observationContext
+    assertEquals(expectedFunRes, res!!)
 
-        val expectedFunRes = "sarasa_result"
-        val res = observationMetricHelper.observeBusinessChecked<String, Exception>(
-            newMetric,
-            KeyValues.of("result", "ok", "is_test", "true")
-        ) {
-            observationMetricHelper.addContext(httpServletRequest, contextKey, null)
-            expectedFunRes
-        }
+    val expectedMetric = getBusinessMetricWith(newMetric)
+    assertThat(observationRegistry)
+      .doesNotHaveAnyRemainingCurrentObservation()
+      .hasObservationWithNameEqualTo(expectedMetric)
+      .that()
+      .hasLowCardinalityKeyValue("result", "ok")
+      .hasLowCardinalityKeyValue("is_test", "true")
+      .hasBeenStarted()
+      .hasBeenStopped()
 
-
-        assertEquals(expectedFunRes, res!!)
-
-        val expectedMetric = getBusinessMetricWith(newMetric)
-        assertThat(observationRegistry)
-            .doesNotHaveAnyRemainingCurrentObservation()
-            .hasObservationWithNameEqualTo(expectedMetric)
-            .that()
-            .hasLowCardinalityKeyValue("result", "ok")
-            .hasLowCardinalityKeyValue("is_test", "true")
-            .hasBeenStarted()
-            .hasBeenStopped()
-
-        assertNull(observationContext.get(contextKey))
-    }
+    assertNull(observationContext.get(contextKey))
+  }
 
 
 }

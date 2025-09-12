@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class QueueSocket(
-    private val queueService: QueueService,
-    objectMapper: ObjectMapper,
+  private val queueService: QueueService,
+  objectMapper: ObjectMapper,
 ) : AbstractSocket<List<TalkResponseDTO>>(objectMapper) {
-    override fun getData(id: Long) = queueService.getQueueFromOpenSpaceId(id)
-    override fun getData(os: OpenSpace) =  queueService.getQueueFromOpenSpace(os)
+  override fun getData(id: Long) = queueService.getQueueFromOpenSpaceId(id)
+  override fun getData(os: OpenSpace) = queueService.getQueueFromOpenSpace(os)
 }

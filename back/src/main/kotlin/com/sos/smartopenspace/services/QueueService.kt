@@ -11,17 +11,17 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class QueueService(
-    private val openSpaceRepository: OpenSpaceRepository,
+  private val openSpaceRepository: OpenSpaceRepository,
 ) {
 
-    @Transactional(readOnly = true)
-    fun getQueueFromOpenSpaceId(openSpaceId: Long): List<TalkResponseDTO> =
-        findById(openSpaceId).queue.map { TalkTranslator.translateFrom(it) }
+  @Transactional(readOnly = true)
+  fun getQueueFromOpenSpaceId(openSpaceId: Long): List<TalkResponseDTO> =
+    findById(openSpaceId).queue.map { TalkTranslator.translateFrom(it) }
 
-    @Transactional(readOnly = true)
-    fun getQueueFromOpenSpace(os: OpenSpace): List<TalkResponseDTO> =
-        os.queue.map { TalkTranslator.translateFrom(it) }
+  @Transactional(readOnly = true)
+  fun getQueueFromOpenSpace(os: OpenSpace): List<TalkResponseDTO> =
+    os.queue.map { TalkTranslator.translateFrom(it) }
 
-    private fun findById(id: Long) =
-        openSpaceRepository.findByIdOrNull(id) ?: throw OpenSpaceNotFoundException()
+  private fun findById(id: Long) =
+    openSpaceRepository.findByIdOrNull(id) ?: throw OpenSpaceNotFoundException()
 }

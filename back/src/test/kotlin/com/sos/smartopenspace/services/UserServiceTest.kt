@@ -64,7 +64,8 @@ class UserServiceTest : BaseServiceTest() {
       .hashString(resetTokenRaw, StandardCharsets.UTF_8)
       .toString()
     user.resetToken = resetToken
-    user.resetTokenLifetime = System.currentTimeMillis() - 1000 // Set to a past time
+    user.resetTokenLifetime =
+      System.currentTimeMillis() - 1000 // Set to a past time
     userService.create(user)
 
     // WHEN + THEN

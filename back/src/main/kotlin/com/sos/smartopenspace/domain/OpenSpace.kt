@@ -124,7 +124,12 @@ class OpenSpace(
   fun containsTalk(talk: Talk) = talks.contains(talk)
   fun containsSlot(slot: TalkSlot) = slots.contains(slot)
 
-  fun scheduleTalk(talk: Talk, user: User, slot: TalkSlot, room: Room): AssignedSlot {
+  fun scheduleTalk(
+    talk: Talk,
+    user: User,
+    slot: TalkSlot,
+    room: Room
+  ): AssignedSlot {
     checkScheduleTalk(talk, user, slot, room)
     val assignedSlot = AssignedSlot(slot, room, talk)
     assignedSlots.add(assignedSlot)
@@ -162,7 +167,8 @@ class OpenSpace(
 
   fun currentTalk() = queue.firstOrNull()
 
-  fun checkIsFinishedQueue() = isFinishedQueue() && throw FinishedQueuingException()
+  fun checkIsFinishedQueue() =
+    isFinishedQueue() && throw FinishedQueuingException()
 
   fun enqueueTalk(talk: Talk): OpenSpace {
     isPendingQueue() && throw InactiveQueueException()
@@ -286,7 +292,8 @@ class OpenSpace(
   private fun isTrackValid(track: Track?) =
     track == null || trackIsFromThisOpenSpace(track)
 
-  private fun trackIsFromThisOpenSpace(track: Track?) = tracks.any { it == track }
+  private fun trackIsFromThisOpenSpace(track: Track?) =
+    tracks.any { it == track }
 
   private fun checkIsActiveCallForPapers() {
     if (!isActiveCallForPapers)
@@ -306,7 +313,12 @@ class OpenSpace(
       throw SlotNotFoundException()
   }
 
-  private fun checkScheduleTalk(talk: Talk, user: User, slot: TalkSlot, room: Room) {
+  private fun checkScheduleTalk(
+    talk: Talk,
+    user: User,
+    slot: TalkSlot,
+    room: Room
+  ) {
     checkTalkBelongs(talk)
     checkSlotBelongsToTheScheduleGrid(slot)
     assignedSlots.any { it.talk == talk } && throw TalkAlreadyAssignedException()

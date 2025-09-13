@@ -54,6 +54,13 @@ cd smart-open-space
 
 - [Documentación para construir aplicación con containers/docker](/docs/container)
 
+### Development (code-style)
+
+Se utiliza [editorconfig](https://editorconfig.org/) para el code-style del codigo fuente.
+
+Revisar [documentación oficial de editorconfig](https://editorconfig.org/) por si se requiere algun plugin y/o configuración extra en el IDE que desees utilizar.
+
+
 ### Levantar backend
 
 #### Con Docker:

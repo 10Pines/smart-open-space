@@ -12,51 +12,64 @@ import java.time.format.DateTimeFormatter
 
 object ObjectMapperUtil {
 
-    const val DATE_FORMAT = "yyyy-MM-dd"
-    const val TIME_FORMAT = "HH:mm"
+  const val DATE_FORMAT = "yyyy-MM-dd"
+  const val TIME_FORMAT = "HH:mm"
 
-    fun build(): ObjectMapper {
-        val objectMapperBuilder = JsonMapper.builder().enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+  fun build(): ObjectMapper {
+    val objectMapperBuilder =
+      JsonMapper.builder().enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
 
-        objectMapperBuilder.enable(MapperFeature.USE_GETTERS_AS_SETTERS)
-        objectMapperBuilder.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-        objectMapperBuilder.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-        objectMapperBuilder.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+    objectMapperBuilder.enable(MapperFeature.USE_GETTERS_AS_SETTERS)
+    objectMapperBuilder.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    objectMapperBuilder.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+    objectMapperBuilder.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
 
-        objectMapperBuilder.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
+    objectMapperBuilder.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
 
-        val javaTimeModule = JavaTimeModule()
-        javaTimeModule.addSerializer(LocalTime::class.java, localTimeSerializer())
-        javaTimeModule.addSerializer(LocalDate::class.java, localDateSerializer())
-        objectMapperBuilder.addModule(javaTimeModule)
+    val javaTimeModule = JavaTimeModule()
+    javaTimeModule.addSerializer(LocalTime::class.java, localTimeSerializer())
+    javaTimeModule.addSerializer(LocalDate::class.java, localDateSerializer())
+    objectMapperBuilder.addModule(javaTimeModule)
 
-        objectMapperBuilder.addModule(kotlinModule())
+    objectMapperBuilder.addModule(kotlinModule())
 
-        return objectMapperBuilder.build()
+    return objectMapperBuilder.build()
+  }
+
+  private fun localTimeSerializer(): JsonSerializer<LocalTime> {
+    return object : JsonSerializer<LocalTime>() {
+      @Throws(IOException::class)
+      override fun serialize(
+        localTime: LocalTime, jsonGenerator: JsonGenerator,
+        serializerProvider: SerializerProvider
+      ) {
+        jsonGenerator.writeString(
+          localTime.format(
+            DateTimeFormatter.ofPattern(
+              TIME_FORMAT
+            )
+          )
+        )
+      }
     }
+  }
 
-    private fun localTimeSerializer(): JsonSerializer<LocalTime> {
-        return object : JsonSerializer<LocalTime>() {
-            @Throws(IOException::class)
-            override fun serialize(
-                localTime: LocalTime, jsonGenerator: JsonGenerator,
-                serializerProvider: SerializerProvider
-            ) {
-                jsonGenerator.writeString(localTime.format(DateTimeFormatter.ofPattern(TIME_FORMAT)))
-            }
-        }
+  private fun localDateSerializer(): JsonSerializer<LocalDate> {
+    return object : JsonSerializer<LocalDate>() {
+      @Throws(IOException::class)
+      override fun serialize(
+        localDate: LocalDate, jsonGenerator: JsonGenerator,
+        serializerProvider: SerializerProvider
+      ) {
+        jsonGenerator.writeString(
+          localDate.format(
+            DateTimeFormatter.ofPattern(
+              DATE_FORMAT
+            )
+          )
+        )
+      }
     }
-
-    private fun localDateSerializer(): JsonSerializer<LocalDate> {
-        return object : JsonSerializer<LocalDate>() {
-            @Throws(IOException::class)
-            override fun serialize(
-                localDate: LocalDate, jsonGenerator: JsonGenerator,
-                serializerProvider: SerializerProvider
-            ) {
-                jsonGenerator.writeString(localDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-            }
-        }
-    }
+  }
 
 }

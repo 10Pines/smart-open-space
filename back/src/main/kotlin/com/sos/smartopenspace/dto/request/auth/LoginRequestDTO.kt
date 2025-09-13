@@ -8,13 +8,13 @@ import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Size
 
 data class LoginRequestDTO(
-    @field:NotEmpty(message = "Ingrese un email válido")
-    @field:Email(message = "Ingrese un email válido")
-    val email: String,
-    @field:NotBlank(message = "Ingrese una contraseña")
-    @field:Size(max = PASSWORD_MAX_LENGTH, message = "Contraseña muy larga")
-    val password: String
+  @field:NotEmpty(message = "Ingrese un email válido")
+  @field:Email(message = "Ingrese un email válido")
+  val email: String,
+  @field:NotBlank(message = "Ingrese una contraseña")
+  @field:Size(max = PASSWORD_MAX_LENGTH, message = "Contraseña muy larga")
+  val password: String
 ) {
-    override fun toString(): String =
-        toStringByReflex(this, mask = listOf("password"))
+  override fun toString(): String =
+    toStringByReflex(this, mask = listOf("password"))
 }

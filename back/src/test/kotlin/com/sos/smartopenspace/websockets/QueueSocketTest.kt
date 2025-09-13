@@ -31,7 +31,12 @@ class QueueSocketTest : BaseIntegrationTest() {
   fun `test Given QueueSocket and a openSpaceId which exist with empty queue talks WHEN getData with OpenSpaceId THEN return an empty list`() {
     val queueTalks = mutableListOf<Talk>()
     val persistedUser =
-      userRepo.save(UserSampler.getWith(name = "Pepe", email = getAnyUniqueEmail()))
+      userRepo.save(
+        UserSampler.getWith(
+          name = "Pepe",
+          email = getAnyUniqueEmail()
+        )
+      )
     val openSpace = OpenSpaceSampler.getWith(
       name = "Test Open Space",
       organizer = persistedUser,
@@ -50,7 +55,12 @@ class QueueSocketTest : BaseIntegrationTest() {
   fun `test Given QueueSocket and a openSpaceId which exist but has queue talks WHEN getData with OpenSpaceId THEN return the expected list`() {
 
     val persistedUser =
-      userRepo.save(UserSampler.getWith(name = "Pepe", email = getAnyUniqueEmail()))
+      userRepo.save(
+        UserSampler.getWith(
+          name = "Pepe",
+          email = getAnyUniqueEmail()
+        )
+      )
 
     val talkPersisted1 = talkRepository.save(
       TalkSampler.getWith(
@@ -84,7 +94,10 @@ class QueueSocketTest : BaseIntegrationTest() {
     // THEN
     assertEquals(openSpacePersisted.queue.size, res.size)
     openSpacePersisted.queue.forEach { queueTalk ->
-      assertEquals(TalkTranslator.translateFrom(queueTalk), res.find { it.id == queueTalk.id }!!)
+      assertEquals(
+        TalkTranslator.translateFrom(queueTalk),
+        res.find { it.id == queueTalk.id }!!
+      )
     }
   }
 
@@ -92,7 +105,12 @@ class QueueSocketTest : BaseIntegrationTest() {
   fun `test Given QueueSocket and an openSpace with empty queue talks WHEN getData with openSpace THEN return an empty list`() {
     val queueTalks = mutableListOf<Talk>()
     val persistedUser =
-      userRepo.save(UserSampler.getWith(name = "Pepe", email = getAnyUniqueEmail()))
+      userRepo.save(
+        UserSampler.getWith(
+          name = "Pepe",
+          email = getAnyUniqueEmail()
+        )
+      )
     val openSpace = OpenSpaceSampler.getWith(
       name = "Test Open Space",
       organizer = persistedUser,
@@ -111,7 +129,12 @@ class QueueSocketTest : BaseIntegrationTest() {
   fun `test Given QueueSocket and a openSpace with queue talks WHEN getData with OpenSpaceId THEN return the expected list`() {
 
     val persistedUser =
-      userRepo.save(UserSampler.getWith(name = "Pepe", email = getAnyUniqueEmail()))
+      userRepo.save(
+        UserSampler.getWith(
+          name = "Pepe",
+          email = getAnyUniqueEmail()
+        )
+      )
 
     val talkPersisted1 = talkRepository.save(
       TalkSampler.getWith(
@@ -145,7 +168,10 @@ class QueueSocketTest : BaseIntegrationTest() {
     // THEN
     assertEquals(openSpacePersisted.queue.size, res.size)
     openSpacePersisted.queue.forEach { queueTalk ->
-      assertEquals(TalkTranslator.translateFrom(queueTalk), res.find { it.id == queueTalk.id }!!)
+      assertEquals(
+        TalkTranslator.translateFrom(queueTalk),
+        res.find { it.id == queueTalk.id }!!
+      )
     }
   }
 

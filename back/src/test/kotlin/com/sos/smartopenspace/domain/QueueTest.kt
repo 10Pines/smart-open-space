@@ -1,7 +1,11 @@
 package com.sos.smartopenspace.domain
 
 import com.sos.smartopenspace.anOpenSpace
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertIterableEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class QueueTest {
@@ -11,6 +15,7 @@ class QueueTest {
     openSpaces.forEach { user.addOpenSpace(it) }
     return user
   }
+
   private fun anyTalk(user: User) = Talk("Talk1", speaker = user)
 
   private fun anyOSWithActiveQueue(talks: MutableSet<Talk> = mutableSetOf()): OpenSpace {

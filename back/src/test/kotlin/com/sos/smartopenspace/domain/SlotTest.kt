@@ -16,11 +16,23 @@ class SlotTest {
   private val talk1 = Talk("talk1", speaker = user)
   private val talk2 = Talk("talk2", speaker = user)
   private val aSlot =
-    TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now())
+    TalkSlot(
+      LocalTime.parse("09:00"),
+      LocalTime.parse("09:30"),
+      LocalDate.now()
+    )
   private val otherSlot =
-    TalkSlot(LocalTime.parse("09:30"), LocalTime.parse("09:45"), LocalDate.now())
+    TalkSlot(
+      LocalTime.parse("09:30"),
+      LocalTime.parse("09:45"),
+      LocalDate.now()
+    )
   private val secondDaySlot =
-    TalkSlot(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalDate.now().plusDays(1))
+    TalkSlot(
+      LocalTime.parse("09:00"),
+      LocalTime.parse("09:30"),
+      LocalDate.now().plusDays(1)
+    )
 
   private fun anyUser(): User {
     return User("augusto@sos.sos", "Augusto", "Augusto")
@@ -35,7 +47,11 @@ class SlotTest {
     )
   ): OpenSpace {
     val openSpace =
-      anOpenSpace(talks = talks.toMutableSet(), rooms = setOf(room1), slots = slots)
+      anOpenSpace(
+        talks = talks.toMutableSet(),
+        rooms = setOf(room1),
+        slots = slots
+      )
     val organizer = anyUser()
     organizer.addOpenSpace(openSpace)
     openSpace.activeQueue(organizer)
@@ -126,17 +142,23 @@ class SlotTest {
 
   @Test
   fun `Open space sin charlas agendadas, tiene los slots libres`() {
-    val openSpace = anOpenSpace(talks = mutableSetOf(talk1, talk2), rooms = setOf(room1))
+    val openSpace =
+      anOpenSpace(talks = mutableSetOf(talk1, talk2), rooms = setOf(room1))
     val freeSlots = openSpace.freeSlots()
     assertIterableEquals(
-      listOf(LocalTime.parse("09:00"), LocalTime.parse("09:30"), LocalTime.parse("10:45")),
+      listOf(
+        LocalTime.parse("09:00"),
+        LocalTime.parse("09:30"),
+        LocalTime.parse("10:45")
+      ),
       slotStartTimes(freeSlots)
     )
   }
 
   @Test
   fun `Asignar una charlas, ese slot no esta mas libre`() {
-    val openSpace = anyOpenSpaceWithActiveQueued(setOf(talk1), setOf(aSlot, otherSlot))
+    val openSpace =
+      anyOpenSpaceWithActiveQueued(setOf(talk1), setOf(aSlot, otherSlot))
     openSpace.scheduleTalk(talk1, openSpace.organizer, aSlot, room1)
     val freeSlots = openSpace.freeSlots()
     assertFalse(slotStartTimes(freeSlots).contains(LocalTime.parse("09:00")))
@@ -172,17 +194,30 @@ class SlotTest {
 
   @Test
   fun `Cambiar charla de slot a uno ocupado`() {
-    val openSpace = anyOpenSpaceWithActiveQueued(setOf(talk1, talk2), setOf(aSlot, otherSlot))
+    val openSpace =
+      anyOpenSpaceWithActiveQueued(setOf(talk1, talk2), setOf(aSlot, otherSlot))
     openSpace.scheduleTalk(talk1, openSpace.organizer, aSlot, room1)
     openSpace.scheduleTalk(talk2, openSpace.organizer, otherSlot, room1)
     openSpace.exchangeSlot(talk1, room1, otherSlot)
     assertEquals(
       talk1,
-      openSpace.assignedSlots.find { it.room == room1 && it.startAt(LocalTime.parse("09:30")) }?.talk
+      openSpace.assignedSlots.find {
+        it.room == room1 && it.startAt(
+          LocalTime.parse(
+            "09:30"
+          )
+        )
+      }?.talk
     )
     assertEquals(
       talk2,
-      openSpace.assignedSlots.find { it.room == room1 && it.startAt(LocalTime.parse("09:00")) }?.talk
+      openSpace.assignedSlots.find {
+        it.room == room1 && it.startAt(
+          LocalTime.parse(
+            "09:00"
+          )
+        )
+      }?.talk
     )
   }
 
@@ -197,7 +232,11 @@ class SlotTest {
     openSpace.exchangeSlot(talk1, room1, secondDaySlot)
     assertEquals(
       talk1,
-      openSpace.assignedSlots.find { it.room == room1 && it.hasDate(secondDaySlot.date) }?.talk
+      openSpace.assignedSlots.find {
+        it.room == room1 && it.hasDate(
+          secondDaySlot.date
+        )
+      }?.talk
     )
     assertEquals(
       talk2,
@@ -221,7 +260,11 @@ class SlotTest {
       openSpace.exchangeSlot(
         talk1,
         room1,
-        TalkSlot(LocalTime.parse("10:00"), LocalTime.parse("10:30"), LocalDate.now())
+        TalkSlot(
+          LocalTime.parse("10:00"),
+          LocalTime.parse("10:30"),
+          LocalDate.now()
+        )
       )
     }
   }
@@ -234,7 +277,8 @@ class SlotTest {
       date = LocalDate.now()
     )
 
-    val expectedRes = "TalkSlot(date=${talkSlot.date}, endTime=09:30, id=0, startTime=09:00)"
+    val expectedRes =
+      "TalkSlot(date=${talkSlot.date}, endTime=09:30, id=0, startTime=09:00)"
     assertEquals(expectedRes, talkSlot.toString())
   }
 

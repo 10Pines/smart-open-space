@@ -7,10 +7,14 @@ import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 
-abstract class AbstractSocket<T>(private val objectMapper: ObjectMapper) : TextWebSocketHandler() {
+abstract class AbstractSocket<T>(private val objectMapper: ObjectMapper) :
+  TextWebSocketHandler() {
   private val sessionList = mutableMapOf<WebSocketSession, Long>()
 
-  override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
+  override fun afterConnectionClosed(
+    session: WebSocketSession,
+    status: CloseStatus
+  ) {
     sessionList -= session
   }
 
@@ -18,7 +22,10 @@ abstract class AbstractSocket<T>(private val objectMapper: ObjectMapper) : TextW
 
   abstract fun getData(os: OpenSpace): T
 
-  override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
+  override fun handleTextMessage(
+    session: WebSocketSession,
+    message: TextMessage
+  ) {
     val id = objectMapper.readTree(message.payload).asLong()
     sessionList[session] = id
     emit(session, getData(id))

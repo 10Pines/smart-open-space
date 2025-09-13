@@ -6,20 +6,20 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import java.net.URL
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
+import java.net.URL
 
 @Entity
-class Room (
+class Room(
   @field:NotEmpty(message = "Ingrese un nombre")
   @field:NotBlank(message = "Nombre no puede ser vacío")
   val name: String,
 
-  @Column(columnDefinition="VarChar")
+  @Column(columnDefinition = "VarChar")
   val description: String = "",
 
-  @Column(columnDefinition="VarChar")
+  @Column(columnDefinition = "VarChar")
   var link: URL? = null,
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,31 +14,36 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtAuthFilter: JwtAuthFilter
+  private val jwtAuthFilter: JwtAuthFilter
 ) {
 
-    @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        val cfg = http.csrf { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authorizeHttpRequests { authReq ->
-                PUBLIC_ENDPOINTS.forEach { (method, requestMatchers) ->
-                    when (method) {
-                        ANY_HTTP_METHOD -> requestMatchers.forEach {
-                            authReq.requestMatchers(it.pattern).permitAll()
-                        }
-                        else -> requestMatchers.forEach {
-                            authReq.requestMatchers(HttpMethod.valueOf(method), it.pattern).permitAll()
-                        }
-                    }
-                }
-                authReq.anyRequest().authenticated()
+  @Bean
+  fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    val cfg = http.csrf { it.disable() }
+      .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+      .authorizeHttpRequests { authReq ->
+        PUBLIC_ENDPOINTS.forEach { (method, requestMatchers) ->
+          when (method) {
+            ANY_HTTP_METHOD -> requestMatchers.forEach {
+              authReq.requestMatchers(it.pattern).permitAll()
             }
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
-            .formLogin { it.disable() }
-            .httpBasic { it.disable() }
-            .build()
-        return cfg
-    }
+
+            else -> requestMatchers.forEach {
+              authReq.requestMatchers(HttpMethod.valueOf(method), it.pattern)
+                .permitAll()
+            }
+          }
+        }
+        authReq.anyRequest().authenticated()
+      }
+      .addFilterBefore(
+        jwtAuthFilter,
+        UsernamePasswordAuthenticationFilter::class.java
+      )
+      .formLogin { it.disable() }
+      .httpBasic { it.disable() }
+      .build()
+    return cfg
+  }
 
 }

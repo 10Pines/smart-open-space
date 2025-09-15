@@ -22,11 +22,11 @@ abstract class SlotResponseDTO(
 
   override fun equals(other: Any?) =
     (other is SlotResponseDTO)
-        && other::class == this::class
-        && other.id == id
-        && other.startTime == startTime
-        && other.endTime == endTime
-        && other.date == date
+      && other::class == this::class
+      && other.id == id
+      && other.startTime == startTime
+      && other.endTime == endTime
+      && other.date == date
 
   override fun hashCode(): Int =
     Objects.hashCode(id, startTime, endTime, date, type)

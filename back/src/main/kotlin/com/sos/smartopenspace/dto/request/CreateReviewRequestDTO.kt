@@ -11,6 +11,9 @@ data class CreateReviewRequestDTO(
   @field:Min(value = 1, message = "El puntaje debe ser entre 1 a 5")
   val grade: Int,
 
-  @field:Size(max = 1000, message = "El comentario admite un máximo de 1000 caracteres")
+  @field:Size(
+    max = 1000,
+    message = "El comentario admite un máximo de 1000 caracteres"
+  )
   val comment: String?
 )

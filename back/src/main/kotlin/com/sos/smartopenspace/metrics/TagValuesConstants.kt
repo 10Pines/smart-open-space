@@ -23,17 +23,17 @@ const val TAG_INVALID_CLIENT_REQ_VALUE = "invalid_client_request"
  * return TAG_EMPTY_VALUE if the value is blank or null. Also, change spaces to underscores.
  */
 fun getAtMaxWidthOrEmptyValueIfBlankOrNull(tagValue: String?): String =
-    tagValue?.let { getAtMaxWidthOrEmptyValueIfBlank(it) }
-        ?: TAG_EMPTY_VALUE
+  tagValue?.let { getAtMaxWidthOrEmptyValueIfBlank(it) }
+    ?: TAG_EMPTY_VALUE
 
 /**
  * Get the value of the tag at most MAX_VALUE_MESSAGE_WIDTH characters long, replace
  * spaces to underscores and lowercase the value. If the value is blank, return TAG_EMPTY_VALUE.
  */
 fun getAtMaxWidthOrEmptyValueIfBlank(tagValue: String): String {
-    val tagValueShort = tagValue.take(MAX_VALUE_MESSAGE_WIDTH)
-        .lowercase()
-    return tagValueShort
-        .ifBlank { TAG_EMPTY_VALUE }
-        .replace(' ', '_')
+  val tagValueShort = tagValue.take(MAX_VALUE_MESSAGE_WIDTH)
+    .lowercase()
+  return tagValueShort
+    .ifBlank { TAG_EMPTY_VALUE }
+    .replace(' ', '_')
 }

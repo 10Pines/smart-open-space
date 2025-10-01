@@ -91,7 +91,7 @@ sonar {
 buildscript {
   dependencies {
     classpath("org.postgresql:postgresql:42.7.4")
-    classpath("org.flywaydb:flyway-database-postgresql:10.4.1")
+    classpath("org.flywaydb:flyway-database-postgresql:11.13.2")
   }
 }
 

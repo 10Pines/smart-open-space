@@ -18,8 +18,10 @@ import com.sos.smartopenspace.persistence.RoomRepository
 import com.sos.smartopenspace.persistence.SlotRepository
 import com.sos.smartopenspace.persistence.TalkRepository
 import com.sos.smartopenspace.persistence.TrackRepository
+import com.sos.smartopenspace.util.SCHEDULE_CACHE_NAME
 import com.sos.smartopenspace.websockets.QueueSocket
 import com.sos.smartopenspace.websockets.ScheduleSocket
+import org.springframework.cache.CacheManager
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -35,7 +37,8 @@ class TalkService(
   private val scheduleSocket: ScheduleSocket,
   private val queueSocket: QueueSocket,
   private val slotRepository: SlotRepository,
-  private val updatableItemCollectionService: UpdatableItemCollectionService
+  private val updatableItemCollectionService: UpdatableItemCollectionService,
+  private val cacheManager: CacheManager
 ) {
   private fun findUser(userID: Long) = userService.findById(userID)
   private fun findOpenSpace(id: Long) =
@@ -64,16 +67,16 @@ class TalkService(
       findSlot(slotID),
       findRoom(roomID)
     )
+    evictScheduleCache(openSpace.id)
     scheduleSocket.sendFor(openSpace)
-
     return openSpace
   }
 
   fun exchangeTalk(talkID: Long, roomID: Long, slotID: Long): OpenSpace {
     val openSpace = openSpaceRepository.findFirstOpenSpaceByTalkId(talkID)
     openSpace.exchangeSlot(findTalk(talkID), findRoom(roomID), findSlot(slotID))
+    evictScheduleCache(openSpace.id)
     scheduleSocket.sendFor(openSpace)
-
     return openSpace
   }
 
@@ -164,4 +167,9 @@ class TalkService(
 
     return talk
   }
+
+  private fun evictScheduleCache(openSpaceId: Long) {
+    cacheManager.getCache(SCHEDULE_CACHE_NAME)?.evictIfPresent(openSpaceId)
+  }
+
 }

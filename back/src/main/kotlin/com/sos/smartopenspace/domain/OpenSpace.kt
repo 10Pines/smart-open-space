@@ -76,9 +76,6 @@ class OpenSpace(
   @OneToMany
   val toSchedule: MutableSet<Talk> = mutableSetOf()
 
-    val talksByTitle: List<Talk> =
-        toSchedule.toList().sortedBy { it.name }
-
   @Enumerated(EnumType.STRING)
   var queueState: QueueState = QueueState.PENDING
 

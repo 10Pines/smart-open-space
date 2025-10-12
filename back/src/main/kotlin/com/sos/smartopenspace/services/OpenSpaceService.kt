@@ -10,12 +10,15 @@ import com.sos.smartopenspace.domain.User
 import com.sos.smartopenspace.domain.UserNotOwnerOfOpenSpaceException
 import com.sos.smartopenspace.dto.request.CreateTalkRequestDTO
 import com.sos.smartopenspace.dto.request.OpenSpaceRequestDTO
+import com.sos.smartopenspace.dto.response.AssignedSlotResponseDTO
 import com.sos.smartopenspace.persistence.OpenSpaceRepository
 import com.sos.smartopenspace.persistence.TalkRepository
 import com.sos.smartopenspace.persistence.TrackRepository
 import com.sos.smartopenspace.translators.AssignedSlotTranslator
+import com.sos.smartopenspace.util.SCHEDULE_CACHE_NAME
 import com.sos.smartopenspace.websockets.QueueSocket
 import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -147,8 +150,16 @@ class OpenSpaceService(
   }
 
   @Transactional(readOnly = true)
-  fun findAssignedSlotsById(id: Long) = findById(id).assignedSlots.map {
-    AssignedSlotTranslator.translateFrom(it)
+  @Cacheable(
+    SCHEDULE_CACHE_NAME,
+    key = "#id",
+    unless = "#result == null or #result.isEmpty()"
+  )
+  fun findAssignedSlotsById(id: Long): List<AssignedSlotResponseDTO> {
+    LOGGER.info("No hit cache $SCHEDULE_CACHE_NAME for findAssignedSlotsById with OpenSpace id=$id")
+    return findById(id).assignedSlots.map {
+      AssignedSlotTranslator.translateFrom(it)
+    }
   }
 
   fun activateQueue(userID: Long, osID: Long) =

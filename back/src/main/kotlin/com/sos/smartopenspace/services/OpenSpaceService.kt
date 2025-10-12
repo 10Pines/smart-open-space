@@ -150,7 +150,11 @@ class OpenSpaceService(
   }
 
   @Transactional(readOnly = true)
-  @Cacheable(SCHEDULE_CACHE_NAME, key = "#id")
+  @Cacheable(
+    SCHEDULE_CACHE_NAME,
+    key = "#id",
+    unless = "#result == null or #result.isEmpty()"
+  )
   fun findAssignedSlotsById(id: Long): List<AssignedSlotResponseDTO> {
     LOGGER.info("No hit cache $SCHEDULE_CACHE_NAME for findAssignedSlotsById with OpenSpace id=$id")
     return findById(id).assignedSlots.map {

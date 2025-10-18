@@ -8,6 +8,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 const val ANY_HTTP_METHOD = "ANY"
 val PUBLIC_ENDPOINTS: Map<String, List<AntPathRequestMatcher>> = mapOf(
   ANY_HTTP_METHOD to listOf(
+    AntPathRequestMatcher("/scheduleSocket/**"),
+    AntPathRequestMatcher("/queueSocket/**"),
     AntPathRequestMatcher("/v1/auth/**"),
     AntPathRequestMatcher("/user/**"),
     AntPathRequestMatcher("/actuator/health"),

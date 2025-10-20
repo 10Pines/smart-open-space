@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.HandlerExceptionResolver
+import java.time.Instant
 
 @Component
 class JwtAuthFilter(
@@ -37,8 +38,9 @@ class JwtAuthFilter(
     filterChain: FilterChain
   ) {
     val now = getNowUTC()
+    val jwtTokenHeader: String?
     try {
-      val jwtTokenHeader: String? = request.getHeader(HttpHeaders.AUTHORIZATION)
+      jwtTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
       if (jwtTokenHeader.doesNotContainBearerToken()) {
         throw UnauthorizedException("Jwt token is empty or invalid")
       }
@@ -69,10 +71,15 @@ class JwtAuthFilter(
       }
       filterChain.doFilter(request, response)
     } catch (ex: Exception) {
-      LOGGER.error("Current jwt token was expired or revoked with date_now $now")
+      LOGGER.error(buildErrorLogMessage(now, request, ex))
       handlerExceptionResolver.resolveException(request, response, null, ex)
     }
   }
+
+  private fun buildErrorLogMessage(now: Instant, request: HttpServletRequest, ex: Exception): String =
+    "doFilterInternal with exception [date_now=$now]" +
+      "[request_method=${request.method}][request_uri=${request.requestURI}]" +
+      "[ex_name=${ex.javaClass.simpleName}][ex_message=${ex.message}]"
 
   private fun String?.doesNotContainBearerToken() =
     this == null || !this.startsWith(TOKEN_PREFIX)

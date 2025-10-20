@@ -56,7 +56,7 @@ class ExceptionHandler(
     ex: Exception
   ): ResponseEntity<DefaultErrorDto> {
     val httpStatus = HttpStatus.BAD_REQUEST
-    handleLogError(httpStatus, ex, false)
+    handleLogErrorOfCaughtEx(request, httpStatus, ex, false)
 
     val errorDto = DefaultErrorDto(ex.message, httpStatus)
     observeError(request, errorDto)
@@ -69,7 +69,7 @@ class ExceptionHandler(
     ex: MethodArgumentNotValidException
   ): ResponseEntity<DefaultErrorDto> {
     val httpStatus = HttpStatus.BAD_REQUEST
-    handleLogError(httpStatus, ex, false)
+    handleLogErrorOfCaughtEx(request, httpStatus, ex, false)
     val errors = ex.bindingResult.allErrors.mapNotNull { it.defaultMessage }
     val errorMsg = errors.getOrNull(0) ?: DEFAULT_VALIDATION_ERROR
 
@@ -84,7 +84,7 @@ class ExceptionHandler(
     ex: Exception
   ): ResponseEntity<DefaultErrorDto> {
     val httpStatus = HttpStatus.UNPROCESSABLE_ENTITY
-    handleLogError(httpStatus, ex, false)
+    handleLogErrorOfCaughtEx(request, httpStatus, ex, false)
 
     val errorDto = DefaultErrorDto(ex.message, httpStatus)
     observeError(request, errorDto)
@@ -97,7 +97,7 @@ class ExceptionHandler(
     ex: Exception
   ): ResponseEntity<DefaultErrorDto> {
     val httpStatus = HttpStatus.NOT_FOUND
-    handleLogError(httpStatus, ex, false)
+    handleLogErrorOfCaughtEx(request, httpStatus, ex, false)
 
     val errorDto = DefaultErrorDto(ex.message, httpStatus)
     observeError(request, errorDto)
@@ -110,7 +110,7 @@ class ExceptionHandler(
     ex: Exception
   ): ResponseEntity<DefaultErrorDto> {
     val httpStatus = HttpStatus.UNAUTHORIZED
-    handleLogError(httpStatus, ex)
+    handleLogErrorOfCaughtEx(request, httpStatus, ex)
 
     val errorDto = DefaultErrorDto(ex.message, httpStatus)
     observeError(request, errorDto)
@@ -123,7 +123,7 @@ class ExceptionHandler(
     ex: Exception
   ): ResponseEntity<DefaultErrorDto> {
     val httpStatus = HttpStatus.FORBIDDEN
-    handleLogError(httpStatus, ex)
+    handleLogErrorOfCaughtEx(request, httpStatus, ex)
 
     val errorDto = DefaultErrorDto(ex.message, httpStatus)
     observeError(request, errorDto)
@@ -136,7 +136,7 @@ class ExceptionHandler(
     ex: Exception
   ): ResponseEntity<DefaultErrorDto> {
     val httpStatus = HttpStatus.NOT_FOUND
-    handleLogError(httpStatus, ex)
+    handleLogErrorOfCaughtEx(request, httpStatus, ex)
 
     val errorDto = DefaultErrorDto(ex.message, httpStatus)
     observeError(request, errorDto)
@@ -149,7 +149,7 @@ class ExceptionHandler(
     ex: Exception
   ): ResponseEntity<DefaultErrorDto> {
     val httpStatus = HttpStatus.METHOD_NOT_ALLOWED
-    handleLogError(httpStatus, ex)
+    handleLogErrorOfCaughtEx(request, httpStatus, ex)
 
     val errorDto = DefaultErrorDto(ex.message, httpStatus)
     observeError(request, errorDto)
@@ -162,7 +162,7 @@ class ExceptionHandler(
     ex: RequestNotPermitted
   ): ResponseEntity<DefaultErrorDto> {
     val httpStatus = HttpStatus.TOO_MANY_REQUESTS
-    handleLogError(httpStatus, ex, false)
+    handleLogErrorOfCaughtEx(request, httpStatus, ex, false)
 
     val errorDto = DefaultErrorDto("rate_limiter_too_many_request", httpStatus)
     observeError(request, errorDto)
@@ -174,26 +174,42 @@ class ExceptionHandler(
     request: HttpServletRequest,
     ex: Exception
   ): ResponseEntity<DefaultErrorDto> {
-    val errorDto =
-      DefaultErrorDto(ex.message, HttpStatus.INTERNAL_SERVER_ERROR, true)
-    LOGGER.error("Handling fallback uncaught exception ${ex.javaClass} , [message=${ex.message}] and [error_dto=$errorDto]")
+    val resStatus = HttpStatus.INTERNAL_SERVER_ERROR
+    val errorDto = DefaultErrorDto(ex.message, resStatus, true)
+    val errMsg = buildLogError(
+      "Handling fallback uncaught exception",
+      request,
+      resStatus,
+      ex
+    )
+    LOGGER.error(errMsg, ex)
     observeError(request, errorDto)
-    return ResponseEntity(errorDto, HttpStatus.INTERNAL_SERVER_ERROR)
+    return ResponseEntity(errorDto, resStatus)
   }
 
-  private fun handleLogError(
+  private fun handleLogErrorOfCaughtEx(
+    request: HttpServletRequest,
     status: HttpStatus,
     ex: Exception,
     withStackTrace: Boolean = true
   ) {
-    val errMsg =
-      "Handling http status ${status.name} with exception ${ex.javaClass} and message: ${ex.message}."
+    val errMsg = buildLogError("Handling caught exception", request, status, ex)
     if (withStackTrace) {
       LOGGER.error(errMsg, ex)
     } else {
       LOGGER.error(errMsg)
     }
   }
+
+  private fun buildLogError(
+    msg: String,
+    request: HttpServletRequest,
+    status: HttpStatus,
+    ex: Exception
+  ): String =
+    "$msg [http status=${status.name}][exception_class_name=${ex.javaClass.simpleName}]" +
+      "[exception_message=${ex.message}][request_method=${request.method}]" +
+      "[request_uri=${request.requestURI}]"
 
   private fun observeError(
     request: HttpServletRequest,

@@ -100,7 +100,8 @@ This is due to network restrictions. The application works without NewRelic.
 The CI workflow (`.github/workflows/ci-frontend.yml`) does not run linting.
 
 ### Node.js Version Mismatch
-Package.json requires Node 18.x but the application works with Node 20.x.
+Package.json requires Node 24.x but the application works with Node 18.x , Node 20.x and Node 22.x as well. 
+Always use Node 24.x!
 You may see warnings during `npm install` - these are safe to ignore.
 
 ### Docker Build Issues
@@ -192,7 +193,7 @@ All timing measurements include 50% buffer for safety:
 ## Technologies
 
 - **Backend**: Java 21, Kotlin, Spring Boot 3.2.7, Gradle 8.8, PostgreSQL, Flyway
-- **Frontend**: Node.js 18.x/20.x, React 16, Vite 6, TypeScript/JavaScript, Vitest
+- **Frontend**: Node.js 24.x/20.x, React 16, Vite 6, TypeScript/JavaScript, Vitest
 - **Database**: PostgreSQL 15
 - **Deployment**: Docker, Kamal, Heroku
 - **Monitoring**: Prometheus, Grafana (container setup)

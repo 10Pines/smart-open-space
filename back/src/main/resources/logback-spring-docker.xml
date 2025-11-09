@@ -13,7 +13,7 @@
   <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
     <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
       <layout class="ch.qos.logback.classic.PatternLayout">
-        <Pattern>%date{yyyy-MM-dd HH:mm:ss.SSZ} [LEVEL:%clr(%level)] [THREAD:%clr(%thread){magenta}] [SESSION_ID:%clr(%mdc{requestSessionId:-none}){blue}] [REQUEST_ID:%clr(%mdc{requestId:-none}){blue}] [REQUEST_WITH_JWT:%clr(%mdc{requestContainsJwt:-none}){blue}] %clr(%logger{3}){cyan}: %msg %ex %n</Pattern>
+        <Pattern>%date{yyyy-MM-dd HH:mm:ss.SSZ} [LEVEL:%clr(%level)] [THREAD:%clr(%thread){magenta}] [SESSION_ID:%clr(%mdc{requestSessionId:-none}){blue}] [REQUEST_ID:%clr(%mdc{requestId:-none}){blue}] [REQUEST_WITH_JWT:%clr(%mdc{requestContainsJwt:-none}){blue}] %clr(%logger{3}){cyan}: %msg %ex{5} %n</Pattern>
       </layout>
     </encoder>
   </appender>

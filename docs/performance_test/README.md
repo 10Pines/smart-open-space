@@ -26,7 +26,7 @@ docker run --rm -it -v ${PWD}:/repo artilleryio/artillery:latest run /repo/docs/
 
 ### Local
 
-0. Requiere node 22.x
+0. Requiere node 24.x
 1. Estar en la carpeta raíz del proyecto.
 2. Dirigirse a la carpeta de performance_test:
 ```bash

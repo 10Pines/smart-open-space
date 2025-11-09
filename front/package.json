@@ -15,7 +15,7 @@
     "directory": "front"
   },
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "scripts": {
     "lint": "eslint ./src",

@@ -169,7 +169,7 @@ class ExceptionHandlerTest : BaseIntegrationTest() {
   }
 
   private fun registerAndGenerateAuthToken(userToRegister: User): Pair<User, String> {
-    val token = authService.register(userToRegister).token
+    val (_, token) = authService.register(userToRegister)
     val user = userRepo.findByEmail(userToRegister.email)
       ?: throw IllegalStateException("User not created")
     return user to "$TOKEN_PREFIX$token"

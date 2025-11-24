@@ -21,14 +21,14 @@ class AuthSessionTest {
     )
     val authSession = AuthSession(
       id = "random-id-value-uuid",
-      token = "random-token-jwt-value",
+      tokenId = "random-token-jwt-value",
       createdOn = createdOn,
       expiresOn = expiresOn,
       revoked = true,
       user = user,
     )
     val expectedRes =
-      "AuthSession(createdOn=2021-08-01T00:00:00Z, expiresOn=2022-08-01T00:00:00Z, id=random-id-value-uuid, revoked=true, token=***, user=User(email=pepe@mail.com, id=123, name=Pepe, password=***, resetToken=***, resetTokenLifetime=***))"
+      "AuthSession(createdOn=2021-08-01T00:00:00Z, expiresOn=2022-08-01T00:00:00Z, id=random-id-value-uuid, revoked=true, tokenId=***, user=User(email=pepe@mail.com, id=123, name=Pepe, password=***, resetToken=***, resetTokenLifetime=***))"
     assertEquals(expectedRes, authSession.toString())
   }
 
@@ -56,9 +56,9 @@ class AuthSessionTest {
       name = "Pepe",
       password = "saarasa",
     )
-    val token = "random-token-jwt-value"
+    val tokenId = "random-token-jwt-id-value"
     val authSession = AuthSession(
-      token = "random-token-jwt-value",
+      tokenId = tokenId,
       createdOn = createdOn,
       expiresOn = expiresOn,
       user = user,
@@ -68,7 +68,7 @@ class AuthSessionTest {
     assertEquals(expiresOn, authSession.expiresOn)
     assertEquals(user, authSession.user)
     assertEquals("", authSession.id)
-    assertEquals(token, authSession.token)
+    assertEquals(tokenId, authSession.tokenId)
     assertFalse(
       authSession.revoked,
       "New AuthSession should not be revoked by default"
@@ -85,12 +85,12 @@ class AuthSessionTest {
       name = "Pepe",
       password = "saarasa",
     )
-    val token = "random-token-jwt-value"
+    val tokenId = "random-token-jwt-id-value"
     val id = "some_id"
     val revoked = true
     val authSession = AuthSession(
       id = id,
-      token = "random-token-jwt-value",
+      tokenId = tokenId,
       createdOn = createdOn,
       expiresOn = expiresOn,
       revoked = revoked,
@@ -101,7 +101,7 @@ class AuthSessionTest {
     assertEquals(expiresOn, authSession.expiresOn)
     assertEquals(user, authSession.user)
     assertEquals(id, authSession.id)
-    assertEquals(token, authSession.token)
+    assertEquals(tokenId, authSession.tokenId)
     assertTrue(authSession.revoked)
 
   }

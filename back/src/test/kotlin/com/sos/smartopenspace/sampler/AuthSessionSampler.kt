@@ -11,7 +11,7 @@ object AuthSessionSampler {
   fun getWith(
     id: String = "1234-12312441241-124124124",
     user: User = UserSampler.get(),
-    token: String = "some_token",
+    tokenId: String = "some_token_id",
     revoked: Boolean = false,
     createdOn: Instant = Instant.parse("2024-12-01T00:00:00Z"),
     expiresOn: Instant = Instant.parse("2024-12-15T00:00:00Z"),
@@ -19,7 +19,7 @@ object AuthSessionSampler {
     AuthSession(
       id = id,
       user = user,
-      token = token,
+      tokenId = tokenId,
       revoked = revoked,
       createdOn = createdOn,
       expiresOn = expiresOn,

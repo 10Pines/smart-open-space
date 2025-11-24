@@ -39,16 +39,16 @@ class AuthController(
   @PostMapping("/register")
   @LoggingInputExecution
   fun register(@Valid @RequestBody registerReq: RegisterRequestDTO): AuthResponseDTO {
-    val authSession =
+    val (_, jwt) =
       authService.register(UserTranslator.translateRegisterRequest(registerReq))
-    return AuthResponseDTO(authSession.token)
+    return AuthResponseDTO(jwt)
   }
 
   @PostMapping("/login")
   @LoggingInputExecution
   fun login(@Valid @RequestBody authReq: LoginRequestDTO): AuthResponseDTO {
-    val authSession = authService.login(authReq.email, authReq.password)
-    return AuthResponseDTO(authSession.token)
+    val (_, jwt) = authService.login(authReq.email, authReq.password)
+    return AuthResponseDTO(jwt)
   }
 
   @PostMapping("/logout")

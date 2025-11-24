@@ -84,16 +84,17 @@ class AuthControllerTest : BaseIntegrationTest() {
     val userIdJwt = jwtService.extractUserId(token)
     assertEquals(savedUser.id, userIdJwt)
 
+    val tokenId = jwtService.extractId(token)
     val authSession =
-      authSessionRepo.findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
-        token,
+      authSessionRepo.findByTokenIdAndUserIdAndNotRevokedAndNotExpiredFrom(
+        tokenId,
         userIdJwt,
         getNowUTC()
       ) ?: fail("Auth session not found")
     assertFalse(authSession.id.isBlank())
     assertNotNull(authSession.user)
     assertEquals(authSession.user.id, userIdJwt)
-    assertEquals(authSession.token, token)
+    assertEquals(authSession.tokenId, tokenId)
     assertFalse(authSession.revoked)
 
     val metricRes = meterRegistry.get("sos_business_user_register")
@@ -233,17 +234,17 @@ class AuthControllerTest : BaseIntegrationTest() {
     assertTrue(jwtService.isValidToken(token))
     val userIdJwt = jwtService.extractUserId(token)
     assertEquals(savedUser.id, userIdJwt)
-
+    val tokenIdJwt = jwtService.extractId(token)
     val authSession =
-      authSessionRepo.findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
-        token,
+      authSessionRepo.findByTokenIdAndUserIdAndNotRevokedAndNotExpiredFrom(
+        tokenIdJwt,
         userIdJwt,
         getNowUTC()
       ) ?: fail("Auth session not found")
     assertFalse(authSession.id.isBlank())
     assertNotNull(authSession.user)
     assertEquals(authSession.user.id, userIdJwt)
-    assertEquals(authSession.token, token)
+    assertEquals(authSession.tokenId, tokenIdJwt)
     assertFalse(authSession.revoked)
   }
 
@@ -317,12 +318,12 @@ class AuthControllerTest : BaseIntegrationTest() {
     val email = "pepe43223@gmail.com"
     val password = "xd123"
     createUserWithEmailAndPassword(email, password)
-    val authSessionSaved1 = loginAndGetAuthSession(email, password)
-    val anotherAuhSessionSaved =
+    val (authSessionSaved1, token1) = loginAndGetAuthSession(email, password)
+    val (anotherAuhSessionSaved, anotherToken) =
       createNewAuthSessionWith(user = authSessionSaved1.user)
 
     // WHEN
-    val tokenWithBearer = "$TOKEN_PREFIX${authSessionSaved1.token}"
+    val tokenWithBearer = "$TOKEN_PREFIX${token1}"
     val httpResponse = mockMvc.perform(
       MockMvcRequestBuilders.post(LOGOUT_ENDPOINT)
         .header(HttpHeaders.AUTHORIZATION, tokenWithBearer)
@@ -351,7 +352,7 @@ class AuthControllerTest : BaseIntegrationTest() {
     val postAnotherAuthSessionSaved =
       allUserAuthSessions.first { it.id == anotherAuhSessionSaved.id }
     val anotherAuhSessionSavedTokenWithHeader =
-      "$TOKEN_PREFIX${anotherAuhSessionSaved.token}"
+      "$TOKEN_PREFIX${anotherToken}"
     assertTrue(
       authService.validateToken(
         anotherAuhSessionSavedTokenWithHeader,
@@ -390,9 +391,9 @@ class AuthControllerTest : BaseIntegrationTest() {
     val email = "pepe23@gmail.com"
     val password = "xd123"
     createUserWithEmailAndPassword(email, password)
-    val authSessionSaved = loginAndGetAuthSession(email, password)
+    val (_, token) = loginAndGetAuthSession(email, password)
     // WHEN
-    val tokenWithBearer = authSessionSaved.token
+    val tokenWithBearer = token
     val httpResponse = mockMvc.perform(
       MockMvcRequestBuilders.post(LOGOUT_ENDPOINT)
         .header(HttpHeaders.AUTHORIZATION, tokenWithBearer)
@@ -412,12 +413,12 @@ class AuthControllerTest : BaseIntegrationTest() {
     val email = "pepe@gmail.com"
     val password = "xd123"
     createUserWithEmailAndPassword(email, password)
-    val authSessionSaved1 = loginAndGetAuthSession(email, password)
-    val anotherAuhSessionSaved =
+    val (authSessionSaved1, token1) = loginAndGetAuthSession(email, password)
+    val (anotherAuthSessionSaved, anotherToken) =
       createNewAuthSessionWith(user = authSessionSaved1.user)
 
     // WHEN
-    val tokenWithBearer = "$TOKEN_PREFIX${authSessionSaved1.token}"
+    val tokenWithBearer = "$TOKEN_PREFIX${token1}"
     val httpResponse = mockMvc.perform(
       MockMvcRequestBuilders.post(LOGOUT_ALL_SESSIONS_ENDPOINT)
         .header(HttpHeaders.AUTHORIZATION, tokenWithBearer)
@@ -435,14 +436,10 @@ class AuthControllerTest : BaseIntegrationTest() {
     assertEquals(2, userAuthSessions.size)
     assertTrue(userAuthSessions.all { it.revoked })
     assertTrue(userAuthSessions.any { it.id == authSessionSaved1.id })
-    assertTrue(userAuthSessions.any { it.id == anotherAuhSessionSaved.id })
-    userAuthSessions.forEach {
-      assertFalse(
-        authService.validateToken(
-          "$TOKEN_PREFIX${it.token}",
-          authSessionSaved1.user.id
-        )
-      )
+    assertTrue(userAuthSessions.any { it.id == anotherAuthSessionSaved.id })
+    listOf(token1, anotherToken).forEach {
+      val isValidToken = authService.validateToken("$TOKEN_PREFIX${it}", authSessionSaved1.user.id)
+      assertFalse(isValidToken)
     }
   }
 
@@ -475,9 +472,9 @@ class AuthControllerTest : BaseIntegrationTest() {
     val email = "pepe12323@gmail.com"
     val password = "xd123"
     createUserWithEmailAndPassword(email, password)
-    val authSessionSaved = loginAndGetAuthSession(email, password)
+    val (_, token) = loginAndGetAuthSession(email, password)
     // WHEN
-    val tokenWithBearer = authSessionSaved.token
+    val tokenWithBearer = token
     val httpResponse = mockMvc.perform(
       MockMvcRequestBuilders.post(LOGOUT_ALL_SESSIONS_ENDPOINT)
         .header(HttpHeaders.AUTHORIZATION, tokenWithBearer)
@@ -591,16 +588,16 @@ class AuthControllerTest : BaseIntegrationTest() {
       createUserWithEmailAndPassword("sarasa_1000@gmail.com", "pass123")
 
     // auth sessions
-    val user1AuthSessionSavedValid = createNewAuthSessionWith(
+    val (user1AuthSessionSavedValid, user1ValidToken) = createNewAuthSessionWith(
       user = user1,
       issuedAt = getNowUTC().minus(1, ChronoUnit.DAYS),
     )
-    val user1AuthSessionSavedRevoked = createNewAuthSessionWith(
+    val (user1AuthSessionSavedRevoked, user1RevokedToken) = createNewAuthSessionWith(
       user = user1,
       issuedAt = getNowUTC().minus(3, ChronoUnit.DAYS),
       revoked = true,
     )
-    val user1AuthSessionSavedExpired = createNewAuthSessionWith(
+    val (user1AuthSessionSavedExpired, user1ExpiredToken) = createNewAuthSessionWith(
       user = user1,
       issuedAt = issuedAtOld.minus(4, ChronoUnit.DAYS),
       expiredOn = expiredOnOld,
@@ -608,16 +605,16 @@ class AuthControllerTest : BaseIntegrationTest() {
     )
 
 
-    val user2AuthSessionSavedValid = createNewAuthSessionWith(
+    val (user2AuthSessionSavedValid, user2ValidToken) = createNewAuthSessionWith(
       user = user2,
       issuedAt = getNowUTC().minus(2, ChronoUnit.DAYS)
     )
-    val user2AuthSessionSavedRevoked = createNewAuthSessionWith(
+    val (user2AuthSessionSavedRevoked, user2RevokedToken) = createNewAuthSessionWith(
       user = user2,
       issuedAt = issuedAtOld.minus(5, ChronoUnit.DAYS),
       revoked = true
     )
-    val user2AuthSessionSavedExpired = createNewAuthSessionWith(
+    val (user2AuthSessionSavedExpired, user2ExpiredToken) = createNewAuthSessionWith(
       user = user2,
       issuedAt = issuedAtOld.minus(6, ChronoUnit.DAYS),
       expiredOn = expiredOnOld,
@@ -682,16 +679,16 @@ class AuthControllerTest : BaseIntegrationTest() {
       createUserWithEmailAndPassword("sarasa_1000@gmail.com", "pass123")
 
     // auth sessions
-    val user1AuthSessionSavedValid = createNewAuthSessionWith(
+    val (user1AuthSessionSavedValid, user1ValidToken) = createNewAuthSessionWith(
       user = user1,
       issuedAt = getNowUTC().minus(1, ChronoUnit.DAYS),
     )
-    val user1AuthSessionSavedRevoked = createNewAuthSessionWith(
+    val (user1AuthSessionSavedRevoked, user1RevokedToken) = createNewAuthSessionWith(
       user = user1,
       issuedAt = getNowUTC().minus(3, ChronoUnit.DAYS),
       revoked = true,
     )
-    val user1AuthSessionSavedExpired = createNewAuthSessionWith(
+    val (user1AuthSessionSavedExpired, user1ExpiredToken) = createNewAuthSessionWith(
       user = user1,
       issuedAt = issuedAtOld.minus(4, ChronoUnit.DAYS),
       expiredOn = expiredOnOld,
@@ -699,16 +696,16 @@ class AuthControllerTest : BaseIntegrationTest() {
     )
 
 
-    val user2AuthSessionSavedValid = createNewAuthSessionWith(
+    val (user2AuthSessionSavedValid, user2ValidToken) = createNewAuthSessionWith(
       user = user2,
       issuedAt = getNowUTC().minus(2, ChronoUnit.DAYS)
     )
-    val user2AuthSessionSavedRevoked = createNewAuthSessionWith(
+    val (user2AuthSessionSavedRevoked, user2RevokedToken) = createNewAuthSessionWith(
       user = user2,
       issuedAt = issuedAtOld.minus(5, ChronoUnit.DAYS),
       revoked = true
     )
-    val user2AuthSessionSavedExpired = createNewAuthSessionWith(
+    val (user2AuthSessionSavedExpired, user2ExpiredToken) = createNewAuthSessionWith(
       user = user2,
       issuedAt = issuedAtOld.minus(6, ChronoUnit.DAYS),
       expiredOn = expiredOnOld,
@@ -771,7 +768,7 @@ class AuthControllerTest : BaseIntegrationTest() {
   private fun loginAndGetAuthSession(
     email: String,
     password: String
-  ): AuthSession {
+  ): Pair<AuthSession, String> {
     return authService.login(email, password)
   }
 
@@ -780,17 +777,17 @@ class AuthControllerTest : BaseIntegrationTest() {
     issuedAt: Instant = getNowUTC(),
     expiredOn: Instant = getNowUTC().plus(300, ChronoUnit.DAYS),
     revoked: Boolean = false,
-  ): AuthSession {
-    val newJwtToken = jwtService.createToken(issuedAt, expiredOn, user)
+  ): Pair<AuthSession, String> {
+    val (newJwtToken, tokenId) = jwtService.createToken(issuedAt, expiredOn, user)
     val newAuthSession = AuthSessionSampler.getWith(
       id = "",
       user = user,
-      token = newJwtToken,
+      tokenId = tokenId,
       revoked = revoked,
       createdOn = issuedAt,
       expiresOn = expiredOn,
     )
-    return authSessionRepo.save(newAuthSession)
+    return authSessionRepo.save(newAuthSession) to newJwtToken
   }
 
   private fun buildPurgeRequestWithPassword(password: String = "purge_pass") =

@@ -7,6 +7,7 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import io.jsonwebtoken.security.MacAlgorithm
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -103,7 +104,7 @@ class JwtService(
    * @throws InvalidTokenException if jwt token is not valid.
    * */
   fun extractId(token: String): String =
-    runCatching { getClaims(token).id }
+    runCatching { getClaims(token).id!! }
       .getOrElse { ex ->
         LOGGER.error("Error extracting jwt id from token", ex)
         throw InvalidTokenException()
@@ -152,7 +153,7 @@ class JwtService(
     const val ERROR_INVALID_DATES =
       "IssuedAt date must be before expirationAt date"
 
-    private val ALGORITHM = Jwts.SIG.HS256
+    val ALGORITHM: MacAlgorithm = Jwts.SIG.HS256
     private val LOGGER = LoggerFactory.getLogger(this::class.java)
   }
 }

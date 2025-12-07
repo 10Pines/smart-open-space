@@ -8,9 +8,9 @@ import java.time.Instant
 
 interface AuthSessionRepository : JpaRepository<AuthSession, String> {
 
-  @Query("SELECT a FROM AuthSession a WHERE a.user.id = :userId AND a.revoked = false AND a.token = :token AND a.expiresOn > :expiredFrom")
-  fun findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
-    token: String,
+  @Query("SELECT a FROM AuthSession a WHERE a.user.id = :userId AND a.revoked = false AND a.tokenId = :tokenId AND a.expiresOn > :expiredFrom")
+  fun findByTokenIdAndUserIdAndNotRevokedAndNotExpiredFrom(
+    tokenId: String,
     userId: Long,
     expiredFrom: Instant
   ): AuthSession?

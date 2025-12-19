@@ -4,11 +4,13 @@ on:
   pull_request:
     types: [opened, synchronize]
     # Optional: Only run on specific file changes
-    # paths:
-    #   - "src/**/*.ts"
-    #   - "src/**/*.tsx"
-    #   - "src/**/*.js"
-    #   - "src/**/*.jsx"
+    paths:
+      - "front/**/*.ts"
+      - "front/**/*.tsx"
+      - "front/**/*.js"
+      - "front/**/*.jsx"
+      - "**/*.md"
+      - "back/**/*.kt"
 
 jobs:
   claude-review:

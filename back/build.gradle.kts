@@ -5,9 +5,9 @@ plugins {
   val kotlinVersion = "2.1.20"
   id("org.springframework.boot") version "3.3.13"
   id("io.spring.dependency-management") version "1.1.7"
-  id("org.flywaydb.flyway") version "11.0.0"
+  id("org.flywaydb.flyway") version "11.19.1"
   id("de.undercouch.download") version "5.6.0"
-  id("org.sonarqube") version "6.1.0.5360"
+  id("org.sonarqube") version "7.2.2.6593"
   kotlin("jvm") version kotlinVersion
   kotlin("plugin.spring") version kotlinVersion
   kotlin("plugin.jpa") version kotlinVersion
@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-  val jwtVersion = "0.12.6"
+  val jwtVersion = "0.13.0"
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
   implementation("org.flywaydb:flyway-core")
@@ -43,7 +43,7 @@ dependencies {
   implementation("com.github.ben-manes.caffeine:caffeine")
   implementation("io.github.resilience4j:resilience4j-spring-boot3:2.3.0")
   //implementation("com.github.loki4j:loki-logback-appender:1.5.2")
-  implementation("com.google.guava:guava:32.0.1-android")
+  implementation("com.google.guava:guava:33.5.0-android")
   implementation("net.sargue:mailgun:2.0.0")
   implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
   implementation("io.jsonwebtoken:jjwt-impl:$jwtVersion")
@@ -51,10 +51,10 @@ dependencies {
   implementation("org.glassfish.jersey.inject:jersey-hk2")
   runtimeOnly("com.h2database:h2")
   runtimeOnly("org.postgresql:postgresql")
-  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.23.0")
+  runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.25.0")
   runtimeOnly("io.micrometer:micrometer-registry-prometheus")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
-  testImplementation("io.mockk:mockk:1.14.5")
+  testImplementation("io.mockk:mockk:1.14.7")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.micrometer:micrometer-observation-test")
 }
@@ -92,8 +92,8 @@ sonar {
 // Require for flyway plugin v10 compatibility with postgresql
 buildscript {
   dependencies {
-    classpath("org.postgresql:postgresql:42.7.4")
-    classpath("org.flywaydb:flyway-database-postgresql:10.4.1")
+    classpath("org.postgresql:postgresql:42.7.7")
+    classpath("org.flywaydb:flyway-database-postgresql:11.19.1")
   }
 }
 

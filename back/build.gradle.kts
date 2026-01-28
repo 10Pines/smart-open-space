@@ -2,7 +2,7 @@ import de.undercouch.gradle.tasks.download.Download
 
 plugins {
   base
-  val kotlinVersion = "2.1.20"
+  val kotlinVersion = "2.3.0"
   id("org.springframework.boot") version "3.3.13"
   id("io.spring.dependency-management") version "1.1.7"
   id("org.flywaydb.flyway") version "11.20.0"

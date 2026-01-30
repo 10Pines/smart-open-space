@@ -10,7 +10,7 @@ Los siguientes reportes están disponibles (actualizar esta tabla si se agregan 
 
 | Fecha (dd-MM-yyyyThh:mm) | Nombre de test | Descripción | Reportes disponibles |
 |---|---|---|---|
-| 29-01-2026T03:30Z | prod-low-load-test | Pruebas de carga básicas para la instancia productiva de SOS | [report_29_01_2026_00_30_prod-low-load-test.json](artillery/reports/prod-low-load-test/report_29_01_2026_00_30_prod-low-load-test.json)<br>[report_29_01_2026_00_30_prod-low-load-test.pdf](artillery/reports/prod-low-load-test/report_29_01_2026_00_30_prod-low-load-test.pdf) |
+| 29-01-2026T03:30Z | [prod-low-load-test](artillery/prod-low-load-test.yml) | Pruebas de carga básicas para la instancia productiva de SOS | [report_29_01_2026_00_30_prod-low-load-test.json](artillery/reports/prod-low-load-test/report_29_01_2026_00_30_prod-low-load-test.json)<br>[report_29_01_2026_00_30_prod-low-load-test.pdf](artillery/reports/prod-low-load-test/report_29_01_2026_00_30_prod-low-load-test.pdf) |
 
 ## Guía de ejecución de tests de performance
 

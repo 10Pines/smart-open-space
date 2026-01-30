@@ -55,7 +55,7 @@ artillery run --output tp_report.json ./docs/performance_test/artillery/low-load
 - Require una API_KEY donde esta es proveída en una cuenta en Artillery. 
 
 ```bash
-artillery run artillery/low-load-test.yml --record --key <YOUR_API_KEY>
+artillery run ./docs/performance_test/artillery/low-load-test.yml --record --key <YOUR_API_KEY>
 ```
 
 Una vez ejecutado, se imprimira un URL para visualizar el reporte. [Ejemplo de reporte (el mismo URL de abajo)](https://app.artillery.io/share/sh_c3c75baadbe7bc4a150ed05b1cb1bbed925ef7e593ef9631f0f15474cd51fe7a)

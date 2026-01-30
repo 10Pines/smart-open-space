@@ -18,10 +18,9 @@ En la carpeta artillery, se encuentran archivos preconfigurados para ejecutar pa
 
 ### Docker
 
-0. Requiere docker.
-1. Estar en la carpeta raíz del proyecto.
-2. Dirigirse a la carpeta raíz del repositorio.
-3. Ejecutar el comando:
+- Requiere docker instalado.
+
+- Estar en la carpeta raíz del proyecto y ejecutar el comando:
 ```bash
 docker run --rm -it -v ${PWD}:/repo artilleryio/artillery:latest run /repo/docs/performance_test/artillery/<test-file>.yml
 ```
@@ -33,8 +32,8 @@ docker run --rm -it -v ${PWD}:/repo artilleryio/artillery:latest run /repo/docs/
 
 ### Local
 
-0. Requiere node 24.x
-1. Estar en la carpeta raíz del proyecto.
+- Requiere node 24.x
+- Estar en la carpeta raíz del proyecto.
 
 #### Ejecutar test sin reporte
 ```bash

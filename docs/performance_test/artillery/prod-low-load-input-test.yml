@@ -1,5 +1,5 @@
 config:
-  target: "http://localhost:8081"
+  target: "https://smartopenspace.10pines.com"
   phases:
     - duration: 90  # sec
       arrivalRate: 1  # clients per sec
@@ -15,10 +15,15 @@ config:
         - expression: "http.response_time.p95 < 1000"
 
 scenarios:
-  - flow:
-    - function: "getRandomId"
-    - get:
-        url: "/openSpace/{{ id }}"
-        expect:
-          - statusCode: 200
-          - statusCode: 404
+  - name: "Low load with balanced IDs"
+    payload:
+      path: "./data/openspace_ids_balanced.csv"
+      fields:
+        - id
+      order: random
+    flow:
+      - get:
+          url: "/openSpace/{{ id }}"
+          expect:
+            - statusCode: 200
+            - statusCode: 404

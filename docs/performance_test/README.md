@@ -10,7 +10,8 @@ Los siguientes reportes están disponibles (actualizar esta tabla si se agregan 
 
 | Fecha (dd-MM-yyyyThh:mm) | Nombre de test | Descripción | Reportes disponibles |
 |---|---|---|---|
-| 29-01-2026T03:30Z | [prod-low-load-test](artillery/prod-low-load-test.yml) | Pruebas de carga básicas para la instancia productiva de SOS | [report_29_01_2026_00_30_prod-low-load-test.json](artillery/reports/prod-low-load-test/report_29_01_2026_00_30_prod-low-load-test.json)<br>[report_29_01_2026_00_30_prod-low-load-test.pdf](artillery/reports/prod-low-load-test/report_29_01_2026_00_30_prod-low-load-test.pdf) |
+| 29-01-2026T03:30Z | [prod-low-load-test](artillery/prod-low-load-test.yml) | Pruebas de carga básicas para la instancia productiva de SOS | [report.json](artillery/reports/prod-low-load-test/report_29_01_2026_00_30_prod-low-load-test.json) |
+| 30-01-2026T00:00Z | [prod-low-load-csv-test](artillery/prod-low-load-csv-test.yml) | Prueba de carga básicas para prod con CSV balanceado de OpenSpace ids | [report.json](artillery/reports/prod-low-load-csv-test/report_30_01_2026_01_53.json) |
 
 ## Guía de ejecución de tests de performance
 
@@ -72,3 +73,4 @@ En el directorio `./artillery/data`, se guardarán los archivos de entrada (inpu
 
 Archivos disponibles:
 - [Archivo CSV de ids de Open Spaces que existen (exist_openspace_ids.csv)](artillery/data/exist_openspace_ids.csv)
+- [CSV de ids balanceados (openspace_ids_balanced.csv)](artillery/data/openspace_ids_balanced.csv)

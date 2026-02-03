@@ -31,6 +31,9 @@ common: &default_settings
   # The first application name must be unique.
   app_name: 'smart-open-space-back'
 
+  rules:
+    ignore_url_regexes: ["^/assets/.*"]
+
   # To enable high security, set this property to true. When in high
   # security mode, the agent will use SSL and obfuscated SQL. Additionally,
   # request parameters and message parameters will not be sent to New Relic.

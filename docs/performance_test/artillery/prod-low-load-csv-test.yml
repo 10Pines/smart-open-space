@@ -1,0 +1,29 @@
+config:
+  target: "https://smartopenspace.10pines.com"
+  phases:
+    - duration: 120  # sec
+      arrivalRate: 1  # clients per sec
+      rampTo: 5  # Increase clients per seconds
+      name: Low load test
+  payload:
+      path: "data/openspace_ids_balanced.csv"
+      fields:
+        - 'id'
+      skipHeader: true
+      order: random
+  defaults:
+    headers:
+      Content-Type: "application/json"
+  plugins:
+    ensure:
+      conditions:
+        - expression: "http.response_time.p95 < 1000"
+
+scenarios:
+  - name: "Low load with balanced IDs"
+    flow:
+      - get:
+          url: "/openSpace/{{ id }}"
+          expect:
+            - statusCode: 200
+            - statusCode: 404

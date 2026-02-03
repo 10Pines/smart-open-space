@@ -7,9 +7,9 @@ import java.time.Instant
 
 interface AuthServiceI {
 
-  fun register(newUser: User): AuthSession
+  fun register(newUser: User): Pair<AuthSession, String>
 
-  fun login(email: String, password: String): AuthSession
+  fun login(email: String, password: String): Pair<AuthSession, String>
 
   /**
    * @return the user id that was logged out.

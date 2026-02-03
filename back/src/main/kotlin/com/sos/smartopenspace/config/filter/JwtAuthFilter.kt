@@ -52,12 +52,14 @@ class JwtAuthFilter(
 
       val authentication: Authentication? =
         SecurityContextHolder.getContext().authentication
+      val jwtTokenId = jwtService.extractId(jwtToken)
       if (authentication == null) {
-        authSessionRepository.findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
-          jwtToken,
+        val authSession = authSessionRepository.findByTokenIdAndUserIdAndNotRevokedAndNotExpiredFrom(
+          jwtTokenId,
           userId,
           now
-        ) ?: throw UnauthorizedException("Jwt token is invalid or expired")
+        )
+        authSession ?: throw UnauthorizedException("Jwt token is invalid or expired")
         val userDetails =
           userDetailsService.loadUserByUsername(userId.toString())
         val authToken = UsernamePasswordAuthenticationToken(

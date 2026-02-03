@@ -1,5 +1,5 @@
 config:
-  target: "http://localhost:8081"
+  target: "https://smartopenspace.10pines.com"
   phases:
     - duration: 90  # sec
       arrivalRate: 1  # clients per sec

@@ -27,23 +27,24 @@ class AuthService(
 
   @Transactional
   @UserRegisterMetric
-  override fun register(newUser: User): AuthSession {
+  override fun register(newUser: User): Pair<AuthSession, String> {
     val userCreated = userService.create(newUser)
     return createAuthSession(userCreated)
   }
 
   @Transactional
-  override fun login(email: String, password: String): AuthSession {
+  override fun login(email: String, password: String): Pair<AuthSession, String> {
     val user = userService.findUserAndMatchPassword(email, password)
     return createAuthSession(user)
   }
 
   override fun logout(tokenHeader: String): Long {
     val token = jwtService.extractToken(tokenHeader)
+    val tokenId = jwtService.extractId(token)
     val userId = jwtService.extractUserId(token)
     val authSession = authSessionRepository
-      .findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
-        token,
+      .findByTokenIdAndUserIdAndNotRevokedAndNotExpiredFrom(
+        tokenId,
         userId,
         getNowUTC()
       )
@@ -79,9 +80,10 @@ class AuthService(
       LOGGER.error("Jwt token user not match with userId $userId, tokenUserId $userIdFromToken and date_now $now")
       return false
     }
+    val tokenId = jwtService.extractId(token)
     val existValidTokenSaved = authSessionRepository
-      .findByTokenAndUserIdAndNotRevokedAndNotExpiredFrom(
-        token,
+      .findByTokenIdAndUserIdAndNotRevokedAndNotExpiredFrom(
+        tokenId,
         userIdFromToken,
         now
       )
@@ -122,23 +124,24 @@ class AuthService(
   }
 
 
-  private fun createAuthSession(user: User): AuthSession {
+  private fun createAuthSession(user: User): Pair<AuthSession, String> {
     val now = getNowUTC()
     val expirationAt = now.plus(expirationInMin, ChronoUnit.MINUTES)
 
+    val (jwt, jwtId) = jwtService.createToken(now, expirationAt, user)
     val authSession = AuthSession(
-      token = jwtService.createToken(now, expirationAt, user),
+      tokenId = jwtId,
       createdOn = now,
       expiresOn = expirationAt,
       revoked = false,
       user = user,
     )
     LOGGER.debug(
-      "Creating auth session {} with token length {}",
+      "Creating auth session {} with token id length {}",
       authSession,
-      authSession.token.length
+      jwtId.length
     )
-    return authSessionRepository.save(authSession)
+    return authSessionRepository.save(authSession) to jwt
   }
 
   companion object {

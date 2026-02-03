@@ -3,6 +3,8 @@ package com.sos.smartopenspace.services.impl
 import com.sos.smartopenspace.domain.InvalidTokenException
 import com.sos.smartopenspace.domain.User
 import com.sos.smartopenspace.services.BaseServiceTest
+import com.sos.smartopenspace.services.impl.JwtService.Companion.ALGORITHM
+
 import com.sos.smartopenspace.services.impl.JwtService.Companion.ERROR_INVALID_DATES
 import com.sos.smartopenspace.services.impl.JwtService.Companion.ERROR_INVALID_USER_ID
 import com.sos.smartopenspace.services.impl.JwtService.Companion.EXPIRATION_AT_FIELD
@@ -14,19 +16,28 @@ import com.sos.smartopenspace.services.impl.JwtService.Companion.USER_ID_FIELD
 import com.sos.smartopenspace.services.impl.JwtService.Companion.USER_NAME_FIELD
 import com.sos.smartopenspace.testUtil.ReadMocksHelper
 import com.sos.smartopenspace.util.getNowUTC
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.io.Decoders
+import io.jsonwebtoken.security.Keys
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.Date
 
-class JwtServiceTest : BaseServiceTest() {
+class JwtServiceTest(
+  @Value("\${jwt.secret}")
+  private val secretKey: String
+) : BaseServiceTest() {
 
   @Autowired
   private lateinit var jwtService: JwtService
@@ -64,7 +75,7 @@ class JwtServiceTest : BaseServiceTest() {
 
 
   @Test
-  fun `test createToken should return a jwt token`() {
+  fun `test createToken should return a jwt token and their UUID`() {
     val issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS)
     val expirationAt = issuedAt.plus(15, ChronoUnit.DAYS)
     val userId = 123456L
@@ -76,10 +87,17 @@ class JwtServiceTest : BaseServiceTest() {
       name = userName,
     )
     // WHEN
-    val resultToken = jwtService.createToken(issuedAt, expirationAt, user)
+    val (resToken, idToken) = jwtService.createToken(
+      issuedAt,
+      expirationAt,
+      user
+    )
 
     // THEN
-    jwtService.getClaimsMap(resultToken).let { claims ->
+    assertNotNull(idToken)
+    assertTrue(idToken.isNotBlank())
+    assertEquals(36, idToken.length)
+    jwtService.getClaimsMap(resToken).let { claims ->
       assertNotNull(claims)
       assertEquals(userEmail, claims[SUBJECT_FIELD])
       assertEquals(issuedAt, getInstantFromLongSeconds(claims[ISSUED_AT_FIELD]))
@@ -133,13 +151,19 @@ class JwtServiceTest : BaseServiceTest() {
       email = "pepe@email.com",
       name = "Pepe Grillo",
     )
-    val validToken = jwtService.createToken(issuedAt, expirationAt, user)
+    val (validToken, tokenId) = jwtService.createToken(
+      issuedAt,
+      expirationAt,
+      user
+    )
 
     // WHEN
     val result = jwtService.isValidToken(validToken)
 
     // THEN
     assertTrue(result)
+    assertNotNull(tokenId)
+    assertEquals(36, tokenId.length)
   }
 
   @Test
@@ -151,13 +175,19 @@ class JwtServiceTest : BaseServiceTest() {
       email = "pepe@email.com",
       name = "Pepe Grillo",
     )
-    val validToken = jwtService.createToken(issuedAt, expirationAt, user)
+    val (validToken, tokenId) = jwtService.createToken(
+      issuedAt,
+      expirationAt,
+      user
+    )
 
     // WHEN
     val result = jwtService.isValidToken(validToken)
 
     // THEN
     assertFalse(result)
+    assertNotNull(tokenId)
+    assertEquals(36, tokenId.length)
   }
 
   @ParameterizedTest(name = "{0}")
@@ -178,11 +208,13 @@ class JwtServiceTest : BaseServiceTest() {
   @Test
   fun `test extractUserId should return ok user id long value`() {
     val userId = 123L
-    val token = buildValidJwtTokenWith(userId = userId)
+    val (token, tokenId) = buildValidJwtTokenWith(userId = userId)
     // WHEN
     val result = jwtService.extractUserId(token)
     // THEN
     assertEquals(userId, result)
+    assertNotNull(tokenId)
+    assertEquals(36, tokenId.length)
   }
 
   @ParameterizedTest(name = "{0}")
@@ -210,7 +242,7 @@ class JwtServiceTest : BaseServiceTest() {
     val userId = 123L
     val userEmail = "pepe_grillo@mail.com"
     val userName = "pepe grillo"
-    val token = buildValidJwtTokenWith(
+    val (token, tokenId) = buildValidJwtTokenWith(
       userId = userId,
       userEmail = userEmail,
       userName = userName,
@@ -235,6 +267,8 @@ class JwtServiceTest : BaseServiceTest() {
       assertEquals(userName, claimsMapRes[USER_NAME_FIELD])
       assertEquals(userId, getLongValue(claimsMapRes[USER_ID_FIELD]))
     }
+    assertNotNull(tokenId)
+    assertEquals(36, tokenId.length)
   }
 
   @ParameterizedTest(name = "{0}")
@@ -253,8 +287,36 @@ class JwtServiceTest : BaseServiceTest() {
     }
   }
 
+  @Test
+  fun `test extractId should extract the UUID generated`() {
+    val issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS)
+    val expTimeDays = 2L
+    val expTimeChronoUnit = ChronoUnit.DAYS
+    val userId = 123L
+    val userEmail = "pepe_grillo@mail.com"
+    val userName = "pepe grillo"
+    val (token, tokenId) = buildValidJwtTokenWith(
+      userId = userId,
+      userEmail = userEmail,
+      userName = userName,
+      issuedAt = issuedAt,
+      expirationPlusTime = expTimeDays,
+      expirationChronoUnit = expTimeChronoUnit,
+    )
+    // WHEN
+    val id = jwtService.extractId(token)
 
-  //TODO: Test getClaimsMap (always contains the same fields and their types)
+    assertNotNull(id, "the JWT id should not be null")
+    assertTrue(id.isNotBlank())
+    assertEquals(36, id.length, "the JWT id should be a valid UUID")
+    assertEquals(tokenId, id)
+  }
+
+  @Test
+  fun `test extractId with token without id should throws Exception`() {
+    val jwtWithoutId = buildJwtTestWithoutJwtId()
+    assertThrows<InvalidTokenException> { jwtService.extractId(jwtWithoutId) }
+  }
 
   private fun getLongValue(any: Any?): Long =
     when (any) {
@@ -262,6 +324,24 @@ class JwtServiceTest : BaseServiceTest() {
       else -> throw IllegalArgumentException("is not a Number type")
     }
 
+
+  private fun buildJwtTestWithoutJwtId(): String {
+    val userPayload = mapOf(
+      USER_ID_FIELD to 123L,
+      USER_EMAIL_FIELD to "email@gmail.com",
+      USER_NAME_FIELD to "Test User",
+    )
+    return Jwts.builder()
+      .claims(userPayload)
+      .subject(userPayload[USER_EMAIL_FIELD].toString())
+      .issuedAt(Date.from(Instant.now()))
+      .expiration(Date.from(Instant.now().plus(15, ChronoUnit.DAYS)))
+      .signWith(getSignKey(), ALGORITHM)
+      .compact()
+  }
+
+  private fun getSignKey() =
+    Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey))
 
   private fun getInstantFromLongSeconds(any: Any?): Instant =
     Instant.ofEpochSecond(getLongValue(any))
@@ -274,7 +354,7 @@ class JwtServiceTest : BaseServiceTest() {
     userId: Long = 123456,
     userEmail: String = "pepe_grillo@mail.com",
     userName: String = "Pepe Grillo",
-  ): String {
+  ): Pair<String, String> {
     val expirationAt = issuedAt.plus(expirationPlusTime, expirationChronoUnit)
     val user = User(
       id = userId,

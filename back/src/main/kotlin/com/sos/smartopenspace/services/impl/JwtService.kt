@@ -7,11 +7,13 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import io.jsonwebtoken.security.MacAlgorithm
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.Date
+import java.util.UUID
 
 
 @Service
@@ -36,7 +38,8 @@ class JwtService(
   }
 
   /**
-   * @return a JWT token with issuedAt, expirationAt and user email as subject.
+   * @return a JWT token with their unique id = (Jwt, JwtId).
+   *  JWT contains issuedAt, expirationAt and user email as subject.
    *  Also includes user_id, user_email and user_name payload fields.
    *  @throws IllegalArgumentException if user id is not greater than 0.
    *  @throws IllegalArgumentException if issuedAt is after expirationAt.
@@ -45,7 +48,7 @@ class JwtService(
     issuedAt: Instant,
     expirationAt: Instant,
     user: User
-  ): String {
+  ): Pair<String, String> {
     if (user.id <= 0) {
       LOGGER.error("$ERROR_INVALID_USER_ID [user_id=${user.id}]")
       throw IllegalArgumentException(ERROR_INVALID_USER_ID)
@@ -59,13 +62,16 @@ class JwtService(
       USER_EMAIL_FIELD to user.email,
       USER_NAME_FIELD to user.name,
     )
-    return Jwts.builder()
+    val jti = UUID.randomUUID().toString()
+    val jwt = Jwts.builder()
+      .id(jti)
       .claims(userPayload)
       .subject(user.email)
       .issuedAt(Date.from(issuedAt))
       .expiration(Date.from(expirationAt))
       .signWith(getSignKey(), ALGORITHM)
       .compact()
+    return jwt to jti
   }
 
   /**
@@ -90,6 +96,17 @@ class JwtService(
     runCatching { extractUserIdFromClaims(getClaims(token)) }
       .getOrElse { ex ->
         LOGGER.error("Error extracting user id from token", ex)
+        throw InvalidTokenException()
+      }
+
+  /**
+   * @return jwt id field from the token claims.
+   * @throws InvalidTokenException if jwt token is not valid.
+   * */
+  fun extractId(token: String): String =
+    runCatching { getClaims(token).id!! }
+      .getOrElse { ex ->
+        LOGGER.error("Error extracting jwt id from token", ex)
         throw InvalidTokenException()
       }
 
@@ -136,7 +153,7 @@ class JwtService(
     const val ERROR_INVALID_DATES =
       "IssuedAt date must be before expirationAt date"
 
-    private val ALGORITHM = Jwts.SIG.HS256
+    val ALGORITHM: MacAlgorithm = Jwts.SIG.HS256
     private val LOGGER = LoggerFactory.getLogger(this::class.java)
   }
 }

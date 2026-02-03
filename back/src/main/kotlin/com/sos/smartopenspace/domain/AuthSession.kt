@@ -16,8 +16,8 @@ class AuthSession(
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   var id: String = "",
-  @Column(unique = true, length = 455)
-  val token: String,
+  @Column(unique = true, length = 40)
+  val tokenId: String,
   val createdOn: Instant,
   val expiresOn: Instant,
   var revoked: Boolean = false,
@@ -32,7 +32,7 @@ class AuthSession(
   override fun toString(): String =
     toStringByReflex(
       this,
-      mask = listOf("token"),
+      mask = listOf("tokenId"),
     )
 
 }

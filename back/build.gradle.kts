@@ -54,7 +54,7 @@ dependencies {
   runtimeOnly("com.newrelic.agent.java:newrelic-agent:8.25.0")
   runtimeOnly("io.micrometer:micrometer-registry-prometheus")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
-  testImplementation("io.mockk:mockk:1.14.7")
+  testImplementation("io.mockk:mockk:1.14.9")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.micrometer:micrometer-observation-test")
 }

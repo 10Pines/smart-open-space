@@ -1,0 +1,14 @@
+{
+  "enabledPlugins": {
+    "10p-backlog@10p-internal-apps": true,
+    "10p-ops@10p-internal-apps": true
+  },
+  "extraKnownMarketplaces": {
+    "10p-internal-apps": {
+      "source": {
+        "source": "github",
+        "repo": "10Pines/10p-internal-apps"
+      }
+    }
+  }
+}

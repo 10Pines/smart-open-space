@@ -96,8 +96,9 @@ const Card = ({
       </CardFooter>
       {buttons && (
         <Box width="100%" direction="row" flex justify="end" gap="xsmall">
-          {buttons.map(({ icon: Icon, ...button }) => (
+          {buttons.map(({ icon: Icon, ...button }, index) => (
             <IconButton
+              key={index}
               size="xsmall"
               icon={<Icon size="1rem" />}
               secondary={button.secondary}
@@ -111,8 +112,8 @@ const Card = ({
       {footerDescription && (
         <Box direction="row" gap="small" {...footerDescription.props}>
           {footerDescription.items
-            ? footerDescription.items.map((item) => (
-                <Box direction="row" align="center" gap="xsmall">
+            ? footerDescription.items.map((item, index) => (
+                <Box key={index} direction="row" align="center" gap="xsmall">
                   {item.icon &&
                     React.cloneElement(item.icon, {
                       size: 'small',

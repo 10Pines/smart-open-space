@@ -62,7 +62,7 @@ const useUser = () => {
   return (token && user && existInStorage) ? user : null;
 };
 
-const handleResetAuth = () => useAuth().handleResetUser();
+const useResetAuth = () => useAuth().handleResetUser();
 
-export { AuthProvider, useUser, getUser, getToken, useToken, handleResetAuth };
+export { AuthProvider, useUser, getUser, getToken, useToken, useResetAuth };
 export default useAuth;

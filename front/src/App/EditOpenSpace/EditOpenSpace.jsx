@@ -4,10 +4,9 @@ import { useHistory } from 'react-router-dom';
 import { useGetOpenSpace, updateOS } from '#api/os-client';
 import { numbersToTime } from '#helpers/time';
 import { useUser } from '#helpers/useAuth';
-import { RedirectToRoot } from '#helpers/routes';
+import { RedirectToRoot , usePushToOpenSpace } from '#helpers/routes';
 import { OpenSpaceForm } from './OpenSpaceForm';
 import Spinner from '#shared/Spinner';
-import { usePushToOpenSpace } from '#helpers/routes';
 
 const EditOpenSpace = () => {
   const history = useHistory();

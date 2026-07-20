@@ -57,4 +57,6 @@ const Home = () => {
   );
 };
 
-export default () => (useUser() ? <Home /> : <RedirectToLogin />);
+const HomeOrRedirect = () => (useUser() ? <Home /> : <RedirectToLogin />);
+
+export default HomeOrRedirect;

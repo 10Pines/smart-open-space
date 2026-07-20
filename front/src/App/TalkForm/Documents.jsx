@@ -17,10 +17,11 @@ const Documents = ({ value, onChange }) => {
       {value &&
           value.map((document, index) => (
               <Box
+                  key={index}
                   style={{ minWidth: '300px', paddingTop: '0.5rem' }}
                   animation={globalStyles.cardsAnimation}
               >
-                <Badge key={index} onClick={() => {
+                <Badge onClick={() => {
                   value.splice(index, 1);
                   onChange({value: [...value]});
                 }}>

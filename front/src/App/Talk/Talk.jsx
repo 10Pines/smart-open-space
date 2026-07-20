@@ -1,11 +1,10 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory , useParams, useLocation } from 'react-router-dom';
 import { useUser } from '#helpers/useAuth';
 import { RedirectToRoot, usePushToEditTalk, usePushToOpenSpace } from '#helpers/routes';
 import { useGetTalk, deleteTalk, createReview } from '#api/os-client';
 import MainHeader from '#shared/MainHeader';
 import Spinner from '#shared/Spinner';
-import { useParams, useLocation } from 'react-router-dom';
 import { EditIcon, DeleteIcon, StarIcon } from '#shared/icons';
 import { Button, Anchor, Text, Box, Layer } from 'grommet';
 import Card from '#shared/Card';
@@ -72,7 +71,7 @@ const Talk = () => {
               <MainHeader.Title label={'Documentos'} level="3" margin={{ top: 'medium' }} />
               <ul>
                 {documents.map((document) => (
-                  <li>
+                  <li key={document.link}>
                     <Anchor
                       color="dark-1"
                       href={document.link}

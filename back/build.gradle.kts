@@ -2,7 +2,7 @@ import de.undercouch.gradle.tasks.download.Download
 
 plugins {
   base
-  val kotlinVersion = "2.1.20"
+  val kotlinVersion = "2.3.10"
   id("org.springframework.boot") version "3.3.13"
   id("io.spring.dependency-management") version "1.1.7"
   id("org.flywaydb.flyway") version "11.20.0"
@@ -54,7 +54,7 @@ dependencies {
   runtimeOnly("com.newrelic.agent.java:newrelic-agent:9.0.0")
   runtimeOnly("io.micrometer:micrometer-registry-prometheus")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
-  testImplementation("io.mockk:mockk:1.14.7")
+  testImplementation("io.mockk:mockk:1.14.9")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.micrometer:micrometer-observation-test")
 }

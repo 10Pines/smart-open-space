@@ -134,10 +134,11 @@ export const OpenSpaceForm = ({
             {openSpace.tracks &&
               openSpace.tracks.map((track, index) => (
                 <Box
+                  key={index}
                   style={{ minWidth: '300px', paddingTop: '0.5rem' }}
                   animation={globalStyles.cardsAnimation}
                 >
-                  <Badge key={index} onClick={() => removeTrack(index)}>
+                  <Badge onClick={() => removeTrack(index)}>
                     <TrackForm
                       track={track}
                       onChange={(trackChanged) => changeTrack(trackChanged, index)}
@@ -164,10 +165,11 @@ export const OpenSpaceForm = ({
             {openSpace.rooms &&
               openSpace.rooms.map((room, index) => (
                 <Box
+                  key={index}
                   style={{ minWidth: '300px', paddingTop: '0.5rem' }}
                   animation={globalStyles.cardsAnimation}
                 >
-                  <Badge key={index} onClick={() => removeRoom(index)}>
+                  <Badge onClick={() => removeRoom(index)}>
                     <LinkForm
                       item={room}
                       onChange={(roomChanged) => changeRoom(roomChanged, index)}
@@ -195,11 +197,11 @@ export const OpenSpaceForm = ({
               {openSpace.dates &&
                 openSpace.dates.map((date, index) => (
                   <Box
+                    key={index}
                     style={{ minWidth: '390px', paddingTop: '0.5rem' }}
                     animation={globalStyles.cardsAnimation}
                   >
                     <Badge
-                      key={index}
                       onClick={() => {
                         setDeletedDate({ date, index });
                         removeDate(index);

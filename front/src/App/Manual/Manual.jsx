@@ -54,6 +54,7 @@ const Manual = () => {
             <Box direction="column" gap="small">
               { Object.entries(subSections).map(([section, label]) => (
                 <Anchor
+                  key={section}
                   onClick={(e) => scrollToSection(e, section)}
                   color={activeSection === section ? 'dark-1' : 'dark-4'}
                   label={label}

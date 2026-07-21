@@ -126,4 +126,6 @@ const Carousel = forwardRef(({ children, ...props }, ref) => {
   );
 });
 
+Carousel.displayName = 'Carousel';
+
 export default Carousel;

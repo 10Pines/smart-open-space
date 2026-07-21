@@ -370,7 +370,7 @@ const DesignSystem = () => {
 
       <Box direction="column" gap="1rem">
         {sections.map(({ title, Component }) => (
-          <DesignSystemSection title={title}>
+          <DesignSystemSection key={title} title={title}>
             {Component && <Component pad="1rem" />}
           </DesignSystemSection>
         ))}

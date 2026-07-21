@@ -23,7 +23,9 @@ const ColorPicker = ({
              options={colors}
              direction={'row'}
              onChange={(e) => onChange(e.target.value)}
-             children={(option, { checked, hover }) =>
+             {...props}
+        >
+            {(option, { checked, hover }) =>
                  <Box
                     background={option}
                     border = {{
@@ -36,8 +38,7 @@ const ColorPicker = ({
                     style={ {borderRadius: '50%' }}
                  />
                 }
-             {...props}
-        />
+        </RadioButtonGroup>
     );
 };
 

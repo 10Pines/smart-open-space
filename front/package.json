@@ -58,6 +58,7 @@
   },
   "dependencies": {
     "date-fns": "^2.28.0",
+    "dompurify": "^3.4.13",
     "grommet": "^2.39.0",
     "grommet-icons": "^4.14.0",
     "jwt-decode": "^4.0.0",

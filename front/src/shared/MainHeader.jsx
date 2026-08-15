@@ -13,6 +13,7 @@ import Title from './Title';
 import {scrollToSection} from "#helpers/scrollUtils.js";
 import Button from "#components/atom/Button.jsx";
 import {TALKS_WITHOUT_TRACKS_TITLE} from "#shared/constants.js";
+import { sanitizeHtml } from '#helpers/sanitize.js';
 
 const useTextAlign = () => (useSize() === 'small' ? 'center' : 'start');
 
@@ -55,7 +56,7 @@ MySubTitle.propTypes = {
 const Description = ({ children, description, ...props }) => (
   <Box margin={{ bottom: '20px' }}>
     <Markdown components={{ p: (props) => <Paragraph {...props} fill /> }}>
-      {description}
+      {sanitizeHtml(description)}
     </Markdown>
   </Box>
 );

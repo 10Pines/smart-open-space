@@ -183,8 +183,6 @@ const MyTalks = () => {
     openSpace &&
     (currentUserIsOrganizer || (isActiveCallForPapers && !openSpace.finishedQueue));
   const hasTalks = allTalks && currentUserTalks && talks.length > 0;
-  const shouldDisplayEmptyTalkButton = !hasTalks && canAddTalk;
-
   const shouldDisplayAddTalkButton = hasTalks && canAddTalk;
   const roomsWithFreeSlots = getRoomsWithSlots(openSpace.freeSlots);
   const roomsWithAssignableSlots = getRoomsWithSlots(openSpace.assignableSlots);
@@ -221,7 +219,7 @@ const MyTalks = () => {
       {!queue || (!hasTalks && isPending) ? (
         <Spinner />
       ) : !hasTalks ? (
-        shouldDisplayEmptyTalkButton && <EmptyTalk onClick={pushToNewTalk} />
+        <EmptyTalk canAddTalk={canAddTalk} onClick={pushToNewTalk} />
       ) : (
         <>
           {queue.length > 0 && myEnqueuedTalk() && (
@@ -262,9 +260,6 @@ const MyTalks = () => {
             </MyGrid>
           )}
         </>
-      )}
-      {!isActiveCallForPapers && (
-        <Detail text={'La convocatoria a propuestas se encuentra cerrada'} />
       )}
     </>
   );

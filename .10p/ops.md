@@ -13,6 +13,7 @@
 - requisito de checks: CI en verde (sin pendientes) en `Backend CI` / `Frontend CI` según corresponda
 - agrupación: un solo PR
 - Majors de github-actions confiables: `actions/*`, `docker/*`, `ruby/*`, `sonarsource/*`
+- Analizar majors por runtime: sí
 
 ## Seguridad
 - tope de auto-fast-lane: hasta `high` inclusive (con CI verde)

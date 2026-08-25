@@ -12,6 +12,7 @@
 - `major` siempre se escala a revisión humana
 - requisito de checks: CI en verde (sin pendientes) en `Backend CI` / `Frontend CI` según corresponda
 - agrupación: un solo PR
+- Majors de github-actions confiables: `actions/*`, `docker/*`, `ruby/*`, `sonarsource/*`
 
 ## Seguridad
 - tope de auto-fast-lane: hasta `high` inclusive (con CI verde)

@@ -7,7 +7,7 @@ plugins {
   id("io.spring.dependency-management") version "1.1.7"
   id("org.flywaydb.flyway") version "11.20.0"
   id("de.undercouch.download") version "5.7.0"
-  id("org.sonarqube") version "7.2.2.6593"
+  id("org.sonarqube") version "7.4.0.8496"
   kotlin("jvm") version kotlinVersion
   kotlin("plugin.spring") version kotlinVersion
   kotlin("plugin.jpa") version kotlinVersion
@@ -54,7 +54,7 @@ dependencies {
   runtimeOnly("com.newrelic.agent.java:newrelic-agent:9.0.0")
   runtimeOnly("io.micrometer:micrometer-registry-prometheus")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
-  testImplementation("io.mockk:mockk:1.14.9")
+  testImplementation("io.mockk:mockk:1.14.11")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.micrometer:micrometer-observation-test")
 }
@@ -92,7 +92,7 @@ sonar {
 // Require for flyway plugin v10 compatibility with postgresql
 buildscript {
   dependencies {
-    classpath("org.postgresql:postgresql:42.7.8")
+    classpath("org.postgresql:postgresql:42.7.13")
     classpath("org.flywaydb:flyway-database-postgresql:11.19.1")
   }
 }

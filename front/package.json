@@ -31,7 +31,7 @@
     "heroku-postbuild": "npm run build"
   },
   "devDependencies": {
-    "@rollup/plugin-alias": "^5.1.1",
+    "@rollup/plugin-alias": "^6.0.0",
     "@testing-library/jest-dom": "^6.6.2",
     "@testing-library/react": "^10.0.2",
     "@types/react": "^16.9.31",

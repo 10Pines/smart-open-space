@@ -7,13 +7,12 @@
 - `question`: se necesita más información
 - `refactor`: refactor por buenas prácticas
 - `security`: agujeros de seguridad en la aplicación
-- `area:ui`: cambios de interfaz de usuario
-- `area:analytics`: métricas, tracking y eventos
+- `area:ui`: look & feel y componentes visuales
 - `area:agenda`: funcionalidad y visualización de agenda
-- `area:sharing`: compartir contenido / Web Share
-- `area:infra`: infraestructura / base técnica
-- `tipo:mejora`: mejora incremental (cuando no se usa Issue Type Enhancement)
-- `tipo:refactor`: refactor interno sin cambio observable
+- `area:charlas`: envío, edición, votación y feedback de charlas
+- `area:organizacion`: creación/edición del OS, tablero de control y gestión por admins
+- `area:observabilidad`: analítica, métricas, logging y monitoreo
+- `area:infra`: build, dependencias, deploy, tooling y CI
 
 Labels de proceso (no forman parte de la taxonomía, `categorize-issues` no debe tocarlas):
 `good first issue`, `revisar`, `wrong`, `dependencies`, `github_actions`, `java`, `javascript`, `improve-new-sos`, `improve-scheduling`.
@@ -25,3 +24,6 @@ Labels de proceso (no forman parte de la taxonomía, `categorize-issues` no debe
 - Comportamiento actual
 - Comportamiento esperado
 - Pasos para reproducir
+
+## Repos
+- 10Pines/smart-open-space (principal)

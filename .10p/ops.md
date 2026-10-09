@@ -24,6 +24,7 @@
 ## Ambientes
 - production:
   - health: https://smartopenspace-10pines.herokuapp.com/actuator/health
+  - body: `.status=UP`
 
 ## Despliegue
 - production:
@@ -31,3 +32,6 @@
   - app: smartopenspace-10pines
 
 Nota: el repo también tiene soporte para Kamal (ver `docs/kamal/`), pero hoy no está en uso para deploys reales — la plataforma vigente es Heroku.
+
+## Stale
+- threshold: 90 días sin actividad

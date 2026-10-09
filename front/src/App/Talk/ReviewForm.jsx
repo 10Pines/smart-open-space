@@ -2,13 +2,14 @@ import MyForm from '#shared/MyForm';
 import React from 'react';
 import { FormField, TextArea } from 'grommet';
 
+const emptyReview = { grade: '', comment: '' };
+
 export const ReviewForm = ({ onSubmit }) => {
   return (
     <MyForm
-      onSubmit={(event) => {
-        onSubmit(event);
-        event.useResetValue();
-      }}
+      initialValue={emptyReview}
+      onSubmit={onSubmit}
+      resetOnSubmit
       primaryLabel="Dar feedback"
     >
       <MyForm.Select

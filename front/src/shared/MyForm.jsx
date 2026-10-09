@@ -138,12 +138,11 @@ const MyForm = ({
   secondaryLabel = 'Cancelar',
   initialValue = {},
   externalOnChange = () => {},
+  resetOnSubmit = false,
   ...props
 }) => {
   const [loading, withLoading] = useLoading();
   const [value, setValue] = React.useState(initialValue);
-
-  const useResetValue = () => setValue(initialValue);
 
   return (
     <Form
@@ -153,9 +152,9 @@ const MyForm = ({
         externalOnChange(nextValue);
         setValue(nextValue);
       }}
-      onSubmit={(event) => {
-        event = { ...event, useResetValue };
-        withLoading(onSubmit)(event.value);
+      onSubmit={async (event) => {
+        await withLoading(onSubmit)(event.value);
+        if (resetOnSubmit) setValue(initialValue);
       }}
       {...props}
     >
@@ -183,6 +182,7 @@ MyForm.propTypes = {
   secondaryLabel: PropTypes.string,
   initialValue: PropTypes.object,
   externalOnChange: PropTypes.func,
+  resetOnSubmit: PropTypes.bool,
 };
 
 MyForm.Text = MyFieldText;

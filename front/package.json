@@ -80,6 +80,7 @@
     "styled-components": "^5.0.1"
   },
   "overrides": {
+    "compression": "1.8.2",
     "path-to-regexp": "^3.2.0"
   }
 }

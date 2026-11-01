@@ -41,7 +41,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("com.github.ben-manes.caffeine:caffeine")
-  implementation("io.github.resilience4j:resilience4j-spring-boot3:2.3.0")
+  implementation("io.github.resilience4j:resilience4j-spring-boot3:2.4.0")
   //implementation("com.github.loki4j:loki-logback-appender:1.5.2")
   implementation("com.google.guava:guava:33.5.0-android")
   implementation("net.sargue:mailgun:2.0.0")

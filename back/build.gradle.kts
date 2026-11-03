@@ -7,7 +7,6 @@ plugins {
   id("io.spring.dependency-management") version "1.1.7"
   id("org.flywaydb.flyway") version "11.20.0"
   id("de.undercouch.download") version "5.7.0"
-  id("org.sonarqube") version "7.5.0.8588"
   kotlin("jvm") version kotlinVersion
   kotlin("plugin.spring") version kotlinVersion
   kotlin("plugin.jpa") version kotlinVersion
@@ -79,14 +78,6 @@ flyway {
   password = System.getenv("JDBC_DATABASE_PASSWORD")
   baselineOnMigrate = true
   locations = arrayOf("filesystem:src/main/resources/db/migration")
-}
-
-sonar {
-  properties {
-    property("sonar.projectKey", "10Pines_smart-open-space_bc3c48a8-fa5d-4258-9950-a6c5a57efd77")
-    property("sonar.projectName", "smart-open-space")
-    property("sonar.host.url", "https://sonar.10pines.com")
-  }
 }
 
 // Require for flyway plugin v10 compatibility with postgresql

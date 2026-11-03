@@ -1,0 +1,57 @@
+name: Sonar
+
+permissions:
+  contents: read
+  pull-requests: read
+
+on: push
+
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+    - name: Use Java 21
+      uses: actions/setup-java@v6.0.1
+      with:
+        java-version: 21
+        distribution: corretto
+        architecture: x64
+    - name: Use Node 24.x
+      uses: actions/setup-node@v7
+      with:
+        node-version: 24.x
+    - name: Cache SonarQube packages
+      uses: actions/cache@v6
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+    - name: Cache Gradle packages
+      uses: actions/cache@v6
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-gradle
+    - name: Backend tests and coverage
+      working-directory: back
+      run: |
+        chmod +x ./gradlew
+        ./gradlew test jacocoTestReport classes
+      env:
+        CI: true
+    - name: Frontend tests and coverage
+      working-directory: front
+      run: |
+        npm ci
+        npm run test:coverage
+      env:
+        CI: true
+    - name: Run static code analysis
+      uses: sonarsource/sonarqube-scan-action@v8.4.1
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -33,9 +33,7 @@ Smart Open Space backend - A Spring Boot 3.3 + Kotlin 2.1 application for managi
 ```
 
 ### Code Quality
-```bash
-./gradlew sonar              # Run SonarQube analysis (requires SONAR_TOKEN env var)
-```
+El análisis de Sonar (backend + frontend, un único proyecto) corre desde `.github/workflows/sonar.yml` con el `sonar-project.properties` de la raíz.
 
 ### Dependency Management
 ```bash

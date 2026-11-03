@@ -31,12 +31,6 @@ jobs:
         architecture: ${{ matrix.architecture }}
     - name: Make Gradle executable
       run: chmod +x ./gradlew
-    - name: Cache SonarQube packages
-      uses: actions/cache@v6
-      with:
-        path: ~/.sonar/cache
-        key: ${{ runner.os }}-sonar
-        restore-keys: ${{ runner.os }}-sonar
     - name: Cache Gradle packages
       uses: actions/cache@v6
       with:
@@ -47,7 +41,3 @@ jobs:
       run: ./gradlew test -i
       env:
         CI: true
-    - name: Run static code analysis
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./gradlew build sonar --info

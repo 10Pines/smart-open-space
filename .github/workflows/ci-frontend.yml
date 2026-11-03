@@ -28,12 +28,13 @@ jobs:
     - name: Build and run tests
       run: |
         npm ci
-        npm test
+        npm run test:coverage
       env:
         CI: true
-#    - if: matrix.node-version == '20.x'
-#      name: Run static code analysis
-#      uses: sonarsource/sonarqube-scan-action@v3
-#      env:
-#        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    - if: matrix.node-version == '24.x'
+      name: Run static code analysis
+      uses: sonarsource/sonarqube-scan-action@v8.4.1
+      with:
+        projectBaseDir: front
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

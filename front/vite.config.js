@@ -37,7 +37,13 @@ export default ({ mode }) => {
       globals: true,
       environment: 'jsdom',
       setupFiles: [],
-      coverage: {},
+      coverage: {
+        provider: 'v8',
+        reporter: ['text-summary', ['lcov', { projectRoot: __dirname }]],
+        reportsDirectory: resolve(__dirname, './coverage'),
+        include: ['**/*.{js,jsx,ts,tsx}'],
+        exclude: ['__tests__/**', 'setupTests.js'],
+      },
     },
   });
 };

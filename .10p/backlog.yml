@@ -1,0 +1,47 @@
+version: 1
+labels:
+  - nombre: bug
+    descripcion: errores de la aplicación
+  - nombre: documentación
+    descripcion: cambios o mejoras de documentación
+  - nombre: feature
+    descripcion: nueva funcionalidad
+  - nombre: question
+    descripcion: se necesita más información
+  - nombre: refactor
+    descripcion: refactor por buenas prácticas
+  - nombre: security
+    descripcion: agujeros de seguridad en la aplicación
+  - nombre: area:ui
+    descripcion: look & feel y componentes visuales
+  - nombre: area:agenda
+    descripcion: funcionalidad y visualización de agenda
+  - nombre: area:charlas
+    descripcion: envío, edición, votación y feedback de charlas
+  - nombre: area:organizacion
+    descripcion: creación/edición del OS, tablero de control y gestión por admins
+  - nombre: area:observabilidad
+    descripcion: analítica, métricas, logging y monitoreo
+  - nombre: area:infra
+    descripcion: build, dependencias, deploy, tooling y CI
+labels_ignorados:
+  - good first issue
+  - revisar
+  - wrong
+  - dependencies
+  - github_actions
+  - java
+  - javascript
+  - improve-new-sos
+  - improve-scheduling
+inactividad:
+  umbral_dias: 90
+plantilla_issue:
+  - punto: Comportamiento actual
+    descripcion: comportamiento actual
+  - punto: Comportamiento esperado
+    descripcion: comportamiento esperado
+  - punto: Pasos para reproducir
+    descripcion: pasos para reproducir
+repos:
+  - repo: 10Pines/smart-open-space

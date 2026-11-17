@@ -1,0 +1,30 @@
+version: 1
+repos:
+  - repo: 10Pines/smart-open-space
+    rol: principal
+    forge: github
+dependencias:
+  tipos_automergeables:
+    - patch
+    - minor
+  requisito_checks: los 4 jobs build (java 21, node 18/22/24) y analysis (Sonar) en verde, sin pendientes; CodeQL skipping no cuenta como rojo
+  agrupacion: un_pr_unico
+  analizar_majors_por_runtime: true
+  majors_github_actions_confiables:
+    - actions/*
+    - docker/*
+    - ruby/*
+    - sonarsource/*
+ambientes:
+  - nombre: production
+    health: https://smartopenspace-10pines.herokuapp.com/actuator/health
+    body: .status=UP
+ci:
+  ramas:
+    - main
+despliegue:
+  - ambiente: production
+    plataforma: heroku
+    app: smartopenspace-10pines
+inactividad:
+  umbral_dias: 90

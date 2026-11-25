@@ -3,7 +3,7 @@ import de.undercouch.gradle.tasks.download.Download
 plugins {
   base
   val kotlinVersion = "2.4.20"
-  id("org.springframework.boot") version "3.3.13"
+  id("org.springframework.boot") version "4.1.3"
   id("io.spring.dependency-management") version "1.1.7"
   id("org.flywaydb.flyway") version "13.12.0"
   id("de.undercouch.download") version "5.7.0"
@@ -24,23 +24,22 @@ repositories {
 
 dependencies {
   val jwtVersion = "0.13.0"
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-  implementation("org.flywaydb:flyway-core")
+  implementation("tools.jackson.module:jackson-module-kotlin")
+  implementation("org.springframework.boot:spring-boot-starter-flyway")
   implementation("org.flywaydb:flyway-database-postgresql")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlin:kotlin-stdlib")
-  implementation("org.springframework.boot:spring-boot-starter-aop")
+  implementation("org.springframework.boot:spring-boot-starter-aspectj")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-mail")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-validation")
-  implementation("org.springframework.boot:spring-boot-starter-web")
+  implementation("org.springframework.boot:spring-boot-starter-webmvc")
   implementation("org.springframework.boot:spring-boot-starter-websocket")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("com.github.ben-manes.caffeine:caffeine")
-  implementation("io.github.resilience4j:resilience4j-spring-boot3:2.4.0")
+  implementation("io.github.resilience4j:resilience4j-spring-boot4:2.4.0")
   //implementation("com.github.loki4j:loki-logback-appender:1.5.2")
   implementation("com.google.guava:guava:33.5.0-android")
   implementation("net.sargue:mailgun:2.0.0")
@@ -53,6 +52,9 @@ dependencies {
   runtimeOnly("com.newrelic.agent.java:newrelic-agent:9.0.0")
   runtimeOnly("io.micrometer:micrometer-registry-prometheus")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
+  testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+  testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
+  testImplementation("org.springframework.boot:spring-boot-starter-cache-test")
   testImplementation("io.mockk:mockk:1.14.11")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.micrometer:micrometer-observation-test")

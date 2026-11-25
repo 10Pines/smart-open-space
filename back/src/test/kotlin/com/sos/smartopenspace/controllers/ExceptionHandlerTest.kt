@@ -26,7 +26,7 @@ class ExceptionHandlerTest : BaseIntegrationTest() {
 
 
     val expectedRes = DefaultErrorDto(
-      message = "No static resource not_exist_path.",
+      message = "No static resource not_exist_path for request '/not_exist_path'.",
       statusCode = HttpStatus.NOT_FOUND.value(),
       status = HttpStatus.NOT_FOUND.name.lowercase(),
       isFallbackError = false
@@ -145,7 +145,7 @@ class ExceptionHandlerTest : BaseIntegrationTest() {
 
 
     val expectedRes = DefaultErrorDto(
-      message = "JSON parse error: Unexpected end-of-input: expected close marker for Object (start marker at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1])",
+      message = "JSON parse error: Unexpected end-of-input: expected close marker for Object (start marker at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); byte offset: #UNKNOWN])",
       statusCode = HttpStatus.BAD_REQUEST.value(),
       status = HttpStatus.BAD_REQUEST.name.lowercase(),
       isFallbackError = false

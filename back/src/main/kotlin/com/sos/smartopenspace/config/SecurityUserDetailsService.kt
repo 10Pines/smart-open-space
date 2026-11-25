@@ -12,10 +12,10 @@ class SecurityUserDetailsService(
   private val userRepository: UserRepository
 ) : UserDetailsService {
 
-  override fun loadUserByUsername(userId: String?): UserDetailsDTO {
+  override fun loadUserByUsername(userId: String): UserDetailsDTO {
     return runCatching {
       UserDetailsDTO(
-        userRepository.findById(userId!!.toLong())
+        userRepository.findById(userId.toLong())
           .orElseThrow { UserNotFoundException() })
     }.getOrElse {
       throw UsernameNotFoundException("User not found")

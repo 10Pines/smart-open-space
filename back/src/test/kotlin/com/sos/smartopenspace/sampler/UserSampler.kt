@@ -7,7 +7,7 @@ object UserSampler {
   fun get(): User = getWith()
 
   fun getWith(
-    id: Long = 1,
+    id: Long = 0,
     email: String = "test@mail.com",
     name: String = "testuser",
     password: String = "password",

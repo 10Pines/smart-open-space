@@ -11,7 +11,7 @@ object TalkSampler {
   fun get(): Talk = getWith()
 
   fun getWith(
-    id: Long = 1,
+    id: Long = 0,
     name: String = "talk-test",
     description: String = "This is a sample talk description.",
     speakerName: String = "user-test",

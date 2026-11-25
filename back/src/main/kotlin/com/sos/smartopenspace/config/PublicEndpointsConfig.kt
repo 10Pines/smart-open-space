@@ -2,44 +2,49 @@ package com.sos.smartopenspace.config
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpMethod
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher
 
 
 const val ANY_HTTP_METHOD = "ANY"
-val PUBLIC_ENDPOINTS: Map<String, List<AntPathRequestMatcher>> = mapOf(
+val PUBLIC_ENDPOINTS: Map<String, List<String>> = mapOf(
   ANY_HTTP_METHOD to listOf(
-    AntPathRequestMatcher("/scheduleSocket/**"),
-    AntPathRequestMatcher("/queueSocket/**"),
-    AntPathRequestMatcher("/v1/auth/**"),
-    AntPathRequestMatcher("/user/**"),
-    AntPathRequestMatcher("/actuator/health"),
-    AntPathRequestMatcher("/actuator/metrics"),
-    AntPathRequestMatcher("/actuator/prometheus"),
-    AntPathRequestMatcher("/ping"),
+    "/scheduleSocket/**",
+    "/queueSocket/**",
+    "/v1/auth/**",
+    "/user/**",
+    "/actuator/health",
+    "/actuator/metrics",
+    "/actuator/prometheus",
+    "/ping",
   ),
   HttpMethod.OPTIONS.name() to listOf(
-    AntPathRequestMatcher("/**"),
+    "/**",
   ),
   HttpMethod.GET.name() to listOf(
-    AntPathRequestMatcher("/**"),
+    "/**",
   ),
   HttpMethod.POST.name() to listOf(
-    AntPathRequestMatcher("/openSpace/talk/**"),
-    AntPathRequestMatcher("/openSpace/*"),
+    "/openSpace/talk/**",
+    "/openSpace/*",
   ),
   HttpMethod.PUT.name() to listOf(
-    AntPathRequestMatcher("/openSpace/activateQueue/**"),
-    AntPathRequestMatcher("/openSpace/finishQueue/**"),
-    AntPathRequestMatcher("/openSpace/enqueueTalk/**"),
-    AntPathRequestMatcher("/openSpace/*/user/*/callForPapers"),
-    AntPathRequestMatcher("/openSpace/*/user/*/voting"),
-    AntPathRequestMatcher("/openSpace/*/user/*/showSpeakerName"),
-    AntPathRequestMatcher("/talk/nextTalk/**"),
-    AntPathRequestMatcher("/talk/exchange/**"),
-    AntPathRequestMatcher("/talk/schedule/**"),
+    "/openSpace/activateQueue/**",
+    "/openSpace/finishQueue/**",
+    "/openSpace/enqueueTalk/**",
+    "/openSpace/*/user/*/callForPapers",
+    "/openSpace/*/user/*/voting",
+    "/openSpace/*/user/*/showSpeakerName",
+    "/talk/nextTalk/**",
+    "/talk/exchange/**",
+    "/talk/schedule/**",
   ),
   HttpMethod.DELETE.name() to listOf(),
 )
+
+private val PUBLIC_ENDPOINT_MATCHERS: Map<String, List<PathPatternRequestMatcher>> =
+  PUBLIC_ENDPOINTS.mapValues { (_, patterns) ->
+    patterns.map { PathPatternRequestMatcher.pathPattern(it) }
+  }
 
 fun isPublicEndpoint(request: HttpServletRequest?): Boolean =
   request?.let {
@@ -52,4 +57,4 @@ private fun isPublicEndpointByMethod(
   method: String,
   request: HttpServletRequest
 ): Boolean =
-  PUBLIC_ENDPOINTS[method]?.any { it.matches(request) } ?: false
+  PUBLIC_ENDPOINT_MATCHERS[method]?.any { it.matches(request) } ?: false

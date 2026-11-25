@@ -13,7 +13,7 @@ object OpenSpaceSampler {
   fun get() = getWith()
 
   fun getWith(
-    id: Long = 10L,
+    id: Long = 0L,
     name: String = "New Open Space",
     description: String = "This is a sample open space description.",
     urlImage: String = "https://example.com/image.png",

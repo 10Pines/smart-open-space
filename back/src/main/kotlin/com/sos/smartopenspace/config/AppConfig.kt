@@ -1,7 +1,7 @@
 package com.sos.smartopenspace.config
 
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.json.JsonMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -18,7 +18,7 @@ class AppConfig(
 ) {
 
   @Bean
-  fun objectMapper(): ObjectMapper =
+  fun objectMapper(): JsonMapper =
     ObjectMapperUtil.build()
 
   @Bean
@@ -31,8 +31,7 @@ class AppConfig(
 
   @Bean
   fun authenticationProvider(): AuthenticationProvider {
-    val authProvider = DaoAuthenticationProvider()
-    authProvider.setUserDetailsService(userDetailsService)
+    val authProvider = DaoAuthenticationProvider(userDetailsService)
     authProvider.setPasswordEncoder(passwordEncoder())
     return authProvider
   }

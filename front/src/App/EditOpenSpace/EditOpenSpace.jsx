@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useGetOpenSpace, updateOS } from '#api/os-client';
 import { numbersToTime } from '#helpers/time';
@@ -9,7 +9,7 @@ import { OpenSpaceForm } from './OpenSpaceForm';
 import Spinner from '#shared/Spinner';
 
 const EditOpenSpace = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useUser();
   const pushToOpenSpace = usePushToOpenSpace();
 
@@ -36,7 +36,7 @@ const EditOpenSpace = () => {
 
   return (
     <OpenSpaceForm
-      history={history}
+      goBack={() => navigate(-1)}
       title={'Editar Open Space'}
       onSubmit={onSubmit}
       initialValues={{ ...openSpace, dates: openSpace.dates ?? [] }}

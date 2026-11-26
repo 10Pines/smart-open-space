@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { grommet, Grommet } from 'grommet';
 
@@ -26,26 +26,26 @@ import customTheme from './theme';
 import DesignSystem from './DesignSystem/DesignStystem';
 import Manual from './Manual/Manual.jsx';
 
-const Routes = () => (
-  <Switch>
-    <Route path="/os/:id/projector" exact component={OSProjector} />
-    <Route path="/os/:id/myTalks" exact component={MyTalks} />
-    <Route path="/newTalk/:id" exact component={NewTalk} />
-    <Route path="/os/:id/editTalk/:talkId" exact component={EditTalk} />
-    <Route path="/new" exact component={NewOpenSpace} />
-    <Route path="/os/:id/edit" exact component={EditOpenSpace} />
-    <Route path="/os/:id/schedule" exact component={Schedule} />
-    <Route path="/os/:id" exact component={OpenSpace} />
-    <Route path="/os/:id/talk/:talkId" exact component={Talk} />
-    <Route path={'/login'} exact component={Login} />
-    <Route path={'/register'} exact component={Register} />
-    <Route path="/recovery-email" exact component={RecoveryEmail} />
-    <Route path="/reset-password" exact component={ResetPassword} />
-    <Route path="/" exact component={Home} />
-    <Route path="/design-system" exact component={DesignSystem} />
-    <Route path="/manual" exact component={Manual} />
-    {/* <Route component={Page404} /> */}
-  </Switch>
+const AppRoutes = () => (
+  <Routes>
+    <Route path="/os/:id/projector" element={<OSProjector />} />
+    <Route path="/os/:id/myTalks" element={<MyTalks />} />
+    <Route path="/newTalk/:id" element={<NewTalk />} />
+    <Route path="/os/:id/editTalk/:talkId" element={<EditTalk />} />
+    <Route path="/new" element={<NewOpenSpace />} />
+    <Route path="/os/:id/edit" element={<EditOpenSpace />} />
+    <Route path="/os/:id/schedule" element={<Schedule />} />
+    <Route path="/os/:id" element={<OpenSpace />} />
+    <Route path="/os/:id/talk/:talkId" element={<Talk />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+    <Route path="/recovery-email" element={<RecoveryEmail />} />
+    <Route path="/reset-password" element={<ResetPassword />} />
+    <Route path="/" element={<Home />} />
+    <Route path="/design-system" element={<DesignSystem />} />
+    <Route path="/manual" element={<Manual />} />
+    {/* <Route path="*" element={<Page404 />} /> */}
+  </Routes>
 );
 
 const theme = deepMerge(grommet, customTheme);
@@ -55,8 +55,8 @@ const App = () => (
     <ErrorBoundary>
       <Router>
         <AuthProvider>
-          <MainLayout header={<Route path="/" component={Header} />}>
-            <Routes />
+          <MainLayout header={<Header />}>
+            <AppRoutes />
           </MainLayout>
         </AuthProvider>
       </Router>

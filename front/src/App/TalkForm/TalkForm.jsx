@@ -1,4 +1,4 @@
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import MainHeader from '#shared/MainHeader';
 import {CircleIcon, TextAreaIcon} from '#shared/icons';
 import NewMyForm from '#shared/NewMyForm';
@@ -24,7 +24,7 @@ export const TalkForm = ({
   amTheOrganizer,
   initialValues = emptyTalk,
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const nullTrackOption = { id: null, name: 'Sin eje temático' }; // Customize the name as needed
   const trackOptionsWithNull = [nullTrackOption, ...(openSpace?.tracks || [])];
 
@@ -41,7 +41,7 @@ export const TalkForm = ({
         <MainHeader.Title margin={{bottom: "32px"}}>{openSpace.name}</MainHeader.Title>
         <Box width={useSize() === "small" ? "100%" : "70%"} pad={{right: "40px", left: "40px", bottom: "20px", top: "20px"}} alignSelf={"center"} style={{border: `1px solid ${customTheme.global.colors.primary.light}`, borderRadius: "5px"}}>
           <NewMyForm
-              onSecondary={history.goBack}
+              onSecondary={() => navigate(-1)}
               onSubmit={onSubmit}
               initialValue={initialValues}
               primaryLabel={"Crear"}

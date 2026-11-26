@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Heading } from 'grommet';
 import MyForm from '#shared/MyForm';
 import PropTypes from 'prop-types';
@@ -14,8 +14,16 @@ import { useLocation } from 'react-router-dom';
 const UserCredentialsForm = ({
   returnToOpenSpace,
   openSpaceId,
-  data: { title, secondaryLabel, onSecondary, primaryLabel, action },
-  hideFields: { hideEmail, hideName, hidePassword, hideConfirmPassword },
+  data: { title, secondaryLabel, onSecondary, primaryLabel, action } = {
+    secondaryLabel: undefined,
+    onSecondaryLabel: undefined,
+  },
+  hideFields: { hideEmail, hideName, hidePassword, hideConfirmPassword } = {
+    hideName: false,
+    hideEmail: false,
+    hidePassword: false,
+    hideConfirmPassword: false,
+  },
 }) => {
   const email = new URLSearchParams(useLocation().search).get('email');
   const token = new URLSearchParams(useLocation().search).get('token');
@@ -25,8 +33,20 @@ const UserCredentialsForm = ({
   const pushToRoute = returnToOpenSpace ? pushToOpenSpace : pushToRoot;
   let passwordValidation = '';
 
+  const user = useUser();
+  // Con el batching automático de React 18+, el usuario recién logueado se ve en
+  // el render siguiente al `navigate` de `pushToRoute`; sin esta marca el redirect
+  // a la raíz pisaba el retorno al open space.
+  const isSubmitting = useRef(false);
+
   const onSubmit = (userData) => {
-    return action(userData).then(pushToRoute);
+    isSubmitting.current = true;
+    return action(userData)
+      .then(pushToRoute)
+      .catch((error) => {
+        isSubmitting.current = false;
+        throw error;
+      });
   };
 
   const validateConfirm = (value) => {
@@ -37,7 +57,7 @@ const UserCredentialsForm = ({
     passwordValidation = event.target.value;
   };
 
-  if (useUser()) return <RedirectToRoot />;
+  if (user && !isSubmitting.current) return <RedirectToRoot />;
 
   if (reset) {
     return <RedirectToResetPassword email={email} token={token} />;
@@ -74,19 +94,6 @@ UserCredentialsForm.propTypes = {
     hideName: PropTypes.bool,
     hideEmail: PropTypes.bool,
     hidePassword: PropTypes.bool,
-  },
-};
-
-UserCredentialsForm.defaultProps = {
-  data: {
-    secondaryLabel: undefined,
-    onSecondaryLabel: undefined,
-  },
-  hideFields: {
-    hideName: false,
-    hideEmail: false,
-    hidePassword: false,
-    hideConfirmPassword: false,
   },
 };
 

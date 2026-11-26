@@ -46,7 +46,7 @@ const doFetch = (method) => async (endpoint, body) => {
   } catch (e) {
     console.error(e);
     // const errorMsg = err.response ? err.response.data.message : 'Oops, ocurrió un error!';
-    toast.error(e.message, { position: toast.POSITION.TOP_CENTER });
+    toast.error(e.message, { position: 'top-center' });
     throw new Error(e.message);
   }
 };

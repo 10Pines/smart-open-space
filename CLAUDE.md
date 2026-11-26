@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Architecture**: Monorepo with separate backend and frontend
 
 - **Backend**: Spring Boot 4.1 + Kotlin 2.1 REST API with JWT authentication, WebSocket support, PostgreSQL database
-- **Frontend**: React 16 + Vite 6 SPA with client-side routing, styled-components, WebSocket clients
+- **Frontend**: React 19 + Vite 6 SPA with client-side routing, styled-components, WebSocket clients
 
 ## Development Setup
 
@@ -180,7 +180,7 @@ smart-open-space/
 ├── docker-compose.yml        # Full stack + observability (Prometheus, Grafana, etc.)
 ├── .github/workflows/        # CI/CD pipelines
 │   ├── ci-backend.yml        # Backend tests + SonarQube
-│   ├── ci-frontend.yml       # Frontend tests (Node 18.x, 22.x, 24.x)
+│   ├── ci-frontend.yml       # Frontend tests (Node 22.x, 24.x)
 │   └── cd-app.yml            # Deployment workflow
 └── README.md                 # General project information
 ```
@@ -223,7 +223,7 @@ App (Main Router)
 ```
 
 **Key Patterns:**
-- **Client-Side Routing**: React Router v5 with custom hooks (`usePushToOpenSpace`, etc.)
+- **Client-Side Routing**: React Router v7 with custom hooks (`usePushToOpenSpace`, etc.)
 - **API Client Layer**: Centralized fetch wrapper with JWT token injection
 - **Session Management**: Dual storage (localStorage for JWT, sessionStorage for session ID)
 - **WebSocket Integration**: SockJS clients for real-time schedule/queue updates
@@ -288,7 +288,7 @@ cd back && ./gradlew flywayMigrate
 `npm run lint` fails (no ESLint config file). This is expected - not used in CI pipeline.
 
 ### Node Version Flexibility
-`package.json` specifies Node 24.x, but app works with 18.x, 20.x, 22.x. CI tests against 18.x, 22.x, 24.x.
+`package.json` specifies Node 24.x, but app works with 20.x and 22.x. CI tests against 22.x and 24.x (react-router 7 and Vitest 4 require Node >= 20).
 
 ### Docker Compose Issues
 Full Docker setup (`docker-compose up`) has backend Dockerfile issues. For development:
@@ -345,8 +345,9 @@ cd front && npm test
 
 **Frontend:**
 - Node.js 24.x
-- React 16.13.1
-- React Router v5
+- React 19
+- React Router v7
+- react-toastify 11
 - Vite 6.4.1
 - TypeScript 3.8.3
 - Vitest 3.2.4

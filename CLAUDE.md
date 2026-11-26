@@ -180,7 +180,7 @@ smart-open-space/
 ├── docker-compose.yml        # Full stack + observability (Prometheus, Grafana, etc.)
 ├── .github/workflows/        # CI/CD pipelines
 │   ├── ci-backend.yml        # Backend tests + SonarQube
-│   ├── ci-frontend.yml       # Frontend tests (Node 18.x, 22.x, 24.x)
+│   ├── ci-frontend.yml       # Frontend tests (Node 22.x, 24.x)
 │   └── cd-app.yml            # Deployment workflow
 └── README.md                 # General project information
 ```
@@ -288,7 +288,7 @@ cd back && ./gradlew flywayMigrate
 `npm run lint` fails (no ESLint config file). This is expected - not used in CI pipeline.
 
 ### Node Version Flexibility
-`package.json` specifies Node 24.x, but app works with 18.x, 20.x, 22.x. CI tests against 18.x, 22.x, 24.x.
+`package.json` specifies Node 24.x, but app works with 20.x and 22.x. CI tests against 22.x and 24.x (react-router 7 and Vitest 4 require Node >= 20).
 
 ### Docker Compose Issues
 Full Docker setup (`docker-compose up`) has backend Dockerfile issues. For development:

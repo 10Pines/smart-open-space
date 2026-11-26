@@ -100,7 +100,7 @@ This is due to network restrictions. The application works without NewRelic.
 The CI workflow (`.github/workflows/ci-frontend.yml`) does not run linting.
 
 ### Node.js Version Mismatch
-Package.json requires Node 24.x but the application works with Node 18.x , Node 20.x and Node 22.x as well. 
+Package.json requires Node 24.x but the application works with Node 20.x and Node 22.x as well. 
 Always use Node 24.x!
 You may see warnings during `npm install` - these are safe to ignore.
 

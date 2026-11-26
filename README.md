@@ -11,8 +11,7 @@
 <hr />
 
 [![Heroku][heroku-badge]][heroku]
-[![Build Back Status][build-back-badge]][build-back]
-[![Build Front Status][build-front-badge]][build-front]
+[![CI Status][ci-badge]][ci]
 [![Dependabot Status][dependabot-badge]][dependabot]
 [![Backlog][backlog-badge]][backlog]
 [![License: GPLv3][license-badge]][license]
@@ -148,10 +147,8 @@ Esta demo esta deprecada. Nueva demo en proceso :construction:
 
 [backlog]: https://trello.com/b/A3IsSe1r/smartopenspace
 [backlog-badge]: https://img.shields.io/badge/trello-backlog-blue?style=flat-square&logo=trello
-[build-back]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-backend.yml
-[build-back-badge]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-backend.yml/badge.svg
-[build-front]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-frontend.yml
-[build-front-badge]: https://github.com/10Pines/smart-open-space/actions/workflows/ci-frontend.yml/badge.svg
+[ci]: https://github.com/10Pines/smart-open-space/actions/workflows/ci.yml
+[ci-badge]: https://github.com/10Pines/smart-open-space/actions/workflows/ci.yml/badge.svg?branch=main
 [demo-link]:https://www.youtube.com/watch?v=cm3D5IztoL0
 [demo-prev]:https://img.youtube.com/vi/cm3D5IztoL0/0.jpg
 [dependabot]: https://dependabot.com

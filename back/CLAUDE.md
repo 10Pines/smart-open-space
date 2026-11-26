@@ -33,7 +33,7 @@ Smart Open Space backend - A Spring Boot 4.1 + Kotlin 2.1 application for managi
 ```
 
 ### Code Quality
-El análisis de Sonar (backend + frontend, un único proyecto) corre desde `.github/workflows/sonar.yml` con el `sonar-project.properties` de la raíz.
+El análisis de Sonar (backend + frontend, un único proyecto) corre desde el job `sonar` de `.github/workflows/ci.yml` (sólo en `main`, reutilizando la cobertura de los tests) con el `sonar-project.properties` de la raíz.
 
 ### Dependency Management
 ```bash

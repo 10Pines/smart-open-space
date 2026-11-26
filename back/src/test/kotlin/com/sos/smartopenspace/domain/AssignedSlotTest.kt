@@ -144,7 +144,7 @@ class AssignedSlotTest {
         "name=Conference Room), slot=TalkSlot(date=2024-11-18, endTime=09:30, id=0, startTime=09:00), " +
         "talk=Talk(description=This is a sample talk description., documents=[], id=1, " +
         "isMarketplaceTalk=false, meetingLink=null, name=talk-test, reviews=[], " +
-        "speaker=User(email=test@mail.com, id=1, name=testuser, password=***, resetToken=***, " +
+        "speaker=User(email=test@mail.com, id=0, name=testuser, password=***, resetToken=***, " +
         "resetTokenLifetime=***), speakerName=user-test, track=null, votingUsers=[]))"
     assertEquals(expectedRes, assignedSlot.toString())
   }

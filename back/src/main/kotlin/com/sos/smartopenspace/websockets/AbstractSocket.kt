@@ -1,6 +1,6 @@
 package com.sos.smartopenspace.websockets
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 import com.sos.smartopenspace.domain.OpenSpace
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage

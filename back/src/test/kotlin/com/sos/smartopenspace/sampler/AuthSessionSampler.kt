@@ -9,7 +9,7 @@ object AuthSessionSampler {
   fun get(): AuthSession = getWith()
 
   fun getWith(
-    id: String = "1234-12312441241-124124124",
+    id: String? = null,
     user: User = UserSampler.get(),
     tokenId: String = "some_token_id",
     revoked: Boolean = false,

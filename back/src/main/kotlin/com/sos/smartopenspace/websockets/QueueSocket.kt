@@ -1,6 +1,6 @@
 package com.sos.smartopenspace.websockets
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 import com.sos.smartopenspace.domain.OpenSpace
 import com.sos.smartopenspace.dto.response.TalkResponseDTO
 import com.sos.smartopenspace.services.QueueService

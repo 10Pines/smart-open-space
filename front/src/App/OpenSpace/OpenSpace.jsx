@@ -65,6 +65,7 @@ const OpenSpace = () => {
                 size={"medium"}
                 margin={{ left: 'medium' }}
                 color="accent-5"
+                a11yTitle="Editar open space"
                 icon={<EditIcon />}
                 onClick={pushHandlers.pushToEditOS}
                 />
@@ -74,6 +75,7 @@ const OpenSpace = () => {
                 size={"medium"}
                 margin={{ left: 'medium' }}
                 color="accent-5"
+                a11yTitle="Eliminar open space"
                 icon={<DeleteIcon />}
                 onClick={() => setShowDeleteModal(true)}
               />

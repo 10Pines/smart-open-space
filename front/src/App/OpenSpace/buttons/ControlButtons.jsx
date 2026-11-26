@@ -38,10 +38,11 @@ const ControlButtons = ({ pushHandlers, apiHandlers, data, setData, setShowQuery
   return (
     <Box
       direction={"row-responsive"}
-      gap={"10rem"}
+      wrap
+      gap={{column: "large", row: "small"}}
       {...props}
     >
-      <Box direction={"column"} gap={"medium"} margin={{bottom: "medium"}}>
+      <Box direction={"column"} gap={"medium"} margin={{bottom: "medium"}} flex={false}>
         <ControlSwitch
           onChange={() => toggleVoting(data.id).then(newData => {
             setData(newData)
@@ -64,7 +65,7 @@ const ControlButtons = ({ pushHandlers, apiHandlers, data, setData, setShowQuery
           />
       </Box>
 
-      <Box direction={"column"} gap={"medium"} margin={{bottom: "medium"}}>
+      <Box direction={"column"} gap={"medium"} margin={{bottom: "medium"}} flex={false}>
         <ControlSwitch
           onChange={() => {
             startCallForPapers(data.id).then(newData => {

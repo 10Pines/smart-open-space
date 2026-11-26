@@ -30,10 +30,7 @@ test.describe('Marketplace y proyector', () => {
     await expect(page.getByRole('button', { name: 'Abrir proyector' })).toBeVisible();
   });
 
-  // BUG PREVIO (también en main con React 16): la fila del Marketplace desborda su
-  // columna y el <div> de gap (10rem) de ControlButtons queda encima del botón, que
-  // no recibe los clicks del mouse. Cuando se arregle el layout, quitar el `fixme`.
-  test.fixme('el botón del proyector del tablero recibe clicks y abre el proyector', async ({
+  test('el botón del proyector del tablero recibe clicks y abre el proyector', async ({
     page,
     openSpace,
   }) => {

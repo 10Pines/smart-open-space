@@ -97,7 +97,7 @@ This is due to network restrictions. The application works without NewRelic.
 ### ESLint Configuration Missing
 `npm run lint` fails because ESLint configuration file is missing. 
 **DO NOT** try to fix this unless specifically asked - it's a known limitation.
-The CI workflow (`.github/workflows/ci-frontend.yml`) does not run linting.
+The CI workflow (`.github/workflows/ci.yml`) does not run linting.
 
 ### Node.js Version Mismatch
 Package.json requires Node 24.x but the application works with Node 20.x and Node 22.x as well. 
@@ -171,8 +171,7 @@ cd front && npm run build
 - Performance tests: `docs/performance_test/`
 
 ### CI/CD
-- Backend CI: `.github/workflows/ci-backend.yml`
-- Frontend CI: `.github/workflows/ci-frontend.yml`
+- CI (back and front tests; E2E and Sonar on main only): `.github/workflows/ci.yml`
 - Deployment: `.github/workflows/cd-app.yml`
 
 ## Timing Expectations

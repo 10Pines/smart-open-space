@@ -3,6 +3,7 @@ package com.sos.smartopenspace.domain
 import com.sos.smartopenspace.sampler.AuthSessionSampler
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.Instant
@@ -67,7 +68,7 @@ class AuthSessionTest {
     assertEquals(createdOn, authSession.createdOn)
     assertEquals(expiresOn, authSession.expiresOn)
     assertEquals(user, authSession.user)
-    assertEquals("", authSession.id)
+    assertNull(authSession.id)
     assertEquals(tokenId, authSession.tokenId)
     assertFalse(
       authSession.revoked,

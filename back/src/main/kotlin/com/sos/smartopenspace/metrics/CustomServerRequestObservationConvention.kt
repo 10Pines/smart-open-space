@@ -19,7 +19,7 @@ class CustomServerRequestObservationConvention :
 
   private fun getRequestKeyValues(context: ServerRequestObservationContext): KeyValues {
     val request = context.carrier
-    val isRequestWithJwt = isRequestWithToken(request)
+    val isRequestWithJwt = request?.let { isRequestWithToken(it) } ?: false
     var keyValues = KeyValues.of(
       TAG_REQUEST_CONTAINS_JWT, isRequestWithJwt.toString(),
     )

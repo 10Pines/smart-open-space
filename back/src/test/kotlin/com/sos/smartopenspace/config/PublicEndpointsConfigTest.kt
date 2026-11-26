@@ -1,27 +1,16 @@
 package com.sos.smartopenspace.config
 
-import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import jakarta.servlet.http.HttpServletRequest
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.http.HttpMethod
+import org.springframework.mock.web.MockHttpServletRequest
 
 class PublicEndpointsConfigTest {
-
-  @MockK
-  private lateinit var request: HttpServletRequest
-
-  @BeforeEach
-  fun setUp() =
-    MockKAnnotations.init(this)
 
   @Test
   fun `test isPublicEndpoint with request null Should be falsy`() {
@@ -45,10 +34,7 @@ class PublicEndpointsConfigTest {
   fun `test isPublicEndpoint with GET method and any uri Should be truthy`(
     endpoint: String
   ) {
-    every { request.method } returns HttpMethod.GET.name()
-    every { request.requestURI } returns endpoint
-    every { request.servletPath } returns endpoint
-    every { request.pathInfo } returns null
+    val request = MockHttpServletRequest(HttpMethod.GET.name(), endpoint)
     assertTrue(isPublicEndpoint(request))
   }
 
@@ -71,10 +57,7 @@ class PublicEndpointsConfigTest {
   fun `test isPublicEndpoint with not get method and public uri Should be truthy`(
     method: String, endpoint: String
   ) {
-    every { request.method } returns HttpMethod.valueOf(method).name()
-    every { request.requestURI } returns endpoint
-    every { request.servletPath } returns endpoint
-    every { request.pathInfo } returns null
+    val request = MockHttpServletRequest(HttpMethod.valueOf(method).name(), endpoint)
     assertTrue(isPublicEndpoint(request))
   }
 
@@ -102,10 +85,7 @@ class PublicEndpointsConfigTest {
   fun `test isPublicEndpoint with not match endpoint and method as public Should be falsy`(
     method: String, endpoint: String
   ) {
-    every { request.method } returns HttpMethod.valueOf(method).name()
-    every { request.requestURI } returns endpoint
-    every { request.servletPath } returns endpoint
-    every { request.pathInfo } returns null
+    val request = MockHttpServletRequest(HttpMethod.valueOf(method).name(), endpoint)
     assertFalse(isPublicEndpoint(request))
   }
 
@@ -114,10 +94,7 @@ class PublicEndpointsConfigTest {
   fun `test isPublicEndpoint with public endpoint and any http method Should be truthy`(
     caseName: String, httpMethod: String, endpoint: String
   ) {
-    every { request.method } returns httpMethod
-    every { request.requestURI } returns endpoint
-    every { request.servletPath } returns endpoint
-    every { request.pathInfo } returns null
+    val request = MockHttpServletRequest(httpMethod, endpoint)
     assertTrue(isPublicEndpoint(request))
   }
 

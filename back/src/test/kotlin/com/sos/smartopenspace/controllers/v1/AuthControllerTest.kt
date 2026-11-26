@@ -91,7 +91,7 @@ class AuthControllerTest : BaseIntegrationTest() {
         userIdJwt,
         getNowUTC()
       ) ?: fail("Auth session not found")
-    assertFalse(authSession.id.isBlank())
+    assertFalse(authSession.id!!.isBlank())
     assertNotNull(authSession.user)
     assertEquals(authSession.user.id, userIdJwt)
     assertEquals(authSession.tokenId, tokenId)
@@ -241,7 +241,7 @@ class AuthControllerTest : BaseIntegrationTest() {
         userIdJwt,
         getNowUTC()
       ) ?: fail("Auth session not found")
-    assertFalse(authSession.id.isBlank())
+    assertFalse(authSession.id!!.isBlank())
     assertNotNull(authSession.user)
     assertEquals(authSession.user.id, userIdJwt)
     assertEquals(authSession.tokenId, tokenIdJwt)
@@ -659,14 +659,14 @@ class AuthControllerTest : BaseIntegrationTest() {
     listOf(
       user1AuthSessionSavedValid,
       user2AuthSessionSavedValid,
-    ).forEach { assertTrue(authSessionRepo.existsById(it.id)) }
+    ).forEach { assertTrue(authSessionRepo.existsById(it.id!!)) }
 
     listOf(
       user1AuthSessionSavedRevoked,
       user2AuthSessionSavedRevoked,
       user1AuthSessionSavedExpired,
       user2AuthSessionSavedExpired
-    ).forEach { assertFalse(authSessionRepo.existsById(it.id)) }
+    ).forEach { assertFalse(authSessionRepo.existsById(it.id!!)) }
   }
 
   @Test
@@ -753,7 +753,7 @@ class AuthControllerTest : BaseIntegrationTest() {
       user2AuthSessionSavedRevoked,
       user1AuthSessionSavedExpired,
       user2AuthSessionSavedExpired,
-    ).forEach { assertTrue(authSessionRepo.existsById(it.id)) }
+    ).forEach { assertTrue(authSessionRepo.existsById(it.id!!)) }
   }
 
   private fun createUserWithEmailAndPassword(
@@ -780,7 +780,6 @@ class AuthControllerTest : BaseIntegrationTest() {
   ): Pair<AuthSession, String> {
     val (newJwtToken, tokenId) = jwtService.createToken(issuedAt, expiredOn, user)
     val newAuthSession = AuthSessionSampler.getWith(
-      id = "",
       user = user,
       tokenId = tokenId,
       revoked = revoked,

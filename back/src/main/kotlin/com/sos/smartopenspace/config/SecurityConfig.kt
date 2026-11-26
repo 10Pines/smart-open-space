@@ -22,14 +22,14 @@ class SecurityConfig(
     val cfg = http.csrf { it.disable() }
       .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
       .authorizeHttpRequests { authReq ->
-        PUBLIC_ENDPOINTS.forEach { (method, requestMatchers) ->
+        PUBLIC_ENDPOINTS.forEach { (method, patterns) ->
           when (method) {
-            ANY_HTTP_METHOD -> requestMatchers.forEach {
-              authReq.requestMatchers(it.pattern).permitAll()
+            ANY_HTTP_METHOD -> patterns.forEach {
+              authReq.requestMatchers(it).permitAll()
             }
 
-            else -> requestMatchers.forEach {
-              authReq.requestMatchers(HttpMethod.valueOf(method), it.pattern)
+            else -> patterns.forEach {
+              authReq.requestMatchers(HttpMethod.valueOf(method), it)
                 .permitAll()
             }
           }

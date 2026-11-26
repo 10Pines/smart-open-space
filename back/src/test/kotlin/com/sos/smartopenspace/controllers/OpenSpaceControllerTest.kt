@@ -527,7 +527,7 @@ class OpenSpaceControllerTest : BaseIntegrationTest() {
     )
     val (organizer, _) = registerAndGenerateAuthToken(aUser(userEmail = "organizer@gmail.com"))
     userRepo.delete(someUser)
-    authSessionRepo.deleteById(someUserAuthSession.id)
+    authSessionRepo.deleteById(someUserAuthSession.id!!)
     val anOpenSpace = createOpenSpaceFor(organizer)
 
     val changedName = "a different name for the open space"

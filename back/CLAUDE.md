@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Smart Open Space backend - A Spring Boot 3.3 + Kotlin 2.1 application for managing open space events, talks, scheduling, and user authentication. Uses PostgreSQL, WebSockets for real-time updates, JWT authentication, and includes observability with New Relic and Prometheus.
+Smart Open Space backend - A Spring Boot 4.1 + Kotlin 2.1 application for managing open space events, talks, scheduling, and user authentication. Uses PostgreSQL, WebSockets for real-time updates, JWT authentication, and includes observability with New Relic and Prometheus.
 
 ## Development Commands
 
@@ -194,6 +194,13 @@ Aspects automatically intercept and handle cross-cutting concerns.
 ### Test Data Factory
 `TestingObjectFactory.kt` provides helper methods for creating test entities.
 
+### Spring Boot 4 (notas de la migración desde 3.3)
+- **Jackson 3** (`tools.jackson.*`): `ObjectMapperUtil` construye un `JsonMapper` y el bean se declara con ese tipo para que la autoconfiguración de Boot se retire y Spring MVC use este mapper. Las anotaciones (`@JsonProperty`, etc.) siguen en `com.fasterxml.jackson.annotation`.
+- **Paquetes de test nuevos**: `@AutoConfigureMockMvc` en `org.springframework.boot.webmvc.test.autoconfigure`, `@DataJpaTest` en `org.springframework.boot.data.jpa.test.autoconfigure`. Los `@DataJpaTest` agregan `@AutoConfigureCache` y `@AutoConfigureTestDatabase(replace = NONE)`.
+- **Hibernate 7 (JPA 3.2)**: `merge` de una entidad con id inexistente lanza `StaleObjectStateException` (antes insertaba). Las entidades nuevas deben llegar con id `0` (`Long`) o `null` (`AuthSession.id`), nunca con un id inventado; los samplers de test usan id `0`.
+- **Cascade sobre entidades detached**: persistir un `OpenSpace` con talks ya guardados en otra transacción falla con "Detached entity passed to persist"; en tests, ejecutar todo en una misma transacción (`@Transactional`).
+- **Spring Security 7**: `AntPathRequestMatcher` ya no existe; `PUBLIC_ENDPOINTS` guarda patrones (`String`) y `isPublicEndpoint` usa `PathPatternRequestMatcher`. En tests usar `MockHttpServletRequest`, no un mock estricto.
+
 ## Common Development Workflows
 
 ### Adding a New Endpoint
@@ -225,13 +232,13 @@ Aspects automatically intercept and handle cross-cutting concerns.
 
 ## Tech Stack Reference
 
-- **Spring Boot**: 3.3.13 with Kotlin plugin support
+- **Spring Boot**: 4.1.3 with Kotlin plugin support
 - **Kotlin**: 2.1.20
 - **Java**: 21 (openjdk-21.0.2, see `.tool-versions`)
 - **Build**: Gradle 8.x with Kotlin DSL
 - **Database**: PostgreSQL (prod), H2 (test)
 - **Migrations**: Flyway 11.0.0
-- **Authentication**: JWT (jjwt 0.12.6), Spring Security 6
+- **Authentication**: JWT (jjwt 0.12.6), Spring Security 7
 - **WebSockets**: Spring WebSocket + SockJS
 - **Caching**: Caffeine (10 entries, 150s TTL)
 - **Rate Limiting**: Resilience4j (3000 rpm)

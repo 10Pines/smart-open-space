@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
 
 class QueueSocketTest : BaseIntegrationTest() {
 
@@ -52,6 +53,7 @@ class QueueSocketTest : BaseIntegrationTest() {
   }
 
   @Test
+  @Transactional
   fun `test Given QueueSocket and a openSpaceId which exist but has queue talks WHEN getData with OpenSpaceId THEN return the expected list`() {
 
     val persistedUser =
@@ -126,6 +128,7 @@ class QueueSocketTest : BaseIntegrationTest() {
   }
 
   @Test
+  @Transactional
   fun `test Given QueueSocket and a openSpace with queue talks WHEN getData with OpenSpaceId THEN return the expected list`() {
 
     val persistedUser =

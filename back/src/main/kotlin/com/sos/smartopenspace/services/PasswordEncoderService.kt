@@ -9,7 +9,7 @@ class PasswordEncoderService(
 ) {
 
   fun encodePassword(password: String): String {
-    return passwordEncoder.encode(password)
+    return requireNotNull(passwordEncoder.encode(password)) { "El encoder devolvió una contraseña nula" }
   }
 
   fun matchesPassword(password: String, encodedPassword: String): Boolean {

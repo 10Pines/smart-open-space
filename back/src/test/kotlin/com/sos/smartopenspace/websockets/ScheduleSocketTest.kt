@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
 
 class ScheduleSocketTest : BaseIntegrationTest() {
 
@@ -76,6 +77,7 @@ class ScheduleSocketTest : BaseIntegrationTest() {
   }
 
   @Test
+  @Transactional
   fun `test Given ScheduleSocket and an openSpaceId which exist with assignedSlots WHEN getData with OpenSpaceId THEN return the expected list`() {
 
     val persistedUser =
@@ -140,6 +142,7 @@ class ScheduleSocketTest : BaseIntegrationTest() {
   }
 
   @Test
+  @Transactional
   fun `test Given ScheduleSocket and an openSpace which exist with assignedSlots WHEN getData with OpenSpace THEN return the expected list`() {
 
     val persistedUser = userRepo.save(

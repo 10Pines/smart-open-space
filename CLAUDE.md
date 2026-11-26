@@ -119,6 +119,10 @@ npm run preview     # Preview production build
 # Testing
 npm test            # Run tests with Vitest (~3 seconds)
 npm run test:watch  # Run tests in watch mode
+
+# E2E (Playwright): starts back (H2) and front by itself, see front/e2e/README.md
+npx playwright install chromium   # first time only
+npm run test:e2e
 ```
 
 **Known Limitation:**
@@ -181,6 +185,7 @@ smart-open-space/
 ├── .github/workflows/        # CI/CD pipelines
 │   ├── ci-backend.yml        # Backend tests + SonarQube
 │   ├── ci-frontend.yml       # Frontend tests (Node 22.x, 24.x)
+│   ├── ci-e2e.yml            # E2E (Playwright) against real back + front
 │   └── cd-app.yml            # Deployment workflow
 └── README.md                 # General project information
 ```

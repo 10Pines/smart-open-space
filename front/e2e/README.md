@@ -17,7 +17,7 @@ npm run test:e2e:ui               # modo interactivo
   mucho la iteración. El front debe apuntar al back con `VITE_API_URL=http://localhost:8080`.
 - Para usar el Chrome instalado en vez del Chromium de Playwright: `PW_CHANNEL=chrome npm run test:e2e`.
 - Un solo spec o test: `npm run test:e2e -- projector.spec.js -g "socket"`.
-- En CI (`.github/workflows/ci-e2e.yml`) el reporte HTML y las trazas de los tests que fallan se suben como
+- En CI (`.github/workflows/ci.yml`) los E2E corren sólo en `main` (decisión de costo/beneficio), después de que pasan los tests de back y front. El reporte HTML y las trazas de los tests que fallan se suben como
   artefacto `playwright-report`. Localmente: `npx playwright show-report` y `npx playwright show-trace <trace.zip>`.
 
 ## Qué cubre

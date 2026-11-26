@@ -1,0 +1,240 @@
+name: CI
+
+# Un solo workflow con jobs dependientes para no repetir trabajo:
+#  - En PRs: tests de back y front (sólo de lo que cambió).
+#  - En main: además E2E y Sonar (Sonar de 10Pines sólo analiza main), reutilizando
+#    la cobertura de los tests en vez de volver a correrlos.
+# El único check requerido en la protección de rama debe ser `ci-ok`.
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # Un push nuevo cancela la corrida anterior de la misma rama, salvo en main.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  CI: true
+
+jobs:
+  changes:
+    name: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      back: ${{ steps.filter.outputs.back }}
+      front: ${{ steps.filter.outputs.front }}
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Detect changed areas
+      id: filter
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        BASE_REF: ${{ github.base_ref }}
+      run: |
+        if [ "$EVENT_NAME" != "pull_request" ]; then
+          echo "back=true" >> "$GITHUB_OUTPUT"
+          echo "front=true" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        files="$(git diff --name-only "origin/${BASE_REF}...HEAD")"
+        echo "$files"
+        for area in back front; do
+          if echo "$files" | grep -Eq "^(${area}/|\.github/workflows/ci\.yml$)"; then
+            echo "${area}=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "${area}=false" >> "$GITHUB_OUTPUT"
+          fi
+        done
+
+  back:
+    name: back
+    needs: changes
+    if: needs.changes.outputs.back == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: back
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v7
+    - name: Use Java 21
+      uses: actions/setup-java@v6.1.0
+      with:
+        java-version: 21
+        distribution: corretto
+        architecture: x64
+        cache: gradle
+    - name: Make Gradle executable
+      run: chmod +x ./gradlew
+    - name: Tests and coverage
+      run: ./gradlew test jacocoTestReport classes
+    - name: Upload coverage for Sonar
+      if: github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v4
+      with:
+        name: back-coverage
+        path: |
+          back/build/classes
+          back/build/reports/jacoco/test/jacocoTestReport.xml
+        retention-days: 1
+
+  front:
+    name: front
+    needs: changes
+    if: needs.changes.outputs.front == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: front
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v7
+    - name: Use Node 24
+      uses: actions/setup-node@v7
+      with:
+        node-version: 24.x
+        cache: npm
+        cache-dependency-path: front/package-lock.json
+    - name: Install dependencies
+      run: npm ci
+    - name: Tests
+      run: npm test
+      if: github.ref != 'refs/heads/main'
+    - name: Tests and coverage
+      run: npm run test:coverage
+      if: github.ref == 'refs/heads/main'
+    - name: Build
+      run: npm run build
+    - name: Upload coverage for Sonar
+      if: github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v4
+      with:
+        name: front-coverage
+        path: front/coverage/lcov.info
+        retention-days: 1
+
+  e2e:
+    name: e2e
+    # Sólo en main (decisión de costo/beneficio) y recién si los tests pasan.
+    needs: [back, front]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: front
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v7
+    - name: Use Java 21
+      uses: actions/setup-java@v6.1.0
+      with:
+        java-version: 21
+        distribution: corretto
+        architecture: x64
+        cache: gradle
+    - name: Use Node 24
+      uses: actions/setup-node@v7
+      with:
+        node-version: 24.x
+        cache: npm
+        cache-dependency-path: front/package-lock.json
+    - name: Make Gradle executable
+      run: chmod +x ../back/gradlew
+    - name: Install dependencies
+      run: npm ci
+    - name: Resolve Playwright version
+      id: playwright
+      run: echo "version=$(npx playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+    - name: Cache Playwright browsers
+      id: playwright-cache
+      uses: actions/cache@v6
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
+    - name: Install Playwright browser and system dependencies
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+      run: npx playwright install --with-deps chromium
+    - name: Install Playwright system dependencies
+      if: steps.playwright-cache.outputs.cache-hit == 'true'
+      run: npx playwright install-deps chromium
+    - name: Run E2E tests (starts back with H2 and front automatically)
+      run: npm run test:e2e
+    - name: Upload Playwright report
+      if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report
+        path: |
+          front/playwright-report/
+          front/test-results/
+        retention-days: 7
+
+  sonar:
+    name: sonar
+    # Sonar de 10Pines sólo puede analizar main. Reutiliza la cobertura de back y front.
+    needs: [back, front]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0  # Sonar necesita el historial completo para atribuir issues
+    - name: Use Java 21
+      uses: actions/setup-java@v6.1.0
+      with:
+        java-version: 21
+        distribution: corretto
+        architecture: x64
+    - name: Download back coverage
+      uses: actions/download-artifact@v4
+      with:
+        name: back-coverage
+        path: back/build
+    - name: Download front coverage
+      uses: actions/download-artifact@v4
+      with:
+        name: front-coverage
+        path: front/coverage
+    - name: Cache SonarQube packages
+      uses: actions/cache@v6
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+    - name: Run static code analysis
+      uses: sonarsource/sonarqube-scan-action@v8.4.1
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # Único check a marcar como requerido en la protección de rama: falla si algún job
+  # falló o se canceló, y pasa si los demás se salteron (por paths o por no ser main).
+  ci-ok:
+    name: ci-ok
+    if: ${{ always() }}
+    needs: [changes, back, front, e2e, sonar]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Verify results
+      env:
+        RESULTS: ${{ join(needs.*.result, ' ') }}
+      run: |
+        echo "Resultados: $RESULTS"
+        case " $RESULTS " in
+          *" failure "*|*" cancelled "*) exit 1 ;;
+        esac

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Anchor } from 'grommet';
+import { useLocation } from 'react-router-dom';
 
 import useAuth from '#helpers/useAuth';
 import {
@@ -9,7 +10,8 @@ import {
 } from '#helpers/routes';
 import UserCredentialsForm from '#shared/UserCredentialsForm';
 
-const Login = ({ location: { state } }) => {
+const Login = () => {
+  const { state } = useLocation();
   const returnToOpenSpace = hasOpenSpaceId(state);
   const openSpaceId = state?.openSpaceId;
   const pushToRegisterAndThenGoToRoot = usePushToRegister();

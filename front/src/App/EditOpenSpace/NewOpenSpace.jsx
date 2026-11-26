@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { createOS } from '#api/os-client';
 import { useUser } from '#helpers/useAuth';
@@ -8,7 +8,7 @@ import { OpenSpaceForm } from './OpenSpaceForm';
 import { splitTime } from '#helpers/time';
 
 const NewOpenSpace = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useUser();
   const pushToRoot = usePushToRoot();
 
@@ -30,7 +30,7 @@ const NewOpenSpace = () => {
 
   return (
     <OpenSpaceForm
-      history={history}
+      goBack={() => navigate(-1)}
       title={'Nuevo Open Space'}
       onSubmit={onSubmit}
       isNewOpenSpace={true}

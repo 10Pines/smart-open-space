@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory , useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useUser } from '#helpers/useAuth';
 import { RedirectToRoot, usePushToEditTalk, usePushToOpenSpace } from '#helpers/routes';
 import { useGetTalk, deleteTalk, createReview } from '#api/os-client';
@@ -22,7 +22,7 @@ const Talk = () => {
   } = useGetTalk();
   const openSpaceId = useParams().id;
   const pushToOpenSpace = usePushToOpenSpace(openSpaceId);
-  const history = useHistory();
+  const navigate = useNavigate();
   const speakerName = new URLSearchParams(useLocation().search).get('speakerName');
   const amTheSpeaker = user && speaker && speaker.id === user.id;
   const pushToEditTalk = usePushToEditTalk(id);
@@ -62,7 +62,7 @@ const Talk = () => {
             color="accent-1"
             icon={<Return />}
             label="Volver"
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
           />
         </MainHeader.Buttons>
       </MainHeader>

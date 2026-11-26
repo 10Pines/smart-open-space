@@ -43,7 +43,7 @@ const DEFAULT_COLOR = '#3F8880';
 
 export const OpenSpaceForm = ({
   onSubmit,
-  history,
+  goBack,
   title,
   initialValues = emptyOpenSpace,
 }) => {
@@ -259,7 +259,7 @@ export const OpenSpaceForm = ({
           <Button primary onClick={checkSubmit}>
             Aceptar
           </Button>
-          <Button secondary onClick={history.goBack}>
+          <Button secondary onClick={goBack}>
             Cancelar
           </Button>
         </Box>

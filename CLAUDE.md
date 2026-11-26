@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Architecture**: Monorepo with separate backend and frontend
 
 - **Backend**: Spring Boot 3.3 + Kotlin 2.1 REST API with JWT authentication, WebSocket support, PostgreSQL database
-- **Frontend**: React 16 + Vite 6 SPA with client-side routing, styled-components, WebSocket clients
+- **Frontend**: React 19 + Vite 6 SPA with client-side routing, styled-components, WebSocket clients
 
 ## Development Setup
 
@@ -223,7 +223,7 @@ App (Main Router)
 ```
 
 **Key Patterns:**
-- **Client-Side Routing**: React Router v5 with custom hooks (`usePushToOpenSpace`, etc.)
+- **Client-Side Routing**: React Router v7 with custom hooks (`usePushToOpenSpace`, etc.)
 - **API Client Layer**: Centralized fetch wrapper with JWT token injection
 - **Session Management**: Dual storage (localStorage for JWT, sessionStorage for session ID)
 - **WebSocket Integration**: SockJS clients for real-time schedule/queue updates
@@ -345,8 +345,9 @@ cd front && npm test
 
 **Frontend:**
 - Node.js 24.x
-- React 16.13.1
-- React Router v5
+- React 19
+- React Router v7
+- react-toastify 11
 - Vite 6.4.1
 - TypeScript 3.8.3
 - Vitest 3.2.4

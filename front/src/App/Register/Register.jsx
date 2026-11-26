@@ -1,11 +1,13 @@
 import React from 'react';
 import { Anchor } from 'grommet';
+import { useLocation } from 'react-router-dom';
 
 import useAuth from '#helpers/useAuth';
 import { usePushToRecoveryEmail, usePushToLogin } from '#helpers/routes';
 import UserCredentialsForm from '#shared/UserCredentialsForm';
 
-const Register = ({ location: { state } }) => {
+const Register = () => {
+  const { state } = useLocation();
   const returnToOpenSpace = hasOpenSpaceId(state);
   const openSpaceId = state?.openSpaceId;
   const pushToRecoverPassword = usePushToRecoveryEmail();

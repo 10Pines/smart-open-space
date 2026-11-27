@@ -357,7 +357,7 @@ cd front && npm test
 - Grommet 2.39.0 (design system)
 - styled-components 6.5.3
 - SockJS client 1.4.0
-- date-fns 2.28.0
+- date-fns 4.4.0
 - JWT decode 4.0.0
 
 **Infrastructure:**

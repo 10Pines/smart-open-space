@@ -333,13 +333,13 @@ cd front && npm test
 ## Tech Stack Summary
 
 **Backend:**
-- Java 21 (OpenJDK 21.0.2)
+- Java 21 (OpenJDK 21)
 - Kotlin 2.4.20
 - Spring Boot 4.1.3
 - Gradle 9.x (Kotlin DSL)
 - PostgreSQL (prod), H2 (test)
-- Flyway 11.0.0
-- JWT (jjwt 0.12.6)
+- Flyway 13.12.0
+- JWT (jjwt 0.13.0)
 - Spring Security 7
 - WebSockets + SockJS
 - Micrometer + Prometheus
@@ -351,11 +351,11 @@ cd front && npm test
 - React 19
 - React Router v7
 - react-toastify 11
-- Vite 6.4.1
-- TypeScript 3.8.3
-- Vitest 3.2.4
+- Vite 6.4.5
+- TypeScript 6.0.3
+- Vitest 4.1
 - Grommet 2.39.0 (design system)
-- styled-components 5.0.1
+- styled-components 6.5.3
 - SockJS client 1.4.0
 - date-fns 2.28.0
 - JWT decode 4.0.0

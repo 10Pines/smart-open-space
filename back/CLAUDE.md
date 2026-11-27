@@ -234,11 +234,11 @@ Aspects automatically intercept and handle cross-cutting concerns.
 
 - **Spring Boot**: 4.1.3 with Kotlin plugin support
 - **Kotlin**: 2.4.20
-- **Java**: 21 (openjdk-21.0.2, see `.tool-versions`)
+- **Java**: 21 (openjdk-21, see `.tool-versions`)
 - **Build**: Gradle 9.x with Kotlin DSL
 - **Database**: PostgreSQL (prod), H2 (test)
-- **Migrations**: Flyway 11.0.0
-- **Authentication**: JWT (jjwt 0.12.6), Spring Security 7
+- **Migrations**: Flyway 13.12.0
+- **Authentication**: JWT (jjwt 0.13.0), Spring Security 7
 - **WebSockets**: Spring WebSocket + SockJS
 - **Caching**: Caffeine (10 entries, 150s TTL)
 - **Rate Limiting**: Resilience4j (3000 rpm)

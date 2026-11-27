@@ -38,15 +38,13 @@ class Talk(
   @ManyToOne
   var track: Track? = null,
 
-  @field:Valid
   @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
   @JoinColumn(name = "talk_id")
-  val documents: MutableSet<Document> = mutableSetOf(),
+  val documents: MutableSet<@Valid Document> = mutableSetOf(),
 
-  @field:Valid
   @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
   @JoinColumn(name = "talk_id")
-  val reviews: MutableSet<Review> = mutableSetOf(),
+  val reviews: MutableSet<@Valid Review> = mutableSetOf(),
 
   @ManyToOne
   val speaker: User,

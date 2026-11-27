@@ -29,30 +29,26 @@ class OpenSpace(
   @field:NotBlank(message = "Nombre no puede ser vacío")
   var name: String,
 
-  @field:Valid
   @OneToMany(cascade = [CascadeType.ALL])
   @JoinColumn(name = "open_space_id")
-  val rooms: MutableSet<Room>,
+  val rooms: MutableSet<@Valid Room>,
 
-  @field:Valid
   @OneToMany(cascade = [CascadeType.ALL])
   @JoinColumn(name = "open_space_id")
-  val slots: MutableSet<Slot>,
+  val slots: MutableSet<@Valid Slot>,
 
   @JsonIgnore
-  @field:Valid
   @OneToMany(cascade = [CascadeType.ALL])
   @JoinColumn(name = "open_space_id")
-  val talks: MutableSet<Talk> = mutableSetOf(),
+  val talks: MutableSet<@Valid Talk> = mutableSetOf(),
 
   @field:Column(length = 1000)
   @field:Size(min = 0, max = 1000)
   var description: String = "",
 
-  @field:Valid
   @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
   @JoinColumn(name = "open_space_id")
-  val tracks: MutableSet<Track> = mutableSetOf(),
+  val tracks: MutableSet<@Valid Track> = mutableSetOf(),
 
   val urlImage: String = "",
 

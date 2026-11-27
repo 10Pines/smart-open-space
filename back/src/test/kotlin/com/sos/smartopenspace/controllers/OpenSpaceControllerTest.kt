@@ -243,7 +243,7 @@ class OpenSpaceControllerTest : BaseIntegrationTest() {
         .contentType(MediaType.APPLICATION_JSON)
         .content(generateTalkBody(aMeeting = aMeetingLink))
     )
-      .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity)
+      .andExpect(MockMvcResultMatchers.status().isUnprocessableContent)
   }
 
   @Test

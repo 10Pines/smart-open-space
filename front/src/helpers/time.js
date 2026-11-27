@@ -63,7 +63,8 @@ export const byDate = (date) => (slot) => isEqualsDateTime(slot.date, date);
  * Given two date params try to apply toDate both params and perform isEqual
  * If any of two is null or undefined, then return falsy
  */
-export const isEqualsDateTime = (date1, date2) => isEqual(toDate(date1), toDate(date2));
+export const isEqualsDateTime = (date1, date2) =>
+  date1 != null && date2 != null && isEqual(toDate(date1), toDate(date2));
 
 /**
  * Get endTime key of the last element of slots array.

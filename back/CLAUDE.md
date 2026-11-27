@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Smart Open Space backend - A Spring Boot 4.1 + Kotlin 2.1 application for managing open space events, talks, scheduling, and user authentication. Uses PostgreSQL, WebSockets for real-time updates, JWT authentication, and includes observability with New Relic and Prometheus.
+Smart Open Space backend - A Spring Boot 4.1 + Kotlin 2.4 application for managing open space events, talks, scheduling, and user authentication. Uses PostgreSQL, WebSockets for real-time updates, JWT authentication, and includes observability with New Relic and Prometheus.
 
 ## Development Commands
 
@@ -233,7 +233,7 @@ Aspects automatically intercept and handle cross-cutting concerns.
 ## Tech Stack Reference
 
 - **Spring Boot**: 4.1.3 with Kotlin plugin support
-- **Kotlin**: 2.1.20
+- **Kotlin**: 2.4.20
 - **Java**: 21 (openjdk-21.0.2, see `.tool-versions`)
 - **Build**: Gradle 9.x with Kotlin DSL
 - **Database**: PostgreSQL (prod), H2 (test)

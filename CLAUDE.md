@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Architecture**: Monorepo with separate backend and frontend
 
-- **Backend**: Spring Boot 4.1 + Kotlin 2.1 REST API with JWT authentication, WebSocket support, PostgreSQL database
+- **Backend**: Spring Boot 4.1 + Kotlin 2.4 REST API with JWT authentication, WebSocket support, PostgreSQL database
 - **Frontend**: React 19 + Vite 6 SPA with client-side routing, styled-components, WebSocket clients
 
 ## Development Setup
@@ -334,7 +334,7 @@ cd front && npm test
 
 **Backend:**
 - Java 21 (OpenJDK 21.0.2)
-- Kotlin 2.1.20
+- Kotlin 2.4.20
 - Spring Boot 4.1.3
 - Gradle 9.x (Kotlin DSL)
 - PostgreSQL (prod), H2 (test)

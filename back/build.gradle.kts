@@ -69,7 +69,6 @@ allOpen {
 kotlin {
   compilerOptions {
     freeCompilerArgs = listOf("-Xjsr305=strict")
-    version = "2.1"
   }
 }
 

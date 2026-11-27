@@ -17,18 +17,15 @@ data class OpenSpaceRequestDTO(
 
   val dates: Set<LocalDate>,
 
-  @field:Valid
-  val rooms: Set<Room>,
+  val rooms: Set<@Valid Room>,
 
-  @field:Valid
-  val slots: Set<Slot>,
+  val slots: Set<@Valid Slot>,
 
   @field:Column(length = 1000)
   @field:Size(min = 0, max = 1000)
   val description: String = "",
 
-  @field:Valid
-  val tracks: Set<Track> = emptySet()
+  val tracks: Set<@Valid Track> = emptySet()
 ) {
 
   fun slotsWithDates(): List<Slot> {

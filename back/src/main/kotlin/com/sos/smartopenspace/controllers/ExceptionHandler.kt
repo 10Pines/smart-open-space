@@ -83,7 +83,7 @@ class ExceptionHandler(
     request: HttpServletRequest,
     ex: Exception
   ): ResponseEntity<DefaultErrorDto> {
-    val httpStatus = HttpStatus.UNPROCESSABLE_ENTITY
+    val httpStatus = HttpStatus.UNPROCESSABLE_CONTENT
     handleLogErrorOfCaughtEx(request, httpStatus, ex, false)
 
     val errorDto = DefaultErrorDto(ex.message, httpStatus)

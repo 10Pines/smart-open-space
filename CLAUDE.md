@@ -336,7 +336,7 @@ cd front && npm test
 - Java 21 (OpenJDK 21.0.2)
 - Kotlin 2.1.20
 - Spring Boot 4.1.3
-- Gradle 8.x (Kotlin DSL)
+- Gradle 9.x (Kotlin DSL)
 - PostgreSQL (prod), H2 (test)
 - Flyway 11.0.0
 - JWT (jjwt 0.12.6)

@@ -1,4 +1,4 @@
-FROM gradle:8-jdk21-alpine AS build-stage
+FROM gradle:9-jdk21-alpine AS build-stage
 
 WORKDIR /app
 COPY . .

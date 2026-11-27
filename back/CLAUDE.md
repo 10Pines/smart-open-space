@@ -235,7 +235,7 @@ Aspects automatically intercept and handle cross-cutting concerns.
 - **Spring Boot**: 4.1.3 with Kotlin plugin support
 - **Kotlin**: 2.1.20
 - **Java**: 21 (openjdk-21.0.2, see `.tool-versions`)
-- **Build**: Gradle 8.x with Kotlin DSL
+- **Build**: Gradle 9.x with Kotlin DSL
 - **Database**: PostgreSQL (prod), H2 (test)
 - **Migrations**: Flyway 11.0.0
 - **Authentication**: JWT (jjwt 0.12.6), Spring Security 7

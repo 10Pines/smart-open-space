@@ -191,7 +191,7 @@ All timing measurements include 50% buffer for safety:
 
 ## Technologies
 
-- **Backend**: Java 21, Kotlin, Spring Boot 3.2.7, Gradle 8.8, PostgreSQL, Flyway
+- **Backend**: Java 21, Kotlin, Spring Boot 3.2.7, Gradle 9.x, PostgreSQL, Flyway
 - **Frontend**: Node.js 24.x/20.x, React 19, Vite 6, TypeScript/JavaScript, Vitest
 - **Database**: PostgreSQL 15
 - **Deployment**: Docker, Kamal, Heroku

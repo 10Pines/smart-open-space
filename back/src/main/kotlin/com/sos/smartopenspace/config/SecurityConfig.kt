@@ -19,6 +19,9 @@ class SecurityConfig(
 
   @Bean
   fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    // CSRF deshabilitado a propósito: la API es stateless y autentica solo con el header
+    // Authorization (Bearer JWT), sin cookies. Si el token pasa a una cookie, hay que
+    // habilitar CSRF en ese mismo cambio. Ver docs/adrs/003_csrf_deshabilitado_con_jwt_stateless.md
     val cfg = http.csrf { it.disable() }
       .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
       .authorizeHttpRequests { authReq ->

@@ -22,6 +22,7 @@
 
 - [001 - ID de nuevas entidades de dominio](/docs/adrs/001_id_nuevas_entidades_dominio.md)
 - [002 - Automatización y gestión de despliegues](/docs/adrs/002_automatizacion_y_gestion_de_despliegues.md)
+- [003 - CSRF deshabilitado con autenticación JWT stateless](/docs/adrs/003_csrf_deshabilitado_con_jwt_stateless.md)
 
 ## Métricas
 
